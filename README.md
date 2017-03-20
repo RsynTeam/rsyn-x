@@ -57,10 +57,16 @@ Please cite the ISPD 17 paper:
 
 G. Flach, M. Fogaça, J. Monteiro, M. Johann and R. Reis, ["Rsyn: An Extensible Physical Synthesis Framework"](http://doi.acm.org/10.1145/3036669.3038249), Proceedings of the 2017 ACM on International Symposium on Physical Design (ISPD), pp. 33-40, Portland, Oregon, USA 2017. 
 
-## Creators
+## Contributors
+
+#### Creators
 - [Guilherme Flach](mailto:guilherme.augusto.flach@gmail.com )
 - [Mateus Fogaça](mailto:mateus.p.fogaca@gmail.com)
 - [Jucemar Monteiro](mailto:jucemar.monteiro@gmail.com)
+
+#### Advisors
+- [Marcelo Johann](mailto:johann@inf.ufrgs.br)
+- [Ricardo Reis](mailto:reis@inf.ufrgs.br)
 
 #### Contributors
 - [Henrique Placido](mailto:hplacido@inf.ufrgs.br)
