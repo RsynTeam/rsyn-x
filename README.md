@@ -1,4 +1,5 @@
-## Rsyn
+# Rsyn <img src="https://raw.githubusercontent.com/rsyn/rsyn-x/master/x/media/ufrgs-logo.png" width=80> 
+
 Rsyn is an open-source C++ framework for physical synthesis (e.g placement, routing, sizing, buffering, restructuring, etc)
 research and education.  The framework integrates parsers for common academic and industrial formats as Bookshelf, LEF/DEF, 
 Verilog, Liberty, SDC and SPEF. Benchmarks from several EDA contests from ISPD and ICCAD can be easily loaded. 
