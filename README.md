@@ -100,8 +100,11 @@ G. Flach, M. Fogaça, J. Monteiro, M. Johann and R. Reis, ["Rsyn: An Extensible 
 - [Isadora Oliveira](mailto:isoliveira@inf.ufrgs.br)
 
 #### Former Contributors
- Tiago Reimann, Julia Puget, André Oliveira, Carolina Lima, Felipe Pinto and Lucas Cavalheiro
+ Tiago Reimann, Julia Puget, André Oliveira, Carolina Lima, Felipe Pinto, and Lucas Cavalheiro
 
+###### Honorable Mention
+ Renato Hentschke, and Gustavo Wilke
+ 
 ## Third-Party Projects
 
 ![third-projects](https://github.com/rsyn/rsyn/blob/master/doc/third-parties.png)
