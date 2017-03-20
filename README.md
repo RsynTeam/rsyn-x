@@ -58,6 +58,8 @@ $ sudo ../../rsyn/script/install-libs.sh
 $ make all 
 $ make rgui 
 ```
+[Bash script to install Rsyn dependencies](https://github.com/rsyn/rsyn-x/blob/master/rsyn/script/install-libs.sh)
+
 #### Opening a design in Rsyn Graphics User Interface:
  * File -> Run Script (ctrl+r)
  * Go to *rsyn-x/x/demo/simple* directory
