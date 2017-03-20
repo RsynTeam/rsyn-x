@@ -1,0 +1,179 @@
+/******************************************************************************
+ *                                                                            *
+ * Copyright (c) 2015, Tsung-Wei Huang and Martin D. F. Wong,                 *
+ * University of Illinois at Urbana-Champaign (UIUC), IL, USA.                *
+ *                                                                            *
+ * All Rights Reserved.                                                       *
+ *                                                                            *
+ * This program is free software. You can redistribute and/or modify          *
+ * it in accordance with the terms of the accompanying license agreement.     *
+ * See LICENSE in the top-level directory for details.                        *
+ *                                                                            *
+ ******************************************************************************/
+
+#ifndef UIT_ENUM_H_
+#define UIT_ENUM_H_
+
+typedef enum CapacitanceUnitBase {
+  FARAD,
+  MILLI_FARAD,
+  MICRO_FARAD,
+  NANO_FARAD,
+  PICO_FARAD,
+  FEMTO_FARAD,
+  UNDEFINED_CAPACITANCE_UNIT
+}capacitance_unit_base_e;
+
+enum CellType {
+  COMBINATIONAL_CELL_TYPE,
+  SEQUENTIAL_CELL_TYPE,
+  UNDEFINED_CELL_TYPE
+};
+
+enum CurrentUnitBase {
+  AMPERE,
+  MILLI_AMPERE,
+  UNDEFINED_CURRENT_UNIT
+};
+
+enum LibraryType {
+  EARLY_LIBRARY_TYPE = 0,
+  LATE_LIBRARY_TYPE = 1,
+  UNDEFINED_LIBRARY_TYPE
+};
+
+enum LibraryDelayModel {
+  GENERIC_CMOS,
+  TABLE_LOOKUP,
+  PIECEWISE_CMOS,
+  DELAY_CALCULATION_MODULE,
+  POLYNOMIAL,
+  UNDEFINED_LIBRARY_DELAY_MODEL
+};
+
+enum LibraryTechnology {
+  CMOS_LIBRARY_TECHNOLOGY,
+  FPGA_LIBRARY_TECHNOLOGY,
+  UNDEFINED_LIBRARY_TECHNOLOGY
+};
+
+enum LookupTableVariable {
+  TOTAL_OUTPUT_NET_CAPACITANCE = 0,
+  INPUT_NET_TRANSITION = 1,
+  CONSTRAINED_PIN_TRANSITION = 2,
+  RELATED_PIN_TRANSITION = 3,
+  UNDEFINED_LOOKUPTABLE_VARIABLE = 4
+};
+
+enum NodeTimingType {
+  RISE_EARLY_NODE_TIMING_TYPE,
+  RISE_LATE_NODE_TIMING_TYPE,
+  FALL_EARLY_NODE_TIMING_TYPE,
+  FALL_LATE_NODE_TIMING_TYPE,
+  UNDEFINED_NODE_TIMING_TYPE
+};
+
+enum PathType {
+  HOLD_PATH_TYPE,
+  SETUP_PATH_TYPE,
+  RAT_PATH_TYPE,
+  UNDEFINED_PATH_TYPE
+};
+
+enum PinDirection {
+  PRIMARY_INPUT_PIN_DIRECTION,
+  PRIMARY_OUTPUT_PIN_DIRECTION,
+  INPUT_CELLPIN_DIRECTION,
+  OUTPUT_CELLPIN_DIRECTION,
+  INOUT_CELLPIN_DIRECTION,
+  INTERNAL_CELLPIN_DIRECTION,
+  UNDEFINED_PIN_DIRECTION
+};
+
+enum PowerUnitBase {
+  WATT,
+  MILLI_WATT,
+  MICRO_WATT,
+  NANO_WATT,
+  PICO_WATT,
+  FEMTO_WATT,
+  UNDEFINED_POWER_UNIT
+};
+
+enum ResistanceUnitBase {
+  KILO_OHM,
+  OHM,
+  UNDEFINED_RESISTANCE_UNIT
+};
+
+enum TimingSense {
+  POSITIVE_UNATE = 0,
+  NEGATIVE_UNATE = 1,
+  NON_UNATE = 2,
+  UNDEFINED_TIMING_SENSE = 3
+};
+
+enum TimingType {
+  COMBINATIONAL_TIMING_TYPE,
+  COMBINATIONAL_RISE_TIMING_TYPE,
+  COMBINATIONAL_FALL_TIMING_TYPE,
+  THREE_STATE_DISABLE_TIMING_TYPE,
+  THREE_STATE_DISABLE_RISE_TIMING_TYPE,
+  THREE_STATE_DISABLE_FALL_TIMING_TYPE,
+  THREE_STATE_ENABLE_TIMING_TYPE,
+  THREE_STATE_ENABLE_RISE_TIMING_TYPE,
+  THREE_STATE_ENABLE_FALL_TIMING_TYPE,
+  RISING_EDGE_TIMING_TYPE,
+  FALLING_EDGE_TIMING_TYPE,
+  PRESET_TIMING_TYPE,
+  CLEAR_TIMING_TYPE,
+  HOLD_RISING_TIMING_TYPE,
+  HOLD_FALLING_TIMING_TYPE,
+  SETUP_RISING_TIMING_TYPE,
+  SETUP_FALLING_TIMING_TYPE,
+  RECOVERY_RISING_TIMING_TYPE,
+  RECOVERY_FALLING_TIMING_TYPE,
+  SKEW_RISING_TIMING_TYPE,
+  SKEW_FALLING_TIMING_TYPE,
+  REMOVAL_RISING_TIMING_TYPE,
+  REMOVAL_FALLING_TIMING_TYPE,
+  MIN_PULSE_WIDTH_TIMING_TYPE,
+  MINIMUM_PERIOD_TIMING_TYPE,
+  MAX_CLOCK_TREE_PATH_TIMING_TYPE,
+  MIN_CLOCK_TREE_PATH_TIMING_TYPE,
+  NON_SEQ_SETUP_RISING_TIMING_TYPE,
+  NON_SEQ_SETUP_FALLING_TIMING_TYPE,
+  NON_SEQ_HOLD_RISING_TIMING_TYPE,
+  NON_SEQ_HOLD_FALLING_TIMING_TYPE,
+  NOCHANGE_HIGH_HIGH_TIMING_TYPE,
+  NOCHANGE_HIGH_LOW_TIMING_TYPE,
+  NOCHANGE_LOW_HIGH_TIMING_TYPE,
+  NOCHANGE_LOW_LOW_TIMING_TYPE,
+  UNDEFINED_TIMING_TYPE
+};
+
+enum EdgeType {
+  RCTREE_EDGE_TYPE,
+  CONSTRAINT_EDGE_TYPE,
+  COMBINATIONAL_EDGE_TYPE,
+  UNDEFINED_EDGE_TYPE
+};
+
+enum TimeUnitBase {
+  SECOND,
+  MILLI_SECOND,
+  MICRO_SECOND,
+  NANO_SECOND,
+  PICO_SECOND,
+  UNDEFINED_TIME_UNIT
+};
+
+enum VoltageUnitBase {
+  VOLT,
+  UNDEFINED_VOLTAGE_UNIT
+};
+
+
+#endif
+
+

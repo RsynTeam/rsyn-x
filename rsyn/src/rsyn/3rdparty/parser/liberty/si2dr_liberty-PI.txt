@@ -1,0 +1,3743 @@
+
+Documentation for the Si2dr-Liberty PI:
+
+Number of Functions: 64
+
+
+Note on Memory Management:
+
+Before version 2.0, any si2drStringT arguments were directly inserted into the 
+in-memory database. This required the users of the PI to carefully watch these arguments,
+and to free them when the application closed or was finished.  
+
+In version 2.0, this philosophy was changed, by using a string table, which is basically
+an expandable string heap catalogued with a hash table. All strings are checked against the
+table, and entered if not already there. If an entry is attempted on a string that is already
+in the table, then the string is not re-entered, but rather a pointer to the already entered
+string will be returned. 
+
+Therefore, all strings passed into the PI will be copied to the string table. Thus all strings
+passed into the PI can be from any source, with any lifetime. These strings can be destroyed 
+as soon as the function returns. On the other hand, all strings given to the user by the PI,
+are from the string table. The data pointed to by an si2drStringT pointer will not be changed
+during the life of the session. The string table is freed by a PIQuit() call, and at that time,
+every string pointer passed to the user by the PI will be destroyed, freed, and possibly re-used.
+
+This string table based usage differs from the traditional SI2DR (CFIDR) storage philosophy.
+Personally I like this approach  better. The CFIDR/SI2DR traditional approach was to declare that
+any string originating in the PI, was temporary, and any subsequent PI function could re-use that
+space. Thus, all strings returned by the PI had to be copied by the user to more permanent 
+storage. This is no longer the case.
+
+
+
+
+
+Function Descriptions::
+
+	
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drGroupIdT  si2drPICreateGroup     SI2_ARGS(( si2drStringT name,
+													 si2drStringT group_type,
+													 si2drErrorT  *err));
+	
+
+DESCRIPTION
+
+si2drPICreateGroup will create a group OID and set its name and type. This new OID 
+will be added to the PI container.  It is possible to pass an
+empty string for name, or even a null pointer. Names can be added later via the GroupAddName() function.
+
+
+RATIONALE
+
+RETURN VALUE
+	The return value is a group OID. A null OID is returned on error.
+
+PARAMETERS
+	name 			(input) A null terminated string of 8-bit bytes. It may be 
+                            either a null pointer, or a pointer to an empty string.
+                            If it is not empty, the string is expected to be 
+                            unique among all the other groups within the 
+                            same container of this OID.
+	group_type		(input) A null terminated string of 8-bit bytes.
+                            It is intended that the group type be one 
+                            that liberty would describe, like "library", 
+                            "cell", "pin", etc.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+ERROR_CODES
+
+SI2DR_OBJECT_ALREADY_EXISTS:
+An object of the same type and name already exist in this context.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drAttrIdT   si2drGroupCreateAttr   SI2_ARGS(( si2drGroupIdT  group,
+													 si2drStringT   name,
+													 si2drAttrTypeT type,
+													 si2drErrorT   *err));
+
+
+DESCRIPTION
+	Adds an Attr (attribute) to the group. The type parameter
+    determines whether the attr is complex or simple. The name should be unique
+    among the other attrs within group.
+
+RATIONALE
+
+RETURN VALUE
+	If an error is encountered, a null AttrIdT is returned. Otherwise
+    the OID of the Attr created is returned.
+
+PARAMETERS
+	group			(input) The group that will own the new attribute.
+	name 			(input) A null terminated string of 8-bit bytes. It may be 
+                            either a null pointer, or a pointer to an empty string.
+                            If it is not empty, the string is expected to be 
+                            unique among all the other attrs within the 
+                            same container of this OID.
+	type			(input) The type of attribute, either SI2DR_COMPLEX, or 
+							SI2DR_SIMPLE.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_OBJECT_ALREADY_EXISTS:
+An object of the same type and name already exist in this context.
+
+SI2DR_INVALID_NAME:
+The name provided is a null pointer or string, and should not be.
+
+SI2DR_INVALID_ATTRTYPE:
+The attribute type does not match the expected type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drAttrTypeT si2drAttrGetAttrType   SI2_ARGS(( si2drAttrIdT  attr,
+													 si2drErrorT   *err));
+	
+
+DESCRIPTION
+
+This function returns the type of the Attr.
+
+
+RATIONALE
+
+RETURN VALUE
+
+This function returns the type of the Attr, which will be SI2DR_COMPLEX, or SI2DR_SIMPLE. 
+
+
+PARAMETERS
+	attr			(input)  The Attr whose type is being requested.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drStringT   si2drAttrGetName       SI2_ARGS(( si2drAttrIdT  attr,
+													 si2drErrorT   *err));
+	
+
+DESCRIPTION
+
+This function returns the name of the Attr.
+
+RATIONALE
+
+RETURN VALUE
+
+The return value is an si2drStringT that contains the name of the Attr.
+
+PARAMETERS
+	attr			(input)  The Attr whose name is being requested.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT     si2drComplexAttrAddInt32Value        SI2_ARGS(( si2drAttrIdT attr,
+																   si2drInt32T     intgr,
+																   si2drErrorT     *err ));
+	
+
+DESCRIPTION
+
+This function adds an integer value to the ordered list of arguments
+for the Complex Attr passed to the function.
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	attr			(input)  The complex Attr to which the value should be added..
+	intgr			(input)  The si2drInt32T number to add.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INVALID_ATTRTYPE:
+The attribute type does not match the expected type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT     si2drComplexAttrAddStringValue       SI2_ARGS(( si2drAttrIdT attr,
+																	si2drStringT    string,
+																	si2drErrorT     *err ));
+
+
+DESCRIPTION
+
+This function adds an si2drStringT value to the ordered list of arguments
+for the Complex Attr passed to the function.
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	attr			(input)  The complex Attr to which the value should be added..
+	string			(input)	 The string to put in the argument list.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INVALID_ATTRTYPE:
+The attribute type does not match the expected type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT     si2drComplexAttrAddBooleanValue      SI2_ARGS(( si2drAttrIdT attr,
+																	 si2drBooleanT   bool,
+																	 si2drErrorT     *err ));
+	
+
+DESCRIPTION
+
+This function adds an si2drBooleanT value to the ordered list of
+arguments for the Complex Attr passed to the function.
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	attr			(input)  The complex Attr to which the value should be added..
+	bool			(input)	 The si2drBooleanT value to add.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INVALID_ATTRTYPE:
+The attribute type does not match the expected type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT     si2drComplexAttrAddFloat64Value      SI2_ARGS(( si2drAttrIdT attr,
+																	 si2drFloat64T   float64,
+																	 si2drErrorT     *err ));
+
+
+DESCRIPTION
+
+This function adds an si2drFloat64T value to the ordered list of
+arguments for the Complex Attr passwd to the function.  RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	attr			(input)  The complex Attr to which the value should be added..
+	float64			(input)	 The si2drFloatT value to add.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INVALID_ATTRTYPE:
+The attribute type does not match the expected type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drValuesIdT si2drComplexAttrGetValues         SI2_ARGS(( si2drAttrIdT     attr,
+																si2drErrorT     *err ));
+
+
+DESCRIPTION
+
+This function initiates a traversal of all the Values owned by the Complex Attr "attr".
+
+RATIONALE
+
+RETURN VALUE
+
+The return value is an si2drValuesIdT referring to an Iterator ID that
+iterates over Values. A valid Iterate ID is always returned, even when
+an error occurs, or there are no values in the list. In the case of an
+error, calling the si2drIterNextComplexValue() function returns a type
+of SI2DR_UNDEFINED_VALUETYPE.
+
+PARAMETERS
+	attr			(input)  The complex Attr to which the value should be added..
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INVALID_ATTRTYPE:
+The attribute type does not match the expected type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT     si2drIterNextComplexValue         SI2_ARGS(( si2drValuesIdT iter,
+																si2drValueTypeT *type,
+																si2drInt32T     *intgr,
+																si2drFloat64T   *float64,
+																si2drStringT    *string,
+																si2drBooleanT   *bool,
+																si2drErrorT     *err ));
+
+
+DESCRIPTION
+
+This function returns all the information associated with a value
+belonging to the iterated complex attr.
+
+RATIONALE
+
+RETURN VALUE
+
+
+PARAMETERS
+	iter			(input) The iterator ID representing an Iterator of Value objects.
+	type			(output)  The ValueTypeT of the value iterated. If it is set to 
+							SI2DR_UNDEFINED_VALUETYPE, then there is no value, and the 
+							iterator has no more values.
+	intgr			(output) if the type is, SI2DR_INT32, the value pointed to by this arg is set to the stored value.
+	float64			(output) if the type is, SI2DR_FLOAT64, the value pointed to by this arg is set to the stored value.
+	string			(output) if the type is, SI2DR_STRING, the value pointed to by this arg is set to the stored value.
+	bool			(output) if the type is, SI2DR_BOOLEAN, the value pointed to by this arg is set to the stored value.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drValueTypeT  si2drSimpleAttrGetValueType        SI2_ARGS(( si2drAttrIdT attr,
+																   si2drErrorT     *err ));
+
+
+DESCRIPTION
+
+This function returns the type of the value associated with the Attr "attr".
+
+
+RATIONALE
+
+RETURN VALUE
+
+The return value is an si2drValueTypeT that indicates the type of value owned by "attr".
+
+PARAMETERS
+	attr			(input)  The simple Attr whose value type is being requested.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INVALID_ATTRTYPE:
+The attribute type does not match the expected type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drInt32T      si2drSimpleAttrGetInt32Value       SI2_ARGS(( si2drAttrIdT attr,
+																   si2drErrorT     *err ));
+	
+
+DESCRIPTION
+
+This function returns the Int32 value attribute of the Attr specified by "attr".
+
+RATIONALE
+
+RETURN VALUE
+
+The return value is an si2drInt32T representing a 32-bit integer
+number. If an error occurs the function returns 0.
+
+PARAMETERS
+	attr			(input)  The simple Attr whose value is being requested.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INVALID_ATTRTYPE:
+The attribute type does not match the expected type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+SI2DR_INVALID_VALUE:
+The value is not set, or is not of the expected type.
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+The integer returned is guaranteed to be in the range SI2DR_MIN_INT32 to SI2DR_MAX_INT32. 
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drFloat64T    si2drSimpleAttrGetFloat64Value     SI2_ARGS(( si2drAttrIdT attr,
+																   si2drErrorT     *err ));
+	
+
+DESCRIPTION
+
+This function returns the Float64 Value attribute of the Attr specified by "attr".
+
+RATIONALE
+
+RETURN VALUE
+
+The return value is an si2drFloat64T representing a 64-bit floating
+point number. If an error occurs, the function returns 0.0.
+
+PARAMETERS
+	attr			(input)  The simple Attr whose value is being requested.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INVALID_ATTRTYPE:
+The attribute type does not match the expected type.
+
+SI2DR_INVALID_VALUE:
+The value is not set, or is not of the expected type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+The double returned is guaranteed to be in the range SI2DR_MIN_FLOAT32
+to SI2DR_MAX_FLOAT32.
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drStringT     si2drSimpleAttrGetStringValue      SI2_ARGS(( si2drAttrIdT attr,
+																   si2drErrorT     *err ));
+
+
+DESCRIPTION
+
+This function returns the si2drStringT Value attribute of the Attr specified by "attr".
+
+RATIONALE
+
+RETURN VALUE
+
+The return value is an si2drStringT representing a string.
+If an error occurs, the function returns an empty string.
+
+PARAMETERS
+	attr			(input)  The simple Attr whose value is being requested.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INVALID_ATTRTYPE:
+The attribute type does not match the expected type.
+
+SI2DR_INVALID_VALUE:
+The value is not set, or is not of the expected type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drBooleanT    si2drSimpleAttrGetBooleanValue     SI2_ARGS(( si2drAttrIdT attr,
+																   si2drErrorT     *err ));
+
+
+	
+
+DESCRIPTION
+
+This funciton returns the Boolean Value attribute of the Attr specified by "attr".
+
+RATIONALE
+
+RETURN VALUE
+
+The return value is either SI2DR_TRUE or SI2DR_FALSE. If an error
+occurs the function returns SI2DR_FALSE.
+
+PARAMETERS
+	attr			(input)  The simple Attr whose value is being requested.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INVALID_ATTRTYPE:
+The attribute type does not match the expected type.
+
+SI2DR_INVALID_VALUE:
+The value is not set, or is not of the expected type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT       si2drSimpleAttrSetInt32Value       SI2_ARGS(( si2drAttrIdT attr,
+																   si2drInt32T     intgr,
+																   si2drErrorT     *err ));
+	
+
+DESCRIPTION
+
+This funciton sets the Int32 Value attribute for the Attr specified via "attr".
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	attr			(input)  The simple Attr whose value is being set.
+	intgr			(input)  The integer number to set the Value attribute to.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INVALID_ATTRTYPE:
+The attribute type does not match the expected type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT       si2drSimpleAttrSetBooleanValue     SI2_ARGS(( si2drAttrIdT   attr,
+																   si2drBooleanT   intgr,
+																   si2drErrorT      *err ));
+	
+
+DESCRIPTION
+
+This funciton sets the Boolean Value attribute for the Attr specified via "attr".
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	attr			(input)  The simple Attr whose value is being set.
+	intgr			(input)  The boolean number to set the Value attribute to.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INVALID_ATTRTYPE:
+The attribute type does not match the expected type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT       si2drSimpleAttrSetFloat64Value     SI2_ARGS(( si2drAttrIdT attr,
+																   si2drFloat64T   float64,
+																   si2drErrorT     *err ));
+	
+
+DESCRIPTION
+
+This funciton sets the Float64 Value attribute for the Attr specified via "attr".
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	attr			(input)  The simple Attr whose value is being set.
+	float64			(input)  The double number to set the Value attribute to.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INVALID_ATTRTYPE:
+The attribute type does not match the expected type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT       si2drSimpleAttrSetStringValue      SI2_ARGS(( si2drAttrIdT attr,
+																   si2drStringT    string,
+																   si2drErrorT     *err ));
+	
+
+
+
+DESCRIPTION
+
+This funciton sets the String Value attribute for the Attr specified via "attr".
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	attr			(input)  The simple Attr whose value is being set.
+	string			(input)  The string to set the Value attribute to.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INVALID_ATTRTYPE:
+The attribute type does not match the expected type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drDefineIdT si2drGroupCreateDefine SI2_ARGS(( si2drGroupIdT group,
+													 si2drStringT name,
+													 si2drStringT allowed_group_name,
+													 si2drValueTypeT valtype,
+													 si2drErrorT  *err));
+	
+
+DESCRIPTION
+
+This function creates a new define, and sets its owner to group. The
+name, allowed_group_name, and valtype fields are set within the
+define.
+
+RATIONALE
+
+RETURN VALUE
+
+The return value is an si2drDefineIdT, an in the case of an error, will the the Null OID.
+
+PARAMETERS
+	group			(input)  The group that should own the new define.
+	name 			(input) A null terminated string of 8-bit bytes. It may neither
+							be a null pointer, nor an empty string.
+	allowed_group_name (input) a string describing the group which may own the attribute.
+	valtype			(input) the si2drValueTypeT of the value.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT     si2drDefineGetInfo     SI2_ARGS(( si2drDefineIdT def,
+													 si2drStringT  *name,
+													 si2drStringT  *allowed_group_name,
+													 si2drValueTypeT *valtype,
+													 si2drErrorT  *err));
+	
+
+DESCRIPTION
+
+This function sets a series of values that represent the settings of the Define "def".
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	def				(input) The Define whose information is needed.
+	name 			(output) A pointer to a string; The function will write a string pointer 
+                            representing the user-defined attribute name into the location passed.
+	allowed_group_name (output) A pointer to a string; the function will write a string pointer
+								representing the group or list of groups this attribute is allowed in, 
+								where the group types are separated by the '|' character.
+    valtype			(output)	a pointer to a value that the function will write into,
+								which will an si2drValueTypeT representing the allowed value type
+   								for the user defined attribute.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_UNUSABLE_OID:
+The OID is not usable; the interface has not been initialized, or some other problem.
+
+SI2DR_INVALID_NAME:
+The name provided is a null pointer or string, and should not be.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drGroupIdT  si2drGroupCreateGroup  SI2_ARGS(( si2drGroupIdT group,
+													 si2drStringT name,
+													 si2drStringT group_type,
+													 si2drErrorT  *err));
+
+
+DESCRIPTION
+
+This function will create a new group, of type "group_type" and the
+name "name".  It is possible to pass an empty string for name, or even
+a null pointer. Names can be added later via the GroupAddName()
+function.
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	group			(input) The Group that should own the newly created group.
+	name 			(input) A null terminated string of 8-bit bytes. It may be 
+                            either a null pointer, or a pointer to an empty string.
+                            If it is not empty, the string is expected to be 
+                            unique among all the other attrs within the 
+                            same container of this OID.
+	group_type		(input) the string representing the type of the new group,
+							for example "library", or "cell".
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_UNUSABLE_OID:
+The OID is not usable; the interface has not been initialized, or some other problem.
+
+SI2DR_INVALID_NAME:
+The name provided is a null pointer or string, and should not be.
+
+SI2DR_OBJECT_ALREADY_EXISTS:
+An object of the same type and name already exist in this context.
+
+SI2DR_INVALID_VALUE:
+The group_type field is either a null pointer or contains an empty string.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drStringT   si2drGroupGetGroupType SI2_ARGS(( si2drGroupIdT group,
+													 si2drErrorT  *err));
+	
+
+DESCRIPTION
+
+This function returns the GroupType attribute of the Group. 
+
+RATIONALE
+
+RETURN VALUE
+
+The return value is a String containing the group type of the Group
+"group". For example, the value might be "library" or "cell", or any
+of the other group types.
+
+PARAMETERS
+	group			(input)  The group whose group type is being requested.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_UNUSABLE_OID:
+The OID is not usable; the interface has not been initialized, or some other problem.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT     si2drGroupAddName      SI2_ARGS(( si2drGroupIdT group,
+													 si2drStringT name,
+													 si2drErrorT  *err));
+	
+
+DESCRIPTION
+
+This function adds a name to a group. In most cases, this name should
+be unique among all the names of all the same typed groups owned by
+this group's owner. The exception to this rule is where the name is a
+reference to another group.
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	group			(input) the group to which to add the name.
+	name 			(input) A null terminated string of 8-bit bytes. 
+                            The string is expected to be 
+                            unique among all the other groups within the 
+                            same container of this OID.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_OBJECT_ALREADY_EXISTS:
+An object of the same type and name already exist in this context.
+
+SI2DR_UNUSABLE_OID:
+The OID is not usable; the interface has not been initialized, or some other problem.
+
+SI2DR_INVALID_NAME:
+The name provided is a null pointer or string, and should not be.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT     si2drGroupDeleteName   SI2_ARGS(( si2drGroupIdT group,
+													 si2drStringT name,
+													 si2drErrorT  *err));
+	
+	
+
+DESCRIPTION
+
+This function will search for a group name in the "group" specified,
+for a match to the "name" string passed in. If a match is made, the
+matched string is removed from the list of names owned by "group".
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	group			(input)	The group from which the deletion is being requested.
+	name 			(input) A null terminated string of 8-bit bytes. 
+                            The string is expected to match one of the names added
+							to this group.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_UNUSABLE_OID:
+The OID is not usable; the interface has not been initialized, or some other problem.
+
+SI2DR_OBJECT_NOT_FOUND:
+The desired object was not found.
+
+SI2DR_INVALID_NAME:
+The name provided is a null pointer or string, and should not be.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drGroupIdT  si2drPIFindGroupByName     SI2_ARGS(( si2drStringT name,
+														 si2drStringT type,
+														 si2drErrorT  *err));
+	
+
+DESCRIPTION
+
+This function will find a group owned by the PI whose name and type
+attributes match those values passed in.
+
+RATIONALE
+
+RETURN VALUE
+
+If a match is found, the si2drGroupIdT OID is returned. Otherwise, the
+error code is returned to indicate the results of the search.
+
+PARAMETERS
+	name			(input) The name to search for.
+	type			(input) The type of group to search for. For example "cell",
+							or "pin".
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_OBJECT_NOT_FOUND:
+The desired object was not found.
+
+SI2DR_INVALID_NAME:
+The name provided is a null pointer or string, and should not be.
+
+SI2DR_UNUSABLE_OID:
+The OID is not usable; the interface has not been initialized, or some other problem.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drGroupIdT  si2drGroupFindGroupByName  SI2_ARGS(( si2drGroupIdT group,
+														 si2drStringT name,
+														 si2drStringT type,
+														 si2drErrorT  *err));
+	
+
+DESCRIPTION
+
+This function will find a group owned by the specified "group"  whose name and type
+attributes match those values passed in.
+
+RATIONALE
+
+RETURN VALUE
+
+If a match is found, the si2drGroupIdT OID is returned. Otherwise, the
+error code is returned to indicate the results of the search, and a Null OID is returned.
+
+PARAMETERS
+	group			(input) the group in which to search.
+	name 			(input) A null terminated string of 8-bit bytes. 
+                            The string is expected to match one of the names
+							in one of the groups contained in group.
+	type			(input) The type of the group to search for. For example, 
+							"cell", or "pin".
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_OBJECT_NOT_FOUND:
+The desired object was not found.
+
+SI2DR_INVALID_NAME:
+The name provided is a null pointer or string, and should not be.
+
+SI2DR_UNUSABLE_OID:
+The OID is not usable; the interface has not been initialized, or some other problem.
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drAttrIdT   si2drGroupFindAttrByName   SI2_ARGS(( si2drGroupIdT group,
+														 si2drStringT name,
+														 si2drErrorT  *err));
+	
+
+DESCRIPTION
+
+This function will find an Attr owned by the specified group whose name
+attribute matches the value passed in.
+
+RATIONALE
+
+RETURN VALUE
+
+If a match is found, the si2drAttrIdT OID is returned. Otherwise, the
+error code is returned to indicate the results of the search, and a Null OID is returned.
+
+PARAMETERS
+	group			(input) The group which (hopefully) owns the attr being requested. 
+	name 			(input) A null terminated string of 8-bit bytes. 
+                            The string is expected to match one of the attr's
+							names contained in group.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_OBJECT_NOT_FOUND:
+The desired object was not found.
+
+SI2DR_INVALID_NAME:
+The name provided is a null pointer or string, and should not be.
+
+SI2DR_UNUSABLE_OID:
+The OID is not usable; the interface has not been initialized, or some other problem.
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drDefineIdT si2drGroupFindDefineByName SI2_ARGS(( si2drGroupIdT group,
+														 si2drStringT name,
+														 si2drErrorT  *err));
+	
+
+
+DESCRIPTION
+
+This function will find a Define owned by the specified group whose name
+attribute matches the value passed in.
+
+RATIONALE
+
+RETURN VALUE
+
+If a match is found, the si2drDefineIdT OID is returned. Otherwise, the
+error code is returned to indicate the results of the search, and a Null OID is returned.
+
+PARAMETERS
+	group			(input)	The group which (hopefully) owns the define being requested.
+	name 			(input) A null terminated string of 8-bit bytes. 
+                            The string is expected to match one of the define's
+							names contained in group.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_OBJECT_NOT_FOUND:
+The desired object was not found.
+
+SI2DR_INVALID_NAME:
+The name provided is a null pointer or string, and should not be.
+
+SI2DR_UNUSABLE_OID:
+The OID is not usable; the interface has not been initialized, or some other problem.
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drDefineIdT si2drPIFindDefineByName SI2_ARGS(( si2drStringT name,
+													  si2drErrorT  *err));
+	
+
+
+
+DESCRIPTION
+
+This function will find a Define owned by any group in the PI whose name
+attribute matches the value passed in.
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	name 			(input) A null terminated string of 8-bit bytes. 
+                            The string is expected to match one of the define's
+							names contained in any group in the PI.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_OBJECT_NOT_FOUND:
+The desired object was not found.
+
+SI2DR_INVALID_NAME:
+The name provided is a null pointer or string, and should not be.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drGroupsIdT  si2drPIGetGroups     SI2_ARGS(( si2drErrorT  *err));
+	
+
+
+DESCRIPTION
+
+This function initiates a traversal of all the Groups owned by the PI.
+
+The return value is an si2drGroupsIdT referring to an Iterator ID that
+iterates over Groups. A valid Iterate ID is always returned, even when
+an error occurs, or there are no values in the list. In the case of an
+error, calling the si2drIterNextGroup() function returns a Null OID.
+
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drGroupsIdT  si2drGroupGetGroups  SI2_ARGS(( si2drGroupIdT group,
+													si2drErrorT  *err));
+
+
+DESCRIPTION
+
+This function initiates a traversal of all the groups owned by the specified "grop".
+
+The return value is an si2drGroupsIdT referring to an Iterator ID that
+iterates over Groups. A valid Iterate ID is always returned, even when
+an error occurs, or there are no values in the list. In the case of an
+error, calling the si2drIterNextGroup() function returns a Null OID.
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	group			(input)  The group whose subgroups are to be traversed.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+
+SI2DR_UNUSABLE_OID:
+The OID is not usable; the interface has not been initialized, or some other problem.
+
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drNamesIdT   si2drGroupGetNames   SI2_ARGS(( si2drGroupIdT group,
+													si2drErrorT  *err));
+
+
+DESCRIPTION
+
+This function initiates a traversal of all the names owned by the specified "grop".
+
+The return value is an si2drNamesIdT referring to an Iterator ID that
+iterates over Names. A valid Iterator ID is always returned, even when
+an error occurs, or there are no values in the list. In the case of an
+error, calling the si2drIterNextName() function returns a Null OID.
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	group			(input)  The group whose names are to be traversed.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_UNUSABLE_OID:
+The OID is not usable; the interface has not been initialized, or some other problem.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drAttrsIdT   si2drGroupGetAttrs   SI2_ARGS(( si2drGroupIdT group,
+													si2drErrorT  *err));
+
+
+DESCRIPTION
+
+This function initiates a traversal of all the Attrs owned by the specified "group".
+
+The return value is an si2drAttrsIdT referring to an Iterator ID that
+iterates over Attrs. A valid Iterate ID is always returned, even when
+an error occurs, or there are no values in the list. In the case of an
+error, calling the si2drIterNextAttr() function returns a Null OID.
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	group			(input)  The group whose attrs are to be traversed.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+
+SI2DR_UNUSABLE_OID:
+The OID is not usable; the interface has not been initialized, or some other problem.
+
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drDefinesIdT si2drGroupGetDefines SI2_ARGS(( si2drGroupIdT group,
+													si2drErrorT  *err));
+
+
+DESCRIPTION
+
+This function initiates a traversal of all the Defines owned by the specified "group".
+
+The return value is an si2drDefinesIdT referring to an Iterator ID that
+iterates over Defines. A valid Iterate ID is always returned, even when
+an error occurs, or there are no values in the list. In the case of an
+error, calling the si2drIterNextDefine() function returns a Null OID.
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	group			(input)  The group whose defines are to be traversed.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_UNUSABLE_OID:
+The OID is not usable; the interface has not been initialized, or some other problem.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drGroupIdT   si2drIterNextGroup  SI2_ARGS(( si2drGroupsIdT iter,
+												   si2drErrorT  *err));
+
+DESCRIPTION
+
+This function returns the next group in the list of Groups being
+traversed by this iterator "iter".
+
+RATIONALE
+
+RETURN VALUE
+
+The return value is an si2drGroupIdT referencing the Group object just iterated.
+
+If an error occurs, or there are no more groups to iterate, a Null OID is returned.
+If there are no more Groups to iterate, this is not an error.
+
+PARAMETERS
+	iter			(input)  The iterator ID representing the Iterator of Group objects.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+The iter argument must have been returned via a previous call to
+si2drPIGetGroups() or si2drGroupGetGroups().
+
+POST-CONDITIONS
+
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drStringT    si2drIterNextName   SI2_ARGS(( si2drNamesIdT iter,
+												   si2drErrorT  *err));
+
+DESCRIPTION
+
+This function returns the next group in the list of Groups being
+traversed by this iterator "iter".
+
+RATIONALE
+
+RETURN VALUE
+
+The return value is an si2drStringT representing the next name of the Group object.
+
+If an error occurs, or there are no more groups to iterate, a Null string or string pointer is returned.
+If there are no more Names to iterate, this is not an error.
+
+PARAMETERS
+	iter			(input)  The iterator ID representing the Iterator of Name objects.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+The iter argument must have been returned via a previous call to
+si2drGroupGetNames().
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drAttrIdT    si2drIterNextAttr   SI2_ARGS(( si2drAttrsIdT iter,
+												   si2drErrorT  *err));
+
+DESCRIPTION
+
+This function returns the next Attr in the list of Attrs being
+traversed by this iterator "iter".
+
+RATIONALE
+
+RETURN VALUE
+
+The return value is an si2drAttrIdT referencing the Attr object just iterated.
+
+If an error occurs, or there are no more attrs to iterate, a Null OID is returned.
+If there are no more Attrs to iterate, this is not an error.
+
+PARAMETERS
+	iter			(input)  The iterator ID representing the Iterator of Attr objects.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+The iter argument must have been returned via a previous call to
+si2drGroupGetAttrs().
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drDefineIdT  si2drIterNextDefine SI2_ARGS(( si2drDefinesIdT iter,
+												   si2drErrorT  *err));
+
+DESCRIPTION
+
+This function returns the next Define in the list of Defines being
+traversed by this iterator "iter".
+
+RATIONALE
+
+RETURN VALUE
+
+The return value is an si2drDefineIdT referencing the Define object just iterated.
+
+If an error occurs, or there are no more groups to iterate, a Null OID is returned.
+If there are no more Groups to iterate, this is not an error.
+
+PARAMETERS
+	iter			(input)  The iterator ID representing the Iterator of Define objects.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+The iter argument must have been returned via a previous call to
+si2drGroupGetAttrs().
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT      si2drIterQuit       SI2_ARGS(( si2drIterIdT iter,
+												   si2drErrorT  *err));
+	
+
+
+
+DESCRIPTION
+
+This function exits from a previously initialized Iterator specified
+via "iter".  This function is called once for each Iterator ID
+created. It is the application's responsibility to call this function.
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	iter			(input)  The iterator ID referring to the Iterator to be terminated.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+Once this function is called, trying to use the Iterator ID with any
+other function should result in an error.
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT      si2drObjectDelete   SI2_ARGS(( si2drObjectIdT object,
+												   si2drErrorT  *err));
+
+
+DESCRIPTION
+
+This function destroys the "object" passed in. It is unlinked from the
+database and its memory is freed. All objects owned by "object" are in
+similar fashion deleted.
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	object			(input)  The OID of the object that is to deleted.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_OBJECTTYPE:
+The type of the object given the function does not match the expected object type.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+"object" and everything it owned have been destroyed. Any OIDS of that
+data are now unusable.
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drStringT     si2drPIGetErrorText          SI2_ARGS(( si2drErrorT errorCode,
+															 si2drErrorT  *err));
+	
+
+DESCRIPTION
+
+This function returns a pre-defined string describing the nature of the error specified
+by errorCode. All errors returned by PI functions defined in this document will have a 
+pre-defined string. 
+
+RATIONALE
+
+RETURN VALUE
+
+The value returned by the function is an si2drStringT containing the
+predefined text. In the case of an error, the null string ("") is
+returned.
+
+PARAMETERS
+	errorCode		(input)  The error code for which a textual description is desired.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+The memory for the string is managed by the DR-PI. The string's value
+remains valid until the next execution of any PI function which has an
+si2drStringT return value.
+
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drObjectIdT   si2drPIGetNullId             SI2_ARGS(( si2drErrorT  *err));
+
+
+DESCRIPTION
+
+This function returns the definition a Null OID.
+
+RATIONALE
+
+RETURN VALUE
+
+The value returned by this function is an si2drObjectIdT which is the
+representation of a Null OID for the system implementing the DR-PI. If
+an error occurs, the return value is undefined and the error return
+parameter should be set to an appropriate error code.
+
+PARAMETERS
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT       si2drPIInit                  SI2_ARGS(( si2drErrorT  *err));
+
+
+DESCRIPTION
+
+This function initializes the programming interface. Calling most
+other DR-PI functions before calling this function will result in an
+error (at least for those functions accepting or returning OIDs).
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+All object ID's are invalid before calling this function for the first time. 
+
+POST-CONDITIONS
+
+All OIDs created after calling this function remain usable until the
+object (or its owner) is destroyed, or a call to si2drPIQuit() is
+made.
+
+This function should only be called once.
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT       si2drPIQuit                  SI2_ARGS(( si2drErrorT  *err));
+
+
+DESCRIPTION
+
+This function terminates the execution of the programming
+interface. Calling any other DR-PI function after calling this
+function will normally result in an error (at least for those
+functions accepting or returning OIDs).
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+si2drPIQuit() should only be called once, after PIInit() has been called.
+
+
+POST-CONDITIONS
+
+All OIDs created since calling si2drPIInit() are made unusable after
+calling this function. Subsequently calling si2drPIInit() starts
+another session boundary, and does not subsequently make usable any
+OIDs defined prior to the call ot si2drPIQuit().
+
+Quitting the DR-PI does not automatically save any information.
+
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drObjectTypeT si2drObjectGetObjectType     SI2_ARGS(( si2drObjectIdT object,
+															 si2drErrorT  *err));
+
+
+DESCRIPTION
+
+This function returns the ObjectType attribute for the object specified by "object".
+
+
+RATIONALE
+
+RETURN VALUE
+
+The return value is the enumerated type si2drObjectTypeT which knows
+about all the objects which can be created. Currently, this includes
+only those leaf-level subtypes. If an error occurs,
+SI2DR_UNDEFINED_OBJECTTYPE is returned.
+
+Passing the Null OID will return the SI2DR_UNDEFINED_OBJECTTYPE constant.
+
+
+PARAMETERS
+	object			(input)  THe OID of the object for which the ObjectType 
+							attribute is desired. The ObjectType attribute exists for
+							the base Object supertype, so all OIDs are valid input
+							arguments, even the Null OID.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drBooleanT    si2drObjectIsNull            SI2_ARGS(( si2drObjectIdT object,
+															 si2drErrorT  *err));
+	
+
+DESCRIPTION
+
+This function determines whether the OID specified via object is a Null OID.
+
+NOTE: This is the only mechanism which should be used to determine
+whether an OID is the NUll OID, since different PI implementations may
+define the Null OID differently. The equality operator, "==" should
+not be used to test for Null.
+
+
+RATIONALE
+
+RETURN VALUE
+
+The return value denotes whether or not the object is a Null OID. If
+it is, SI2DR_TRUE is returned. Otherwise, SI2DR_FALSE is returned.
+
+PARAMETERS
+	object			(input)	 The OID being compared to teh Null OID.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+Object must be usable or the Null OID.
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drBooleanT    si2drObjectIsSame            SI2_ARGS(( si2drObjectIdT object1,
+															 si2drObjectIdT object2,
+															 si2drErrorT  *err));
+	
+
+DESCRIPTION
+
+This function determines whether the OIDs specified via object1 and
+object2 refer to the same object.
+
+NOTE: This is the only mechanism which should be used to determine
+whether two OIDs refer to the same object since OIDs must be treated
+as abstract data types. The equality operator, "==" should not be used
+to test for OID equality because that may not correspond to objects
+being the same.
+
+
+RATIONALE
+
+RETURN VALUE
+
+The return value denotes whether or not the objects passwd in refer to
+the same object. If they do, SI2DR_TRUE is returned. Otherwise,
+SI2DR_FALSE is returned.
+
+PARAMETERS
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_UNUSABLE_OID:
+either object1 or object2 is not a usable OID.
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+The OIDs psassed as input arguments should refer to usable objects or
+be the Null OID.
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drBooleanT    si2drObjectIsUsable          SI2_ARGS(( si2drObjectIdT object,
+															 si2drErrorT  *err));
+
+
+DESCRIPTION
+
+This function determines whether the OID specified by object
+refereneces a usable object.  RATIONALE
+
+NOTE: This is the only mechanism which should be used to determine
+whether an OID references a usable object. Since an OID is an abstract
+data type, the application can assume nothing about whether it
+represents a usable object.
+
+
+RETURN VALUE
+
+The return value denotes whether the object is usable or not. If it
+is, then SI2DR_TRUE is returned. Otherwise, SI2DR_FALSE is returned.
+
+PARAMETERS
+	object			(input)	 The OID of the object being checked for usability.
+
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+The Null OID is not usable.
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT       si2drObjectSetLineNo         SI2_ARGS(( si2drObjectIdT object,
+															 si2drInt32T    lineno,
+															 si2drErrorT  *err));
+
+
+DESCRIPTION
+
+This function sets the line number attribute of a group, attr, or
+define. This is mainly for the convenience of parsers or other
+diagnostic algorithms, so they may issue error messages citing the
+input file.
+
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	object			(input)  The object whose lien number attribute is to be set.
+	lineno			(input)	 The line number to store.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drInt32T      si2drObjectGetLineNo         SI2_ARGS(( si2drObjectIdT object,
+															 si2drErrorT  *err));
+
+
+DESCRIPTION
+
+This function will returned the previously stored line number
+attribute of "object". If the line number has never been set, the
+function will return the value 0.
+
+RATIONALE
+
+RETURN VALUE
+
+The line number previously stored. If no line number were ever set,
+the function will return 0.
+
+PARAMETERS
+	object			(input)  The object whose line number is requested.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT       si2drReadLibertyFile         SI2_ARGS(( char *filename,
+															 si2drErrorT  *err));
+
+
+DESCRIPTION
+
+This function will parse a Liberty file, and create a database
+composed of groups, attrs, and defines. It does only minimal syntax
+checking, insofar that no errors will be reported as long as the file
+is structurally correct.
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	filename		(input) A null terminated string of 8-bit bytes. It should be
+                            the filesystem path to the file to read. It can be
+                            relative to the current working directory, or absolute.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INVALID_NAME:
+The name provided is a null pointer or string, and should not be.
+
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+More than one file can be read in at a time, as long as library names
+do not collide.
+
+POST-CONDITIONS
+
+The data generated from the file description is available by using the
+PIGetGroups(), or PIFindGroupByName() functions.
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT       si2drWriteLibertyFile        SI2_ARGS(( char *filename,
+															 si2drGroupIdT group,
+															 si2drErrorT  *err));
+	
+
+DESCRIPTION
+
+This function traverses the library contained in "group" and generates
+a Liberty file describing it, which is given the the name specified in
+"filename".
+
+If "filename" cannot be opened, then no file is generated, and the
+error code is set.
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	filename		(input) A null terminated string of 8-bit bytes. It should be
+                            the filesystem path to the file to write. It can be
+                            relative to the current working directory, or absolute.
+	group 			(input) The group which contains the all the data that
+							should be translated into Liberty. It should be a 
+							"library" group.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+    si2drVoidT       si2drCheckLibertyLibrary     SI2_ARGS(( si2drGroupIdT group,
+															 si2drErrorT  *err));
+	
+
+
+DESCRIPTION
+
+This function will run a suite of semantic checks against "group". As
+a minimum, it should verify that all groups and attrs are correctly
+named, and owned by the proper group. It should check that each attr's
+value is of the correct type and within the proper value limits. Each
+Complex attr's argument should match the expected argument type, and
+the number of arguments should match where relevant.
+
+RATIONALE
+
+These checks are usually expensive in time to perform, and may not be
+neccessary, especially if the Liberty Library has previously already
+been checked in other sessions. By splitting these functions apart,
+more efficient programs can be written.
+
+RETURN VALUE
+
+PARAMETERS
+	group			(input)  A library group whose contents are to be checked.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some semantic error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+Calling this function will not modify the database in any way.
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drBooleanT  si2drPIGetTraceMode       SI2_ARGS((si2drErrorT  *err));
+	
+
+DESCRIPTION
+
+This function will return a si2drBooleanT that indicates the status of
+the Trace Mode.
+
+RATIONALE
+
+RETURN VALUE
+
+This function returns SI2DR_TRUE if the trace mode is set, or
+SI2DR_FALSE if not.
+
+PARAMETERS
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT     si2drPIUnSetTraceMode     SI2_ARGS((si2drErrorT  *err));
+	
+
+DESCRIPTION
+
+This function turns off Trace mode. It will insert any neccessary
+final code to the files before closing them. The PI can safely be
+Quitted before calling this function. If si2drPIQuit() is called
+before this function, the call to si2drQuit() will be recorded in the
+trace file.
+
+This function needs very badly to be called before the program exits,
+or the trace files may not include all the trace information generated.
+
+Once the trace files are closed, all the .c files may be compiled and
+linked together into an executable. The executable may then be run,
+and will perform the exact same sequence of si2dr calls as the
+original program, with the same set of arguments. Oids are represented
+as global variables. The .h file contains their predefinitions. Better
+compilation speeds may sometimes be achieved by sorting the output .h
+file, and using uniq to eliminate duplicate entries.
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT     si2drPISetTraceMode       SI2_ARGS((si2drStringT fname,
+													   si2drErrorT  *err));
+	
+
+
+DESCRIPTION
+
+This functions turns on trace mode, and opens two trace files, a .c
+file, and a .h file. These files will be in ANSI C format, and record
+each si2dr function call, along with its arguments, in a format that
+will allow the later compilation and execution of the generated code.
+
+The fname argument will be used as a basename, and a numeric suffix
+will be attached. The function calls will be split up into groups of
+about 400, and if the number of groups grow to more than about 5 or 6,
+the file will closed, and another file opened with an incremented suffix.
+
+The Unset functions will add a main() function that will call each of
+the generated groups in the proper order.
+
+RATIONALE
+
+This mode is introduced purely for QA puposes.
+
+
+RETURN VALUE
+
+PARAMETERS
+	fname 			(input) A null terminated string of 8-bit bytes. It will
+                            be used as a prefix for the two files geenerated 
+                            by the trace facility.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT       si2drPISetDebugMode       SI2_ARGS((si2drErrorT  *err));
+	
+
+DESCRIPTION
+
+This function will turn on debug mode. In Debug mode, whenever the
+Error return code is set to a value indicating a genuine error (as
+opposed to common return codes, like OBJECT_NOT_FOUND), the error is
+reported to stdout immediately. This is mostly for the convenience of
+developers, who may not wish to code checks for every possible return
+code.
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT       si2drPIUnSetDebugMode     SI2_ARGS((si2drErrorT  *err));
+	
+
+DESCRIPTION
+
+This function will turn off the debug mode. It is not an error to call
+it if the debug mode was not on.
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drBooleanT    si2drPIGetDebugMode       SI2_ARGS((si2drErrorT  *err));
+																										  
+	
+
+DESCRIPTION
+
+This function returns the status of the debug mode.
+RATIONALE
+
+RETURN VALUE
+
+This function returns SI2DR_TRUE if the debug mode is set, and SI2DR_FALSE if it is not set.
+
+
+PARAMETERS
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT     si2drPISetNocheckMode     SI2_ARGS((si2drErrorT  *err));
+	
+
+DESCRIPTION
+
+This function sets the NoCheck mode. In NoCheck mode, most of the
+error checking normally performed by each function is turned off. The
+attitude is that the code has been written and is "trusted" not to
+pass bogus information to the interface. The checks in this case would
+be redundant, and not calling them would improve execution speed.
+
+RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drVoidT     si2drPIUnSetNocheckMode   SI2_ARGS((si2drErrorT  *err));
+	
+
+DESCRIPTION
+
+This function turns off NoCHeck mode. It is not an error to call this
+function if NoCheck mode was never set.  RATIONALE
+
+RETURN VALUE
+
+PARAMETERS
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+
+DECLARATION
+
+	si2drBooleanT  si2drPIGetNocheckMode     SI2_ARGS((si2drErrorT  *err));
+		 
+
+
+DESCRIPTION
+
+This function reports the status of the NoCheck Mode.
+
+RATIONALE
+
+RETURN VALUE
+
+This function returns SI2DR_TRUE if NoCheck mode is set. Otherwise, it
+returns SI2DR_FALSE.
+
+PARAMETERS
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+DECLARATION
+
+	si2drObjectIdT   si2drObjectGetOwner     SI2_ARGS(( si2drObjectIdT object,
+										                si2drErrorT   *err));
+		 
+
+
+DESCRIPTION
+
+This function returns the owner of "object". 
+
+RATIONALE
+
+RETURN VALUE
+
+The ObjectIdT returned will almost always be a GroupIdT object. If the
+owning object is the PI, then it returns a Null OID.
+
+PARAMETERS
+	object			(input)  The object whose owner is desired.
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+---------------------------------------------------------------------------------------------
+DECLARATION
+
+	si2drVoidT   si2drGroupMoveAfter     SI2_ARGS(( si2drGroupIdT groupToMove,
+                                                        si2drGroupIdT targetGroup,
+										                si2drErrorT   *err));
+		 
+
+
+DESCRIPTION
+
+This function moves the "groupToMove" object to directly follow the "targetGroup".
+They must both be contained by the same owning object.
+
+RATIONALE
+
+This function is needed to re-order groups in the library.
+
+
+RETURN VALUE
+
+None
+
+PARAMETERS
+	groupToMove			(input)  The group to be re-located.
+	targetGroup			(input)  The group to be followed by the moved group..
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+---------------------------------------------------------------------------------------------
+DECLARATION
+
+	si2drVoidT   si2drGroupMoveBefore     SI2_ARGS(( si2drGroupIdT groupToMove,
+                                                     si2drGroupIdT targetGroup,
+										             si2drErrorT   *err));
+		 
+
+
+DESCRIPTION
+
+This function moves the "groupToMove" object to directly before the "targetGroup".
+They must both be contained by the same owning object.
+
+RATIONALE
+
+This function is needed to re-order groups in the library.
+
+
+RETURN VALUE
+
+None
+
+PARAMETERS
+	groupToMove			(input)  The group to be re-located.
+	targetGroup			(input)  The group to be preceded by the moved group..
+	error			(output) A pointer to the error returned if this function 
+                             fails. The caller is responsible for allocating 
+                             memory for this parameter.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+
+	
+
+HELPER FUNCTIONS
+
+
+struct liberty_value_data
+{
+	int dimensions;
+	int *dim_sizes; /* a malloc'd array of <dimensions> numbers,
+					   each number is the size of the array in that dim.*/
+	long double **index_info; /* a Ptr to a malloc'd array of size <dimensions>, ptrs to
+								 malloc'd arrays of long double index values.
+								 Each array of long double is of length set by
+								 the corresponding dim_sizes array values */
+	long double *values; /* a ptr to a malloc'd array of long doubles,
+							 starting with [0,0,...,0,0], and ending with
+							 [z-1,y-1,....b-1,a-1], where a-z are the max
+							 number of elements in each dimension. */
+};
+
+
+
+---------------------------------------------------------------------------------------------
+DECLARATION
+
+	long double liberty_get_element(struct liberty_value_data *vd, ...)
+		 
+
+
+DESCRIPTION
+
+This function, passed a pointer to a liberty_value_data structure, and the integer
+coordinates into the multidimensional array, will return the single element in the array.
+
+
+RATIONALE
+
+The numbers expressed in the "values" construct in a liberty file are
+a list of numbers in order (0,0,0), (0,0,1), ..., (x,y,z). If the user
+wishes to access the members of the values array in a different sequence
+than this, then this function may prove useful.
+
+RETURN VALUE
+
+The result is a "long double" or a 96-bit (12-byte) floating point number,
+which has somewhere near 17 digits of precision. If the coordinates are out of
+bounds for the array, a "NaN" value is returned.
+
+PARAMETERS
+	vd			    (input)  The liberty_value_data pointer.
+	<variable>		(input)  n integer arguments, one for each dimension of
+                             the array. The coordinates are 0-based.
+
+
+ERROR_CODES
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+
+
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+DECLARATION
+
+	void   liberty_destroy_value_data     (struct liberty_value_data *vd)
+										   
+		 
+
+
+DESCRIPTION
+
+This function will free all the allocated memory associated the 
+liberty_value_data struct whose pointer is passed. 
+
+RATIONALE
+
+The user could free each field, but this function is provided for convenience.
+
+RETURN VALUE
+
+There is no return value.
+
+PARAMETERS
+	vd			    (input)  A pointer to a liberty_value_data struct.
+
+
+ERROR_CODES
+
+
+PRE-CONDITIONS
+
+The liberty_value_data struct should have been allocated via "malloc" or "calloc"
+calls.
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+DECLARATION
+
+	struct liberty_value_data *  liberty_get_values_data     ( si2drObjectIdT table_group)
+		 
+
+
+DESCRIPTION
+
+This function traverses the "table_group", which should contain a "values" attribute, and 
+the group should have a reference to a template (all such groups do have such a reference),
+and from the traversed data it will form a liberty_value_data struct, and return a pointer
+to it.
+
+RATIONALE
+
+RETURN VALUE
+
+The liberty_value_data structure will be formed from "malloc" and "calloc" calls, and can
+be freed by passing the pointer to liberty_destroy_value_data() (see above).
+
+PARAMETERS
+	table_group		(input)  The group object to traverse and collect array information from.
+
+
+ERROR_CODES
+
+If there are any errors, some output to stderr may result, and an incomplete structure may
+be formed.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+DECLARATION
+
+	si2drStringT   si2drGroupGetComment   SI2_ARGS(( si2drGroupIdT group,
+													 si2drErrorT  *err));
+		 
+
+
+DESCRIPTION
+
+This function returns the pointer in the "comment" slot of the group object.
+
+
+RATIONALE
+
+This function was introduced in version 2.0 of the parser, to store comments
+with their associated objects in the in-mem database.
+
+RETURN VALUE
+
+Returns an si2drStringT (a char pointer). This value points into the global 
+string table, and it should be neither modified nor passed to free()!
+
+If no comment were stored, then the result will be null pointer.
+
+PARAMETERS
+	group			(input)  The group (si2drGroupIdT) object OID to attach the comment string to.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+DECLARATION
+
+	si2drVoidT     si2drGroupSetComment   SI2_ARGS(( si2drGroupIdT group,
+													 si2drStringT comment,
+													 si2drErrorT  *err));
+		 
+
+
+DESCRIPTION
+
+This function sets the comment attribute of the "group" to the comment argument.
+The input value is copied to the string table.
+
+
+RATIONALE
+
+This function was introduced in the 2.0 version, to allow leading comments
+to be stored in the in-memory database.
+
+RETURN VALUE
+
+
+PARAMETERS
+	group			(input)  The group (si2drGroupIdT) object oid to attach the comment string to.
+	comment			(input)  A pointer to a string, which forms the comment.
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+DECLARATION
+
+	si2drStringT   si2drAttrGetComment   SI2_ARGS(( si2drAttrIdT attr,
+													 si2drErrorT  *err));
+		 
+
+
+DESCRIPTION
+
+This function returns the pointer in the "comment" slot of the Attribute object.
+
+
+RATIONALE
+
+This function was introduced in version 2.0 of the parser, to store comments
+with their associated objects in the in-mem database.
+
+RETURN VALUE
+
+Returns an si2drStringT (a char pointer). This value points into the global 
+string table, and it should be neither modified nor passed to free()!
+
+If no comment were stored, then the result will be null pointer.
+
+PARAMETERS
+	attr			(input)  The attr (si2drAttrIdT) object oid to attach the comment string to.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+DECLARATION
+
+	si2drVoidT     si2drAttrSetComment   SI2_ARGS(( si2drAttrIdT attr,
+													 si2drStringT comment,
+													 si2drErrorT  *err));
+		 
+
+
+DESCRIPTION
+
+This function sets the comment attribute of the "attr" to the comment argument.
+The input value is copied to the string table.
+
+
+RATIONALE
+
+This function was introduced in the 2.0 version, to allow leading comments
+to be stored in the in-memory database.
+
+RETURN VALUE
+
+
+PARAMETERS
+	attr			(input)  The attr (si2drAttrIdT) object oid to attach the comment string to.
+	comment			(input)  A pointer to a string, which forms the comment.
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+DECLARATION
+
+	si2drStringT   si2drDefineGetComment   SI2_ARGS(( si2drDefineIdT def,
+													 si2drErrorT  *err));
+		 
+
+
+DESCRIPTION
+
+This function returns the pointer in the "comment" slot of the group object.
+
+
+RATIONALE
+
+This function was introduced in version 2.0 of the parser, to store comments
+with their associated objects in the in-mem database.
+
+RETURN VALUE
+
+Returns an si2drStringT (a char pointer). This value points into the global 
+string table, and it should be neither modified nor passed to free()!
+
+If no comment were stored, then the result will be null pointer.
+
+PARAMETERS
+	def 			(input)  The define (si2drDefineIdT) object oid to attach the comment string to.
+
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+DECLARATION
+
+	si2drVoidT     si2drDefineSetComment   SI2_ARGS(( si2drDefineIdT def,
+													 si2drStringT comment,
+													 si2drErrorT  *err));
+		 
+
+
+DESCRIPTION
+
+This function sets the comment attribute of the "define" to the comment argument.
+The input value is copied to the string table.
+
+
+RATIONALE
+
+This function was introduced in the 2.0 version, to allow leading comments
+to be stored in the in-memory database.
+
+RETURN VALUE
+
+
+PARAMETERS
+	def 			(input)  The define (si2drDefineIdT) object oid to attach the comment string to.
+	comment			(input)  A pointer to a string, which forms the comment.
+
+ERROR_CODES
+
+SI2DR_INTERNAL_SYSTEM_ERROR:
+some other error occurred.
+
+SI2DR_NO_ERROR:
+no error occurred.
+
+
+PRE-CONDITIONS
+
+POST-CONDITIONS
+
+REFERENCE
+
+
+---------------------------------------------------------------------------------------------

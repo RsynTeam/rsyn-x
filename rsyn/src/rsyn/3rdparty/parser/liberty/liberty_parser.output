@@ -1,0 +1,957 @@
+Grammar
+
+    0 $accept: file $end
+
+    1 $@1: %empty
+
+    2 file: $@1 group
+
+    3 $@2: %empty
+
+    4 group: head LCURLY $@2 statements RCURLY
+
+    5 $@3: %empty
+
+    6 group: head LCURLY $@3 RCURLY
+
+    7 statements: statement
+    8           | statements statement
+
+    9 statement: simple_attr
+   10          | complex_attr
+   11          | define
+   12          | define_group
+   13          | group
+
+   14 $@4: %empty
+
+   15 simple_attr: IDENT COLON attr_val_expr $@4 SEMI
+   16            | IDENT COLON attr_val_expr
+
+   17 $@5: %empty
+
+   18 simple_attr: IDENT EQ attr_val_expr $@5 SEMI
+
+   19 complex_attr: head SEMI
+   20             | head
+
+   21 $@6: %empty
+
+   22 head: IDENT LPAR $@6 param_list RPAR
+   23     | IDENT LPAR RPAR
+
+   24 param_list: attr_val
+   25           | param_list COMMA attr_val
+   26           | param_list attr_val
+
+   27 define: KW_DEFINE LPAR s_or_i COMMA s_or_i COMMA s_or_i RPAR SEMI
+
+   28 define_group: KW_DEFINE_GROUP LPAR s_or_i COMMA s_or_i RPAR SEMI
+
+   29 s_or_i: STRING
+   30       | IDENT
+
+   31 attr_val: NUM
+   32         | s_or_i
+   33         | s_or_i COLON s_or_i
+   34         | KW_TRUE
+   35         | KW_FALSE
+
+   36 attr_val_expr: STRING
+   37              | KW_TRUE
+   38              | KW_FALSE
+   39              | expr
+
+   40 expr: expr PLUS expr
+   41     | expr MINUS expr
+   42     | expr MULT expr
+   43     | expr DIV expr
+   44     | LPAR expr RPAR
+   45     | MINUS expr
+   46     | PLUS expr
+   47     | NUM
+   48     | IDENT
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+COMMA (258) 25 27 28
+SEMI (259) 15 18 19 27 28
+LPAR (260) 22 23 27 28 44
+RPAR (261) 22 23 27 28 44
+LCURLY (262) 4 6
+RCURLY (263) 4 6
+COLON (264) 15 16 33
+KW_DEFINE (265) 27
+KW_DEFINE_GROUP (266) 28
+KW_TRUE (267) 34 37
+KW_FALSE (268) 35 38
+PLUS (269) 40 46
+MINUS (270) 41 45
+MULT (271) 42
+DIV (272) 43
+EQ (273) 18
+UNARY (274)
+NUM (275) 31 47
+STRING (276) 29 36
+IDENT (277) 15 16 18 22 23 30 48
+
+
+Nonterminals, with rules where they appear
+
+$accept (23)
+    on left: 0
+file (24)
+    on left: 2, on right: 0
+$@1 (25)
+    on left: 1, on right: 2
+group (26)
+    on left: 4 6, on right: 2 13
+$@2 (27)
+    on left: 3, on right: 4
+$@3 (28)
+    on left: 5, on right: 6
+statements (29)
+    on left: 7 8, on right: 4 8
+statement (30)
+    on left: 9 10 11 12 13, on right: 7 8
+simple_attr (31)
+    on left: 15 16 18, on right: 9
+$@4 (32)
+    on left: 14, on right: 15
+$@5 (33)
+    on left: 17, on right: 18
+complex_attr (34)
+    on left: 19 20, on right: 10
+head (35)
+    on left: 22 23, on right: 4 6 19 20
+$@6 (36)
+    on left: 21, on right: 22
+param_list (37)
+    on left: 24 25 26, on right: 22 25 26
+define (38)
+    on left: 27, on right: 11
+define_group (39)
+    on left: 28, on right: 12
+s_or_i (40)
+    on left: 29 30, on right: 27 28 32 33
+attr_val (41)
+    on left: 31 32 33 34 35, on right: 24 25 26
+attr_val_expr (42)
+    on left: 36 37 38 39, on right: 15 16 18
+expr (43)
+    on left: 40 41 42 43 44 45 46 47 48, on right: 39 40 41 42 43 44
+    45 46
+
+
+State 0
+
+    0 $accept: . file $end
+
+    $default  reduce using rule 1 ($@1)
+
+    file  go to state 1
+    $@1   go to state 2
+
+
+State 1
+
+    0 $accept: file . $end
+
+    $end  shift, and go to state 3
+
+
+State 2
+
+    2 file: $@1 . group
+
+    IDENT  shift, and go to state 4
+
+    group  go to state 5
+    head   go to state 6
+
+
+State 3
+
+    0 $accept: file $end .
+
+    $default  accept
+
+
+State 4
+
+   22 head: IDENT . LPAR $@6 param_list RPAR
+   23     | IDENT . LPAR RPAR
+
+    LPAR  shift, and go to state 7
+
+
+State 5
+
+    2 file: $@1 group .
+
+    $default  reduce using rule 2 (file)
+
+
+State 6
+
+    4 group: head . LCURLY $@2 statements RCURLY
+    6      | head . LCURLY $@3 RCURLY
+
+    LCURLY  shift, and go to state 8
+
+
+State 7
+
+   22 head: IDENT LPAR . $@6 param_list RPAR
+   23     | IDENT LPAR . RPAR
+
+    RPAR  shift, and go to state 9
+
+    $default  reduce using rule 21 ($@6)
+
+    $@6  go to state 10
+
+
+State 8
+
+    4 group: head LCURLY . $@2 statements RCURLY
+    6      | head LCURLY . $@3 RCURLY
+
+    RCURLY    reduce using rule 5 ($@3)
+    $default  reduce using rule 3 ($@2)
+
+    $@2  go to state 11
+    $@3  go to state 12
+
+
+State 9
+
+   23 head: IDENT LPAR RPAR .
+
+    $default  reduce using rule 23 (head)
+
+
+State 10
+
+   22 head: IDENT LPAR $@6 . param_list RPAR
+
+    KW_TRUE   shift, and go to state 13
+    KW_FALSE  shift, and go to state 14
+    NUM       shift, and go to state 15
+    STRING    shift, and go to state 16
+    IDENT     shift, and go to state 17
+
+    param_list  go to state 18
+    s_or_i      go to state 19
+    attr_val    go to state 20
+
+
+State 11
+
+    4 group: head LCURLY $@2 . statements RCURLY
+
+    KW_DEFINE        shift, and go to state 21
+    KW_DEFINE_GROUP  shift, and go to state 22
+    IDENT            shift, and go to state 23
+
+    group         go to state 24
+    statements    go to state 25
+    statement     go to state 26
+    simple_attr   go to state 27
+    complex_attr  go to state 28
+    head          go to state 29
+    define        go to state 30
+    define_group  go to state 31
+
+
+State 12
+
+    6 group: head LCURLY $@3 . RCURLY
+
+    RCURLY  shift, and go to state 32
+
+
+State 13
+
+   34 attr_val: KW_TRUE .
+
+    $default  reduce using rule 34 (attr_val)
+
+
+State 14
+
+   35 attr_val: KW_FALSE .
+
+    $default  reduce using rule 35 (attr_val)
+
+
+State 15
+
+   31 attr_val: NUM .
+
+    $default  reduce using rule 31 (attr_val)
+
+
+State 16
+
+   29 s_or_i: STRING .
+
+    $default  reduce using rule 29 (s_or_i)
+
+
+State 17
+
+   30 s_or_i: IDENT .
+
+    $default  reduce using rule 30 (s_or_i)
+
+
+State 18
+
+   22 head: IDENT LPAR $@6 param_list . RPAR
+   25 param_list: param_list . COMMA attr_val
+   26           | param_list . attr_val
+
+    COMMA     shift, and go to state 33
+    RPAR      shift, and go to state 34
+    KW_TRUE   shift, and go to state 13
+    KW_FALSE  shift, and go to state 14
+    NUM       shift, and go to state 15
+    STRING    shift, and go to state 16
+    IDENT     shift, and go to state 17
+
+    s_or_i    go to state 19
+    attr_val  go to state 35
+
+
+State 19
+
+   32 attr_val: s_or_i .
+   33         | s_or_i . COLON s_or_i
+
+    COLON  shift, and go to state 36
+
+    $default  reduce using rule 32 (attr_val)
+
+
+State 20
+
+   24 param_list: attr_val .
+
+    $default  reduce using rule 24 (param_list)
+
+
+State 21
+
+   27 define: KW_DEFINE . LPAR s_or_i COMMA s_or_i COMMA s_or_i RPAR SEMI
+
+    LPAR  shift, and go to state 37
+
+
+State 22
+
+   28 define_group: KW_DEFINE_GROUP . LPAR s_or_i COMMA s_or_i RPAR SEMI
+
+    LPAR  shift, and go to state 38
+
+
+State 23
+
+   15 simple_attr: IDENT . COLON attr_val_expr $@4 SEMI
+   16            | IDENT . COLON attr_val_expr
+   18            | IDENT . EQ attr_val_expr $@5 SEMI
+   22 head: IDENT . LPAR $@6 param_list RPAR
+   23     | IDENT . LPAR RPAR
+
+    LPAR   shift, and go to state 7
+    COLON  shift, and go to state 39
+    EQ     shift, and go to state 40
+
+
+State 24
+
+   13 statement: group .
+
+    $default  reduce using rule 13 (statement)
+
+
+State 25
+
+    4 group: head LCURLY $@2 statements . RCURLY
+    8 statements: statements . statement
+
+    RCURLY           shift, and go to state 41
+    KW_DEFINE        shift, and go to state 21
+    KW_DEFINE_GROUP  shift, and go to state 22
+    IDENT            shift, and go to state 23
+
+    group         go to state 24
+    statement     go to state 42
+    simple_attr   go to state 27
+    complex_attr  go to state 28
+    head          go to state 29
+    define        go to state 30
+    define_group  go to state 31
+
+
+State 26
+
+    7 statements: statement .
+
+    $default  reduce using rule 7 (statements)
+
+
+State 27
+
+    9 statement: simple_attr .
+
+    $default  reduce using rule 9 (statement)
+
+
+State 28
+
+   10 statement: complex_attr .
+
+    $default  reduce using rule 10 (statement)
+
+
+State 29
+
+    4 group: head . LCURLY $@2 statements RCURLY
+    6      | head . LCURLY $@3 RCURLY
+   19 complex_attr: head . SEMI
+   20             | head .
+
+    SEMI    shift, and go to state 43
+    LCURLY  shift, and go to state 8
+
+    $default  reduce using rule 20 (complex_attr)
+
+
+State 30
+
+   11 statement: define .
+
+    $default  reduce using rule 11 (statement)
+
+
+State 31
+
+   12 statement: define_group .
+
+    $default  reduce using rule 12 (statement)
+
+
+State 32
+
+    6 group: head LCURLY $@3 RCURLY .
+
+    $default  reduce using rule 6 (group)
+
+
+State 33
+
+   25 param_list: param_list COMMA . attr_val
+
+    KW_TRUE   shift, and go to state 13
+    KW_FALSE  shift, and go to state 14
+    NUM       shift, and go to state 15
+    STRING    shift, and go to state 16
+    IDENT     shift, and go to state 17
+
+    s_or_i    go to state 19
+    attr_val  go to state 44
+
+
+State 34
+
+   22 head: IDENT LPAR $@6 param_list RPAR .
+
+    $default  reduce using rule 22 (head)
+
+
+State 35
+
+   26 param_list: param_list attr_val .
+
+    $default  reduce using rule 26 (param_list)
+
+
+State 36
+
+   33 attr_val: s_or_i COLON . s_or_i
+
+    STRING  shift, and go to state 16
+    IDENT   shift, and go to state 17
+
+    s_or_i  go to state 45
+
+
+State 37
+
+   27 define: KW_DEFINE LPAR . s_or_i COMMA s_or_i COMMA s_or_i RPAR SEMI
+
+    STRING  shift, and go to state 16
+    IDENT   shift, and go to state 17
+
+    s_or_i  go to state 46
+
+
+State 38
+
+   28 define_group: KW_DEFINE_GROUP LPAR . s_or_i COMMA s_or_i RPAR SEMI
+
+    STRING  shift, and go to state 16
+    IDENT   shift, and go to state 17
+
+    s_or_i  go to state 47
+
+
+State 39
+
+   15 simple_attr: IDENT COLON . attr_val_expr $@4 SEMI
+   16            | IDENT COLON . attr_val_expr
+
+    LPAR      shift, and go to state 48
+    KW_TRUE   shift, and go to state 49
+    KW_FALSE  shift, and go to state 50
+    PLUS      shift, and go to state 51
+    MINUS     shift, and go to state 52
+    NUM       shift, and go to state 53
+    STRING    shift, and go to state 54
+    IDENT     shift, and go to state 55
+
+    attr_val_expr  go to state 56
+    expr           go to state 57
+
+
+State 40
+
+   18 simple_attr: IDENT EQ . attr_val_expr $@5 SEMI
+
+    LPAR      shift, and go to state 48
+    KW_TRUE   shift, and go to state 49
+    KW_FALSE  shift, and go to state 50
+    PLUS      shift, and go to state 51
+    MINUS     shift, and go to state 52
+    NUM       shift, and go to state 53
+    STRING    shift, and go to state 54
+    IDENT     shift, and go to state 55
+
+    attr_val_expr  go to state 58
+    expr           go to state 57
+
+
+State 41
+
+    4 group: head LCURLY $@2 statements RCURLY .
+
+    $default  reduce using rule 4 (group)
+
+
+State 42
+
+    8 statements: statements statement .
+
+    $default  reduce using rule 8 (statements)
+
+
+State 43
+
+   19 complex_attr: head SEMI .
+
+    $default  reduce using rule 19 (complex_attr)
+
+
+State 44
+
+   25 param_list: param_list COMMA attr_val .
+
+    $default  reduce using rule 25 (param_list)
+
+
+State 45
+
+   33 attr_val: s_or_i COLON s_or_i .
+
+    $default  reduce using rule 33 (attr_val)
+
+
+State 46
+
+   27 define: KW_DEFINE LPAR s_or_i . COMMA s_or_i COMMA s_or_i RPAR SEMI
+
+    COMMA  shift, and go to state 59
+
+
+State 47
+
+   28 define_group: KW_DEFINE_GROUP LPAR s_or_i . COMMA s_or_i RPAR SEMI
+
+    COMMA  shift, and go to state 60
+
+
+State 48
+
+   44 expr: LPAR . expr RPAR
+
+    LPAR   shift, and go to state 48
+    PLUS   shift, and go to state 51
+    MINUS  shift, and go to state 52
+    NUM    shift, and go to state 53
+    IDENT  shift, and go to state 55
+
+    expr  go to state 61
+
+
+State 49
+
+   37 attr_val_expr: KW_TRUE .
+
+    $default  reduce using rule 37 (attr_val_expr)
+
+
+State 50
+
+   38 attr_val_expr: KW_FALSE .
+
+    $default  reduce using rule 38 (attr_val_expr)
+
+
+State 51
+
+   46 expr: PLUS . expr
+
+    LPAR   shift, and go to state 48
+    PLUS   shift, and go to state 51
+    MINUS  shift, and go to state 52
+    NUM    shift, and go to state 53
+    IDENT  shift, and go to state 55
+
+    expr  go to state 62
+
+
+State 52
+
+   45 expr: MINUS . expr
+
+    LPAR   shift, and go to state 48
+    PLUS   shift, and go to state 51
+    MINUS  shift, and go to state 52
+    NUM    shift, and go to state 53
+    IDENT  shift, and go to state 55
+
+    expr  go to state 63
+
+
+State 53
+
+   47 expr: NUM .
+
+    $default  reduce using rule 47 (expr)
+
+
+State 54
+
+   36 attr_val_expr: STRING .
+
+    $default  reduce using rule 36 (attr_val_expr)
+
+
+State 55
+
+   48 expr: IDENT .
+
+    $default  reduce using rule 48 (expr)
+
+
+State 56
+
+   15 simple_attr: IDENT COLON attr_val_expr . $@4 SEMI
+   16            | IDENT COLON attr_val_expr .
+
+    SEMI      reduce using rule 14 ($@4)
+    $default  reduce using rule 16 (simple_attr)
+
+    $@4  go to state 64
+
+
+State 57
+
+   39 attr_val_expr: expr .
+   40 expr: expr . PLUS expr
+   41     | expr . MINUS expr
+   42     | expr . MULT expr
+   43     | expr . DIV expr
+
+    PLUS   shift, and go to state 65
+    MINUS  shift, and go to state 66
+    MULT   shift, and go to state 67
+    DIV    shift, and go to state 68
+
+    $default  reduce using rule 39 (attr_val_expr)
+
+
+State 58
+
+   18 simple_attr: IDENT EQ attr_val_expr . $@5 SEMI
+
+    $default  reduce using rule 17 ($@5)
+
+    $@5  go to state 69
+
+
+State 59
+
+   27 define: KW_DEFINE LPAR s_or_i COMMA . s_or_i COMMA s_or_i RPAR SEMI
+
+    STRING  shift, and go to state 16
+    IDENT   shift, and go to state 17
+
+    s_or_i  go to state 70
+
+
+State 60
+
+   28 define_group: KW_DEFINE_GROUP LPAR s_or_i COMMA . s_or_i RPAR SEMI
+
+    STRING  shift, and go to state 16
+    IDENT   shift, and go to state 17
+
+    s_or_i  go to state 71
+
+
+State 61
+
+   40 expr: expr . PLUS expr
+   41     | expr . MINUS expr
+   42     | expr . MULT expr
+   43     | expr . DIV expr
+   44     | LPAR expr . RPAR
+
+    RPAR   shift, and go to state 72
+    PLUS   shift, and go to state 65
+    MINUS  shift, and go to state 66
+    MULT   shift, and go to state 67
+    DIV    shift, and go to state 68
+
+
+State 62
+
+   40 expr: expr . PLUS expr
+   41     | expr . MINUS expr
+   42     | expr . MULT expr
+   43     | expr . DIV expr
+   46     | PLUS expr .
+
+    $default  reduce using rule 46 (expr)
+
+
+State 63
+
+   40 expr: expr . PLUS expr
+   41     | expr . MINUS expr
+   42     | expr . MULT expr
+   43     | expr . DIV expr
+   45     | MINUS expr .
+
+    $default  reduce using rule 45 (expr)
+
+
+State 64
+
+   15 simple_attr: IDENT COLON attr_val_expr $@4 . SEMI
+
+    SEMI  shift, and go to state 73
+
+
+State 65
+
+   40 expr: expr PLUS . expr
+
+    LPAR   shift, and go to state 48
+    PLUS   shift, and go to state 51
+    MINUS  shift, and go to state 52
+    NUM    shift, and go to state 53
+    IDENT  shift, and go to state 55
+
+    expr  go to state 74
+
+
+State 66
+
+   41 expr: expr MINUS . expr
+
+    LPAR   shift, and go to state 48
+    PLUS   shift, and go to state 51
+    MINUS  shift, and go to state 52
+    NUM    shift, and go to state 53
+    IDENT  shift, and go to state 55
+
+    expr  go to state 75
+
+
+State 67
+
+   42 expr: expr MULT . expr
+
+    LPAR   shift, and go to state 48
+    PLUS   shift, and go to state 51
+    MINUS  shift, and go to state 52
+    NUM    shift, and go to state 53
+    IDENT  shift, and go to state 55
+
+    expr  go to state 76
+
+
+State 68
+
+   43 expr: expr DIV . expr
+
+    LPAR   shift, and go to state 48
+    PLUS   shift, and go to state 51
+    MINUS  shift, and go to state 52
+    NUM    shift, and go to state 53
+    IDENT  shift, and go to state 55
+
+    expr  go to state 77
+
+
+State 69
+
+   18 simple_attr: IDENT EQ attr_val_expr $@5 . SEMI
+
+    SEMI  shift, and go to state 78
+
+
+State 70
+
+   27 define: KW_DEFINE LPAR s_or_i COMMA s_or_i . COMMA s_or_i RPAR SEMI
+
+    COMMA  shift, and go to state 79
+
+
+State 71
+
+   28 define_group: KW_DEFINE_GROUP LPAR s_or_i COMMA s_or_i . RPAR SEMI
+
+    RPAR  shift, and go to state 80
+
+
+State 72
+
+   44 expr: LPAR expr RPAR .
+
+    $default  reduce using rule 44 (expr)
+
+
+State 73
+
+   15 simple_attr: IDENT COLON attr_val_expr $@4 SEMI .
+
+    $default  reduce using rule 15 (simple_attr)
+
+
+State 74
+
+   40 expr: expr . PLUS expr
+   40     | expr PLUS expr .
+   41     | expr . MINUS expr
+   42     | expr . MULT expr
+   43     | expr . DIV expr
+
+    MULT  shift, and go to state 67
+    DIV   shift, and go to state 68
+
+    $default  reduce using rule 40 (expr)
+
+
+State 75
+
+   40 expr: expr . PLUS expr
+   41     | expr . MINUS expr
+   41     | expr MINUS expr .
+   42     | expr . MULT expr
+   43     | expr . DIV expr
+
+    MULT  shift, and go to state 67
+    DIV   shift, and go to state 68
+
+    $default  reduce using rule 41 (expr)
+
+
+State 76
+
+   40 expr: expr . PLUS expr
+   41     | expr . MINUS expr
+   42     | expr . MULT expr
+   42     | expr MULT expr .
+   43     | expr . DIV expr
+
+    $default  reduce using rule 42 (expr)
+
+
+State 77
+
+   40 expr: expr . PLUS expr
+   41     | expr . MINUS expr
+   42     | expr . MULT expr
+   43     | expr . DIV expr
+   43     | expr DIV expr .
+
+    $default  reduce using rule 43 (expr)
+
+
+State 78
+
+   18 simple_attr: IDENT EQ attr_val_expr $@5 SEMI .
+
+    $default  reduce using rule 18 (simple_attr)
+
+
+State 79
+
+   27 define: KW_DEFINE LPAR s_or_i COMMA s_or_i COMMA . s_or_i RPAR SEMI
+
+    STRING  shift, and go to state 16
+    IDENT   shift, and go to state 17
+
+    s_or_i  go to state 81
+
+
+State 80
+
+   28 define_group: KW_DEFINE_GROUP LPAR s_or_i COMMA s_or_i RPAR . SEMI
+
+    SEMI  shift, and go to state 82
+
+
+State 81
+
+   27 define: KW_DEFINE LPAR s_or_i COMMA s_or_i COMMA s_or_i . RPAR SEMI
+
+    RPAR  shift, and go to state 83
+
+
+State 82
+
+   28 define_group: KW_DEFINE_GROUP LPAR s_or_i COMMA s_or_i RPAR SEMI .
+
+    $default  reduce using rule 28 (define_group)
+
+
+State 83
+
+   27 define: KW_DEFINE LPAR s_or_i COMMA s_or_i COMMA s_or_i RPAR . SEMI
+
+    SEMI  shift, and go to state 84
+
+
+State 84
+
+   27 define: KW_DEFINE LPAR s_or_i COMMA s_or_i COMMA s_or_i RPAR SEMI .
+
+    $default  reduce using rule 27 (define)

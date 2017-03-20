@@ -1,0 +1,6 @@
+open "iccad2015" {
+	"config" : "simple.iccad2015",
+	"maxDisplacement" : 400,
+	"targetUtilization" : 0.85,
+	"parms" : "ICCAD15.parm"
+};

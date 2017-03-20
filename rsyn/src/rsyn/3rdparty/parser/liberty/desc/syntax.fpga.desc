@@ -1,0 +1,1171 @@
+/******************************************************************************
+    Copyright (c) 1996-2000 Synopsys, Inc.    ALL RIGHTS RESERVED
+
+  The contents of this file are subject to the restrictions and limitations
+  set forth in the SYNOPSYS Open Source License Version 1.0  (the "License"); 
+  you may not use this file except in compliance with such restrictions 
+  and limitations. You may obtain instructions on how to receive a copy of 
+  the License at
+
+  http://www.synopsys.com/partners/tapin/tapinprogram.html. 
+
+  Software distributed by Original Contributor under the License is 
+  distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either 
+  expressed or implied. See the License for the specific language governing 
+  rights and limitations under the License.
+
+******************************************************************************/
+library( library_name ) {
+    /* Attributes */
+    bus_naming_style                       : virtual_attribute;
+    comment                                : string;
+    current_unit                           : enum( 100uA, 100mA, 1A, 1uA, 10uA, 1mA, or 10mA );
+    date                                   : string;
+    default_cell_leakage_power             : float( > 0.0 );
+    default_connection_class               : string;
+    default_fall_delay_intercept           : float := 0.0;
+    default_fall_pin_resistance            : float( > 0.0 ) := 0.0;
+    default_fanout_load                    : float( > 0.0 ) := 1.0;
+    default_inout_pin_cap                  : float( > 0.0 ) := 1.0;
+    default_inout_pin_fall_res             : float( > 0.0 ) := 0.0;
+    default_inout_pin_rise_res             : float( > 0.0 ) := 0.0;
+    default_input_pin_cap                  : float( > 0.0 ) := 1.0;
+    default_intrinsic_fall                 : float( > 0.0 ) := 1.0;
+    default_intrinsic_rise                 : float( > 0.0 ) := 1.0;
+    default_leakage_power_density          : float( > 0.0 );
+    default_max_capacitance                : float( > 0.0 );
+    default_max_fanout                     : float( > 0.0 );
+    default_max_transition                 : float( > 0.0 );
+    default_max_utilization                : float( > 0.0 and  < 100.0 );
+    default_min_porosity                   : virtual_attribute;
+    default_operating_conditions           : string;
+    default_output_pin_cap                 : float( > 0.0 ) := 0.0;
+    default_output_pin_fall_res            : float( > 0.0 ) := 0.0;
+    default_output_pin_rise_res            : float( > 0.0 ) := 0.0;
+    default_rise_delay_intercept           : float := 0.0;
+    default_rise_pin_resistance            : float( > 0.0 ) := 0.0;
+    default_slope_fall                     : float( > 0.0 ) := 0.0;
+    default_slope_rise                     : float( > 0.0 ) := 0.0;
+    default_wire_load                      : string;
+    default_wire_load_area                 : float( > 0.0 );
+    default_wire_load_capacitance          : float( > 0.0 );
+    default_wire_load_mode                 : string( "top", "segmented", or "enclosed" );
+    default_wire_load_resistance           : float( > 0.0 );
+    default_wire_load_selection            : string;
+    delay_model                            : virtual_attribute;
+    em_temp_degradation_factor             : float( > 0.0 );
+    force_inverter_removal                 : boolean;
+    fpga_allow_duplicate_degenerated_gates : boolean;
+    fpga_prefer_undegenerated_gates        : boolean;
+    in_place_swap_mode                     : enum( match_footprint, ignore_footprint, or no_swapping );
+    input_threshold_pct_fall               : float( > 0.0 and  < 100.0 ) := 50.0;
+    input_threshold_pct_rise               : float( > 0.0 and  < 100.0 ) := 50.0;
+    k_process_cell_leakage_power           : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_drive_current                : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_drive_fall                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_drive_rise                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_hold_fall                    : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_hold_rise                    : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_internal_power               : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_intrinsic_fall               : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_intrinsic_rise               : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_min_period                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_min_pulse_width_high         : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_min_pulse_width_low          : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_nochange_fall                : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_nochange_rise                : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_pin_cap                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_pin_fall_cap                 : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_pin_rise_cap                 : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_recovery_fall                : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_recovery_rise                : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_removal_fall                 : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_removal_rise                 : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_setup_fall                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_setup_rise                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_skew_fall                    : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_skew_rise                    : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_slope_fall                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_slope_rise                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_wire_cap                     : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_wire_res                     : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_cell_leakage_power              : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_drive_current                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_drive_fall                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_drive_rise                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_hold_fall                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_hold_rise                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_internal_power                  : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_intrinsic_fall                  : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_intrinsic_rise                  : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_min_period                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_min_pulse_width_high            : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_min_pulse_width_low             : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_nochange_fall                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_nochange_rise                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_pin_cap                         : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_recovery_fall                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_recovery_rise                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_removal_fall                    : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_removal_rise                    : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_setup_fall                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_setup_rise                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_skew_fall                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_skew_rise                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_slope_fall                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_slope_rise                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_wire_cap                        : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_wire_res                        : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_cell_leakage_power              : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_drive_current                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_drive_fall                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_drive_rise                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_hold_fall                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_hold_rise                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_internal_power                  : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_intrinsic_fall                  : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_intrinsic_rise                  : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_min_period                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_min_pulse_width_high            : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_min_pulse_width_low             : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_nochange_fall                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_nochange_rise                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_pin_cap                         : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_recovery_fall                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_recovery_rise                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_removal_fall                    : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_removal_rise                    : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_setup_fall                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_setup_rise                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_skew_fall                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_skew_rise                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_slope_fall                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_slope_rise                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_wire_cap                        : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_wire_res                        : float( > -100.0 and  < 100.0 ) := 0.0;
+    key_bit                                : short( > 1 and  < 20 );
+    key_feature                            : string;
+    key_file                               : string;
+    key_seed                               : int;
+    key_version                            : float;
+    leakage_power_unit                     : enum( 1mW, 10pW, 10nW, 100uW, 100pW, 100nW, 1uW, 10uW, 1pW, or 1nW );
+    nom_process                            : float( > 0.0 and  < 100.0 ) := 1.0;
+    nom_temperature                        : float( > -300.0 and  < 500.0 ) := 25.0;
+    nom_voltage                            : float;
+    output_threshold_pct_fall              : float( > 0.0 and  < 100.0 ) := 50.0;
+    output_threshold_pct_rise              : float( > 0.0 and  < 100.0 ) := 50.0;
+    preferred_input_pad_voltage            : string;
+    preferred_output_pad_slew_rate_control : enum( none, high, low, or medium );
+    preferred_output_pad_voltage           : string;
+    pulling_resistance_unit                : enum( 1ohm, 100ohm, 10ohm, or 1kohm );
+    revision                               : virtual_attribute;
+    simulation                             : boolean;
+    slew_derate_from_library               : float( > 0.0 and  < 1.0 ) := 1.0;
+    slew_lower_threshold_pct_fall          : float( > 0.0 and  < 100.0 ) := 20.0;
+    slew_lower_threshold_pct_rise          : float( > 0.0 and  < 100.0 ) := 20.0;
+    slew_upper_threshold_pct_fall          : float( > 0.0 and  < 100.0 ) := 80.0;
+    slew_upper_threshold_pct_rise          : float( > 0.0 and  < 100.0 ) := 80.0;
+    time_unit                              : enum( 1ps, 1ns, 10ps, or 100ps );
+    timing_report                          : boolean;
+    voltage_unit                           : enum( 1mV, 10mV, 100mV, or 1V );
+
+    /* Functions */
+    capacitive_load_unit( float, string );
+    define_cell_area( string, string );
+    library_features( <unknown_arguments> );
+    routing_layers( <unknown_arguments> );
+    technology( string );
+
+    /* Sub-groups */
+    cell( cell_name ) {
+        /* Attributes */
+        area                              : float := 0.0;
+        auxiliary_pad_cell                : boolean;
+        bus_naming_style                  : virtual_attribute;
+        cell_footprint                    : string;
+        cell_leakage_power                : float( > 0.0 );
+        clock_gating_integrated_cell      : string( "latch_posedge", "latch_posedge_precontrol", "latch_posedge_postcontrol", "latch_posedge_precontrol_obs", "latch_posedge_postcontrol_obs", "latch_negedge", "latch_negedge_precontrol", "latch_negedge_postcontrol", "latch_negedge_precontrol_obs", "latch_negedge_postcontrol_obs", "ff_posedge", "ff_posedge_precontrol", "ff_posedge_postcontrol", "ff_posedge_precontrol_obs", "ff_posedge_postcontrol_obs", "ff_negedge", "ff_negedge_precontrol", "ff_negedge_postcontrol", "ff_negedge_precontrol_obs", "ff_negedge_postcontrol_obs", "none_posedge", "none_posedge_control", "none_posedge_control_obs", "none_negedge", "none_negedge_control", or "none_negedge_control_obs" );
+        contention_condition              : string;
+        dont_fault                        : string( "sa0", "sa1", or "sa01" );
+        dont_touch                        : boolean;
+        dont_use                          : boolean;
+        fpga_bridge_inputs                : int;
+        fpga_cell_type                    : enum( CLB, or IOB );
+        fpga_complex_degenerate           : boolean;
+        fpga_family                       : enum( x4000, x3000, or x2000 );
+        fpga_lut_insert_before_sequential : boolean;
+        fpga_lut_output                   : boolean;
+        fpga_max_degen_input_size         : int;
+        fpga_min_degen_input_size         : int;
+        geometry_print                    : string;
+        handle_negative_constraint        : boolean;
+        interface_timing                  : boolean;
+        is_clock_gating_cell              : boolean;
+        map_only                          : boolean;
+        mpm_libname                       : string;
+        mpm_name                          : string;
+        observe_node                      : string;
+        pad_cell                          : boolean;
+        pad_type                          : enum( clock );
+        preferred                         : boolean;
+        scaling_factors                   : string;
+        scan_group                        : string;
+        set_node                          : string;
+        single_bit_degenerate             : string;
+        use_for_size_only                 : boolean;
+        vhdl_name                         : string;
+        xnf_device_name                   : string;
+        xnf_schnm                         : string;
+
+        /* Functions */
+        pin_equal( string );
+        pin_opposite( string, string );
+        rail_connection( string, string );
+
+        /* Sub-groups */
+        bundle( bundle_name ) {
+            /* Attributes */
+            capacitance                         : float;
+            clock                               : boolean;
+            clock_gate_clock_pin                : boolean;
+            clock_gate_enable_pin               : boolean;
+            clock_gate_obs_pin                  : boolean;
+            clock_gate_out_pin                  : boolean;
+            clock_gate_test_pin                 : boolean;
+            complementary_pin                   : string;
+            connection_class                    : string;
+            dcm_timing                          : boolean;
+            direction                           : enum( inout, input, internal, output, or tristate );
+            dont_fault                          : string( "sa0", "sa1", or "sa01" );
+            drive_current                       : float( > 0.0 );
+            driver_type                         : virtual_attribute;
+            fall_capacitance                    : float;
+            fall_current_slope_after_threshold  : float;
+            fall_current_slope_before_threshold : float;
+            fall_time_after_threshold           : float( > 0.0 );
+            fall_time_before_threshold          : float( > 0.0 );
+            fanout_load                         : float := default_fanout_load;
+            fault_model                         : string( "XX", "11", "00", "X1", "X0", "1X", "10", "0X", or "01" );
+            fpga_degenerate_output              : boolean;
+            function                            : virtual_attribute;
+            hysteresis                          : boolean;
+            input_map                           : virtual_attribute;
+            input_signal_level                  : string;
+            input_voltage                       : string;
+            internal_node                       : string;
+            inverted_output                     : boolean;
+            is_pad                              : boolean;
+            max_capacitance                     : float( > 0.0 ) := default_max_capacitance;
+            max_fanout                          : float( > 0.0 ) := default_max_fanout;
+            max_time_borrow                     : float( > 0.0 );
+            max_transition                      : float( > 0.0 ) := default_max_transition;
+            min_capacitance                     : float( > 0.0 );
+            min_fanout                          : float( > 0.0 );
+            min_period                          : float;
+            min_pulse_width_high                : float( > 0.0 );
+            min_pulse_width_low                 : float( > 0.0 );
+            min_transition                      : float( > 0.0 );
+            multicell_pad_pin                   : boolean;
+            nextstate_type                      : enum( scan_enable, preset, data, clear, load, or scan_in );
+            output_signal_level                 : string;
+            output_voltage                      : string;
+            pin_func_type                       : enum( active_rising, active_falling, clock_enable, active_high, or active_low );
+            prefer_tied                         : string;
+            primary_output                      : boolean;
+            pulling_current                     : float;
+            pulling_resistance                  : float( > 0.0 );
+            rise_capacitance                    : float;
+            rise_current_slope_after_threshold  : float;
+            rise_current_slope_before_threshold : float;
+            rise_time_after_threshold           : float( > 0.0 );
+            rise_time_before_threshold          : float( > 0.0 );
+            signal_type                         : string( "test_scan_enable", "test_scan_enable_inverted", "test_scan_clock", "test_scan_clock_a", "test_scan_clock_b", "test_clock", "test_scan_in", "test_scan_in_inverted", "test_scan_out", "test_scan_out_inverted", or "clocked_on_also" );
+            slew_control                        : enum( none, high, low, or medium );
+            state_function                      : virtual_attribute;
+            test_output_only                    : boolean;
+            three_state                         : virtual_attribute;
+            vhdl_name                           : string;
+            x_function                          : virtual_attribute;
+
+            /* Functions */
+            input_map_shift( string, string, string );
+            members( <unknown_arguments> );
+            pin_equal( string );
+            pin_opposite( string, string );
+
+            /* Sub-groups */
+            electromigration( [electromigration_name] ) {
+                /* Attributes */
+                related_bus_pins : virtual_attribute;
+                related_pin      : virtual_attribute;
+
+                /* Sub-groups */
+                em_max_toggle_rate( em_max_toggle_rate_name ) {
+                    /* Functions */
+                    index_1( list );
+                    index_2( list );
+                    index_3( list );
+                    intermediate_values( <unknown_arguments> );
+                    values( <unknown_arguments> );
+					orders( <unknown_arguments> );
+					coefs( <unknown_arguments> );
+					domain( domain_name ) {
+						orders( <unknown_arguments> );
+						coefs( <unknown_arguments> );
+					}
+                }
+            }
+            internal_power( [internal_power_name] ) {
+                /* Attributes */
+                equal_or_opposite_output : virtual_attribute;
+                falling_together_group   : virtual_attribute;
+                related_bus_pins         : virtual_attribute;
+                related_falling_pin      : virtual_attribute;
+                related_input            : virtual_attribute;
+                related_inputs           : virtual_attribute;
+                related_outputs          : virtual_attribute;
+                related_pin              : virtual_attribute;
+                related_rising_pin       : virtual_attribute;
+                rising_together_group    : virtual_attribute;
+                switching_interval       : float( > 0.0 );
+                switching_together_group : virtual_attribute;
+                when                     : virtual_attribute;
+
+                /* Functions */
+                index_1( list );
+                index_2( list );
+                values( <unknown_arguments> );
+				orders( <unknown_arguments> );
+				coefs( <unknown_arguments> );
+				domain( domain_name ) {
+					orders( <unknown_arguments> );
+					coefs( <unknown_arguments> );
+				}
+
+                /* Sub-groups */
+                fall_power( fall_power_name ) {
+                    /* Functions */
+                    index_1( list );
+                    index_2( list );
+                    index_3( list );
+                    intermediate_values( <unknown_arguments> );
+                    values( <unknown_arguments> );
+					orders( <unknown_arguments> );
+					coefs( <unknown_arguments> );
+					domain( domain_name ) {
+						orders( <unknown_arguments> );
+						coefs( <unknown_arguments> );
+					}
+
+                }
+                power( power_name ) {
+                    /* Functions */
+                    index_1( list );
+                    index_2( list );
+                    index_3( list );
+                    intermediate_values( <unknown_arguments> );
+                    values( <unknown_arguments> );
+					orders( <unknown_arguments> );
+					coefs( <unknown_arguments> );
+					domain( domain_name ) {
+						orders( <unknown_arguments> );
+						coefs( <unknown_arguments> );
+					}
+
+                }
+                rise_power( rise_power_name ) {
+                    /* Functions */
+                    index_1( list );
+                    index_2( list );
+                    index_3( list );
+                    intermediate_values( <unknown_arguments> );
+                    values( <unknown_arguments> );
+					orders( <unknown_arguments> );
+					coefs( <unknown_arguments> );
+					domain( domain_name ) {
+						orders( <unknown_arguments> );
+						coefs( <unknown_arguments> );
+					}
+
+                }
+
+            }
+            memory_read( [memory_read_name] ) {
+                /* Attributes */
+                address : string;
+
+            }
+            memory_write( [memory_write_name] ) {
+                /* Attributes */
+                address    : string;
+                clocked_on : string;
+                enable     : string;
+
+            }
+            min_pulse_width( [min_pulse_width_name] ) {
+                /* Attributes */
+                constraint_high : float( > 0.0 );
+                constraint_low  : float( > 0.0 );
+                sdf_cond        : string;
+                when            : virtual_attribute;
+
+            }
+            minimum_period( [minimum_period_name] ) {
+                /* Attributes */
+                constraint : float( > 0.0 );
+                sdf_cond   : string;
+                when       : virtual_attribute;
+
+            }
+            pin( pin_name_1 [,...,pin_name_N] ) {
+                /* Attributes */
+                capacitance                         : float;
+                clock                               : boolean;
+                clock_gate_clock_pin                : boolean;
+                clock_gate_enable_pin               : boolean;
+                clock_gate_obs_pin                  : boolean;
+                clock_gate_out_pin                  : boolean;
+                clock_gate_test_pin                 : boolean;
+                complementary_pin                   : string;
+                connection_class                    : string;
+                dcm_timing                          : boolean;
+                direction                           : enum( inout, input, internal, output, or tristate );
+                dont_fault                          : string( "sa0", "sa1", or "sa01" );
+                drive_current                       : float( > 0.0 );
+                driver_type                         : virtual_attribute;
+                fall_capacitance                    : float;
+                fall_current_slope_after_threshold  : float;
+                fall_current_slope_before_threshold : float;
+                fall_time_after_threshold           : float( > 0.0 );
+                fall_time_before_threshold          : float( > 0.0 );
+                fanout_load                         : float := default_fanout_load;
+                fault_model                         : string( "XX", "11", "00", "X1", "X0", "1X", "10", "0X", or "01" );
+                fpga_degenerate_output              : boolean;
+                fsim_map                            : string;
+                function                            : virtual_attribute;
+                hysteresis                          : boolean;
+                input_map                           : virtual_attribute;
+                input_signal_level                  : string;
+                input_voltage                       : string;
+                internal_node                       : string;
+                inverted_output                     : boolean;
+                is_pad                              : boolean;
+                max_capacitance                     : float( > 0.0 ) := default_max_capacitance;
+                max_fanout                          : float( > 0.0 ) := default_max_fanout;
+                max_time_borrow                     : float( > 0.0 );
+                max_transition                      : float( > 0.0 ) := default_max_transition;
+                min_capacitance                     : float( > 0.0 );
+                min_fanout                          : float( > 0.0 );
+                min_period                          : float;
+                min_pulse_width_high                : float( > 0.0 );
+                min_pulse_width_low                 : float( > 0.0 );
+                min_transition                      : float( > 0.0 );
+                multicell_pad_pin                   : boolean;
+                nextstate_type                      : enum( scan_enable, preset, data, clear, load, or scan_in );
+                output_signal_level                 : string;
+                output_voltage                      : string;
+                pin_func_type                       : enum( active_rising, active_falling, clock_enable, active_high, or active_low );
+                prefer_tied                         : string;
+                primary_output                      : boolean;
+                pulling_current                     : float;
+                pulling_resistance                  : float( > 0.0 );
+                rise_capacitance                    : float;
+                rise_current_slope_after_threshold  : float;
+                rise_current_slope_before_threshold : float;
+                rise_time_after_threshold           : float( > 0.0 );
+                rise_time_before_threshold          : float( > 0.0 );
+                signal_type                         : string( "test_scan_enable", "test_scan_enable_inverted", "test_scan_clock", "test_scan_clock_a", "test_scan_clock_b", "test_clock", "test_scan_in", "test_scan_in_inverted", "test_scan_out", "test_scan_out_inverted", or "clocked_on_also" );
+                slew_control                        : enum( none, high, low, or medium );
+                state_function                      : virtual_attribute;
+                test_output_only                    : boolean;
+                three_state                         : virtual_attribute;
+                vhdl_name                           : string;
+                x_function                          : virtual_attribute;
+
+                /* Sub-groups */
+                electromigration( [electromigration_name] ) {
+                }
+                internal_power( [internal_power_name] ) {
+                }
+                memory_read( [memory_read_name] ) {
+                }
+                memory_write( [memory_write_name] ) {
+                }
+                min_pulse_width( [min_pulse_width_name] ) {
+                }
+                minimum_period( [minimum_period_name] ) {
+                }
+                timing( [timing_name] ) {
+                    /* Attributes */
+                    default_timing                    : boolean;
+                    fall_resistance                   : float;
+                    fpga_timing_type                  : enum( IKPI, OKPOS, WC, BYP, RPOF, RCK, IKLI, IHCK, WO, WP, AST, RCT, RC, RPOS, WECK, RI, WPT, WOT, PICKD, PL, OPTHZ, ASCY, HHCK, PICK, LI, DST, CKI, LP, AHT, DICK, CII, CKO, DOT, CKR, CIO, WCT, CCI, DO, AH, DS, CKIH, DHT, CCO, CKHH, TSHZF, INCY, ITO, DCK, CKEC, AS, CKDI, TSHZS, IKPID, ILO, HHO, IHO, MRQ, ICI, ICK, PTG, OPF, OPCY, OOK, OPS, RRI, OKO, PLI, WECKT, PDLI, PID, SUM, ECCK, RPO, QLO, TSONF, RPW, DCKT, RLO, OKPOF, TSONS, IKRI, TON, or RIO );
+                    intrinsic_fall                    : float;
+                    intrinsic_rise                    : float;
+                    related_bus_equivalent            : virtual_attribute;
+                    related_bus_pins                  : virtual_attribute;
+                    related_output_pin                : virtual_attribute;
+                    related_pin                       : virtual_attribute;
+                    rise_resistance                   : float;
+                    sdf_cond                          : string;
+                    sdf_cond_end                      : string;
+                    sdf_cond_start                    : string;
+                    sdf_edges                         : enum( end_edge, start_edge, noedge, or both_edges );
+                    slope_fall                        : float;
+                    slope_rise                        : float;
+                    steady_state_resistance_float_max : float( > 0.0 );
+                    steady_state_resistance_float_min : float( > 0.0 );
+                    steady_state_resistance_high_max  : float( > 0.0 );
+                    steady_state_resistance_high_min  : float( > 0.0 );
+                    steady_state_resistance_low_max   : float( > 0.0 );
+                    steady_state_resistance_low_min   : float( > 0.0 );
+                    timing_sense                      : enum( non_unate, negative_unate, or positive_unate );
+                    timing_type                       : enum( three_state_disable, retaining_time, non_seq_setup_falling, skew_rising, nochange_low_low, nochange_high_low, skew_falling, combinational_fall, nochange_low_high, nochange_high_high, combinational_rise, rising_edge, three_state_enable, preset, setup_rising, three_state_disable_fall, hold_falling, non_seq_hold_rising, minimum_period, removal_falling, non_seq_setup_rising, three_state_enable_fall, clear, non_seq_hold_falling, three_state_disable_rise, recovery_rising, three_state_enable_rise, setup_falling, falling_edge, min_pulse_width, combinational, recovery_falling, removal_rising, or hold_rising );
+                    when                              : virtual_attribute;
+                    when_end                          : virtual_attribute;
+                    when_start                        : virtual_attribute;
+
+                    /* Functions */
+                    mode( string, string );
+
+                }
+                tlatch( tlatch_name ) {
+                    /* Attributes */
+                    edge_type : string( "rising", or "falling" );
+                    tdisable  : boolean;
+
+                }
+
+            }
+            timing( [timing_name] ) {
+            }
+
+        }
+        bus( bus_name ) {
+            /* Attributes */
+            bus_type                            : virtual_attribute;
+            capacitance                         : float;
+            clock                               : boolean;
+            clock_gate_clock_pin                : boolean;
+            clock_gate_enable_pin               : boolean;
+            clock_gate_obs_pin                  : boolean;
+            clock_gate_out_pin                  : boolean;
+            clock_gate_test_pin                 : boolean;
+            complementary_pin                   : string;
+            connection_class                    : string;
+            dcm_timing                          : boolean;
+            direction                           : enum( inout, input, internal, output, or tristate );
+            dont_fault                          : string( "sa0", "sa1", or "sa01" );
+            drive_current                       : float( > 0.0 );
+            driver_type                         : virtual_attribute;
+            fall_capacitance                    : float;
+            fall_current_slope_after_threshold  : float;
+            fall_current_slope_before_threshold : float;
+            fall_time_after_threshold           : float( > 0.0 );
+            fall_time_before_threshold          : float( > 0.0 );
+            fanout_load                         : float := default_fanout_load;
+            fault_model                         : string( "XX", "11", "00", "X1", "X0", "1X", "10", "0X", or "01" );
+            fpga_degenerate_output              : boolean;
+            function                            : virtual_attribute;
+            hysteresis                          : boolean;
+            input_map                           : virtual_attribute;
+            input_signal_level                  : string;
+            input_voltage                       : string;
+            internal_node                       : string;
+            inverted_output                     : boolean;
+            is_pad                              : boolean;
+            max_capacitance                     : float( > 0.0 ) := default_max_capacitance;
+            max_fanout                          : float( > 0.0 ) := default_max_fanout;
+            max_time_borrow                     : float( > 0.0 );
+            max_transition                      : float( > 0.0 ) := default_max_transition;
+            min_capacitance                     : float( > 0.0 );
+            min_fanout                          : float( > 0.0 );
+            min_period                          : float;
+            min_pulse_width_high                : float( > 0.0 );
+            min_pulse_width_low                 : float( > 0.0 );
+            min_transition                      : float( > 0.0 );
+            multicell_pad_pin                   : boolean;
+            nextstate_type                      : enum( scan_enable, preset, data, clear, load, or scan_in );
+            output_signal_level                 : string;
+            output_voltage                      : string;
+            pin_func_type                       : enum( active_rising, active_falling, clock_enable, active_high, or active_low );
+            prefer_tied                         : string;
+            primary_output                      : boolean;
+            pulling_current                     : float;
+            pulling_resistance                  : float( > 0.0 );
+            rise_capacitance                    : float;
+            rise_current_slope_after_threshold  : float;
+            rise_current_slope_before_threshold : float;
+            rise_time_after_threshold           : float( > 0.0 );
+            rise_time_before_threshold          : float( > 0.0 );
+            signal_type                         : string( "test_scan_enable", "test_scan_enable_inverted", "test_scan_clock", "test_scan_clock_a", "test_scan_clock_b", "test_clock", "test_scan_in", "test_scan_in_inverted", "test_scan_out", "test_scan_out_inverted", or "clocked_on_also" );
+            slew_control                        : enum( none, high, low, or medium );
+            state_function                      : virtual_attribute;
+            test_output_only                    : boolean;
+            three_state                         : virtual_attribute;
+            vhdl_name                           : string;
+            x_function                          : virtual_attribute;
+
+            /* Functions */
+            input_map_shift( string, string, string );
+            pin_equal( string );
+            pin_opposite( string, string );
+
+            /* Sub-groups */
+            electromigration( [electromigration_name] ) {
+            }
+            internal_power( [internal_power_name] ) {
+            }
+            memory_read( [memory_read_name] ) {
+            }
+            memory_write( [memory_write_name] ) {
+            }
+            min_pulse_width( [min_pulse_width_name] ) {
+            }
+            minimum_period( [minimum_period_name] ) {
+            }
+            pin( pin_name ) {
+            }
+            timing( [timing_name] ) {
+            }
+
+        }
+        ff( ff_name_1,ff_name_2 ) {
+            /* Attributes */
+            clear             : string;
+            clear_preset_var1 : enum( H, L, N, T, U, or X );
+            clear_preset_var2 : enum( H, L, N, T, U, or X );
+            clocked_on        : string;
+            clocked_on_also   : string;
+            next_state        : string;
+            preset            : string;
+
+        }
+        ff_bank( ff_bank_name_1,ff_bank_name_2,ff_bank_name_3 ) {
+            /* Attributes */
+            clear             : string;
+            clear_preset_var1 : enum( H, L, N, T, U, or X );
+            clear_preset_var2 : enum( H, L, N, T, U, or X );
+            clocked_on        : string;
+            clocked_on_also   : string;
+            next_state        : string;
+            preset            : string;
+
+        }
+        generated_clock( generated_clock_name ) {
+            /* Attributes */
+            clock_pin     : string;
+            divided_by    : virtual_attribute;
+            duty_cycle    : float( > 0.0 );
+            invert        : boolean;
+            master_pin    : string;
+            multiplied_by : virtual_attribute;
+
+            /* Functions */
+            edges( integer, integer, integer );
+            shifts( float, float, float );
+
+        }
+        internal_power( internal_power_name ) {
+        }
+        latch( latch_name_1,latch_name_2 ) {
+            /* Attributes */
+            clear             : string;
+            clear_preset_var1 : enum( H, L, N, T, U, or X );
+            clear_preset_var2 : enum( H, L, N, T, U, or X );
+            data_in           : string;
+            enable            : string;
+            enable_also       : string;
+            preset            : string;
+
+        }
+        latch_bank( latch_bank_name_1,latch_bank_name_2,latch_bank_name_3 ) {
+            /* Attributes */
+            clear             : string;
+            clear_preset_var1 : enum( H, L, N, T, U, or X );
+            clear_preset_var2 : enum( H, L, N, T, U, or X );
+            data_in           : string;
+            enable            : string;
+            enable_also       : string;
+            preset            : string;
+
+        }
+        leakage_power( [leakage_power_name] ) {
+            /* Attributes */
+            value : float( > 0.0 );
+            when  : virtual_attribute;
+
+        }
+        lut( lut_name ) {
+            /* Attributes */
+            input_pins : string;
+
+        }
+        memory( [memory_name] ) {
+            /* Attributes */
+            address_width  : short( > 1 );
+            column_address : virtual_attribute;
+            row_address    : virtual_attribute;
+            type           : enum( rom, or ram );
+            word_width     : short( > 1 );
+
+        }
+        mode_definition( mode_definition_name ) {
+            /* Sub-groups */
+            mode_value( mode_value_name ) {
+                /* Attributes */
+                sdf_cond : string;
+                when     : string;
+
+            }
+
+        }
+        pin( pin_name_1 [,...,pin_name_N] ) {
+        }
+        routing_track( routing_track_name ) {
+            /* Attributes */
+            total_track_area : virtual_attribute;
+            tracks           : virtual_attribute;
+
+        }
+        seq( seq_name_1,seq_name_2 ) {
+            /* Attributes */
+            clear             : string;
+            clear_preset_var1 : enum( H, L, N, T, U, or X );
+            clear_preset_var2 : enum( H, L, N, T, U, or X );
+            clocked_on        : string;
+            clocked_on_also   : string;
+            data_in           : string;
+            enable            : string;
+            enable_also       : string;
+            next_state        : string;
+            preset            : string;
+
+        }
+        seq_bank( seq_bank_name_1,seq_bank_name_2,seq_bank_name_3 ) {
+            /* Attributes */
+            clear             : string;
+            clear_preset_var1 : enum( H, L, N, T, U, or X );
+            clear_preset_var2 : enum( H, L, N, T, U, or X );
+            clocked_on        : string;
+            clocked_on_also   : string;
+            data_in           : string;
+            enable            : string;
+            enable_also       : string;
+            next_state        : string;
+            preset            : string;
+
+        }
+        state( state_name_1,state_name_2 ) {
+            /* Attributes */
+            clocked_on      : string;
+            clocked_on_also : string;
+            force_00        : string;
+            force_01        : string;
+            force_10        : string;
+            force_11        : string;
+            next_state      : string;
+
+        }
+        statetable( statetable_name_1,statetable_name_2 ) {
+            /* Attributes */
+            table : string;
+
+        }
+        test_cell( [test_cell_name] ) {
+            /* Attributes */
+            bus_naming_style : virtual_attribute;
+
+            /* Sub-groups */
+            bundle( bundle_name ) {
+            }
+            bus( bus_name ) {
+            }
+            ff( ff_name_1,ff_name_2 ) {
+            }
+            ff_bank( ff_bank_name_1,ff_bank_name_2,ff_bank_name_3 ) {
+            }
+            latch( latch_name_1,latch_name_2 ) {
+            }
+            latch_bank( latch_bank_name_1,latch_bank_name_2,latch_bank_name_3 ) {
+            }
+            pin( pin_name_1 [,...,pin_name_N] ) {
+            }
+            seq( seq_name_1,seq_name_2 ) {
+            }
+            seq_bank( seq_bank_name_1,seq_bank_name_2,seq_bank_name_3 ) {
+            }
+            state( state_name_1,state_name_2 ) {
+            }
+            statetable( statetable_name_1,statetable_name_2 ) {
+            }
+            type( type_name ) {
+                /* Attributes */
+                base_type : virtual_attribute;
+                bit_from  : virtual_attribute;
+                bit_to    : virtual_attribute;
+                bit_width : virtual_attribute;
+                data_type : virtual_attribute;
+                downto    : virtual_attribute;
+
+            }
+
+        }
+        type( type_name ) {
+        }
+
+    }
+	poly_template( poly_template_name ) {
+		variables( list );
+		variable_1_range(float, float);
+		variable_2_range(float, float);
+		variable_3_range(float, float);
+		variable_4_range(float, float);
+		variable_5_range(float, float);
+		variable_6_range(float, float);
+		mapping(string, string);
+		domain( domain_n_name ) {
+			variables( list );
+			variable_1_range(float, float);
+			variable_2_range(float, float);
+			variable_3_range(float, float);
+			variable_4_range(float, float);
+			variable_5_range(float, float);
+			variable_6_range(float, float);
+			mapping(string, string);
+		}
+	}
+    em_lut_template( em_lut_template_name ) {
+        /* Attributes */
+        variable_1 : string( "input_transition_time", or "total_output_net_capacitance" );
+        variable_2 : string( "input_transition_time", or "total_output_net_capacitance" );
+
+        /* Functions */
+        index_1( list );
+        index_2( list );
+
+    }
+    input_voltage( input_voltage_name ) {
+        /* Attributes */
+        vih   : virtual_attribute;
+        vil   : virtual_attribute;
+        vimax : virtual_attribute;
+        vimin : virtual_attribute;
+
+    }
+    model( model_name ) {
+        /* Attributes */
+        area                              : float := 0.0;
+        auxiliary_pad_cell                : boolean;
+        bus_naming_style                  : virtual_attribute;
+        cell_footprint                    : string;
+        cell_leakage_power                : float( > 0.0 );
+        cell_name                         : string;
+        clock_gating_integrated_cell      : string;
+        contention_condition              : string;
+        dont_fault                        : string;
+        dont_touch                        : boolean;
+        dont_use                          : boolean;
+        fpga_bridge_inputs                : int;
+        fpga_cell_type                    : enum( CLB, or IOB );
+        fpga_complex_degenerate           : boolean;
+        fpga_family                       : enum( x4000, x3000, or x2000 );
+        fpga_lut_insert_before_sequential : boolean;
+        fpga_lut_output                   : boolean;
+        fpga_max_degen_input_size         : int;
+        fpga_min_degen_input_size         : int;
+        geometry_print                    : string;
+        handle_negative_constraint        : boolean;
+        interface_timing                  : boolean;
+        is_clock_gating_cell              : boolean;
+        map_only                          : boolean;
+        mpm_libname                       : string;
+        mpm_name                          : string;
+        observe_node                      : string;
+        pad_cell                          : boolean;
+        pad_type                          : enum( clock );
+        preferred                         : boolean;
+        scaling_factors                   : string;
+        scan_group                        : string;
+        set_node                          : string;
+        single_bit_degenerate             : string;
+        use_for_size_only                 : boolean;
+        vhdl_name                         : string;
+        xnf_device_name                   : string;
+        xnf_schnm                         : string;
+
+        /* Functions */
+        pin_equal( string );
+        pin_opposite( string, string );
+        short( <unknown_arguments> );
+
+        /* Sub-groups */
+        bundle( bundle_name ) {
+        }
+        bus( bus_name ) {
+        }
+        ff( ff_name_1,ff_name_2 ) {
+        }
+        ff_bank( ff_bank_name_1,ff_bank_name_2,ff_bank_name_3 ) {
+        }
+        generated_clock( generated_clock_name ) {
+        }
+        internal_power( internal_power_name ) {
+        }
+        latch( latch_name_1,latch_name_2 ) {
+        }
+        latch_bank( latch_bank_name_1,latch_bank_name_2,latch_bank_name_3 ) {
+        }
+        leakage_power( [leakage_power_name] ) {
+        }
+        lut( lut_name ) {
+        }
+        memory( [memory_name] ) {
+        }
+        mode_definition( mode_definition_name ) {
+        }
+        pin( pin_name_1 [,...,pin_name_N] ) {
+        }
+        routing_track( routing_track_name ) {
+        }
+        seq( seq_name_1,seq_name_2 ) {
+        }
+        seq_bank( seq_bank_name_1,seq_bank_name_2,seq_bank_name_3 ) {
+        }
+        state( state_name_1,state_name_2 ) {
+        }
+        statetable( statetable_name_1,statetable_name_2 ) {
+        }
+        test_cell( [test_cell_name] ) {
+        }
+        type( type_name ) {
+        }
+
+    }
+    operating_conditions( operating_conditions_name ) {
+        /* Attributes */
+        process     : float( > 0.0 and  < 100.0 ) := nom_process;
+        temperature : float( > -300.0 and  < 500.0 ) := nom_temperature;
+        tree_type   : string( "best_case_tree", "worst_case_tree", or "balanced_tree" );
+        voltage     : float( > 0.0 and  < 1000.0 ) := nom_voltage;
+
+        /* Functions */
+        power_rail( string, float );
+
+    }
+    output_voltage( output_voltage_name ) {
+        /* Attributes */
+        voh   : virtual_attribute;
+        vol   : virtual_attribute;
+        vomax : virtual_attribute;
+        vomin : virtual_attribute;
+
+    }
+    power_lut_template( power_lut_template_name ) {
+        /* Attributes */
+        variable_1 : string( "input_transition_time", "total_output_net_capacitance", or "equal_or_opposite_output_net_capacitance" );
+        variable_2 : string( "input_transition_time", "total_output_net_capacitance", or "equal_or_opposite_output_net_capacitance" );
+        variable_3 : string( "input_transition_time", "total_output_net_capacitance", or "equal_or_opposite_output_net_capacitance" );
+
+        /* Functions */
+        index_1( list );
+        index_2( list );
+        index_3( list );
+
+    }
+    power_supply( [power_supply_name] ) {
+        /* Attributes */
+        default_power_rail : string;
+
+        /* Functions */
+        power_rail( string, float );
+
+    }
+    scaled_cell( scaled_cell_name_1,scaled_cell_name_2 ) {
+        /* Attributes */
+        area                              : float := 0.0;
+        auxiliary_pad_cell                : boolean;
+        bus_naming_style                  : virtual_attribute;
+        cell_footprint                    : string;
+        cell_leakage_power                : float( > 0.0 );
+        clock_gating_integrated_cell      : string;
+        contention_condition              : string;
+        dont_fault                        : string;
+        dont_touch                        : boolean;
+        dont_use                          : boolean;
+        fpga_bridge_inputs                : int;
+        fpga_cell_type                    : enum( CLB, or IOB );
+        fpga_complex_degenerate           : boolean;
+        fpga_family                       : enum( x4000, x3000, or x2000 );
+        fpga_lut_insert_before_sequential : boolean;
+        fpga_lut_output                   : boolean;
+        fpga_max_degen_input_size         : int;
+        fpga_min_degen_input_size         : int;
+        geometry_print                    : string;
+        handle_negative_constraint        : boolean;
+        interface_timing                  : boolean;
+        is_clock_gating_cell              : boolean;
+        map_only                          : boolean;
+        mpm_libname                       : string;
+        mpm_name                          : string;
+        observe_node                      : string;
+        pad_cell                          : boolean;
+        pad_type                          : enum( clock );
+        preferred                         : boolean;
+        scaling_factors                   : string;
+        scan_group                        : string;
+        set_node                          : string;
+        single_bit_degenerate             : string;
+        use_for_size_only                 : boolean;
+        vhdl_name                         : string;
+        xnf_device_name                   : string;
+        xnf_schnm                         : string;
+
+        /* Functions */
+        pin_equal( string );
+        pin_opposite( string, string );
+
+        /* Sub-groups */
+        bundle( bundle_name ) {
+        }
+        bus( bus_name ) {
+        }
+        ff( ff_name_1,ff_name_2 ) {
+        }
+        ff_bank( ff_bank_name_1,ff_bank_name_2,ff_bank_name_3 ) {
+        }
+        generated_clock( generated_clock_name ) {
+        }
+        internal_power( internal_power_name ) {
+        }
+        latch( latch_name_1,latch_name_2 ) {
+        }
+        latch_bank( latch_bank_name_1,latch_bank_name_2,latch_bank_name_3 ) {
+        }
+        leakage_power( [leakage_power_name] ) {
+        }
+        lut( lut_name ) {
+        }
+        memory( [memory_name] ) {
+        }
+        mode_definition( mode_definition_name ) {
+        }
+        pin( pin_name_1 [,...,pin_name_N] ) {
+        }
+        seq( seq_name_1,seq_name_2 ) {
+        }
+        seq_bank( seq_bank_name_1,seq_bank_name_2,seq_bank_name_3 ) {
+        }
+        state( state_name_1,state_name_2 ) {
+        }
+        statetable( statetable_name_1,statetable_name_2 ) {
+        }
+        test_cell( [test_cell_name] ) {
+        }
+        type( type_name ) {
+        }
+
+    }
+    scaling_factors( scaling_factors_name ) {
+        /* Attributes */
+        k_process_cell_leakage_power   : float( > -100.0 and  < 100.0 );
+        k_process_drive_current        : float( > -100.0 and  < 100.0 );
+        k_process_hold_fall            : float( > -100.0 and  < 100.0 );
+        k_process_hold_rise            : float( > -100.0 and  < 100.0 );
+        k_process_internal_power       : float( > -100.0 and  < 100.0 );
+        k_process_intrinsic_fall       : float( > -100.0 and  < 100.0 );
+        k_process_intrinsic_rise       : float( > -100.0 and  < 100.0 );
+        k_process_min_period           : float( > -100.0 and  < 100.0 );
+        k_process_min_pulse_width_high : float( > -100.0 and  < 100.0 );
+        k_process_min_pulse_width_low  : float( > -100.0 and  < 100.0 );
+        k_process_nochange_fall        : float( > -100.0 and  < 100.0 );
+        k_process_nochange_rise        : float( > -100.0 and  < 100.0 );
+        k_process_pin_cap              : float( > -100.0 and  < 100.0 );
+        k_process_pin_fall_cap         : float( > -100.0 and  < 100.0 );
+        k_process_pin_rise_cap         : float( > -100.0 and  < 100.0 );
+        k_process_recovery_fall        : float( > -100.0 and  < 100.0 );
+        k_process_recovery_rise        : float( > -100.0 and  < 100.0 );
+        k_process_removal_fall         : float( > -100.0 and  < 100.0 );
+        k_process_removal_rise         : float( > -100.0 and  < 100.0 );
+        k_process_setup_fall           : float( > -100.0 and  < 100.0 );
+        k_process_setup_rise           : float( > -100.0 and  < 100.0 );
+        k_process_skew_fall            : float( > -100.0 and  < 100.0 );
+        k_process_skew_rise            : float( > -100.0 and  < 100.0 );
+        k_temp_cell_leakage_power      : float( > -100.0 and  < 100.0 );
+        k_temp_drive_current           : float( > -100.0 and  < 100.0 );
+        k_temp_hold_fall               : float( > -100.0 and  < 100.0 );
+        k_temp_hold_rise               : float( > -100.0 and  < 100.0 );
+        k_temp_internal_power          : float( > -100.0 and  < 100.0 );
+        k_temp_intrinsic_fall          : float( > -100.0 and  < 100.0 );
+        k_temp_intrinsic_rise          : float( > -100.0 and  < 100.0 );
+        k_temp_min_period              : float( > -100.0 and  < 100.0 );
+        k_temp_min_pulse_width_high    : float( > -100.0 and  < 100.0 );
+        k_temp_min_pulse_width_low     : float( > -100.0 and  < 100.0 );
+        k_temp_nochange_fall           : float( > -100.0 and  < 100.0 );
+        k_temp_nochange_rise           : float( > -100.0 and  < 100.0 );
+        k_temp_pin_cap                 : float( > -100.0 and  < 100.0 );
+        k_temp_recovery_fall           : float( > -100.0 and  < 100.0 );
+        k_temp_recovery_rise           : float( > -100.0 and  < 100.0 );
+        k_temp_removal_fall            : float( > -100.0 and  < 100.0 );
+        k_temp_removal_rise            : float( > -100.0 and  < 100.0 );
+        k_temp_setup_fall              : float( > -100.0 and  < 100.0 );
+        k_temp_setup_rise              : float( > -100.0 and  < 100.0 );
+        k_temp_skew_fall               : float( > -100.0 and  < 100.0 );
+        k_temp_skew_rise               : float( > -100.0 and  < 100.0 );
+        k_volt_cell_leakage_power      : float( > -100.0 and  < 100.0 );
+        k_volt_drive_current           : float( > -100.0 and  < 100.0 );
+        k_volt_hold_fall               : float( > -100.0 and  < 100.0 );
+        k_volt_hold_rise               : float( > -100.0 and  < 100.0 );
+        k_volt_internal_power          : float( > -100.0 and  < 100.0 );
+        k_volt_intrinsic_fall          : float( > -100.0 and  < 100.0 );
+        k_volt_intrinsic_rise          : float( > -100.0 and  < 100.0 );
+        k_volt_min_period              : float( > -100.0 and  < 100.0 );
+        k_volt_min_pulse_width_high    : float( > -100.0 and  < 100.0 );
+        k_volt_min_pulse_width_low     : float( > -100.0 and  < 100.0 );
+        k_volt_nochange_fall           : float( > -100.0 and  < 100.0 );
+        k_volt_nochange_rise           : float( > -100.0 and  < 100.0 );
+        k_volt_pin_cap                 : float( > -100.0 and  < 100.0 );
+        k_volt_recovery_fall           : float( > -100.0 and  < 100.0 );
+        k_volt_recovery_rise           : float( > -100.0 and  < 100.0 );
+        k_volt_removal_fall            : float( > -100.0 and  < 100.0 );
+        k_volt_removal_rise            : float( > -100.0 and  < 100.0 );
+        k_volt_setup_fall              : float( > -100.0 and  < 100.0 );
+        k_volt_setup_rise              : float( > -100.0 and  < 100.0 );
+        k_volt_skew_fall               : float( > -100.0 and  < 100.0 );
+        k_volt_skew_rise               : float( > -100.0 and  < 100.0 );
+
+    }
+    timing_range( timing_range_name ) {
+        /* Attributes */
+        faster_factor : float( > 0.0 ) := 1.0;
+        slower_factor : float( > 0.0 ) := 1.0;
+
+    }
+    type( type_name ) {
+    }
+    wire_load( wire_load_name ) {
+        /* Attributes */
+        area        : float := 0.0;
+        capacitance : float( > 0.0 ) := 1.0;
+        resistance  : float( > 0.0 ) := 0.0;
+        slope       : float( > 0.0 ) := 0.0;
+
+        /* Functions */
+        fanout_length( <unknown_arguments> );
+
+    }
+    wire_load_selection( [wire_load_selection_name] ) {
+        /* Functions */
+        wire_load_from_area( float, float, string );
+
+    }
+    wire_load_table( wire_load_table_name ) {
+        /* Functions */
+        fanout_area( integer, float );
+        fanout_capacitance( integer, float );
+        fanout_length( integer, float );
+        fanout_resistance( integer, float );
+
+    }
+
+}

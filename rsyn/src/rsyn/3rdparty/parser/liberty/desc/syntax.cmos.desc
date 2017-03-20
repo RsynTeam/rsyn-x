@@ -1,0 +1,3492 @@
+/******************************************************************************
+    Copyright (c) 1996-2000 Synopsys, Inc.    ALL RIGHTS RESERVED
+
+  The contents of this file are subject to the restrictions and limitations
+  set forth in the SYNOPSYS Open Source License Version 1.0  (the "License"); 
+  you may not use this file except in compliance with such restrictions 
+  and limitations. You may obtain instructions on how to receive a copy of 
+  the License at
+
+  http://www.synopsys.com/partners/tapin/tapinprogram.html. 
+
+  Software distributed by Original Contributor under the License is 
+  distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either 
+  expressed or implied. See the License for the specific language governing 
+  rights and limitations under the License.
+
+******************************************************************************/
+library( library_name ) {
+    /* Attributes */
+    bus_naming_style                       : virtual_attribute;
+    comment                                : string;
+    current_unit                           : enum( 100uA, 100mA, 1A, 1uA, 10uA, 1mA, or 10mA );
+    date                                   : string;
+    default_cell_failure_rate              : float( > 0.0 and  < 1000000000.0 );
+    default_cell_leakage_power             : float( > 0.0 );
+    default_connection_class               : string;
+    default_edge_rate_breakpoint_f0        : float;
+    default_edge_rate_breakpoint_f1        : float;
+    default_edge_rate_breakpoint_r0        : float;
+    default_edge_rate_breakpoint_r1        : float;
+    default_fall_delay_intercept           : float := 0.0;
+    default_fall_pin_resistance            : float( > 0.0 ) := 0.0;
+    default_fanout_load                    : float( > 0.0 ) := 1.0;
+    default_hold_coefficient               : float;
+    default_inout_pin_cap                  : float( > 0.0 ) := 1.0;
+    default_inout_pin_fall_res             : float( > 0.0 ) := 0.0;
+    default_inout_pin_rise_res             : float( > 0.0 ) := 0.0;
+    default_input_pin_cap                  : float( > 0.0 ) := 1.0;
+    default_intrinsic_fall                 : float( > 0.0 ) := 1.0;
+    default_intrinsic_rise                 : float( > 0.0 ) := 1.0;
+    default_leakage_power_density          : float( > 0.0 );
+    default_max_capacitance                : float( > 0.0 );
+    default_max_fanout                     : float( > 0.0 );
+    default_max_transition                 : float( > 0.0 );
+    default_max_utilization                : float( > 0.0 and  < 100.0 );
+    default_min_porosity                   : virtual_attribute;
+    default_operating_conditions           : string;
+    default_output_pin_cap                 : float( > 0.0 ) := 0.0;
+    default_output_pin_fall_res            : float( > 0.0 ) := 0.0;
+    default_output_pin_rise_res            : float( > 0.0 ) := 0.0;
+    default_rc_fall_coefficient            : float;
+    default_rc_rise_coefficient            : float;
+    default_reference_capacitance          : float;
+    default_rise_delay_intercept           : float := 0.0;
+    default_rise_pin_resistance            : float( > 0.0 ) := 0.0;
+    default_setup_coefficient              : float;
+    default_slope_fall                     : float( > 0.0 ) := 0.0;
+    default_slope_rise                     : float( > 0.0 ) := 0.0;
+    default_threshold_voltage_group        : string;
+    default_wire_load                      : string;
+    default_wire_load_area                 : float( > 0.0 );
+    default_wire_load_capacitance          : float( > 0.0 );
+    default_wire_load_mode                 : string( "top", "segmented", or "enclosed" );
+    default_wire_load_resistance           : float( > 0.0 );
+    default_wire_load_selection            : string;
+    delay_model                            : virtual_attribute;
+    em_temp_degradation_factor             : float( > 0.0 );
+    in_place_swap_mode                     : enum( match_footprint, ignore_footprint, or no_swapping );
+    input_threshold_pct_fall               : float( > 0.0 and  < 100.0 );
+    input_threshold_pct_rise               : float( > 0.0 and  < 100.0 );
+    k_process_cell_degradation             : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_cell_fall                    : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_cell_leakage_power           : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_cell_rise                    : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_drive_current                : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_drive_fall                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_drive_rise                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_fall_delay_intercept         : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_fall_pin_resistance          : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_fall_propagation             : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_fall_transition              : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_hold_fall                    : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_hold_rise                    : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_internal_power               : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_intrinsic_fall               : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_intrinsic_rise               : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_min_period                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_min_pulse_width_high         : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_min_pulse_width_low          : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_nochange_fall                : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_nochange_rise                : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_pin_cap                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_pin_fall_cap                 : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_pin_rise_cap                 : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_recovery_fall                : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_recovery_rise                : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_removal_fall                 : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_removal_rise                 : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_rise_delay_intercept         : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_rise_pin_resistance          : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_rise_propagation             : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_rise_transition              : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_setup_fall                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_setup_rise                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_skew_fall                    : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_skew_rise                    : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_slope_fall                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_slope_rise                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_wire_cap                     : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_process_wire_res                     : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_cell_degradation                : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_cell_fall                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_cell_leakage_power              : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_cell_rise                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_drive_current                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_drive_fall                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_drive_rise                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_fall_delay_intercept            : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_fall_pin_resistance             : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_fall_propagation                : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_fall_transition                 : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_hold_fall                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_hold_rise                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_internal_power                  : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_intrinsic_fall                  : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_intrinsic_rise                  : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_min_period                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_min_pulse_width_high            : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_min_pulse_width_low             : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_nochange_fall                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_nochange_rise                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_pin_cap                         : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_recovery_fall                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_recovery_rise                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_removal_fall                    : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_removal_rise                    : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_rise_delay_intercept            : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_rise_pin_resistance             : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_rise_propagation                : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_rise_transition                 : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_setup_fall                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_setup_rise                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_skew_fall                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_skew_rise                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_slope_fall                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_slope_rise                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_wire_cap                        : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_temp_wire_res                        : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_cell_degradation                : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_cell_fall                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_cell_leakage_power              : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_cell_rise                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_drive_current                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_drive_fall                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_drive_rise                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_fall_delay_intercept            : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_fall_pin_resistance             : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_fall_propagation                : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_fall_transition                 : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_hold_fall                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_hold_rise                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_internal_power                  : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_intrinsic_fall                  : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_intrinsic_rise                  : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_min_period                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_min_pulse_width_high            : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_min_pulse_width_low             : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_nochange_fall                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_nochange_rise                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_pin_cap                         : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_recovery_fall                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_recovery_rise                   : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_removal_fall                    : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_removal_rise                    : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_rise_delay_intercept            : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_rise_pin_resistance             : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_rise_propagation                : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_rise_transition                 : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_setup_fall                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_setup_rise                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_skew_fall                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_skew_rise                       : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_slope_fall                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_slope_rise                      : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_wire_cap                        : float( > -100.0 and  < 100.0 ) := 0.0;
+    k_volt_wire_res                        : float( > -100.0 and  < 100.0 ) := 0.0;
+    key_bit                                : short( > 1 and  < 20 );
+    key_feature                            : string;
+    key_file                               : string;
+    key_seed                               : int;
+    key_version                            : float;
+    leakage_power_unit                     : enum( 1uw, 10uw, 1pw, 1nw, 1mw, 10pw, 10nw, 100uw, 100pw, or 100nw );
+    lsi_pad_fall                           : float;
+    lsi_pad_rise                           : float;
+    lsi_rounding_cutoff                    : float( > 0.0 );
+    lsi_rounding_digit                     : float( > 0.0 );
+    nom_calc_mode                          : string;
+    nom_process                            : float( > 0.0 and  < 100.0 ) := 1.0;
+    nom_temperature                        : float( > -300.0 and  < 500.0 ) := 25.0;
+    nom_voltage                            : float;
+    output_threshold_pct_fall              : float( > 0.0 and  < 100.0 );
+    output_threshold_pct_rise              : float( > 0.0 and  < 100.0 );
+    piece_type                             : string( "piece_length", "piece_total_cap", "piece_wire_cap", or "piece_pin_cap" );
+    power_model                            : virtual_attribute;
+    preferred_input_pad_voltage            : string;
+    preferred_output_pad_slew_rate_control : enum( none, high, low, or medium );
+    preferred_output_pad_voltage           : string;
+    pulling_resistance_unit                : enum( 1ohm, 100ohm, 10ohm, or 1kohm );
+    resistance_unit                        : enum( 1ohm, 100ohm, 10ohm, or 1kohm );
+    revision                               : virtual_attribute;
+    simulation                             : boolean;
+    slew_derate_from_library               : float( > 0.0 and  < 1.0 );
+    slew_lower_threshold_pct_fall          : float( > 0.0 and  < 100.0 );
+    slew_lower_threshold_pct_rise          : float( > 0.0 and  < 100.0 );
+    slew_upper_threshold_pct_fall          : float( > 0.0 and  < 100.0 );
+    slew_upper_threshold_pct_rise          : float( > 0.0 and  < 100.0 );
+    time_unit                              : enum( 1ps, 1ns, 10ps, or 100ps );
+    timing_report                          : boolean;
+    voltage_unit                           : enum( 1mv, 10mv, 100mv, or 1v );
+
+    /* Functions */
+    capacitive_load_unit( float, string );
+    define_cell_area( string, string );
+    library_features( <unknown_arguments> );
+    piece_define( list );
+    routing_layers( <unknown_arguments> );
+    technology( string );
+    va_parameters( list );
+    voltage_map(string, float);
+
+    /* Sub-groups */
+    cell( cell_name ) {
+        /* Attributes */
+        area                         : float( > 0.0 ) := 0.0;
+        auxiliary_pad_cell           : boolean;
+        bus_naming_style             : virtual_attribute;
+        cell_footprint               : string;
+        cell_leakage_power           : float( > 0.0 );
+        clock_gating_integrated_cell : string( "generic", "latch_posedge", "latch_posedge_precontrol", "latch_posedge_postcontrol", "latch_posedge_precontrol_obs", "latch_posedge_postcontrol_obs", "latch_negedge", "latch_negedge_precontrol", "latch_negedge_postcontrol", "latch_negedge_precontrol_obs", "latch_negedge_postcontrol_obs", "ff_posedge", "ff_posedge_precontrol", "ff_posedge_postcontrol", "ff_posedge_precontrol_obs", "ff_posedge_postcontrol_obs", "ff_negedge", "ff_negedge_precontrol", "ff_negedge_postcontrol", "ff_negedge_precontrol_obs", "ff_negedge_postcontrol_obs", "none_posedge", "none_posedge_control", "none_posedge_control_obs", "none_negedge", "none_negedge_control", "none_negedge_control_obs", or "truegeneric" );
+        contention_condition         : string;
+        dont_fault                   : string( "sa0", "sa1", or "sa01" );
+        dont_touch                   : boolean;
+        dont_use                     : boolean;
+        em_temp_degradation_factor   : float( > 0.0 );
+        failure_rate                 : float( > 0.0 and  < 1000000000.0 );
+        geometry_print               : string;
+        handle_negative_constraint   : boolean;
+        ignore_verify_icg_type       : boolean;
+        interface_timing             : boolean;
+        is_clock_gating_cell         : boolean;
+        is_isolation_cell            : boolean;
+        is_level_shifter             : boolean;
+        level_shifter_type           : string( "HL", "LH", or "HL_LH" );
+        map_only                     : boolean;
+        mpm_libname                  : string;
+        mpm_name                     : string;
+        observe_node                 : string;
+        pad_cell                     : boolean;
+        pad_type                     : enum( clock );
+        power_gating_cell            : string;
+        preferred                    : boolean;
+        retention_cell               : string;
+        switch_cell_type             : string("coarse_grain");
+        scaling_factors              : string;
+        scan_group                   : string;
+        set_node                     : string;
+        single_bit_degenerate        : string;
+        threshold_voltage_group      : string;
+        timing_model_type            : enum( abstracted, extracted, or qtm );
+        use_for_size_only            : boolean;
+        user_function_class          : string;
+        vhdl_name                    : string;
+        sensitization_master         : string;
+        driver_waveform              : string;
+        driver_waveform_rise         : string;
+        driver_waveform_fall         : string;
+        pin_name_map (list);
+        input_voltage_range( float, float );
+        output_voltage_range( float, float );
+
+        /* Functions */
+        pin_equal( string );
+        pin_opposite( string, string );
+        rail_connection( string, string );
+        va_parameters( list );
+        
+        pg_pin( pgpin_name ) {
+            voltage_name       : string;
+            std_cell_main_rail : boolean;
+            pg_type : string( "primary_power", "primary_ground", "backup_power", "backup_ground", "internal_power", or "internal_ground");
+            direction                           : enum( inout, input, output, or tristate );
+            switch_function                     : virtual_attribute;
+            pg_function                         : virtual_attribute;
+            std_cell_main_rail                  : boolean;
+        }
+
+        /* Sub-groups */
+        bundle( bundle_name ) {
+            /* Attributes */
+            capacitance                         : float;
+            clock                               : boolean;
+            clock_gate_clock_pin                : boolean;
+            clock_gate_enable_pin               : boolean;
+            clock_gate_obs_pin                  : boolean;
+            clock_gate_out_pin                  : boolean;
+            clock_gate_test_pin                 : boolean;
+            complementary_pin                   : string;
+            connection_class                    : string;
+            dcm_timing                          : boolean;
+            direction                           : enum( inout, input, internal, output, or tristate );
+            dont_fault                          : string( "sa0", "sa1", or "sa01" );
+            drive_current                       : float( > 0.0 );
+            driver_type                         : virtual_attribute;
+            edge_rate_breakpoint_f0             : float;
+            edge_rate_breakpoint_f1             : float;
+            edge_rate_breakpoint_r0             : float;
+            edge_rate_breakpoint_r1             : float;
+            edge_rate_fall                      : float;
+            edge_rate_load_fall                 : float;
+            edge_rate_load_rise                 : float;
+            edge_rate_rise                      : float;
+            fall_capacitance                    : float;
+            fall_current_slope_after_threshold  : float;
+            fall_current_slope_before_threshold : float;
+            fall_time_after_threshold           : float( > 0.0 );
+            fall_time_before_threshold          : float( > 0.0 );
+            fanout_load                         : float( > 0.0 ) := default_fanout_load;
+            fault_model                         : string( "XX", "11", "00", "X1", "X0", "1X", "10", "0X", or "01" );
+            function                            : virtual_attribute;
+            has_builtin_pad                     : boolean;
+            hysteresis                          : boolean;
+            input_map                           : virtual_attribute;
+            input_signal_level                  : string;
+            input_threshold_pct_fall            : float( > 0.0 and  < 100.0 );
+            input_threshold_pct_rise            : float( > 0.0 and  < 100.0 );
+            input_voltage                       : string;
+            internal_node                       : string;
+            inverted_output                     : boolean;
+            is_pad                              : boolean;
+            is_three_state                      : boolean;
+            isolation_cell_data_pin             : boolean;
+            isolation_cell_enable_pin           : boolean;
+            level_shifter_data_pin              : boolean;
+            level_shifter_enable_pin            : boolean;
+            map_to_logic                        : string( "0", or "1" );
+            max_capacitance                     : float( > 0.0 ) := default_max_capacitance;
+            max_fanout                          : float( > 0.0 ) := default_max_fanout;
+            max_input_noise_width               : float;
+            max_time_borrow                     : float( > 0.0 );
+            max_transition                      : float( > 0.0 ) := default_max_transition;
+            min_capacitance                     : float( > 0.0 );
+            min_fanout                          : float( > 0.0 );
+            min_input_noise_width               : float;
+            min_period                          : float;
+            min_pulse_width_high                : float( > 0.0 );
+            min_pulse_width_low                 : float( > 0.0 );
+            min_transition                      : float( > 0.0 );
+            multicell_pad_pin                   : boolean;
+            nextstate_type                      : enum( scan_enable, preset, data, clear, load, or scan_in );
+            output_signal_level                 : string;
+            output_signal_level_high            : float;
+            output_signal_level_low             : float;
+            output_voltage                      : string;
+            pin_func_type                       : enum( active_rising, active_falling, clock_enable, active_high, or active_low );
+            prefer_tied                         : string;
+            primary_output                      : boolean;
+            pulling_current                     : float;
+            pulling_resistance                  : float( > 0.0 );
+            reference_capacitance               : float;
+            rise_capacitance                    : float;
+            rise_current_slope_after_threshold  : float;
+            rise_current_slope_before_threshold : float;
+            rise_time_after_threshold           : float( > 0.0 );
+            rise_time_before_threshold          : float( > 0.0 );
+            signal_type                         : string( "test_scan_enable", "test_scan_enable_inverted", "test_scan_clock", "test_scan_clock_a", "test_scan_clock_b", "test_clock", "test_scan_in", "test_scan_in_inverted", "test_scan_out", "test_scan_out_inverted", or "clocked_on_also" );
+            slew_control                        : enum( none, high, low, or medium );
+            slew_lower_threshold_pct_fall       : float( > 0.0 and  < 100.0 );
+            slew_lower_threshold_pct_rise       : float( > 0.0 and  < 100.0 );
+            slew_upper_threshold_pct_fall       : float( > 0.0 and  < 100.0 );
+            slew_upper_threshold_pct_rise       : float( > 0.0 and  < 100.0 );
+            state_function                      : virtual_attribute;
+            test_output_only                    : boolean;
+            three_state                         : virtual_attribute;
+            pull_up_function                    : virtual_attribute;
+            pull_down_function                  : virtual_attribute;
+            vhdl_name                           : string;
+            x_function                          : virtual_attribute;
+
+            /* Functions */
+            input_map_shift( string, string, string );
+            members( <unknown_arguments> );
+            pin_equal( string );
+            pin_opposite( string, string );
+            power_gating_pin( string, int );
+
+            /* Sub-groups */
+            electromigration( [electromigration_name] ) {
+                /* Attributes */
+                related_bus_pins : virtual_attribute;
+                related_pin      : virtual_attribute;
+                when             : virtual_attribute;
+
+                /* Sub-groups */
+                em_max_toggle_rate( em_max_toggle_rate_name ) {
+                    /* Attributes */
+                    poly_convert : boolean;
+                    process      : string;
+                    threshold    : float( > 0.0 and  < 100.0 );
+
+                    /* Functions */
+                    coefs( list );
+                    index_1( list );
+                    index_2( list );
+                    index_3( list );
+                    intermediate_values( <unknown_arguments> );
+                    orders( list );
+                    values( <unknown_arguments> );
+                    variable_1_range( float, float );
+                    variable_2_range( float, float );
+                    variable_3_range( float, float );
+                    variable_4_range( float, float );
+                    variable_5_range( float, float );
+                    variable_6_range( float, float );
+                    variable_7_range( float, float );
+
+                    /* Sub-groups */
+                    domain( domain_name ) {
+                        /* Attributes */
+                        calc_mode  : string;
+                        variable_1 : string( "input_net_transition", "total_output_net_capacitance", "output_net_length", "output_net_wire_cap", "output_net_pin_cap", "constrained_pin_transition", "related_pin_transition", "connect_delay", "output_pin_transition", "related_out_total_output_net_capacitance", "related_out_output_net_length", "related_out_output_net_wire_cap", "related_out_output_net_pin_cap", "related_output_pin_capacitance", "fanout_number", "fanout_pin_capacitance", "driver_slew", "rc_product", "input_transition_time", "total_output_net_capacitance", or "equal_or_opposite_output_net_capacitance" );
+                        variable_2 : string( "input_net_transition", "total_output_net_capacitance", "output_net_length", "output_net_wire_cap", "output_net_pin_cap", "constrained_pin_transition", "related_pin_transition", "connect_delay", "output_pin_transition", "related_out_total_output_net_capacitance", "related_out_output_net_length", "related_out_output_net_wire_cap", "related_out_output_net_pin_cap", "related_output_pin_capacitance", "fanout_number", "fanout_pin_capacitance", "driver_slew", "rc_product", "input_transition_time", "total_output_net_capacitance", or "equal_or_opposite_output_net_capacitance" );
+                        variable_3 : string( "input_net_transition", "total_output_net_capacitance", "output_net_length", "output_net_wire_cap", "output_net_pin_cap", "constrained_pin_transition", "related_pin_transition", "connect_delay", "output_pin_transition", "related_out_total_output_net_capacitance", "related_out_output_net_length", "related_out_output_net_wire_cap", "related_out_output_net_pin_cap", "related_output_pin_capacitance", "fanout_number", "fanout_pin_capacitance", "driver_slew", "rc_product", "input_transition_time", "total_output_net_capacitance", or "equal_or_opposite_output_net_capacitance" );
+
+                        /* Functions */
+                        coefs( <unknown_arguments> );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        mapping( string, string );
+                        orders( <unknown_arguments> );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+                       variables( <unknown_arguments> );
+
+                    }
+
+                }
+
+            }
+            hyperbolic_noise_above_high( [hyperbolic_noise_above_high_name] ) {
+                /* Attributes */
+                area_coefficient   : float( > 0.0 );
+                height_coefficient : float( > 0.0 );
+                width_coefficient  : float( > 0.0 );
+
+            }
+            hyperbolic_noise_below_low( [hyperbolic_noise_below_low_name] ) {
+                /* Attributes */
+                area_coefficient   : float( > 0.0 );
+                height_coefficient : float( > 0.0 );
+                width_coefficient  : float( > 0.0 );
+
+            }
+            hyperbolic_noise_high( [hyperbolic_noise_high_name] ) {
+                /* Attributes */
+                area_coefficient   : float( > 0.0 );
+                height_coefficient : float( > 0.0 );
+                width_coefficient  : float( > 0.0 );
+
+            }
+            hyperbolic_noise_low( [hyperbolic_noise_low_name] ) {
+                /* Attributes */
+                area_coefficient   : float( > 0.0 );
+                height_coefficient : float( > 0.0 );
+                width_coefficient  : float( > 0.0 );
+
+            }
+            internal_power( [internal_power_name] ) {
+                /* Attributes */
+                equal_or_opposite_output : virtual_attribute;
+                falling_together_group   : virtual_attribute;
+                power_level              : string;
+                related_pg_pin           : string;
+                related_bus_pins         : virtual_attribute;
+                related_falling_pin      : virtual_attribute;
+                related_input            : virtual_attribute;
+                related_inputs           : virtual_attribute;
+                related_outputs          : virtual_attribute;
+                related_pin              : virtual_attribute;
+                related_rising_pin       : virtual_attribute;
+                rising_together_group    : virtual_attribute;
+                switching_interval       : float( > 0.0 );
+                switching_together_group : virtual_attribute;
+                when                     : virtual_attribute;
+
+                /* Functions */
+                index_1( list );
+                index_2( list );
+                values( <unknown_arguments> );
+
+                /* Sub-groups */
+                fall_power( fall_power_name ) {
+                    /* Attributes */
+                    poly_convert : boolean;
+                    process      : string;
+                    threshold    : float( > 0.0 and  < 100.0 );
+
+                    /* Functions */
+                    coefs( list );
+                    index_1( list );
+                    index_2( list );
+                    index_3( list );
+                    intermediate_values( <unknown_arguments> );
+                    orders( list );
+                    values( <unknown_arguments> );
+                    variable_1_range( float, float );
+                    variable_2_range( float, float );
+                    variable_3_range( float, float );
+                    variable_4_range( float, float );
+                    variable_5_range( float, float );
+                    variable_6_range( float, float );
+                    variable_7_range( float, float );
+
+                    /* Sub-groups */
+                    domain( domain_name ) {
+                    }
+
+                }
+                power( power_name ) {
+                    /* Attributes */
+                    poly_convert : boolean;
+                    process      : string;
+                    threshold    : float( > 0.0 and  < 100.0 );
+
+                    /* Functions */
+                    coefs( list );
+                    index_1( list );
+                    index_2( list );
+                    index_3( list );
+                    intermediate_values( <unknown_arguments> );
+                    orders( list );
+                    values( <unknown_arguments> );
+                    variable_1_range( float, float );
+                    variable_2_range( float, float );
+                    variable_3_range( float, float );
+                    variable_4_range( float, float );
+                    variable_5_range( float, float );
+                    variable_6_range( float, float );
+                    variable_7_range( float, float );
+
+                    /* Sub-groups */
+                    domain( domain_name ) {
+                    }
+
+                }
+                rise_power( rise_power_name ) {
+                    /* Attributes */
+                    poly_convert : boolean;
+                    process      : string;
+                    threshold    : float( > 0.0 and  < 100.0 );
+
+                    /* Functions */
+                    coefs( list );
+                    index_1( list );
+                    index_2( list );
+                    index_3( list );
+                    intermediate_values( <unknown_arguments> );
+                    orders( list );
+                    values( <unknown_arguments> );
+                    variable_1_range( float, float );
+                    variable_2_range( float, float );
+                    variable_3_range( float, float );
+                    variable_4_range( float, float );
+                    variable_5_range( float, float );
+                    variable_6_range( float, float );
+                    variable_7_range( float, float );
+
+                    /* Sub-groups */
+                    domain( domain_name ) {
+                    }
+
+                }
+
+            }
+            max_cap( max_cap_name ) {
+                /* Attributes */
+                poly_convert : boolean;
+                process      : string;
+                related_pin  : virtual_attribute;
+                threshold    : float( > 0.0 and  < 100.0 );
+
+                /* Functions */
+                coefs( list );
+                index_1( list );
+                index_2( list );
+                index_3( list );
+                intermediate_values( <unknown_arguments> );
+                orders( list );
+                values( <unknown_arguments> );
+                variable_1_range( float, float );
+                variable_2_range( float, float );
+                variable_3_range( float, float );
+                variable_4_range( float, float );
+                variable_5_range( float, float );
+                variable_6_range( float, float );
+                variable_7_range( float, float );
+
+                /* Sub-groups */
+                domain( domain_name ) {
+                }
+
+            }
+            max_trans( max_trans_name ) {
+                /* Attributes */
+                poly_convert : boolean;
+                process      : string;
+                related_pin  : virtual_attribute;
+                threshold    : float( > 0.0 and  < 100.0 );
+
+                /* Functions */
+                coefs( list );
+                index_1( list );
+                index_2( list );
+                index_3( list );
+                intermediate_values( <unknown_arguments> );
+                orders( list );
+                values( <unknown_arguments> );
+                variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                /* Sub-groups */
+                domain( domain_name ) {
+                }
+
+            }
+            memory_read( [memory_read_name] ) {
+                /* Attributes */
+                address : string;
+
+            }
+            memory_write( [memory_write_name] ) {
+                /* Attributes */
+                address    : string;
+                clocked_on : string;
+                enable     : string;
+
+            }
+            min_pulse_width( [min_pulse_width_name] ) {
+                /* Attributes */
+                constraint_high : float( > 0.0 );
+                constraint_low  : float( > 0.0 );
+                sdf_cond        : string;
+                when            : virtual_attribute;
+
+            }
+            minimum_period( [minimum_period_name] ) {
+                /* Attributes */
+                constraint : float( > 0.0 );
+                sdf_cond   : string;
+                when       : virtual_attribute;
+
+            }
+            pin( pin_name_1 [,...,pin_name_N] ) {
+                /* Attributes */
+                capacitance                         : float;
+                clock                               : boolean;
+                clock_gate_clock_pin                : boolean;
+                clock_gate_enable_pin               : boolean;
+                clock_gate_obs_pin                  : boolean;
+                clock_gate_out_pin                  : boolean;
+                clock_gate_test_pin                 : boolean;
+                complementary_pin                   : string;
+                connection_class                    : string;
+                dcm_timing                          : boolean;
+                direction                           : enum( inout, input, internal, output, or tristate );
+                dont_fault                          : string( "sa0", "sa1", or "sa01" );
+                drive_current                       : float( > 0.0 );
+                driver_type                         : virtual_attribute;
+                edge_rate_breakpoint_f0             : float;
+                edge_rate_breakpoint_f1             : float;
+                edge_rate_breakpoint_r0             : float;
+                edge_rate_breakpoint_r1             : float;
+                edge_rate_fall                      : float;
+                edge_rate_load_fall                 : float;
+                edge_rate_load_rise                 : float;
+                edge_rate_rise                      : float;
+                fall_capacitance                    : float;
+                fall_current_slope_after_threshold  : float;
+                fall_current_slope_before_threshold : float;
+                fall_time_after_threshold           : float( > 0.0 );
+                fall_time_before_threshold          : float( > 0.0 );
+                fanout_load                         : float( > 0.0 ) := default_fanout_load;
+                fault_model                         : string( "XX", "11", "00", "X1", "X0", "1X", "10", "0X", or "01" );
+                fsim_map                            : string;
+                function                            : virtual_attribute;
+                has_builtin_pad                     : boolean;
+                hysteresis                          : boolean;
+                input_map                           : virtual_attribute;
+                input_signal_level                  : string;
+                input_threshold_pct_fall            : float( > 0.0 and  < 100.0 );
+                input_threshold_pct_rise            : float( > 0.0 and  < 100.0 );
+                input_voltage                       : string;
+                internal_node                       : string;
+                inverted_output                     : boolean;
+                is_pad                              : boolean;
+                is_three_state                      : boolean;
+                isolation_cell_data_pin             : boolean;
+                isolation_cell_enable_pin           : boolean;
+                level_shifter_data_pin              : boolean;
+                level_shifter_enable_pin            : boolean;
+                lsi_pad                             : boolean;
+                map_to_logic                        : string( "0", or "1" );
+                max_capacitance                     : float( > 0.0 ) := default_max_capacitance;
+                max_fanout                          : float( > 0.0 ) := default_max_fanout;
+                max_input_noise_width               : float;
+                max_time_borrow                     : float( > 0.0 );
+                max_transition                      : float( > 0.0 ) := default_max_transition;
+                min_capacitance                     : float( > 0.0 );
+                min_fanout                          : float( > 0.0 );
+                min_input_noise_width               : float;
+                min_period                          : float;
+                min_pulse_width_high                : float( > 0.0 );
+                min_pulse_width_low                 : float( > 0.0 );
+                min_transition                      : float( > 0.0 );
+                multicell_pad_pin                   : boolean;
+                nextstate_type                      : enum( scan_enable, preset, data, clear, load, or scan_in );
+                output_signal_level                 : string;
+                output_signal_level_high            : float;
+                output_signal_level_low             : float;
+                output_voltage                      : string;
+                pin_func_type                       : enum( active_rising, active_falling, clock_enable, active_high, or active_low );
+                prefer_tied                         : string;
+                primary_output                      : boolean;
+                pulling_current                     : float;
+                pulling_resistance                  : float( > 0.0 );
+                reference_capacitance               : float;
+                related_power_pin                   : string;
+                related_ground_pin                  : string;
+                rise_capacitance                    : float;
+                rise_current_slope_after_threshold  : float;
+                rise_current_slope_before_threshold : float;
+                rise_time_after_threshold           : float( > 0.0 );
+                rise_time_before_threshold          : float( > 0.0 );
+                signal_type                         : string( "test_scan_enable", "test_scan_enable_inverted", "test_scan_clock", "test_scan_clock_a", "test_scan_clock_b", "test_clock", "test_scan_in", "test_scan_in_inverted", "test_scan_out", "test_scan_out_inverted", or "clocked_on_also" );
+                slew_control                        : enum( none, high, low, or medium );
+                slew_lower_threshold_pct_fall       : float( > 0.0 and  < 100.0 );
+                slew_lower_threshold_pct_rise       : float( > 0.0 and  < 100.0 );
+                slew_upper_threshold_pct_fall       : float( > 0.0 and  < 100.0 );
+                slew_upper_threshold_pct_rise       : float( > 0.0 and  < 100.0 );
+                state_function                      : virtual_attribute;
+                test_output_only                    : boolean;
+                three_state                         : virtual_attribute;
+                pull_up_function                    : virtual_attribute;
+                pull_down_function                  : virtual_attribute;
+                vhdl_name                           : string;
+                switch_pin                          : boolean;
+                x_function                          : virtual_attribute;
+                power_down_function                 : virtual_attribute;
+                input_signal_level_high      : string;
+                input_signal_level_low       : string;
+                input_voltage_range(float, float);
+                output_voltage_range(float, float);
+
+                /* Functions */
+                fall_capacitance_range( float, float );
+                power_gating_pin( string, int );
+                retention_pin( string, int);
+                rise_capacitance_range( float, float );
+
+                /* Sub-groups */
+                electromigration( [electromigration_name] ) {
+                }
+                hyperbolic_noise_above_high( [hyperbolic_noise_above_high_name] ) {
+                }
+                hyperbolic_noise_below_low( [hyperbolic_noise_below_low_name] ) {
+                }
+                hyperbolic_noise_high( [hyperbolic_noise_high_name] ) {
+                }
+                hyperbolic_noise_low( [hyperbolic_noise_low_name] ) {
+                }
+                input_signal_swing( [input_signal_swing_name] ) {
+				   /* Attributes */
+                   low        : float;
+                   high       : float;
+                }
+                internal_power( [internal_power_name] ) {
+                }
+                max_cap( max_cap_name ) {
+                }
+                max_trans( max_trans_name ) {
+                }
+                memory_read( [memory_read_name] ) {
+                }
+                memory_write( [memory_write_name] ) {
+                }
+                min_pulse_width( [min_pulse_width_name] ) {
+                }
+                minimum_period( [minimum_period_name] ) {
+                }
+                output_signal_swing( [output_signal_swing_name] ) {
+				   /* Attributes */
+                   low        : float;
+                   high       : float;
+                }
+                ccsn_first_stage() {
+                	/* Attribute */
+                	is_needed		:boolean;
+                	stage_type		:enum(PULL_UP,PULL_DOWN,BOTH);
+               		is_inverting		:boolean;
+                	miller_cap_rise		:float;
+                	miller_cap_fall		:float;
+                	/* Sub-groups */
+                	dc_current( [dc_current_name] ) {
+                		/* Sub-groups */
+                		index_1(list);
+                		index_2(list);
+                		values( <unknown_arguments> );
+                	}
+                	output_voltage_rise() {
+	                	/* Sub-groups */
+	                	vector( [vector_name] ) {
+	                		/* Sub-groups */
+	                		index_1(list);
+	                		index_2(list);
+	                		index_3(list);
+	                		values( <unknown_arguments> );
+                		}
+               		 }
+	                output_voltage_fall() {
+	                	/* Sub-groups */
+	                	vector( [vector_name] ) {
+	                		/* Sub-groups */
+	                		index_1(list);
+	                		index_2(list);
+	                		index_3(list);
+	                		values( <unknown_arguments> );
+	                	}
+	                }
+	                propagated_noise_low() {
+	                	/* Sub-groups */
+	                	vector( [vector_name] ) {
+	                		/* Sub-groups */
+	                		index_1(list);
+	                		index_2(list);
+	                		index_3(list);
+	                		index_4(list);
+	                		values( <unknown_arguments> );
+	                	}
+	                }
+	                propagated_noise_high() {
+	                	/* Sub-groups */
+	                	vector( [vector_name] ) {
+	                		/* Sub-groups */
+	                		index_1(list);
+	                		index_2(list);
+	                		index_3(list);
+	                		index_4(list);
+	                		values( <unknown_arguments> );
+	                	}
+	                }	
+	                when : 		virtual_attribute;                
+                }
+                ccsn_last_stage() {
+                	/* Attribute */
+                	is_needed		:boolean;
+                	stage_type		:enum(PULL_UP,PULL_DOWN,BOTH);
+               		is_inverting		:boolean;
+                	miller_cap_rise		:float;
+                	miller_cap_fall		:float;
+                	/* Sub-groups */
+                	dc_current( [dc_current_name] ) {
+                		/* Sub-groups */
+                		index_1( list );
+                		index_2( list );
+                		values( <unknown_arguments> );
+                	}
+                	output_voltage_rise() {
+	                	/* Sub-groups */
+	                	vector( [vector_name] ) {
+	                		/* Sub-groups */
+	                		index_1( list );
+	                		index_2( list );
+	                		index_3( list );
+	                		values( <unknown_arguments> );
+                		}
+               		 }
+	                output_voltage_fall() {
+	                	/* Sub-groups */
+	                	vector( [vector_name] ) {
+	                		/* Sub-groups */
+	                		index_1( list );
+	                		index_2( list );
+	                		index_3( list );
+	                		values( <unknown_arguments> );
+	                	}
+	                }
+	                propagated_noise_low() {
+	                	/* Sub-groups */
+	                	vector( [vector_name] ) {
+	                		/* Sub-groups */
+	                		index_1( list );
+	                		index_2( list );
+	                		index_3( list );
+	                		index_4( list );
+	                		values( <unknown_arguments> );
+	                	}
+	                }
+	                propagated_noise_high() {
+	                	/* Sub-groups */
+	                	vector( [vector_name] ) {
+	                		/* Sub-groups */
+	                		index_1( list );
+	                		index_2( list );
+	                		index_3( list );
+	                		index_4( list );
+	                		values( <unknown_arguments> );
+	                	}
+	                }
+	                 when : 		virtual_attribute;  
+                }
+                
+                pin_capacitance( [pin_capacitance_name] ) {
+                    /* Sub-groups */
+                    capacitance( capacitance_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    fall_capacitance( fall_capacitance_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    fall_capacitance_range( [fall_capacitance_range_name] ) {
+                        /* Sub-groups */
+                        lower( lower_name ) {
+                            /* Attributes */
+                            poly_convert : boolean;
+                            process      : string;
+                            threshold    : float( > 0.0 and  < 100.0 );
+
+                            /* Functions */
+                            coefs( list );
+                            index_1( list );
+                            index_2( list );
+                            index_3( list );
+                            intermediate_values( <unknown_arguments> );
+                            orders( list );
+                            values( <unknown_arguments> );
+                            variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                            /* Sub-groups */
+                            domain( domain_name ) {
+                            }
+
+                        }
+                        upper( upper_name ) {
+                            /* Attributes */
+                            poly_convert : boolean;
+                            process      : string;
+                            threshold    : float( > 0.0 and  < 100.0 );
+
+                            /* Functions */
+                            coefs( list );
+                            index_1( list );
+                            index_2( list );
+                            index_3( list );
+                            intermediate_values( <unknown_arguments> );
+                            orders( list );
+                            values( <unknown_arguments> );
+                            variable_1_range( float, float );
+
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+                            /* Sub-groups */
+                            domain( domain_name ) {
+                            }
+
+                        }
+
+                    }
+                    rise_capacitance( rise_capacitance_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    rise_capacitance_range( [rise_capacitance_range_name] ) {
+                        /* Sub-groups */
+                        lower( lower_name ) {
+                        }
+                        upper( upper_name ) {
+                        }
+
+                    }
+
+                }
+                receiver_capacitance( [receiver_capacitance_name] ) {
+                    /* Attributes */
+                    when             : virtual_attribute;
+                    /* Sub-groups */
+                    receiver_capacitance1_fall( receiver_capacitance1_fall_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    receiver_capacitance1_rise( receiver_capacitance1_rise_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    receiver_capacitance2_fall( receiver_capacitance2_fall_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    receiver_capacitance2_rise( receiver_capacitance2_rise_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+
+                }
+                timing( [timing_name] ) {
+                    /* Attributes */
+                    clock_gating_flag                  : boolean;
+                    default_timing                     : boolean;
+                    edge_rate_sensitivity_f0           : float;
+                    edge_rate_sensitivity_f1           : float;
+                    edge_rate_sensitivity_r0           : float;
+                    edge_rate_sensitivity_r1           : float;
+                    fall_resistance                    : float;
+                    hold_coefficient                   : float;
+                    input_signal_level_high            : float;
+                    input_signal_level_low             : float;
+                    interdependence_id                 : integer;
+                    intrinsic_fall                     : float;
+                    intrinsic_rise                     : float;
+                    poly_convert                       : boolean;
+                    related_bus_equivalent             : virtual_attribute;
+                    related_bus_pins                   : virtual_attribute;
+                    related_output_pin                 : virtual_attribute;
+                    related_pin                        : virtual_attribute;
+                    rise_resistance                    : float;
+                    sdf_cond                           : string;
+                    sdf_cond_end                       : string;
+                    sdf_cond_start                     : string;
+                    sdf_edges                          : enum( end_edge, start_edge, noedge, or both_edges );
+                    setup_coefficient                  : float;
+                    slope_fall                         : float;
+                    slope_rise                         : float;
+                    steady_state_resistance_above_high : float( > 0.0 );
+                    steady_state_resistance_below_low  : float( > 0.0 );
+                    steady_state_resistance_float_max  : float( > 0.0 );
+                    steady_state_resistance_float_min  : float( > 0.0 );
+                    steady_state_resistance_high       : float( > 0.0 );
+                    steady_state_resistance_high_max   : float( > 0.0 );
+                    steady_state_resistance_high_min   : float( > 0.0 );
+                    steady_state_resistance_low        : float( > 0.0 );
+                    steady_state_resistance_low_max    : float( > 0.0 );
+                    steady_state_resistance_low_min    : float( > 0.0 );
+                    tied_off                           : boolean;
+                    timing_sense                       : enum( non_unate, negative_unate, or positive_unate );
+                    timing_type                        : enum( three_state_disable, retaining_time, non_seq_setup_falling, skew_rising, nochange_low_low, nochange_high_low, skew_falling, combinational_fall, nochange_low_high, nochange_high_high, combinational_rise, rising_edge, three_state_enable, preset, setup_rising, three_state_disable_fall, hold_falling, non_seq_hold_rising, minimum_period, removal_falling, non_seq_setup_rising, three_state_enable_fall, clear, non_seq_hold_falling, three_state_disable_rise, recovery_rising, three_state_enable_rise, max_clock_tree_path, setup_falling, falling_edge, min_pulse_width, combinational, min_clock_tree_path, recovery_falling, removal_rising, or hold_rising );
+                    when                               : virtual_attribute;
+                    when_end                           : virtual_attribute;
+                    when_start                         : virtual_attribute;
+                    sensitization_master               : string;
+                    pin_name_map (list);
+                    wave_rise (list);
+                    wave_fall (list);
+
+                    /* Functions */
+                    fall_delay_intercept( integer, list );
+                    fall_pin_resistance( integer, list );
+                    mode( string, string );
+                    rise_delay_intercept( integer, list );
+                    rise_pin_resistance( integer, list );
+
+                    /* Sub-groups */
+                    cell_degradation( cell_degradation_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    cell_fall( cell_fall_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    cell_fall_to_pct( cell_fall_to_pct_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    cell_rise( cell_rise_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    cell_rise_to_pct( cell_rise_to_pct_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    fall_constraint( fall_constraint_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    fall_propagation( fall_propagation_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    fall_transition( fall_transition_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    noise_immunity_above_high( noise_immunity_above_high_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    noise_immunity_below_low( noise_immunity_below_low_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    noise_immunity_high( noise_immunity_high_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    noise_immunity_low( noise_immunity_low_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    output_current_fall( [output_current_fall_name] ) {
+                        /* Sub-groups */
+                        vector( vector_name ) {
+                            /* Attributes */
+                            poly_convert   : boolean;
+                            process        : string;
+                            reference_time : float;
+                            threshold      : float( > 0.0 and  < 100.0 );
+
+                            /* Functions */
+                            coefs( list );
+                            index_1( list );
+                            index_2( list );
+                            index_3( list );
+                            intermediate_values( <unknown_arguments> );
+                            orders( list );
+                            values( <unknown_arguments> );
+                            variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                            /* Sub-groups */
+                            domain( domain_name ) {
+                            }
+
+                        }
+
+                    }
+                    compact_ccs_rise( [compact_ccs_rise_template_name] ) {                      
+                        values( <unknown_arguments> );
+                    }
+                    compact_ccs_fall( [compact_ccs_fall_template_name] ) {                      
+                        values( <unknown_arguments> );
+                    }
+                    compressed_ccs_timing_rise( [compressed_ccs_timing_rise_template_name] ) {                      
+                        init_current ( init_current_name ) {
+                            index_1( list );
+                            index_2( list );
+                            values( <unknown_arguments> );
+                        }
+                        peak_current ( peak_current_name ) {
+                            index_1( list );
+                            index_2( list );
+                            values( <unknown_arguments> );
+                        }
+                        peak_voltage ( peak_voltage_name ) {
+                            index_1( list );
+                            index_2( list );
+                            values( <unknown_arguments> );
+                        }
+                        peak_time ( peak_time_name ) {
+                            index_1( list );
+                            index_2( list );
+                            values( <unknown_arguments> );
+                        }
+                        left_id ( left_id_name ) {
+                            index_1( list );
+                            index_2( list );
+                            values( <unknown_arguments> );
+                        }
+                        right_id ( right_id_name ) {
+                            index_1( list );
+                            index_2( list );
+                            values( <unknown_arguments> );
+                        }
+                    }
+                     
+                    output_current_rise( [output_current_rise_name] ) {
+                        /* Sub-groups */
+                        vector( vector_name ) {
+                            /* Attributes */
+                            poly_convert   : boolean;
+                            process        : string;
+                            reference_time : float;
+                            threshold      : float( > 0.0 and  < 100.0 );
+
+                            /* Functions */
+                            coefs( list );
+                            index_1( list );
+                            index_2( list );
+                            index_3( list );
+                            intermediate_values( <unknown_arguments> );
+                            orders( list );
+                            values( <unknown_arguments> );
+                            variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                            /* Sub-groups */
+                            domain( domain_name ) {
+                            }
+
+                        }
+
+                    }
+                    propagated_noise_height_above_high( propagated_noise_height_above_high_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    propagated_noise_height_below_low( propagated_noise_height_below_low_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    propagated_noise_height_high( propagated_noise_height_high_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    propagated_noise_height_low( propagated_noise_height_low_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    propagated_noise_peak_time_ratio_above_high( propagated_noise_peak_time_ratio_above_high_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    propagated_noise_peak_time_ratio_below_low( propagated_noise_peak_time_ratio_below_low_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    propagated_noise_peak_time_ratio_high( propagated_noise_peak_time_ratio_high_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    propagated_noise_peak_time_ratio_low( propagated_noise_peak_time_ratio_low_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    propagated_noise_width_above_high( propagated_noise_width_above_high_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    propagated_noise_width_below_low( propagated_noise_width_below_low_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    propagated_noise_width_high( propagated_noise_width_high_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    propagated_noise_width_low( propagated_noise_width_low_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    receiver_capacitance1_fall( receiver_capacitance1_fall_name ) {
+                    }
+                    receiver_capacitance1_rise( receiver_capacitance1_rise_name ) {
+                    }
+                    receiver_capacitance2_fall( receiver_capacitance2_fall_name ) {
+                    }
+                    receiver_capacitance2_rise( receiver_capacitance2_rise_name ) {
+                    }
+                    retain_fall_slew( retain_fall_slew_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    retain_rise_slew( retain_rise_slew_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    retaining_fall( retaining_fall_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    retaining_rise( retaining_rise_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    rise_constraint( rise_constraint_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    rise_propagation( rise_propagation_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    rise_transition( rise_transition_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    steady_state_current_high( steady_state_current_high_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    steady_state_current_low( steady_state_current_low_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+                    steady_state_current_tristate( steady_state_current_tristate_name ) {
+                        /* Attributes */
+                        poly_convert : boolean;
+                        process      : string;
+                        threshold    : float( > 0.0 and  < 100.0 );
+
+                        /* Functions */
+                        coefs( list );
+                        index_1( list );
+                        index_2( list );
+                        index_3( list );
+                        intermediate_values( <unknown_arguments> );
+                        orders( list );
+                        values( <unknown_arguments> );
+                        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+                        /* Sub-groups */
+                        domain( domain_name ) {
+                        }
+
+                    }
+
+                    ccsn_first_stage() {
+                    }
+                    
+                    ccsn_last_stage() {
+                    }
+
+                    timing_based_variation() {
+                        va_parameters( list );
+                        nominal_va_values( list );
+                        
+                        va_compact_ccs_rise( [va_compact_ccs_rise_template_name] ) {                      
+                            va_values( list );
+                            values( list );
+                        }
+                        va_compact_ccs_fall( [va_compact_ccs_fall_template_name] ) {                      
+                            va_values( list );
+                            values( list );
+                        }
+                        va_receiver_capacitance1_fall( va_receiver_capacitance1_fall_name ) {
+                            va_values( list );
+                            index_1( list );
+                            index_2( list );
+                            values( list );
+                        }
+                        va_receiver_capacitance1_rise( va_receiver_capacitance1_rise_name ) {
+                            va_values( <unknown_arguments> );
+                            index_1( list );
+                            index_2( list );
+                            values( list );
+                        }
+                        va_receiver_capacitance2_fall( va_receiver_capacitance2_fall_name ) {
+                            va_values( <unknown_arguments> );
+                            index_1( list );
+                            index_2( list );
+                            values( list );
+                        }
+                        va_receiver_capacitance2_rise( va_receiver_capacitance2_rise_name ) {
+                            va_values( <unknown_arguments> );
+                            index_1( list );
+                            index_2( list );
+                            values( list );
+                        }
+                        va_rise_constraint( va_rise_constraint_name ) {
+                            va_values( <unknown_arguments> );
+                            index_1( list );
+                            index_2( list );
+                            values( list );
+                        }
+                        va_fall_constraint( va_fall_constraint_name ) {
+                            va_values( <unknown_arguments> );
+                            index_1( list );
+                            index_2( list );
+                            values( list );
+                        }
+                    }
+
+                }
+                tlatch( tlatch_name ) {
+                    /* Attributes */
+                    edge_type : string( "rising", or "falling" );
+                    tdisable  : boolean;
+
+                }
+
+                pin_based_variation() {
+                    /* Attributes */
+                    when             : virtual_attribute;
+                    va_parameters( list );
+                    nominal_va_values( list );
+                    va_receiver_capacitance1_fall( va_receiver_capacitance1_fall_name ) {
+                        va_values( list );
+                        index_1( list );
+                        index_2( list );
+                        values( list );
+                    }
+                    va_receiver_capacitance1_rise( va_receiver_capacitance1_rise_name ) {
+                        va_values( <unknown_arguments> );
+                        index_1( list );
+                        index_2( list );
+                        values( list );
+                    }
+                    va_receiver_capacitance2_fall( va_receiver_capacitance2_fall_name ) {
+                        va_values( <unknown_arguments> );
+                        index_1( list );
+                        index_2( list );
+                        values( list );
+                    }
+                    va_receiver_capacitance2_rise( va_receiver_capacitance2_rise_name ) {
+                        va_values( <unknown_arguments> );
+                        index_1( list );
+                        index_2( list );
+                        values( list );
+                    }
+                }
+
+            }
+            timing( [timing_name] ) {
+            }
+
+        }
+        bus( bus_name ) {
+            /* Attributes */
+            bus_type                            : virtual_attribute;
+            capacitance                         : float;
+            clock                               : boolean;
+            clock_gate_clock_pin                : boolean;
+            clock_gate_enable_pin               : boolean;
+            clock_gate_obs_pin                  : boolean;
+            clock_gate_out_pin                  : boolean;
+            clock_gate_test_pin                 : boolean;
+            complementary_pin                   : string;
+            connection_class                    : string;
+            dcm_timing                          : boolean;
+            direction                           : enum( inout, input, internal, output, or tristate );
+            dont_fault                          : string( "sa0", "sa1", or "sa01" );
+            drive_current                       : float( > 0.0 );
+            driver_type                         : virtual_attribute;
+            edge_rate_breakpoint_f0             : float;
+            edge_rate_breakpoint_f1             : float;
+            edge_rate_breakpoint_r0             : float;
+            edge_rate_breakpoint_r1             : float;
+            edge_rate_fall                      : float;
+            edge_rate_load_fall                 : float;
+            edge_rate_load_rise                 : float;
+            edge_rate_rise                      : float;
+            fall_capacitance                    : float;
+            fall_current_slope_after_threshold  : float;
+            fall_current_slope_before_threshold : float;
+            fall_time_after_threshold           : float( > 0.0 );
+            fall_time_before_threshold          : float( > 0.0 );
+            fanout_load                         : float( > 0.0 ) := default_fanout_load;
+            fault_model                         : string( "XX", "11", "00", "X1", "X0", "1X", "10", "0X", or "01" );
+            function                            : virtual_attribute;
+            has_builtin_pad                     : boolean;
+            hysteresis                          : boolean;
+            input_map                           : virtual_attribute;
+            input_signal_level                  : string;
+            input_threshold_pct_fall            : float( > 0.0 and  < 100.0 );
+            input_threshold_pct_rise            : float( > 0.0 and  < 100.0 );
+            input_voltage                       : string;
+            internal_node                       : string;
+            inverted_output                     : boolean;
+            is_pad                              : boolean;
+            is_three_state                      : boolean;
+            isolation_cell_data_pin             : boolean;
+            isolation_cell_enable_pin           : boolean;
+            level_shifter_data_pin              : boolean;
+            level_shifter_enable_pin            : boolean;
+            lsi_pad                             : boolean;
+            map_to_logic                        : string( "0", or "1" );
+            max_capacitance                     : float( > 0.0 ) := default_max_capacitance;
+            max_fanout                          : float( > 0.0 ) := default_max_fanout;
+            max_input_noise_width               : float;
+            max_time_borrow                     : float( > 0.0 );
+            max_transition                      : float( > 0.0 ) := default_max_transition;
+            min_capacitance                     : float( > 0.0 );
+            min_fanout                          : float( > 0.0 );
+            min_input_noise_width               : float;
+            min_period                          : float;
+            min_pulse_width_high                : float( > 0.0 );
+            min_pulse_width_low                 : float( > 0.0 );
+            min_transition                      : float( > 0.0 );
+            multicell_pad_pin                   : boolean;
+            nextstate_type                      : enum( scan_enable, preset, data, clear, load, or scan_in );
+            output_signal_level                 : string;
+            output_signal_level_high            : float;
+            output_signal_level_low             : float;
+            output_voltage                      : string;
+            pin_func_type                       : enum( active_rising, active_falling, clock_enable, active_high, or active_low );
+            prefer_tied                         : string;
+            primary_output                      : boolean;
+            pulling_current                     : float;
+            pulling_resistance                  : float( > 0.0 );
+            reference_capacitance               : float;
+            rise_capacitance                    : float;
+            rise_current_slope_after_threshold  : float;
+            rise_current_slope_before_threshold : float;
+            rise_time_after_threshold           : float( > 0.0 );
+            rise_time_before_threshold          : float( > 0.0 );
+            signal_type                         : string( "test_scan_enable", "test_scan_enable_inverted", "test_scan_clock", "test_scan_clock_a", "test_scan_clock_b", "test_clock", "test_scan_in", "test_scan_in_inverted", "test_scan_out", "test_scan_out_inverted", or "clocked_on_also" );
+            slew_control                        : enum( none, high, low, or medium );
+            slew_lower_threshold_pct_fall       : float( > 0.0 and  < 100.0 );
+            slew_lower_threshold_pct_rise       : float( > 0.0 and  < 100.0 );
+            slew_upper_threshold_pct_fall       : float( > 0.0 and  < 100.0 );
+            slew_upper_threshold_pct_rise       : float( > 0.0 and  < 100.0 );
+            state_function                      : virtual_attribute;
+            test_output_only                    : boolean;
+            three_state                         : virtual_attribute;
+            pull_up_function                    : virtual_attribute;
+            pull_down_function                  : virtual_attribute;
+            vhdl_name                           : string;
+            x_function                          : virtual_attribute;
+
+            /* Functions */
+            input_map_shift( string, string, string );
+            pin_equal( string );
+            pin_opposite( string, string );
+            power_gating_pin( string, int );
+
+            /* Sub-groups */
+            electromigration( [electromigration_name] ) {
+            }
+            hyperbolic_noise_above_high( [hyperbolic_noise_above_high_name] ) {
+            }
+            hyperbolic_noise_below_low( [hyperbolic_noise_below_low_name] ) {
+            }
+            hyperbolic_noise_high( [hyperbolic_noise_high_name] ) {
+            }
+            hyperbolic_noise_low( [hyperbolic_noise_low_name] ) {
+            }
+            internal_power( [internal_power_name] ) {
+            }
+            max_cap( max_cap_name ) {
+            }
+            max_trans( max_trans_name ) {
+            }
+            memory_read( [memory_read_name] ) {
+            }
+            memory_write( [memory_write_name] ) {
+            }
+            min_pulse_width( [min_pulse_width_name] ) {
+            }
+            minimum_period( [minimum_period_name] ) {
+            }
+            pin( pin_name ) {
+            }
+            timing( [timing_name] ) {
+            }
+
+            ccsn_first_stage() {
+            }
+                    
+            ccsn_last_stage() {
+            }
+
+        }
+        ff( ff_name_1,ff_name_2 ) {
+            /* Attributes */
+            clear             : string;
+            clear_preset_var1 : enum( H, L, N, T, U, or X );
+            clear_preset_var2 : enum( H, L, N, T, U, or X );
+            clocked_on        : string;
+            clocked_on_also   : string;
+            next_state        : string;
+            preset            : string;
+
+        }
+        ff_bank( ff_bank_name_1,ff_bank_name_2,ff_bank_name_3 ) {
+            /* Attributes */
+            clear             : string;
+            clear_preset_var1 : enum( H, L, N, T, U, or X );
+            clear_preset_var2 : enum( H, L, N, T, U, or X );
+            clocked_on        : string;
+            clocked_on_also   : string;
+            next_state        : string;
+            preset            : string;
+
+        }
+        generated_clock( generated_clock_name ) {
+            /* Attributes */
+            clock_pin     : string;
+            divided_by    : virtual_attribute;
+            duty_cycle    : float( > 0.0 );
+            invert        : boolean;
+            master_pin    : string;
+            multiplied_by : virtual_attribute;
+
+            /* Functions */
+            edges( integer, integer, integer );
+            shifts( float, float, float );
+
+        }
+        internal_power( internal_power_name ) {
+        }
+        latch( latch_name_1,latch_name_2 ) {
+            /* Attributes */
+            clear             : string;
+            clear_preset_var1 : enum( H, L, N, T, U, or X );
+            clear_preset_var2 : enum( H, L, N, T, U, or X );
+            data_in           : string;
+            enable            : string;
+            enable_also       : string;
+            preset            : string;
+
+        }
+        latch_bank( latch_bank_name_1,latch_bank_name_2,latch_bank_name_3 ) {
+            /* Attributes */
+            clear             : string;
+            clear_preset_var1 : enum( H, L, N, T, U, or X );
+            clear_preset_var2 : enum( H, L, N, T, U, or X );
+            data_in           : string;
+            enable            : string;
+            enable_also       : string;
+            preset            : string;
+
+        }
+        leakage_power( [leakage_power_name] ) {
+            /* Attributes */
+            power_level    : string;
+            related_pg_pin : string;
+            value          : float( > 0.0 );
+            when           : virtual_attribute;
+
+            /* Sub-groups */
+            power( power_name ) {
+            }
+
+        }
+        dynamic_current() {
+           when                            : string;
+           related_outputs                 : string;
+           related_inputs                  : string;
+           typical_capacitances (float, float);
+           switching_group () {
+              input_switching_condition (string);
+              output_switching_condition (string, string);
+              pg_current ( [pg_pin_name] ) {
+                 vector ( [vector_name] ) {
+		    reference_time : float;
+		    index_output : string;
+		    index_1(list);
+		    index_2(list);
+		    index_3(list);
+		    values( <unknown_arguments> );
+		}
+                compact_ccs_power ( [compact_ccs_power_template_name] ) {
+                    index_output : string;
+                    values( <unknown_arguments> );
+                }
+              }
+           }
+        }
+        intrinsic_parasitic () {
+           when              : string;
+	   intrinsic_resistance ( [pg_pin_name] ) {
+	      related_output : string;
+	      value          : float;
+	   }
+	   intrinsic_capacitance ( [pg_pin_name] ) {
+	      value          : float;
+	   }
+        }
+        leakage_current () {
+           when              : string;	   
+	   pg_current ( [pg_pin_name] ) {
+	      value          : float;
+	   }
+            gate_leakage( [pin_name] ){
+               input_low_value : float ( < 0.0);
+               input_high_value : float ( > 0.0);
+            }
+        }
+        memory( [memory_name] ) {
+            /* Attributes */
+            address_width  : short( > 1 );
+            column_address : virtual_attribute;
+            row_address    : virtual_attribute;
+            type           : enum( rom, or ram );
+            word_width     : short( > 1 );
+
+        }
+        mode_definition( mode_definition_name ) {
+            /* Sub-groups */
+            mode_value( mode_value_name ) {
+                /* Attributes */
+                sdf_cond : string;
+                when     : string;
+
+            }
+
+        }
+        pin( pin_name_1 [,...,pin_name_N] ) {
+        }
+        routing_track( routing_track_name ) {
+            /* Attributes */
+            total_track_area : float;
+            tracks           : integer;
+
+        }
+        seq( seq_name_1,seq_name_2 ) {
+            /* Attributes */
+            clear             : string;
+            clear_preset_var1 : enum( H, L, N, T, U, or X );
+            clear_preset_var2 : enum( H, L, N, T, U, or X );
+            clocked_on        : string;
+            clocked_on_also   : string;
+            data_in           : string;
+            enable            : string;
+            enable_also       : string;
+            next_state        : string;
+            preset            : string;
+
+        }
+        seq_bank( seq_bank_name_1,seq_bank_name_2,seq_bank_name_3 ) {
+            /* Attributes */
+            clear             : string;
+            clear_preset_var1 : enum( H, L, N, T, U, or X );
+            clear_preset_var2 : enum( H, L, N, T, U, or X );
+            clocked_on        : string;
+            clocked_on_also   : string;
+            data_in           : string;
+            enable            : string;
+            enable_also       : string;
+            next_state        : string;
+            preset            : string;
+
+        }
+        state( state_name_1,state_name_2 ) {
+            /* Attributes */
+            clocked_on      : string;
+            clocked_on_also : string;
+            force_00        : string;
+            force_01        : string;
+            force_10        : string;
+            force_11        : string;
+            next_state      : string;
+
+        }
+        statetable( statetable_name_1,statetable_name_2 ) {
+            /* Attributes */
+            table : string;
+
+        }
+        test_cell( [test_cell_name] ) {
+            /* Attributes */
+            bus_naming_style : virtual_attribute;
+
+            /* Sub-groups */
+            bundle( bundle_name ) {
+            }
+            bus( bus_name ) {
+            }
+            ff( ff_name_1,ff_name_2 ) {
+            }
+            ff_bank( ff_bank_name_1,ff_bank_name_2,ff_bank_name_3 ) {
+            }
+            latch( latch_name_1,latch_name_2 ) {
+            }
+            latch_bank( latch_bank_name_1,latch_bank_name_2,latch_bank_name_3 ) {
+            }
+            pin( pin_name_1 [,...,pin_name_N] ) {
+            }
+            seq( seq_name_1,seq_name_2 ) {
+            }
+            seq_bank( seq_bank_name_1,seq_bank_name_2,seq_bank_name_3 ) {
+            }
+            state( state_name_1,state_name_2 ) {
+            }
+            statetable( statetable_name_1,statetable_name_2 ) {
+            }
+            type( type_name ) {
+                /* Attributes */
+                base_type : virtual_attribute;
+                bit_from  : virtual_attribute;
+                bit_to    : virtual_attribute;
+                bit_width : virtual_attribute;
+                data_type : virtual_attribute;
+                downto    : virtual_attribute;
+
+            }
+
+        }
+        type( type_name ) {
+        }
+        /* Sub-groups */
+        dc_current( [dc_current_name] ) {
+           related_switch_pin      : virtual_attribute;
+           related_pg_pin          : virtual_attribute;
+           related_internal_pg_pin : virtual_attribute;
+           index_1(list);
+           index_2(list);
+           values( <unknown_arguments> );
+        }
+    }
+    em_lut_template( em_lut_template_name ) {
+        /* Attributes */
+        variable_1 : string( "input_transition_time", or "total_output_net_capacitance" );
+        variable_2 : string( "input_transition_time", or "total_output_net_capacitance" );
+
+        /* Functions */
+        index_1( list );
+        index_2( list );
+
+        /* Sub-groups */
+        domain( domain_name ) {
+        }
+
+    }
+    fall_net_delay( fall_net_delay_name ) {
+        /* Attributes */
+        poly_convert : boolean;
+        process      : string;
+        threshold    : float( > 0.0 and  < 100.0 );
+
+        /* Functions */
+        coefs( list );
+        index_1( list );
+        index_2( list );
+        index_3( list );
+        intermediate_values( <unknown_arguments> );
+        orders( list );
+        values( <unknown_arguments> );
+        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+        /* Sub-groups */
+        domain( domain_name ) {
+        }
+
+    }
+    fall_transition_degradation( fall_transition_degradation_name ) {
+        /* Attributes */
+        poly_convert : boolean;
+        process      : string;
+        threshold    : float( > 0.0 and  < 100.0 );
+
+        /* Functions */
+        coefs( list );
+        index_1( list );
+        index_2( list );
+        index_3( list );
+        intermediate_values( <unknown_arguments> );
+        orders( list );
+        values( <unknown_arguments> );
+        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+        /* Sub-groups */
+        domain( domain_name ) {
+        }
+
+    }
+    input_voltage( input_voltage_name ) {
+        /* Attributes */
+        vih   : float;
+        vil   : float;
+        vimax : float;
+        vimin : float;
+
+    }
+    iv_lut_template( iv_lut_template_name ) {
+        /* Attributes */
+        variable_1 : string( "iv_output_voltage" );
+
+        /* Functions */
+        index_1( list );
+
+    }
+    ccs_timing_base_curve_template( ccs_timing_base_curve_template_name ) {
+        /* Attributes */
+        variable_1 : string( "nomalized_voltage" );
+
+        /* Functions */
+        index_1 ( list );
+
+        base_curve_type : string ( "half" );
+
+    }
+    ccs_timing_base_curve( ccs_timing_base_curve_name ) {
+        values( <unknown_arguments> );
+        curve_id : int;
+    }
+    base_curves( base_curves_name ) {
+        base_curve_type : string ( "ccs_timing_half_curve");
+        curve_x( list );
+        curve_y( list );
+    }
+    sensitization( sensitization_group_name ) {
+        pin_names( list );
+        vector( list );
+    }
+    compact_lut_template (compact_template_name) {
+        base_curves_group : string ("nc_compact_ccs_curve_1");
+        variable_1 : string( "input_net_transition", "total_output_net_capacitance", "output_net_length", "output_net_wire_cap", "output_net_pin_cap", "constrained_pin_transition", "related_pin_transition", "connect_delay", "output_pin_transition", "related_out_total_output_net_capacitance", "related_out_output_net_length", "related_out_output_net_wire_cap", "related_out_output_net_pin_cap", "related_output_pin_capacitance", "fanout_number", "fanout_pin_capacitance", "driver_slew", "rc_product" , "input_voltage", or "input_noise_height");
+        variable_2 : string( "input_net_transition", "total_output_net_capacitance", "output_net_length", "output_net_wire_cap", "output_net_pin_cap", "constrained_pin_transition", "related_pin_transition", "connect_delay", "output_pin_transition", "related_out_total_output_net_capacitance", "related_out_output_net_length", "related_out_output_net_wire_cap", "related_out_output_net_pin_cap", "related_output_pin_capacitance", "fanout_number", "fanout_pin_capacitance", "driver_slew", "rc_product" , "output_voltage", or "input_noise_width");
+        variable_3 : string ("curve_parameters");
+        index_1( list );
+        index_2( list );
+        index_3( list );
+    }
+
+    lu_table_template( lu_table_template_name ) {
+        /* Attributes */
+        variable_1 : string( "input_net_transition", "total_output_net_capacitance", "output_net_length", "output_net_wire_cap", "output_net_pin_cap", "constrained_pin_transition", "related_pin_transition", "connect_delay", "output_pin_transition", "related_out_total_output_net_capacitance", "related_out_output_net_length", "related_out_output_net_wire_cap", "related_out_output_net_pin_cap", "related_output_pin_capacitance", "fanout_number", "fanout_pin_capacitance", "driver_slew", "rc_product" , "input_voltage", or "input_noise_height");
+        variable_2 : string( "input_net_transition", "total_output_net_capacitance", "output_net_length", "output_net_wire_cap", "output_net_pin_cap", "constrained_pin_transition", "related_pin_transition", "connect_delay", "output_pin_transition", "related_out_total_output_net_capacitance", "related_out_output_net_length", "related_out_output_net_wire_cap", "related_out_output_net_pin_cap", "related_output_pin_capacitance", "fanout_number", "fanout_pin_capacitance", "driver_slew", "rc_product" , "output_voltage", "normalized_voltage", or "input_noise_width");
+        variable_3 : string( "input_net_transition", "total_output_net_capacitance", "output_net_length", "output_net_wire_cap", "output_net_pin_cap", "constrained_pin_transition", "related_pin_transition", "connect_delay", "output_pin_transition", "related_out_total_output_net_capacitance", "related_out_output_net_length", "related_out_output_net_wire_cap", "related_out_output_net_pin_cap", "related_output_pin_capacitance", "fanout_number", "fanout_pin_capacitance", "driver_slew", or "time");
+        variable_4 : string( "time");
+
+        /* Functions */
+        index_1( list );
+        index_2( list );
+        index_3( list );
+        index_4( list);
+
+        /* Sub-groups */
+        domain( domain_name ) {
+        }
+
+    }
+    maxcap_lut_template( maxcap_lut_template_name ) {
+        /* Attributes */
+        variable_1 : string( "frequency", or "input_transition_time" );
+        variable_2 : string( "input_transition_time" );
+
+        /* Functions */
+        index_1( list );
+        index_2( list );
+
+        /* Sub-groups */
+        domain( domain_name ) {
+        }
+
+    }
+    maxtrans_lut_template( maxtrans_lut_template_name ) {
+        /* Attributes */
+        variable_1 : string( "frequency", or "input_transition_time" );
+        variable_2 : string( "input_transition_time" );
+
+        /* Functions */
+        index_1( list );
+        index_2( list );
+
+        /* Sub-groups */
+        domain( domain_name ) {
+        }
+
+    }
+    model( model_name ) {
+        /* Attributes */
+        area                         : float( > 0.0 ) := 0.0;
+        auxiliary_pad_cell           : boolean;
+        bus_naming_style             : virtual_attribute;
+        cell_footprint               : string;
+        cell_leakage_power           : float( > 0.0 );
+        cell_name                    : string;
+        clock_gating_integrated_cell : string;
+        contention_condition         : string;
+        dont_fault                   : string;
+        dont_touch                   : boolean;
+        dont_use                     : boolean;
+        em_temp_degradation_factor   : float( > 0.0 );
+        failure_rate                 : float( > 0.0 and  < 1000000000.0 );
+        geometry_print               : string;
+        handle_negative_constraint   : boolean;
+        ignore_verify_icg_type       : boolean;
+        interface_timing             : boolean;
+        is_clock_gating_cell         : boolean;
+        is_isolation_cell            : boolean;
+        is_level_shifter             : boolean;
+        map_only                     : boolean;
+        mpm_libname                  : string;
+        mpm_name                     : string;
+        observe_node                 : string;
+        pad_cell                     : boolean;
+        pad_type                     : enum( clock );
+        power_gating_cell            : string;
+        preferred                    : boolean;
+        scaling_factors              : string;
+        scan_group                   : string;
+        set_node                     : string;
+        single_bit_degenerate        : string;
+        threshold_voltage_group      : string;
+        timing_model_type            : enum( abstracted, extracted, or qtm );
+        use_for_size_only            : boolean;
+        user_function_class          : string;
+        vhdl_name                    : string;
+
+        /* Functions */
+        pin_equal( string );
+        pin_opposite( string, string );
+        short( <unknown_arguments> );
+
+        /* Sub-groups */
+        bundle( bundle_name ) {
+        }
+        bus( bus_name ) {
+        }
+        ff( ff_name_1,ff_name_2 ) {
+        }
+        ff_bank( ff_bank_name_1,ff_bank_name_2,ff_bank_name_3 ) {
+        }
+        generated_clock( generated_clock_name ) {
+        }
+        internal_power( internal_power_name ) {
+        }
+        latch( latch_name_1,latch_name_2 ) {
+        }
+        latch_bank( latch_bank_name_1,latch_bank_name_2,latch_bank_name_3 ) {
+        }
+        leakage_power( [leakage_power_name] ) {
+        }
+        memory( [memory_name] ) {
+        }
+        mode_definition( mode_definition_name ) {
+        }
+        pin( pin_name_1 [,...,pin_name_N] ) {
+        }
+        routing_track( routing_track_name ) {
+        }
+        seq( seq_name_1,seq_name_2 ) {
+        }
+        seq_bank( seq_bank_name_1,seq_bank_name_2,seq_bank_name_3 ) {
+        }
+        state( state_name_1,state_name_2 ) {
+        }
+        statetable( statetable_name_1,statetable_name_2 ) {
+        }
+        test_cell( [test_cell_name] ) {
+        }
+        type( type_name ) {
+        }
+
+    }
+    noise_lut_template( noise_lut_template_name ) {
+        /* Attributes */
+        variable_1 : string( "input_noise_width", or "total_output_net_capacitance" );
+        variable_2 : string( "input_noise_width", or "total_output_net_capacitance" );
+
+        /* Functions */
+        index_1( list );
+        index_2( list );
+
+    }
+    operating_conditions( operating_conditions_name ) {
+        /* Attributes */
+        calc_mode   : string;
+        parameter1  : float;
+        parameter2  : float;
+        parameter3  : float;
+        parameter4  : float;
+        parameter5  : float;
+        process     : float( > 0.0 and  < 100.0 ) := nom_process;
+        temperature : float( > -300.0 and  < 500.0 ) := nom_temperature;
+        tree_type   : string( "best_case_tree", "worst_case_tree", or "balanced_tree" );
+        voltage     : float( > 0.0 and  < 1000.0 ) := nom_voltage;
+
+        /* Functions */
+        power_rail( string, float );
+
+    }
+    normalized_driver_waveform( driver_waveform_template_name ) {
+        /* Attributes */
+        variable_1 : string( "input_net_transition" );
+        variable_2 : string( "normalized_voltage" );
+
+        /* Functions */
+        driver_waveform_name : string;
+        index_1( list );
+        index_2( list );
+        values( <unknown_arguments> );
+
+    }
+    output_current_template( output_current_template_name ) {
+        /* Attributes */
+        variable_1 : string( "input_net_transition", "total_output_net_capacitance", or "time" );
+        variable_2 : string( "input_net_transition", "total_output_net_capacitance", or "time" );
+        variable_3 : string( "input_net_transition", "total_output_net_capacitance", or "time" );
+
+        /* Functions */
+        index_1( list );
+        index_2( list );
+        index_3( list );
+
+    }
+    pg_current_template( pg_current_template_name ) {
+        /* Attributes */
+        variable_1 : string( "input_net_transition", "total_output_net_capacitance", or "time" );
+        variable_2 : string( "input_net_transition", "total_output_net_capacitance", or "time" );
+        variable_3 : string( "input_net_transition", "total_output_net_capacitance", or "time" );
+        variable_4 : string( "time" );
+
+        /* Functions */
+        index_1( list );
+        index_2( list );
+        index_3( list );
+        index_4( list );
+    }
+    ccs_lu_table_template( ccs_lu_table_template_name ) {
+        /* Attributes */
+        variable_1 : string( "input_net_transition", "total_output_net_capacitance", or "time" );
+        variable_2 : string( "input_net_transition", "total_output_net_capacitance", or "time" );
+        variable_3 : string( "input_net_transition", "total_output_net_capacitance", or "time" );
+
+        /* Functions */
+        index_1( list );
+        index_2( list );
+        index_3( list );
+
+    }
+    output_voltage( output_voltage_name ) {
+        /* Attributes */
+        voh   : float;
+        vol   : float;
+        vomax : float;
+        vomin : float;
+
+    }
+    poly_template( poly_template_name ) {
+        /* Functions */
+        mapping( string, string );
+        orders( <unknown_arguments> );
+        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+        variables( <unknown_arguments> );
+
+        /* Sub-groups */
+        domain( domain_name ) {
+			variables( list );
+			variable_1_range(float, float);
+			variable_2_range(float, float);
+			variable_3_range(float, float);
+			variable_4_range(float, float);
+			variable_5_range(float, float);
+			variable_6_range(float, float);
+			mapping(string, string);
+        }
+
+    }
+    power_lut_template( power_lut_template_name ) {
+        /* Attributes */
+        variable_1 : string( "input_transition_time", "total_output_net_capacitance", or "equal_or_opposite_output_net_capacitance" );
+        variable_2 : string( "input_transition_time", "total_output_net_capacitance", or "equal_or_opposite_output_net_capacitance" );
+        variable_3 : string( "input_transition_time", "total_output_net_capacitance", or "equal_or_opposite_output_net_capacitance" );
+
+        /* Functions */
+        index_1( list );
+        index_2( list );
+        index_3( list );
+
+        /* Sub-groups */
+        domain( domain_name ) {
+        }
+
+    }
+    power_poly_template( power_poly_template_name ) {
+        /* Functions */
+        mapping( string, string );
+        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+        variables( <unknown_arguments> );
+
+        /* Sub-groups */
+        domain( domain_name ) {
+        }
+
+    }
+    power_supply( [power_supply_name] ) {
+        /* Attributes */
+        default_power_rail : string;
+
+        /* Functions */
+        power_rail( string, float );
+
+    }
+    propagation_lut_template( propagation_lut_template_name ) {
+        /* Attributes */
+        variable_1 : string( "input_noise_width", "input_noise_height", or "total_output_net_capacitance" );
+        variable_2 : string( "input_noise_width", "input_noise_height", or "total_output_net_capacitance" );
+        variable_3 : string( "input_noise_width", "input_noise_height", or "total_output_net_capacitance" );
+
+        /* Functions */
+        index_1( list );
+        index_2( list );
+        index_3( list );
+
+    }
+    rise_net_delay( rise_net_delay_name ) {
+        /* Attributes */
+        poly_convert : boolean;
+        process      : string;
+        threshold    : float( > 0.0 and  < 100.0 );
+
+        /* Functions */
+        coefs( list );
+        index_1( list );
+        index_2( list );
+        index_3( list );
+        intermediate_values( <unknown_arguments> );
+        orders( list );
+        values( <unknown_arguments> );
+        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+        /* Sub-groups */
+        domain( domain_name ) {
+        }
+
+    }
+    rise_transition_degradation( rise_transition_degradation_name ) {
+        /* Attributes */
+        poly_convert : boolean;
+        process      : string;
+        threshold    : float( > 0.0 and  < 100.0 );
+
+        /* Functions */
+        coefs( list );
+        index_1( list );
+        index_2( list );
+        index_3( list );
+        intermediate_values( <unknown_arguments> );
+        orders( list );
+        values( <unknown_arguments> );
+        variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+        /* Sub-groups */
+        domain( domain_name ) {
+        }
+
+    }
+    scaled_cell( scaled_cell_name_1,scaled_cell_name_2 ) {
+        /* Attributes */
+        area                         : float( > 0.0 ) := 0.0;
+        auxiliary_pad_cell           : boolean;
+        bus_naming_style             : virtual_attribute;
+        cell_footprint               : string;
+        cell_leakage_power           : float( > 0.0 );
+        clock_gating_integrated_cell : string;
+        contention_condition         : string;
+        dont_fault                   : string;
+        dont_touch                   : boolean;
+        dont_use                     : boolean;
+        em_temp_degradation_factor   : float( > 0.0 );
+        failure_rate                 : float( > 0.0 and  < 1000000000.0 );
+        geometry_print               : string;
+        handle_negative_constraint   : boolean;
+        ignore_verify_icg_type       : boolean;
+        interface_timing             : boolean;
+        is_clock_gating_cell         : boolean;
+        is_isolation_cell            : boolean;
+        is_level_shifter             : boolean;
+        map_only                     : boolean;
+        mpm_libname                  : string;
+        mpm_name                     : string;
+        observe_node                 : string;
+        pad_cell                     : boolean;
+        pad_type                     : enum( clock );
+        power_gating_cell            : string;
+        preferred                    : boolean;
+        scaling_factors              : string;
+        scan_group                   : string;
+        set_node                     : string;
+        single_bit_degenerate        : string;
+        threshold_voltage_group      : string;
+        timing_model_type            : enum( abstracted, extracted, or qtm );
+        use_for_size_only            : boolean;
+        user_function_class          : string;
+        vhdl_name                    : string;
+
+        /* Functions */
+        pin_equal( string );
+        pin_opposite( string, string );
+
+        /* Sub-groups */
+        bundle( bundle_name ) {
+        }
+        bus( bus_name ) {
+        }
+        ff( ff_name_1,ff_name_2 ) {
+        }
+        ff_bank( ff_bank_name_1,ff_bank_name_2,ff_bank_name_3 ) {
+        }
+        generated_clock( generated_clock_name ) {
+        }
+        internal_power( internal_power_name ) {
+        }
+        latch( latch_name_1,latch_name_2 ) {
+        }
+        latch_bank( latch_bank_name_1,latch_bank_name_2,latch_bank_name_3 ) {
+        }
+        leakage_power( [leakage_power_name] ) {
+        }
+        memory( [memory_name] ) {
+        }
+        mode_definition( mode_definition_name ) {
+        }
+        pin( pin_name_1 [,...,pin_name_N] ) {
+        }
+        seq( seq_name_1,seq_name_2 ) {
+        }
+        seq_bank( seq_bank_name_1,seq_bank_name_2,seq_bank_name_3 ) {
+        }
+        state( state_name_1,state_name_2 ) {
+        }
+        statetable( statetable_name_1,statetable_name_2 ) {
+        }
+        test_cell( [test_cell_name] ) {
+        }
+        type( type_name ) {
+        }
+
+    }
+    scaling_factors( scaling_factors_name ) {
+        /* Attributes */
+        k_process_cell_degradation     : float( > -100.0 and  < 100.0 );
+        k_process_cell_fall            : float( > -100.0 and  < 100.0 );
+        k_process_cell_leakage_power   : float( > -100.0 and  < 100.0 );
+        k_process_cell_rise            : float( > -100.0 and  < 100.0 );
+        k_process_drive_current        : float( > -100.0 and  < 100.0 );
+        k_process_drive_fall           : float( > -100.0 and  < 100.0 );
+        k_process_drive_rise           : float( > -100.0 and  < 100.0 );
+        k_process_fall_delay_intercept : float( > -100.0 and  < 100.0 );
+        k_process_fall_pin_resistance  : float( > -100.0 and  < 100.0 );
+        k_process_fall_propagation     : float( > -100.0 and  < 100.0 );
+        k_process_fall_transition      : float( > -100.0 and  < 100.0 );
+        k_process_hold_fall            : float( > -100.0 and  < 100.0 );
+        k_process_hold_rise            : float( > -100.0 and  < 100.0 );
+        k_process_internal_power       : float( > -100.0 and  < 100.0 );
+        k_process_intrinsic_fall       : float( > -100.0 and  < 100.0 );
+        k_process_intrinsic_rise       : float( > -100.0 and  < 100.0 );
+        k_process_min_period           : float( > -100.0 and  < 100.0 );
+        k_process_min_pulse_width_high : float( > -100.0 and  < 100.0 );
+        k_process_min_pulse_width_low  : float( > -100.0 and  < 100.0 );
+        k_process_nochange_fall        : float( > -100.0 and  < 100.0 );
+        k_process_nochange_rise        : float( > -100.0 and  < 100.0 );
+        k_process_pin_cap              : float( > -100.0 and  < 100.0 );
+        k_process_pin_fall_cap         : float( > -100.0 and  < 100.0 );
+        k_process_pin_rise_cap         : float( > -100.0 and  < 100.0 );
+        k_process_recovery_fall        : float( > -100.0 and  < 100.0 );
+        k_process_recovery_rise        : float( > -100.0 and  < 100.0 );
+        k_process_removal_fall         : float( > -100.0 and  < 100.0 );
+        k_process_removal_rise         : float( > -100.0 and  < 100.0 );
+        k_process_rise_delay_intercept : float( > -100.0 and  < 100.0 );
+        k_process_rise_pin_resistance  : float( > -100.0 and  < 100.0 );
+        k_process_rise_propagation     : float( > -100.0 and  < 100.0 );
+        k_process_rise_transition      : float( > -100.0 and  < 100.0 );
+        k_process_setup_fall           : float( > -100.0 and  < 100.0 );
+        k_process_setup_rise           : float( > -100.0 and  < 100.0 );
+        k_process_skew_fall            : float( > -100.0 and  < 100.0 );
+        k_process_skew_rise            : float( > -100.0 and  < 100.0 );
+        k_process_slope_fall           : float( > -100.0 and  < 100.0 );
+        k_process_slope_rise           : float( > -100.0 and  < 100.0 );
+        k_temp_cell_degradation        : float( > -100.0 and  < 100.0 );
+        k_temp_cell_fall               : float( > -100.0 and  < 100.0 );
+        k_temp_cell_leakage_power      : float( > -100.0 and  < 100.0 );
+        k_temp_cell_rise               : float( > -100.0 and  < 100.0 );
+        k_temp_drive_current           : float( > -100.0 and  < 100.0 );
+        k_temp_drive_fall              : float( > -100.0 and  < 100.0 );
+        k_temp_drive_rise              : float( > -100.0 and  < 100.0 );
+        k_temp_fall_delay_intercept    : float( > -100.0 and  < 100.0 );
+        k_temp_fall_pin_resistance     : float( > -100.0 and  < 100.0 );
+        k_temp_fall_propagation        : float( > -100.0 and  < 100.0 );
+        k_temp_fall_transition         : float( > -100.0 and  < 100.0 );
+        k_temp_hold_fall               : float( > -100.0 and  < 100.0 );
+        k_temp_hold_rise               : float( > -100.0 and  < 100.0 );
+        k_temp_internal_power          : float( > -100.0 and  < 100.0 );
+        k_temp_intrinsic_fall          : float( > -100.0 and  < 100.0 );
+        k_temp_intrinsic_rise          : float( > -100.0 and  < 100.0 );
+        k_temp_min_period              : float( > -100.0 and  < 100.0 );
+        k_temp_min_pulse_width_high    : float( > -100.0 and  < 100.0 );
+        k_temp_min_pulse_width_low     : float( > -100.0 and  < 100.0 );
+        k_temp_nochange_fall           : float( > -100.0 and  < 100.0 );
+        k_temp_nochange_rise           : float( > -100.0 and  < 100.0 );
+        k_temp_pin_cap                 : float( > -100.0 and  < 100.0 );
+        k_temp_recovery_fall           : float( > -100.0 and  < 100.0 );
+        k_temp_recovery_rise           : float( > -100.0 and  < 100.0 );
+        k_temp_removal_fall            : float( > -100.0 and  < 100.0 );
+        k_temp_removal_rise            : float( > -100.0 and  < 100.0 );
+        k_temp_rise_delay_intercept    : float( > -100.0 and  < 100.0 );
+        k_temp_rise_pin_resistance     : float( > -100.0 and  < 100.0 );
+        k_temp_rise_propagation        : float( > -100.0 and  < 100.0 );
+        k_temp_rise_transition         : float( > -100.0 and  < 100.0 );
+        k_temp_setup_fall              : float( > -100.0 and  < 100.0 );
+        k_temp_setup_rise              : float( > -100.0 and  < 100.0 );
+        k_temp_skew_fall               : float( > -100.0 and  < 100.0 );
+        k_temp_skew_rise               : float( > -100.0 and  < 100.0 );
+        k_temp_slope_fall              : float( > -100.0 and  < 100.0 );
+        k_temp_slope_rise              : float( > -100.0 and  < 100.0 );
+        k_volt_cell_degradation        : float( > -100.0 and  < 100.0 );
+        k_volt_cell_fall               : float( > -100.0 and  < 100.0 );
+        k_volt_cell_leakage_power      : float( > -100.0 and  < 100.0 );
+        k_volt_cell_rise               : float( > -100.0 and  < 100.0 );
+        k_volt_drive_current           : float( > -100.0 and  < 100.0 );
+        k_volt_drive_fall              : float( > -100.0 and  < 100.0 );
+        k_volt_drive_rise              : float( > -100.0 and  < 100.0 );
+        k_volt_fall_delay_intercept    : float( > -100.0 and  < 100.0 );
+        k_volt_fall_pin_resistance     : float( > -100.0 and  < 100.0 );
+        k_volt_fall_propagation        : float( > -100.0 and  < 100.0 );
+        k_volt_fall_transition         : float( > -100.0 and  < 100.0 );
+        k_volt_hold_fall               : float( > -100.0 and  < 100.0 );
+        k_volt_hold_rise               : float( > -100.0 and  < 100.0 );
+        k_volt_internal_power          : float( > -100.0 and  < 100.0 );
+        k_volt_intrinsic_fall          : float( > -100.0 and  < 100.0 );
+        k_volt_intrinsic_rise          : float( > -100.0 and  < 100.0 );
+        k_volt_min_period              : float( > -100.0 and  < 100.0 );
+        k_volt_min_pulse_width_high    : float( > -100.0 and  < 100.0 );
+        k_volt_min_pulse_width_low     : float( > -100.0 and  < 100.0 );
+        k_volt_nochange_fall           : float( > -100.0 and  < 100.0 );
+        k_volt_nochange_rise           : float( > -100.0 and  < 100.0 );
+        k_volt_pin_cap                 : float( > -100.0 and  < 100.0 );
+        k_volt_recovery_fall           : float( > -100.0 and  < 100.0 );
+        k_volt_recovery_rise           : float( > -100.0 and  < 100.0 );
+        k_volt_removal_fall            : float( > -100.0 and  < 100.0 );
+        k_volt_removal_rise            : float( > -100.0 and  < 100.0 );
+        k_volt_rise_delay_intercept    : float( > -100.0 and  < 100.0 );
+        k_volt_rise_pin_resistance     : float( > -100.0 and  < 100.0 );
+        k_volt_rise_propagation        : float( > -100.0 and  < 100.0 );
+        k_volt_rise_transition         : float( > -100.0 and  < 100.0 );
+        k_volt_setup_fall              : float( > -100.0 and  < 100.0 );
+        k_volt_setup_rise              : float( > -100.0 and  < 100.0 );
+        k_volt_skew_fall               : float( > -100.0 and  < 100.0 );
+        k_volt_skew_rise               : float( > -100.0 and  < 100.0 );
+        k_volt_slope_fall              : float( > -100.0 and  < 100.0 );
+        k_volt_slope_rise              : float( > -100.0 and  < 100.0 );
+
+    }
+    timing_range( timing_range_name ) {
+        /* Attributes */
+        faster_factor : float( > 0.0 ) := 1.0;
+        slower_factor : float( > 0.0 ) := 1.0;
+
+    }
+    type( type_name ) {
+    }
+    user_parameters( [user_parameters_name] ) {
+        /* Attributes */
+        parameter1 : float;
+        parameter2 : float;
+        parameter3 : float;
+        parameter4 : float;
+        parameter5 : float;
+
+    }
+    wire_load( wire_load_name ) {
+        /* Attributes */
+        area        : float( > 0.0 ) := 0.0;
+        capacitance : float( > 0.0 ) := 1.0;
+        resistance  : float( > 0.0 ) := 0.0;
+        slope       : float( > 0.0 ) := 0.0;
+
+        /* Functions */
+        fanout_length( <unknown_arguments> );
+
+        /* Sub-groups */
+        interconnect_delay( interconnect_delay_name ) {
+            /* Attributes */
+            poly_convert : boolean;
+            process      : string;
+            threshold    : float( > 0.0 and  < 100.0 );
+
+            /* Functions */
+            coefs( list );
+            index_1( list );
+            index_2( list );
+            index_3( list );
+            intermediate_values( <unknown_arguments> );
+            orders( list );
+            values( <unknown_arguments> );
+            variable_1_range( float, float );
+                        variable_2_range( float, float );
+                        variable_3_range( float, float );
+                        variable_4_range( float, float );
+                        variable_5_range( float, float );
+                        variable_6_range( float, float );
+                        variable_7_range( float, float );
+
+            /* Sub-groups */
+            domain( domain_name ) {
+            }
+
+        }
+
+    }
+    wire_load_selection( [wire_load_selection_name] ) {
+        /* Functions */
+        wire_load_from_area( float, float, string );
+
+    }
+    wire_load_table( wire_load_table_name ) {
+        /* Functions */
+        fanout_area( integer, float );
+        fanout_capacitance( integer, float );
+        fanout_length( integer, float );
+        fanout_resistance( integer, float );
+
+    }
+
+}

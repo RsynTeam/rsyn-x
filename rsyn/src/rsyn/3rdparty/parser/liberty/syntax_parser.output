@@ -1,0 +1,1362 @@
+Grammar
+
+    0 $accept: file $end
+
+    1 file: group
+
+    2 $@1: %empty
+
+    3 group: head LCURLY $@1 statements RCURLY
+
+    4 $@2: %empty
+
+    5 group: head LCURLY $@2 RCURLY
+
+    6 statements: statement
+    7           | statements statement
+
+    8 statement: simple_attr
+    9          | complex_attr
+   10          | group
+
+   11 simple_attr: IDENT COLON KW_VIRTATTR SEMI
+   12            | IDENT COLON KW_STRING SEMI
+   13            | IDENT COLON KW_STRING string_enum SEMI
+   14            | IDENT COLON KW_FLOAT float_constraint SEMI
+   15            | IDENT COLON KW_FLOAT SEMI
+   16            | IDENT COLON KW_ENUM string_enum SEMI
+   17            | IDENT COLON KW_SHORT SEMI
+   18            | IDENT COLON KW_SHORT int_constraint SEMI
+   19            | IDENT COLON KW_INTEGER SEMI
+   20            | IDENT COLON KW_INTEGER int_constraint SEMI
+   21            | IDENT COLON KW_BOOLEAN SEMI
+
+   22 string_enum: LPAR s_or_i_list RPAR
+
+   23 s_or_i_list: s_or_i
+   24            | s_or_i_list COMMA s_or_i
+   25            | s_or_i_list COMMA KW_OR s_or_i
+
+   26 float_constraint: LPAR GREATERTHAN NUM RPAR
+   27                 | LPAR LESSTHAN NUM RPAR
+   28                 | LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR
+   29                 | COLONEQ NUM
+   30                 | LPAR GREATERTHAN NUM RPAR COLONEQ NUM
+   31                 | LPAR LESSTHAN NUM RPAR COLONEQ NUM
+   32                 | LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR COLONEQ NUM
+   33                 | COLONEQ s_or_i
+   34                 | LPAR GREATERTHAN NUM RPAR COLONEQ s_or_i
+   35                 | LPAR LESSTHAN NUM RPAR COLONEQ s_or_i
+   36                 | LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR COLONEQ s_or_i
+
+   37 int_constraint: LPAR GREATERTHAN NUM RPAR
+   38               | LPAR LESSTHAN NUM RPAR
+   39               | LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR
+   40               | COLONEQ NUM
+   41               | LPAR GREATERTHAN NUM RPAR COLONEQ NUM
+   42               | LPAR LESSTHAN NUM RPAR COLONEQ NUM
+   43               | LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR COLONEQ NUM
+   44               | COLONEQ s_or_i
+   45               | LPAR GREATERTHAN NUM RPAR COLONEQ s_or_i
+   46               | LPAR LESSTHAN NUM RPAR COLONEQ s_or_i
+   47               | LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR COLONEQ s_or_i
+
+   48 complex_attr: head SEMI
+
+   49 head: IDENT LPAR arg_or_namelist RPAR
+   50     | KW_SHORT LPAR arg_or_namelist RPAR
+
+   51 arg_or_namelist: namelist
+   52                | arglist
+
+   53 namelist: %empty
+   54         | IDENT
+   55         | LBRACK IDENT RBRACK
+   56         | IDENT LBRACK COMMA DOTS COMMA IDENT RBRACK
+   57         | IDENT COMMA IDENT
+   58         | IDENT COMMA IDENT COMMA IDENT
+
+   59 arglist: KW_STRING
+   60        | KW_INTEGER
+   61        | KW_FLOAT
+   62        | KW_UNK_ARGS
+   63        | KW_LIST
+   64        | arglist COMMA KW_STRING
+   65        | arglist COMMA KW_INTEGER
+   66        | arglist COMMA KW_FLOAT
+   67        | arglist COMMA KW_LIST
+
+   68 s_or_i: STRING
+   69       | IDENT
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+COMMA (258) 24 25 56 57 58 64 65 66 67
+SEMI (259) 11 12 13 14 15 16 17 18 19 20 21 48
+LPAR (260) 22 26 27 28 30 31 32 34 35 36 37 38 39 41 42 43 45 46 47
+    49 50
+RPAR (261) 22 26 27 28 30 31 32 34 35 36 37 38 39 41 42 43 45 46 47
+    49 50
+LCURLY (262) 3 5
+RCURLY (263) 3 5
+COLON (264) 11 12 13 14 15 16 17 18 19 20 21
+LBRACK (265) 55 56
+RBRACK (266) 55 56
+KW_FLOAT (267) 14 15 61 66
+KW_STRING (268) 12 13 59 64
+KW_ENUM (269) 16
+KW_UNK_ARGS (270) 62
+KW_INTEGER (271) 19 20 60 65
+KW_VIRTATTR (272) 11
+KW_SHORT (273) 17 18 50
+KW_OR (274) 25
+KW_AND (275) 28 32 36 39 43 47
+KW_BOOLEAN (276) 21
+COLONEQ (277) 29 30 31 32 33 34 35 36 40 41 42 43 44 45 46 47
+KW_LIST (278) 63 67
+GREATERTHAN (279) 26 28 30 32 34 36 37 39 41 43 45 47
+LESSTHAN (280) 27 28 31 32 35 36 38 39 42 43 46 47
+DOTS (281) 56
+NUM (282) 26 27 28 29 30 31 32 34 35 36 37 38 39 40 41 42 43 45 46
+    47
+STRING (283) 68
+IDENT (284) 11 12 13 14 15 16 17 18 19 20 21 49 54 55 56 57 58 69
+
+
+Nonterminals, with rules where they appear
+
+$accept (30)
+    on left: 0
+file (31)
+    on left: 1, on right: 0
+group (32)
+    on left: 3 5, on right: 1 10
+$@1 (33)
+    on left: 2, on right: 3
+$@2 (34)
+    on left: 4, on right: 5
+statements (35)
+    on left: 6 7, on right: 3 7
+statement (36)
+    on left: 8 9 10, on right: 6 7
+simple_attr (37)
+    on left: 11 12 13 14 15 16 17 18 19 20 21, on right: 8
+string_enum (38)
+    on left: 22, on right: 13 16
+s_or_i_list (39)
+    on left: 23 24 25, on right: 22 24 25
+float_constraint (40)
+    on left: 26 27 28 29 30 31 32 33 34 35 36, on right: 14
+int_constraint (41)
+    on left: 37 38 39 40 41 42 43 44 45 46 47, on right: 18 20
+complex_attr (42)
+    on left: 48, on right: 9
+head (43)
+    on left: 49 50, on right: 3 5 48
+arg_or_namelist (44)
+    on left: 51 52, on right: 49 50
+namelist (45)
+    on left: 53 54 55 56 57 58, on right: 51
+arglist (46)
+    on left: 59 60 61 62 63 64 65 66 67, on right: 52 64 65 66 67
+s_or_i (47)
+    on left: 68 69, on right: 23 24 25 33 34 35 36 44 45 46 47
+
+
+State 0
+
+    0 $accept: . file $end
+
+    KW_SHORT  shift, and go to state 1
+    IDENT     shift, and go to state 2
+
+    file   go to state 3
+    group  go to state 4
+    head   go to state 5
+
+
+State 1
+
+   50 head: KW_SHORT . LPAR arg_or_namelist RPAR
+
+    LPAR  shift, and go to state 6
+
+
+State 2
+
+   49 head: IDENT . LPAR arg_or_namelist RPAR
+
+    LPAR  shift, and go to state 7
+
+
+State 3
+
+    0 $accept: file . $end
+
+    $end  shift, and go to state 8
+
+
+State 4
+
+    1 file: group .
+
+    $default  reduce using rule 1 (file)
+
+
+State 5
+
+    3 group: head . LCURLY $@1 statements RCURLY
+    5      | head . LCURLY $@2 RCURLY
+
+    LCURLY  shift, and go to state 9
+
+
+State 6
+
+   50 head: KW_SHORT LPAR . arg_or_namelist RPAR
+
+    LBRACK       shift, and go to state 10
+    KW_FLOAT     shift, and go to state 11
+    KW_STRING    shift, and go to state 12
+    KW_UNK_ARGS  shift, and go to state 13
+    KW_INTEGER   shift, and go to state 14
+    KW_LIST      shift, and go to state 15
+    IDENT        shift, and go to state 16
+
+    $default  reduce using rule 53 (namelist)
+
+    arg_or_namelist  go to state 17
+    namelist         go to state 18
+    arglist          go to state 19
+
+
+State 7
+
+   49 head: IDENT LPAR . arg_or_namelist RPAR
+
+    LBRACK       shift, and go to state 10
+    KW_FLOAT     shift, and go to state 11
+    KW_STRING    shift, and go to state 12
+    KW_UNK_ARGS  shift, and go to state 13
+    KW_INTEGER   shift, and go to state 14
+    KW_LIST      shift, and go to state 15
+    IDENT        shift, and go to state 16
+
+    $default  reduce using rule 53 (namelist)
+
+    arg_or_namelist  go to state 20
+    namelist         go to state 18
+    arglist          go to state 19
+
+
+State 8
+
+    0 $accept: file $end .
+
+    $default  accept
+
+
+State 9
+
+    3 group: head LCURLY . $@1 statements RCURLY
+    5      | head LCURLY . $@2 RCURLY
+
+    RCURLY    reduce using rule 4 ($@2)
+    $default  reduce using rule 2 ($@1)
+
+    $@1  go to state 21
+    $@2  go to state 22
+
+
+State 10
+
+   55 namelist: LBRACK . IDENT RBRACK
+
+    IDENT  shift, and go to state 23
+
+
+State 11
+
+   61 arglist: KW_FLOAT .
+
+    $default  reduce using rule 61 (arglist)
+
+
+State 12
+
+   59 arglist: KW_STRING .
+
+    $default  reduce using rule 59 (arglist)
+
+
+State 13
+
+   62 arglist: KW_UNK_ARGS .
+
+    $default  reduce using rule 62 (arglist)
+
+
+State 14
+
+   60 arglist: KW_INTEGER .
+
+    $default  reduce using rule 60 (arglist)
+
+
+State 15
+
+   63 arglist: KW_LIST .
+
+    $default  reduce using rule 63 (arglist)
+
+
+State 16
+
+   54 namelist: IDENT .
+   56         | IDENT . LBRACK COMMA DOTS COMMA IDENT RBRACK
+   57         | IDENT . COMMA IDENT
+   58         | IDENT . COMMA IDENT COMMA IDENT
+
+    COMMA   shift, and go to state 24
+    LBRACK  shift, and go to state 25
+
+    $default  reduce using rule 54 (namelist)
+
+
+State 17
+
+   50 head: KW_SHORT LPAR arg_or_namelist . RPAR
+
+    RPAR  shift, and go to state 26
+
+
+State 18
+
+   51 arg_or_namelist: namelist .
+
+    $default  reduce using rule 51 (arg_or_namelist)
+
+
+State 19
+
+   52 arg_or_namelist: arglist .
+   64 arglist: arglist . COMMA KW_STRING
+   65        | arglist . COMMA KW_INTEGER
+   66        | arglist . COMMA KW_FLOAT
+   67        | arglist . COMMA KW_LIST
+
+    COMMA  shift, and go to state 27
+
+    $default  reduce using rule 52 (arg_or_namelist)
+
+
+State 20
+
+   49 head: IDENT LPAR arg_or_namelist . RPAR
+
+    RPAR  shift, and go to state 28
+
+
+State 21
+
+    3 group: head LCURLY $@1 . statements RCURLY
+
+    KW_SHORT  shift, and go to state 1
+    IDENT     shift, and go to state 29
+
+    group         go to state 30
+    statements    go to state 31
+    statement     go to state 32
+    simple_attr   go to state 33
+    complex_attr  go to state 34
+    head          go to state 35
+
+
+State 22
+
+    5 group: head LCURLY $@2 . RCURLY
+
+    RCURLY  shift, and go to state 36
+
+
+State 23
+
+   55 namelist: LBRACK IDENT . RBRACK
+
+    RBRACK  shift, and go to state 37
+
+
+State 24
+
+   57 namelist: IDENT COMMA . IDENT
+   58         | IDENT COMMA . IDENT COMMA IDENT
+
+    IDENT  shift, and go to state 38
+
+
+State 25
+
+   56 namelist: IDENT LBRACK . COMMA DOTS COMMA IDENT RBRACK
+
+    COMMA  shift, and go to state 39
+
+
+State 26
+
+   50 head: KW_SHORT LPAR arg_or_namelist RPAR .
+
+    $default  reduce using rule 50 (head)
+
+
+State 27
+
+   64 arglist: arglist COMMA . KW_STRING
+   65        | arglist COMMA . KW_INTEGER
+   66        | arglist COMMA . KW_FLOAT
+   67        | arglist COMMA . KW_LIST
+
+    KW_FLOAT    shift, and go to state 40
+    KW_STRING   shift, and go to state 41
+    KW_INTEGER  shift, and go to state 42
+    KW_LIST     shift, and go to state 43
+
+
+State 28
+
+   49 head: IDENT LPAR arg_or_namelist RPAR .
+
+    $default  reduce using rule 49 (head)
+
+
+State 29
+
+   11 simple_attr: IDENT . COLON KW_VIRTATTR SEMI
+   12            | IDENT . COLON KW_STRING SEMI
+   13            | IDENT . COLON KW_STRING string_enum SEMI
+   14            | IDENT . COLON KW_FLOAT float_constraint SEMI
+   15            | IDENT . COLON KW_FLOAT SEMI
+   16            | IDENT . COLON KW_ENUM string_enum SEMI
+   17            | IDENT . COLON KW_SHORT SEMI
+   18            | IDENT . COLON KW_SHORT int_constraint SEMI
+   19            | IDENT . COLON KW_INTEGER SEMI
+   20            | IDENT . COLON KW_INTEGER int_constraint SEMI
+   21            | IDENT . COLON KW_BOOLEAN SEMI
+   49 head: IDENT . LPAR arg_or_namelist RPAR
+
+    LPAR   shift, and go to state 7
+    COLON  shift, and go to state 44
+
+
+State 30
+
+   10 statement: group .
+
+    $default  reduce using rule 10 (statement)
+
+
+State 31
+
+    3 group: head LCURLY $@1 statements . RCURLY
+    7 statements: statements . statement
+
+    RCURLY    shift, and go to state 45
+    KW_SHORT  shift, and go to state 1
+    IDENT     shift, and go to state 29
+
+    group         go to state 30
+    statement     go to state 46
+    simple_attr   go to state 33
+    complex_attr  go to state 34
+    head          go to state 35
+
+
+State 32
+
+    6 statements: statement .
+
+    $default  reduce using rule 6 (statements)
+
+
+State 33
+
+    8 statement: simple_attr .
+
+    $default  reduce using rule 8 (statement)
+
+
+State 34
+
+    9 statement: complex_attr .
+
+    $default  reduce using rule 9 (statement)
+
+
+State 35
+
+    3 group: head . LCURLY $@1 statements RCURLY
+    5      | head . LCURLY $@2 RCURLY
+   48 complex_attr: head . SEMI
+
+    SEMI    shift, and go to state 47
+    LCURLY  shift, and go to state 9
+
+
+State 36
+
+    5 group: head LCURLY $@2 RCURLY .
+
+    $default  reduce using rule 5 (group)
+
+
+State 37
+
+   55 namelist: LBRACK IDENT RBRACK .
+
+    $default  reduce using rule 55 (namelist)
+
+
+State 38
+
+   57 namelist: IDENT COMMA IDENT .
+   58         | IDENT COMMA IDENT . COMMA IDENT
+
+    COMMA  shift, and go to state 48
+
+    $default  reduce using rule 57 (namelist)
+
+
+State 39
+
+   56 namelist: IDENT LBRACK COMMA . DOTS COMMA IDENT RBRACK
+
+    DOTS  shift, and go to state 49
+
+
+State 40
+
+   66 arglist: arglist COMMA KW_FLOAT .
+
+    $default  reduce using rule 66 (arglist)
+
+
+State 41
+
+   64 arglist: arglist COMMA KW_STRING .
+
+    $default  reduce using rule 64 (arglist)
+
+
+State 42
+
+   65 arglist: arglist COMMA KW_INTEGER .
+
+    $default  reduce using rule 65 (arglist)
+
+
+State 43
+
+   67 arglist: arglist COMMA KW_LIST .
+
+    $default  reduce using rule 67 (arglist)
+
+
+State 44
+
+   11 simple_attr: IDENT COLON . KW_VIRTATTR SEMI
+   12            | IDENT COLON . KW_STRING SEMI
+   13            | IDENT COLON . KW_STRING string_enum SEMI
+   14            | IDENT COLON . KW_FLOAT float_constraint SEMI
+   15            | IDENT COLON . KW_FLOAT SEMI
+   16            | IDENT COLON . KW_ENUM string_enum SEMI
+   17            | IDENT COLON . KW_SHORT SEMI
+   18            | IDENT COLON . KW_SHORT int_constraint SEMI
+   19            | IDENT COLON . KW_INTEGER SEMI
+   20            | IDENT COLON . KW_INTEGER int_constraint SEMI
+   21            | IDENT COLON . KW_BOOLEAN SEMI
+
+    KW_FLOAT     shift, and go to state 50
+    KW_STRING    shift, and go to state 51
+    KW_ENUM      shift, and go to state 52
+    KW_INTEGER   shift, and go to state 53
+    KW_VIRTATTR  shift, and go to state 54
+    KW_SHORT     shift, and go to state 55
+    KW_BOOLEAN   shift, and go to state 56
+
+
+State 45
+
+    3 group: head LCURLY $@1 statements RCURLY .
+
+    $default  reduce using rule 3 (group)
+
+
+State 46
+
+    7 statements: statements statement .
+
+    $default  reduce using rule 7 (statements)
+
+
+State 47
+
+   48 complex_attr: head SEMI .
+
+    $default  reduce using rule 48 (complex_attr)
+
+
+State 48
+
+   58 namelist: IDENT COMMA IDENT COMMA . IDENT
+
+    IDENT  shift, and go to state 57
+
+
+State 49
+
+   56 namelist: IDENT LBRACK COMMA DOTS . COMMA IDENT RBRACK
+
+    COMMA  shift, and go to state 58
+
+
+State 50
+
+   14 simple_attr: IDENT COLON KW_FLOAT . float_constraint SEMI
+   15            | IDENT COLON KW_FLOAT . SEMI
+
+    SEMI     shift, and go to state 59
+    LPAR     shift, and go to state 60
+    COLONEQ  shift, and go to state 61
+
+    float_constraint  go to state 62
+
+
+State 51
+
+   12 simple_attr: IDENT COLON KW_STRING . SEMI
+   13            | IDENT COLON KW_STRING . string_enum SEMI
+
+    SEMI  shift, and go to state 63
+    LPAR  shift, and go to state 64
+
+    string_enum  go to state 65
+
+
+State 52
+
+   16 simple_attr: IDENT COLON KW_ENUM . string_enum SEMI
+
+    LPAR  shift, and go to state 64
+
+    string_enum  go to state 66
+
+
+State 53
+
+   19 simple_attr: IDENT COLON KW_INTEGER . SEMI
+   20            | IDENT COLON KW_INTEGER . int_constraint SEMI
+
+    SEMI     shift, and go to state 67
+    LPAR     shift, and go to state 68
+    COLONEQ  shift, and go to state 69
+
+    int_constraint  go to state 70
+
+
+State 54
+
+   11 simple_attr: IDENT COLON KW_VIRTATTR . SEMI
+
+    SEMI  shift, and go to state 71
+
+
+State 55
+
+   17 simple_attr: IDENT COLON KW_SHORT . SEMI
+   18            | IDENT COLON KW_SHORT . int_constraint SEMI
+
+    SEMI     shift, and go to state 72
+    LPAR     shift, and go to state 68
+    COLONEQ  shift, and go to state 69
+
+    int_constraint  go to state 73
+
+
+State 56
+
+   21 simple_attr: IDENT COLON KW_BOOLEAN . SEMI
+
+    SEMI  shift, and go to state 74
+
+
+State 57
+
+   58 namelist: IDENT COMMA IDENT COMMA IDENT .
+
+    $default  reduce using rule 58 (namelist)
+
+
+State 58
+
+   56 namelist: IDENT LBRACK COMMA DOTS COMMA . IDENT RBRACK
+
+    IDENT  shift, and go to state 75
+
+
+State 59
+
+   15 simple_attr: IDENT COLON KW_FLOAT SEMI .
+
+    $default  reduce using rule 15 (simple_attr)
+
+
+State 60
+
+   26 float_constraint: LPAR . GREATERTHAN NUM RPAR
+   27                 | LPAR . LESSTHAN NUM RPAR
+   28                 | LPAR . GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR
+   30                 | LPAR . GREATERTHAN NUM RPAR COLONEQ NUM
+   31                 | LPAR . LESSTHAN NUM RPAR COLONEQ NUM
+   32                 | LPAR . GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR COLONEQ NUM
+   34                 | LPAR . GREATERTHAN NUM RPAR COLONEQ s_or_i
+   35                 | LPAR . LESSTHAN NUM RPAR COLONEQ s_or_i
+   36                 | LPAR . GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR COLONEQ s_or_i
+
+    GREATERTHAN  shift, and go to state 76
+    LESSTHAN     shift, and go to state 77
+
+
+State 61
+
+   29 float_constraint: COLONEQ . NUM
+   33                 | COLONEQ . s_or_i
+
+    NUM     shift, and go to state 78
+    STRING  shift, and go to state 79
+    IDENT   shift, and go to state 80
+
+    s_or_i  go to state 81
+
+
+State 62
+
+   14 simple_attr: IDENT COLON KW_FLOAT float_constraint . SEMI
+
+    SEMI  shift, and go to state 82
+
+
+State 63
+
+   12 simple_attr: IDENT COLON KW_STRING SEMI .
+
+    $default  reduce using rule 12 (simple_attr)
+
+
+State 64
+
+   22 string_enum: LPAR . s_or_i_list RPAR
+
+    STRING  shift, and go to state 79
+    IDENT   shift, and go to state 80
+
+    s_or_i_list  go to state 83
+    s_or_i       go to state 84
+
+
+State 65
+
+   13 simple_attr: IDENT COLON KW_STRING string_enum . SEMI
+
+    SEMI  shift, and go to state 85
+
+
+State 66
+
+   16 simple_attr: IDENT COLON KW_ENUM string_enum . SEMI
+
+    SEMI  shift, and go to state 86
+
+
+State 67
+
+   19 simple_attr: IDENT COLON KW_INTEGER SEMI .
+
+    $default  reduce using rule 19 (simple_attr)
+
+
+State 68
+
+   37 int_constraint: LPAR . GREATERTHAN NUM RPAR
+   38               | LPAR . LESSTHAN NUM RPAR
+   39               | LPAR . GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR
+   41               | LPAR . GREATERTHAN NUM RPAR COLONEQ NUM
+   42               | LPAR . LESSTHAN NUM RPAR COLONEQ NUM
+   43               | LPAR . GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR COLONEQ NUM
+   45               | LPAR . GREATERTHAN NUM RPAR COLONEQ s_or_i
+   46               | LPAR . LESSTHAN NUM RPAR COLONEQ s_or_i
+   47               | LPAR . GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR COLONEQ s_or_i
+
+    GREATERTHAN  shift, and go to state 87
+    LESSTHAN     shift, and go to state 88
+
+
+State 69
+
+   40 int_constraint: COLONEQ . NUM
+   44               | COLONEQ . s_or_i
+
+    NUM     shift, and go to state 89
+    STRING  shift, and go to state 79
+    IDENT   shift, and go to state 80
+
+    s_or_i  go to state 90
+
+
+State 70
+
+   20 simple_attr: IDENT COLON KW_INTEGER int_constraint . SEMI
+
+    SEMI  shift, and go to state 91
+
+
+State 71
+
+   11 simple_attr: IDENT COLON KW_VIRTATTR SEMI .
+
+    $default  reduce using rule 11 (simple_attr)
+
+
+State 72
+
+   17 simple_attr: IDENT COLON KW_SHORT SEMI .
+
+    $default  reduce using rule 17 (simple_attr)
+
+
+State 73
+
+   18 simple_attr: IDENT COLON KW_SHORT int_constraint . SEMI
+
+    SEMI  shift, and go to state 92
+
+
+State 74
+
+   21 simple_attr: IDENT COLON KW_BOOLEAN SEMI .
+
+    $default  reduce using rule 21 (simple_attr)
+
+
+State 75
+
+   56 namelist: IDENT LBRACK COMMA DOTS COMMA IDENT . RBRACK
+
+    RBRACK  shift, and go to state 93
+
+
+State 76
+
+   26 float_constraint: LPAR GREATERTHAN . NUM RPAR
+   28                 | LPAR GREATERTHAN . NUM KW_AND LESSTHAN NUM RPAR
+   30                 | LPAR GREATERTHAN . NUM RPAR COLONEQ NUM
+   32                 | LPAR GREATERTHAN . NUM KW_AND LESSTHAN NUM RPAR COLONEQ NUM
+   34                 | LPAR GREATERTHAN . NUM RPAR COLONEQ s_or_i
+   36                 | LPAR GREATERTHAN . NUM KW_AND LESSTHAN NUM RPAR COLONEQ s_or_i
+
+    NUM  shift, and go to state 94
+
+
+State 77
+
+   27 float_constraint: LPAR LESSTHAN . NUM RPAR
+   31                 | LPAR LESSTHAN . NUM RPAR COLONEQ NUM
+   35                 | LPAR LESSTHAN . NUM RPAR COLONEQ s_or_i
+
+    NUM  shift, and go to state 95
+
+
+State 78
+
+   29 float_constraint: COLONEQ NUM .
+
+    $default  reduce using rule 29 (float_constraint)
+
+
+State 79
+
+   68 s_or_i: STRING .
+
+    $default  reduce using rule 68 (s_or_i)
+
+
+State 80
+
+   69 s_or_i: IDENT .
+
+    $default  reduce using rule 69 (s_or_i)
+
+
+State 81
+
+   33 float_constraint: COLONEQ s_or_i .
+
+    $default  reduce using rule 33 (float_constraint)
+
+
+State 82
+
+   14 simple_attr: IDENT COLON KW_FLOAT float_constraint SEMI .
+
+    $default  reduce using rule 14 (simple_attr)
+
+
+State 83
+
+   22 string_enum: LPAR s_or_i_list . RPAR
+   24 s_or_i_list: s_or_i_list . COMMA s_or_i
+   25            | s_or_i_list . COMMA KW_OR s_or_i
+
+    COMMA  shift, and go to state 96
+    RPAR   shift, and go to state 97
+
+
+State 84
+
+   23 s_or_i_list: s_or_i .
+
+    $default  reduce using rule 23 (s_or_i_list)
+
+
+State 85
+
+   13 simple_attr: IDENT COLON KW_STRING string_enum SEMI .
+
+    $default  reduce using rule 13 (simple_attr)
+
+
+State 86
+
+   16 simple_attr: IDENT COLON KW_ENUM string_enum SEMI .
+
+    $default  reduce using rule 16 (simple_attr)
+
+
+State 87
+
+   37 int_constraint: LPAR GREATERTHAN . NUM RPAR
+   39               | LPAR GREATERTHAN . NUM KW_AND LESSTHAN NUM RPAR
+   41               | LPAR GREATERTHAN . NUM RPAR COLONEQ NUM
+   43               | LPAR GREATERTHAN . NUM KW_AND LESSTHAN NUM RPAR COLONEQ NUM
+   45               | LPAR GREATERTHAN . NUM RPAR COLONEQ s_or_i
+   47               | LPAR GREATERTHAN . NUM KW_AND LESSTHAN NUM RPAR COLONEQ s_or_i
+
+    NUM  shift, and go to state 98
+
+
+State 88
+
+   38 int_constraint: LPAR LESSTHAN . NUM RPAR
+   42               | LPAR LESSTHAN . NUM RPAR COLONEQ NUM
+   46               | LPAR LESSTHAN . NUM RPAR COLONEQ s_or_i
+
+    NUM  shift, and go to state 99
+
+
+State 89
+
+   40 int_constraint: COLONEQ NUM .
+
+    $default  reduce using rule 40 (int_constraint)
+
+
+State 90
+
+   44 int_constraint: COLONEQ s_or_i .
+
+    $default  reduce using rule 44 (int_constraint)
+
+
+State 91
+
+   20 simple_attr: IDENT COLON KW_INTEGER int_constraint SEMI .
+
+    $default  reduce using rule 20 (simple_attr)
+
+
+State 92
+
+   18 simple_attr: IDENT COLON KW_SHORT int_constraint SEMI .
+
+    $default  reduce using rule 18 (simple_attr)
+
+
+State 93
+
+   56 namelist: IDENT LBRACK COMMA DOTS COMMA IDENT RBRACK .
+
+    $default  reduce using rule 56 (namelist)
+
+
+State 94
+
+   26 float_constraint: LPAR GREATERTHAN NUM . RPAR
+   28                 | LPAR GREATERTHAN NUM . KW_AND LESSTHAN NUM RPAR
+   30                 | LPAR GREATERTHAN NUM . RPAR COLONEQ NUM
+   32                 | LPAR GREATERTHAN NUM . KW_AND LESSTHAN NUM RPAR COLONEQ NUM
+   34                 | LPAR GREATERTHAN NUM . RPAR COLONEQ s_or_i
+   36                 | LPAR GREATERTHAN NUM . KW_AND LESSTHAN NUM RPAR COLONEQ s_or_i
+
+    RPAR    shift, and go to state 100
+    KW_AND  shift, and go to state 101
+
+
+State 95
+
+   27 float_constraint: LPAR LESSTHAN NUM . RPAR
+   31                 | LPAR LESSTHAN NUM . RPAR COLONEQ NUM
+   35                 | LPAR LESSTHAN NUM . RPAR COLONEQ s_or_i
+
+    RPAR  shift, and go to state 102
+
+
+State 96
+
+   24 s_or_i_list: s_or_i_list COMMA . s_or_i
+   25            | s_or_i_list COMMA . KW_OR s_or_i
+
+    KW_OR   shift, and go to state 103
+    STRING  shift, and go to state 79
+    IDENT   shift, and go to state 80
+
+    s_or_i  go to state 104
+
+
+State 97
+
+   22 string_enum: LPAR s_or_i_list RPAR .
+
+    $default  reduce using rule 22 (string_enum)
+
+
+State 98
+
+   37 int_constraint: LPAR GREATERTHAN NUM . RPAR
+   39               | LPAR GREATERTHAN NUM . KW_AND LESSTHAN NUM RPAR
+   41               | LPAR GREATERTHAN NUM . RPAR COLONEQ NUM
+   43               | LPAR GREATERTHAN NUM . KW_AND LESSTHAN NUM RPAR COLONEQ NUM
+   45               | LPAR GREATERTHAN NUM . RPAR COLONEQ s_or_i
+   47               | LPAR GREATERTHAN NUM . KW_AND LESSTHAN NUM RPAR COLONEQ s_or_i
+
+    RPAR    shift, and go to state 105
+    KW_AND  shift, and go to state 106
+
+
+State 99
+
+   38 int_constraint: LPAR LESSTHAN NUM . RPAR
+   42               | LPAR LESSTHAN NUM . RPAR COLONEQ NUM
+   46               | LPAR LESSTHAN NUM . RPAR COLONEQ s_or_i
+
+    RPAR  shift, and go to state 107
+
+
+State 100
+
+   26 float_constraint: LPAR GREATERTHAN NUM RPAR .
+   30                 | LPAR GREATERTHAN NUM RPAR . COLONEQ NUM
+   34                 | LPAR GREATERTHAN NUM RPAR . COLONEQ s_or_i
+
+    COLONEQ  shift, and go to state 108
+
+    $default  reduce using rule 26 (float_constraint)
+
+
+State 101
+
+   28 float_constraint: LPAR GREATERTHAN NUM KW_AND . LESSTHAN NUM RPAR
+   32                 | LPAR GREATERTHAN NUM KW_AND . LESSTHAN NUM RPAR COLONEQ NUM
+   36                 | LPAR GREATERTHAN NUM KW_AND . LESSTHAN NUM RPAR COLONEQ s_or_i
+
+    LESSTHAN  shift, and go to state 109
+
+
+State 102
+
+   27 float_constraint: LPAR LESSTHAN NUM RPAR .
+   31                 | LPAR LESSTHAN NUM RPAR . COLONEQ NUM
+   35                 | LPAR LESSTHAN NUM RPAR . COLONEQ s_or_i
+
+    COLONEQ  shift, and go to state 110
+
+    $default  reduce using rule 27 (float_constraint)
+
+
+State 103
+
+   25 s_or_i_list: s_or_i_list COMMA KW_OR . s_or_i
+
+    STRING  shift, and go to state 79
+    IDENT   shift, and go to state 80
+
+    s_or_i  go to state 111
+
+
+State 104
+
+   24 s_or_i_list: s_or_i_list COMMA s_or_i .
+
+    $default  reduce using rule 24 (s_or_i_list)
+
+
+State 105
+
+   37 int_constraint: LPAR GREATERTHAN NUM RPAR .
+   41               | LPAR GREATERTHAN NUM RPAR . COLONEQ NUM
+   45               | LPAR GREATERTHAN NUM RPAR . COLONEQ s_or_i
+
+    COLONEQ  shift, and go to state 112
+
+    $default  reduce using rule 37 (int_constraint)
+
+
+State 106
+
+   39 int_constraint: LPAR GREATERTHAN NUM KW_AND . LESSTHAN NUM RPAR
+   43               | LPAR GREATERTHAN NUM KW_AND . LESSTHAN NUM RPAR COLONEQ NUM
+   47               | LPAR GREATERTHAN NUM KW_AND . LESSTHAN NUM RPAR COLONEQ s_or_i
+
+    LESSTHAN  shift, and go to state 113
+
+
+State 107
+
+   38 int_constraint: LPAR LESSTHAN NUM RPAR .
+   42               | LPAR LESSTHAN NUM RPAR . COLONEQ NUM
+   46               | LPAR LESSTHAN NUM RPAR . COLONEQ s_or_i
+
+    COLONEQ  shift, and go to state 114
+
+    $default  reduce using rule 38 (int_constraint)
+
+
+State 108
+
+   30 float_constraint: LPAR GREATERTHAN NUM RPAR COLONEQ . NUM
+   34                 | LPAR GREATERTHAN NUM RPAR COLONEQ . s_or_i
+
+    NUM     shift, and go to state 115
+    STRING  shift, and go to state 79
+    IDENT   shift, and go to state 80
+
+    s_or_i  go to state 116
+
+
+State 109
+
+   28 float_constraint: LPAR GREATERTHAN NUM KW_AND LESSTHAN . NUM RPAR
+   32                 | LPAR GREATERTHAN NUM KW_AND LESSTHAN . NUM RPAR COLONEQ NUM
+   36                 | LPAR GREATERTHAN NUM KW_AND LESSTHAN . NUM RPAR COLONEQ s_or_i
+
+    NUM  shift, and go to state 117
+
+
+State 110
+
+   31 float_constraint: LPAR LESSTHAN NUM RPAR COLONEQ . NUM
+   35                 | LPAR LESSTHAN NUM RPAR COLONEQ . s_or_i
+
+    NUM     shift, and go to state 118
+    STRING  shift, and go to state 79
+    IDENT   shift, and go to state 80
+
+    s_or_i  go to state 119
+
+
+State 111
+
+   25 s_or_i_list: s_or_i_list COMMA KW_OR s_or_i .
+
+    $default  reduce using rule 25 (s_or_i_list)
+
+
+State 112
+
+   41 int_constraint: LPAR GREATERTHAN NUM RPAR COLONEQ . NUM
+   45               | LPAR GREATERTHAN NUM RPAR COLONEQ . s_or_i
+
+    NUM     shift, and go to state 120
+    STRING  shift, and go to state 79
+    IDENT   shift, and go to state 80
+
+    s_or_i  go to state 121
+
+
+State 113
+
+   39 int_constraint: LPAR GREATERTHAN NUM KW_AND LESSTHAN . NUM RPAR
+   43               | LPAR GREATERTHAN NUM KW_AND LESSTHAN . NUM RPAR COLONEQ NUM
+   47               | LPAR GREATERTHAN NUM KW_AND LESSTHAN . NUM RPAR COLONEQ s_or_i
+
+    NUM  shift, and go to state 122
+
+
+State 114
+
+   42 int_constraint: LPAR LESSTHAN NUM RPAR COLONEQ . NUM
+   46               | LPAR LESSTHAN NUM RPAR COLONEQ . s_or_i
+
+    NUM     shift, and go to state 123
+    STRING  shift, and go to state 79
+    IDENT   shift, and go to state 80
+
+    s_or_i  go to state 124
+
+
+State 115
+
+   30 float_constraint: LPAR GREATERTHAN NUM RPAR COLONEQ NUM .
+
+    $default  reduce using rule 30 (float_constraint)
+
+
+State 116
+
+   34 float_constraint: LPAR GREATERTHAN NUM RPAR COLONEQ s_or_i .
+
+    $default  reduce using rule 34 (float_constraint)
+
+
+State 117
+
+   28 float_constraint: LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM . RPAR
+   32                 | LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM . RPAR COLONEQ NUM
+   36                 | LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM . RPAR COLONEQ s_or_i
+
+    RPAR  shift, and go to state 125
+
+
+State 118
+
+   31 float_constraint: LPAR LESSTHAN NUM RPAR COLONEQ NUM .
+
+    $default  reduce using rule 31 (float_constraint)
+
+
+State 119
+
+   35 float_constraint: LPAR LESSTHAN NUM RPAR COLONEQ s_or_i .
+
+    $default  reduce using rule 35 (float_constraint)
+
+
+State 120
+
+   41 int_constraint: LPAR GREATERTHAN NUM RPAR COLONEQ NUM .
+
+    $default  reduce using rule 41 (int_constraint)
+
+
+State 121
+
+   45 int_constraint: LPAR GREATERTHAN NUM RPAR COLONEQ s_or_i .
+
+    $default  reduce using rule 45 (int_constraint)
+
+
+State 122
+
+   39 int_constraint: LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM . RPAR
+   43               | LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM . RPAR COLONEQ NUM
+   47               | LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM . RPAR COLONEQ s_or_i
+
+    RPAR  shift, and go to state 126
+
+
+State 123
+
+   42 int_constraint: LPAR LESSTHAN NUM RPAR COLONEQ NUM .
+
+    $default  reduce using rule 42 (int_constraint)
+
+
+State 124
+
+   46 int_constraint: LPAR LESSTHAN NUM RPAR COLONEQ s_or_i .
+
+    $default  reduce using rule 46 (int_constraint)
+
+
+State 125
+
+   28 float_constraint: LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR .
+   32                 | LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR . COLONEQ NUM
+   36                 | LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR . COLONEQ s_or_i
+
+    COLONEQ  shift, and go to state 127
+
+    $default  reduce using rule 28 (float_constraint)
+
+
+State 126
+
+   39 int_constraint: LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR .
+   43               | LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR . COLONEQ NUM
+   47               | LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR . COLONEQ s_or_i
+
+    COLONEQ  shift, and go to state 128
+
+    $default  reduce using rule 39 (int_constraint)
+
+
+State 127
+
+   32 float_constraint: LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR COLONEQ . NUM
+   36                 | LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR COLONEQ . s_or_i
+
+    NUM     shift, and go to state 129
+    STRING  shift, and go to state 79
+    IDENT   shift, and go to state 80
+
+    s_or_i  go to state 130
+
+
+State 128
+
+   43 int_constraint: LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR COLONEQ . NUM
+   47               | LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR COLONEQ . s_or_i
+
+    NUM     shift, and go to state 131
+    STRING  shift, and go to state 79
+    IDENT   shift, and go to state 80
+
+    s_or_i  go to state 132
+
+
+State 129
+
+   32 float_constraint: LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR COLONEQ NUM .
+
+    $default  reduce using rule 32 (float_constraint)
+
+
+State 130
+
+   36 float_constraint: LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR COLONEQ s_or_i .
+
+    $default  reduce using rule 36 (float_constraint)
+
+
+State 131
+
+   43 int_constraint: LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR COLONEQ NUM .
+
+    $default  reduce using rule 43 (int_constraint)
+
+
+State 132
+
+   47 int_constraint: LPAR GREATERTHAN NUM KW_AND LESSTHAN NUM RPAR COLONEQ s_or_i .
+
+    $default  reduce using rule 47 (int_constraint)

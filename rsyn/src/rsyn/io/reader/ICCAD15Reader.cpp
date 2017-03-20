@@ -1,0 +1,376 @@
+/* Copyright 2014-2017 Rsyn
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/* 
+ * File:   ICCAD15Reader.cpp
+ * Author: jucemar
+ * 
+ * Created on 20 de Fevereiro de 2017, 18:59
+ */
+
+#include "ICCAD15Reader.h"
+
+#include "rsyn/io/parser/lef_def/LEFControlParser.h"
+#include "rsyn/io/parser/lef_def/DEFControlParser.h"
+#include "rsyn/io/parser/sdc/SDCControlParser.h"
+#include "rsyn/io/parser/liberty/LibertyControlParser.h"
+#include "rsyn/io/parser/spef/SPEFControlParser.h"
+#include "rsyn/io/parser/verilog/SimplifiedVerilogReader.h"
+
+#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
+#include "rsyn/io/Graphics.h"
+#include "rsyn/model/routing/DefaultRoutingEstimationModel.h"
+#include "rsyn/model/routing/DefaultRoutingExtractionModel.h"
+#include "rsyn/model/routing/RCTree.h"
+#include "rsyn/model/library/LibraryCharacterizer.h"
+
+#include "rsyn/util/StreamStateSaver.h"
+#include "rsyn/util/Environment.h"
+
+namespace Rsyn {
+
+void ICCAD15Reader::load(Engine engine, const Json &options) {
+	this->engine = engine;
+	const bool globalPlacementOnly = options.value("globalPlacementOnly", false);
+
+	std::string path = options.value("path", "");
+	std::string file = options.value("config", "");
+	optionSetting = options.value("parms", "");
+	optionMaxDisplacement = options.value("maxDisplacement", 400);
+	optionTargetUtilization = options.value("targetUtilization", 0.85);
+	optionBenchmark = boost::filesystem::exists(file) ?
+		file : path + "/" + file;
+	optionSetting = boost::filesystem::exists(optionSetting) ?
+		optionSetting : path + "/" + optionSetting;
+	
+	if (boost::filesystem::is_directory(optionBenchmark) || !boost::filesystem::exists(optionBenchmark)) {
+		std::cout << "\t>>>	Error to open <design>.iccad2015 file: " << optionBenchmark << "	<<<\n";
+	} // end if 
+
+	if (globalPlacementOnly) {
+		openBenchmarkFromICCAD15ForGlobalPlacementOnly();
+	} else {
+		if (boost::filesystem::is_directory(optionSetting) || !boost::filesystem::exists(optionSetting)) {
+			std::cout << "\t>>>	Error to open ICCAD15.parm file: " << optionSetting << "	<<< \n";
+			exit(1);
+		} // end if 
+		openBenchmarkFromICCAD15();
+	} // end else
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+void ICCAD15Reader::openBenchmarkFromICCAD15()  {
+
+	/* Temporary workaround */
+	const bool ENABLE_RECTANGLE_MERGE = 
+		Environment::getBoolean( "ENABLE_RECTANGLE_MERGE", false );
+	
+	//parsers
+	LEFControlParser lefParser;
+	DEFControlParser defParser;
+	SDCControlParser sdcParser;
+	LibertyControlParser libParser;
+
+	LefDscp lefDscp;
+	DefDscp defDscp;
+	Legacy::Design verilogDesignDescriptor;
+	
+	ISPD13::SDCInfo sdcInfos;
+	ISPD13::LIBInfo libInfosEarly;
+	ISPD13::LIBInfo libInfosLate;
+
+	std::cout << "[INFO] ICCAD 2015 Contest Flow.\n";
+
+	boost::filesystem::path path(optionBenchmark);
+	std::string filename = path.filename().generic_string();
+	std::cout << "Options\n";
+	std::cout << "\tSettings..........: " << optionSetting << "\n";
+	std::cout << "\tInput.............: " << filename << "\n";
+	std::cout << "\tTarget Utilization: " << optionTargetUtilization << "\n";
+	std::cout << "\tMax Displacement..: " << optionMaxDisplacement << "\n";
+
+	Stepwatch watchParsing("Parsing Design");
+
+	std::setlocale(LC_ALL, "en_US.UTF-8");
+	parseConfigFileICCAD15(path);
+	parseParams(optionSetting);
+
+	Stepwatch watchParsingLibertyEarly("Parsing Liberty (Early)");
+	libParser.parseLiberty(clsFilenameLibertyEarly, libInfosEarly);
+	watchParsingLibertyEarly.finish();
+
+	Stepwatch watchParsingLibertyLate("Parsing Liberty (Late)");
+	libParser.parseLiberty(clsFilenameLibertyLate, libInfosLate);
+	watchParsingLibertyLate.finish();
+
+	Stepwatch watchParsingLef("Parsing LEF");
+	lefParser.parseLEF(clsFilenameLEF, lefDscp);
+	watchParsingLef.finish();
+
+	Stepwatch watchParsingDef("Parsing DEF");
+	defParser.parseDEF(clsFilenameDEF, defDscp);
+	watchParsingDef.finish();
+
+	Stepwatch watchParsingSdc("Parsing SDC");
+	sdcParser.parseSDC_iccad15(clsFilenameSDC, sdcInfos);
+	watchParsingSdc.finish();
+
+	Stepwatch watchParsingVerilog("Parsing Verilog");
+	Parsing::SimplifiedVerilogReader parser(verilogDesignDescriptor);
+	parser.parseFromFile(clsFilenameV);
+	watchParsingVerilog.finish();
+	
+	watchParsing.finish();
+	
+	// Create the design.
+	clsDesign = engine.getDesign();
+	
+	clsModule = clsDesign.getTopModule();
+	
+	DBU clsDesignDistanceUnit = (DBU)lefDscp.clsLefUnitsDscp.clsDatabase; // FIXME: should come from LEF
+	
+	Stepwatch watchLibrary("Loading library into Rsyn");
+	Reader::populateRsynLibraryFromLiberty(libInfosEarly, clsDesign);
+	watchLibrary.finish();
+	
+	Stepwatch watchRsyn("Loading design into Rsyn");
+	Reader::populateRsyn(
+		lefDscp,
+		defDscp,
+		verilogDesignDescriptor,
+		clsDesign);
+	watchRsyn.finish();	
+
+	engine.startService("rsyn.webLogger", {});
+	
+	Stepwatch watchScenario("Loading scenario");
+	engine.startService("rsyn.scenario", {});
+	clsScenario = engine.getService("rsyn.scenario");
+	clsScenario->init(clsDesign, libInfosEarly, libInfosLate, sdcInfos);
+	watchScenario.finish();
+
+	Stepwatch watchPopulateLayers("Initializing Physical Layer");
+	Json phDesignJason;
+	if(ENABLE_RECTANGLE_MERGE) {
+		phDesignJason["clsEnableMergeRectangles"] = true;
+	}// end if 
+	engine.startService("rsyn.physical", phDesignJason);	
+	Rsyn::PhysicalService * phService = engine.getService("rsyn.physical");
+	Rsyn::PhysicalDesign clsPhysicalDesign = phService->getPhysicalDesign();
+	clsPhysicalDesign.loadLibrary(lefDscp);
+	clsPhysicalDesign.loadDesign(defDscp);
+	clsPhysicalDesign.updateAllNetBounds(false);	
+	clsPhysicalDesign.setClockNet(clsScenario->getClockNet());
+	watchPopulateLayers.finish();
+
+	engine.startService("rsyn.defaultRoutingEstimationModel", {});
+	DefaultRoutingEstimationModel* routingEstimationModel = engine.getService("rsyn.defaultRoutingEstimationModel");
+
+	engine.startService("rsyn.defaultRoutingExtractionModel", {});
+	DefaultRoutingExtractionModel* routingExtractionModel = engine.getService("rsyn.defaultRoutingExtractionModel");
+	
+	const Number resPerMicron = (Number) Rsyn::Units::convertToInternalUnits(
+			Rsyn::MEASURE_RESISTANCE, LOCAL_WIRE_RES_PER_MICRON, Rsyn::NO_UNIT_PREFIX);
+
+	const Number capPerMicron = (Number) Rsyn::Units::convertToInternalUnits(
+			Rsyn::MEASURE_CAPACITANCE, LOCAL_WIRE_CAP_PER_MICRON, Rsyn::NO_UNIT_PREFIX);
+
+	routingExtractionModel->initialize(
+			resPerMicron / clsDesignDistanceUnit,
+			capPerMicron / clsDesignDistanceUnit,
+			MAX_WIRE_SEGMENT_IN_MICRON * clsDesignDistanceUnit);
+
+	engine.startService("rsyn.routingEstimator", {});
+	clsRoutingEstimator = engine.getService("rsyn.routingEstimator");
+	Stepwatch updateSteiner("Updating Steiner trees");
+	clsRoutingEstimator->setRoutingEstimationModel(routingEstimationModel);
+	clsRoutingEstimator->setRoutingExtractionModel(routingExtractionModel);
+	clsRoutingEstimator->updateRoutingFull();
+	updateSteiner.finish();	
+
+	Stepwatch watchBlockageControl("Starting blockage control");
+	engine.startService("ufrgs.blockageControl", {});
+	watchBlockageControl.finish();
+	
+	engine.startService("rsyn.timer", {});		
+	clsTimer = engine.getService("rsyn.timer");
+
+	Stepwatch watchInit("Initializing timer");
+	clsTimer->init(
+			clsDesign,
+			engine,
+			clsScenario,
+			libInfosEarly,
+			libInfosLate);
+	watchInit.finish();
+		
+	Stepwatch watchInitModel("Initializing default timing model");
+	engine.startService("rsyn.defaultTimingModel", {});
+	DefaultTimingModel* timingModel = engine.getService("rsyn.defaultTimingModel");
+	clsTimingModel = timingModel;
+	clsTimer->setTimingModel(clsTimingModel);
+	watchInitModel.finish();
+		
+	Stepwatch watchInitLogicalEffort("Library characterization");
+	engine.startService("rsyn.libraryCharacterizer", {});
+	LibraryCharacterizer *libc = engine.getService("rsyn.libraryCharacterizer");
+	libc->runLibraryAnalysis(clsDesign, clsTimingModel);
+	watchInitLogicalEffort.finish();
+	
+	Stepwatch updateTiming("Updating timing");
+	clsTimer->updateTimingFull();
+	updateTiming.finish();
+
+	engine.startService("rsyn.report", {});	
+	engine.startService("rsyn.writer", {});
+
+	engine.startService("rsyn.graphics", {});
+	Rsyn::Graphics * graphics = engine.getService("rsyn.graphics");
+	graphics->coloringByCellType();
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+void ICCAD15Reader::openBenchmarkFromICCAD15ForGlobalPlacementOnly() {
+	//parsers
+	LEFControlParser lefParser;
+	DEFControlParser defParser;
+
+	Legacy::Design verilogDesignDescriptor;
+	LefDscp lefDscp;
+	DefDscp defDscp;
+
+	Stepwatch watchParsing("Parsing Design");
+
+	std::setlocale(LC_ALL, "en_US.UTF-8");
+	boost::filesystem::path path(optionBenchmark);
+	parseConfigFileICCAD15(path);
+	lefParser.parseLEF(clsFilenameLEF, lefDscp);
+	defParser.parseDEF(clsFilenameDEF, defDscp);
+	Parsing::SimplifiedVerilogReader parser(verilogDesignDescriptor);
+	parser.parseFromFile(clsFilenameV);
+	watchParsing.finish();
+	
+	Stepwatch watchRsyn("Populating Rsyn");
+	clsDesign = engine.getDesign();
+	Reader::populateRsyn(
+		lefDscp,
+		defDscp,
+		verilogDesignDescriptor,
+		clsDesign);
+	watchRsyn.finish();
+
+	clsModule = clsDesign.getTopModule();
+	Stepwatch watchPopulateLayers("Initializing Physical Layer");
+	
+	Json phDesignJason;
+	phDesignJason["clsEnableMergeRectangles"] = true;
+	phDesignJason["clsEnableNetPinBoundaries"] = true;
+	phDesignJason["clsEnableRowSegments"] = true;
+	engine.startService("rsyn.physical", phDesignJason);		
+	Rsyn::PhysicalService * phService = engine.getService("rsyn.physical");
+	Rsyn::PhysicalDesign clsPhysicalDesign = phService->getPhysicalDesign();
+	clsPhysicalDesign.loadLibrary(lefDscp);
+	clsPhysicalDesign.loadDesign(defDscp);
+	clsPhysicalDesign.updateAllNetBounds(false);
+	watchPopulateLayers.finish();
+
+	engine.startService("rsyn.graphics", {});
+	Graphics * graphics = engine.getService("rsyn.graphics");
+	graphics->coloringByCellType();
+
+	engine.startService("rsyn.writer", {});
+} // end method 
+
+////////////////////////////////////////////////////////////////////////////////
+// ICCAD 2015 Config file
+////////////////////////////////////////////////////////////////////////////////
+
+void ICCAD15Reader::parseConfigFileICCAD15(boost::filesystem::path & path) {
+	std::ifstream file(path.string());
+	std::vector<std::string> files(std::istream_iterator<std::string>(file),{});
+	
+	std::string directory = path.parent_path().generic_string() + 
+		boost::filesystem::path::preferred_separator;
+	
+	for(std::string circuit : files ){
+		std::string extension = boost::filesystem::extension(circuit);
+		
+		if (extension.compare(".v") == 0)
+			clsFilenameV = directory + circuit;
+		else if (extension.compare(".lef") == 0)
+			clsFilenameLEF = directory + circuit;
+		else if (extension == ".def")
+			clsFilenameDEF = directory + circuit;
+		else if (extension == ".sdc")
+			clsFilenameSDC = directory + circuit;
+		else if (extension == ".lib" && (circuit.find("Early") != string::npos))
+			clsFilenameLibertyEarly = directory + circuit;
+		else if (extension == ".lib" && (circuit.find("Late") != string::npos))
+			clsFilenameLibertyLate = directory + circuit;
+		else
+			cerr << "[WARNING] File " << circuit << " in auxiliary file was ignored.\n";
+	} // end for 
+	file.close();
+	
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void ICCAD15Reader::parseParams(const std::string &filename) {
+	ifstream dot_parm(filename.c_str());
+	if (!dot_parm.good()) {
+		cerr << "read_parameters:: cannot open `" << filename << "' for reading." << endl;
+		cerr << "the script will use the default parameters for evaluation." << endl;
+		exit(1);
+	} else {
+		string tmpStr;
+		dot_parm >> tmpStr;
+		while (!dot_parm.eof()) {
+			if (tmpStr == "LOCAL_WIRE_CAPACITANCE_PER_MICRON")
+				dot_parm >> LOCAL_WIRE_CAP_PER_MICRON;
+			else if (tmpStr == "LOCAL_WIRE_RESISTANCE_PER_MICRON")
+				dot_parm >> LOCAL_WIRE_RES_PER_MICRON;
+			else if (tmpStr == "MAX_WIRE_SEGMENT_LENGTH_IN_MICRON")
+				dot_parm >> MAX_WIRE_SEGMENT_IN_MICRON;
+			else if (tmpStr == "MAX_LCB_FANOUTS")
+				dot_parm >> MAX_LCB_FANOUTS;
+			else {
+				cout << "unrecognized keyword : " << tmpStr << endl;
+				dot_parm >> tmpStr;
+			}
+			dot_parm >> tmpStr;
+		}
+	}
+	dot_parm.close();
+	cout << "Timer Parameters:\n";
+	cout << "\tLOCAL_WIRE_RESISTANCE   : " << LOCAL_WIRE_RES_PER_MICRON << " Ohm/um\n" ;
+	cout << "\tLOCAL_WIRE_CAPACITANCE  : " << LOCAL_WIRE_CAP_PER_MICRON << " Farad/um\n" ;
+	cout << "\tMAX_WIRE_SEGMENT_LENGTH : " << MAX_WIRE_SEGMENT_IN_MICRON << " um\n";
+	cout << "\tMAX_LCB_FANOUTS         : " << MAX_LCB_FANOUTS << "\n";
+} // end method
+
+// -----------------------------------------------------------------------------
+
+} // end namespace 
+

@@ -1,0 +1,54 @@
+#
+#	May  1  2015
+#	user: mckima
+#
+
+VERSION 5.7 ;
+DIVIDERCHAR "/" ;
+BUSBITCHARS "[]" ;
+DESIGN simple ;
+UNITS DISTANCE MICRONS 2000 ;
+
+DIEAREA ( 0 0 ) ( 13680 13680 ) ;
+
+ROW core_SITE_ROW_0 core 0 0 N DO 36 BY 1 STEP 380 0 ;
+ROW core_SITE_ROW_1 core 0 3420 N DO 36 BY 1 STEP 380 0 ;
+ROW core_SITE_ROW_2 core 0 6840 N DO 36 BY 1 STEP 380 0 ;
+ROW core_SITE_ROW_3 core 0 10260 N DO 36 BY 1 STEP 380 0 ;
+
+COMPONENTS 6 ;
+   - u1 NAND2_X1
+      + PLACED ( 3420 6840 ) N ;
+   - u2 NOR2_X1
+      + PLACED ( 3420 3420 ) N ;
+   - f1 DFF_X80
+      + FIXED ( 684 0 ) N ;
+   - u3 INV_X1
+      + PLACED ( 6840 3420 ) N ;
+   - u4 INV_X1
+      + PLACED ( 12160 6840 ) N ;
+   - lcb1 INV_Z80
+      + PLACED ( 0 10260 ) N ;
+END COMPONENTS
+
+PINS 4 ;
+   - out + NET out
+      + DIRECTION OUTPUT
+      + FIXED ( 13680 6000 ) N
+			+ LAYER metal3 ( 0 0 ) ( 100 100 ) ;
+   - inp1 + NET inp1
+      + DIRECTION INPUT
+      + FIXED ( 3420 13680 ) N
+			+ LAYER metal3 ( 0 0 ) ( 100 100 ) ;
+   - inp2 + NET inp2
+      + DIRECTION INPUT
+      + FIXED ( 6840 13680 ) N
+			+ LAYER metal3 ( 0 0 ) ( 100 100 ) ;
+   - iccad_clk + NET iccad_clk
+      + DIRECTION INPUT 
+      + FIXED ( 0 6840 ) N 
+			+ LAYER metal3 ( 0 0 ) ( 100 100 ) ;
+END PINS
+
+END DESIGN
+

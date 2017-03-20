@@ -1,0 +1,2 @@
+disconnect_pin f1:ck
+connect_pin f1:ck lcb1_fo

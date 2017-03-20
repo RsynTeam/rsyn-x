@@ -1,0 +1,24 @@
+#
+#	May  1  2015
+#	user: mckima
+#
+
+VERSION 5.7 ;
+DESIGN simple ;
+
+COMPONENTS 6 ;
+   - u1 NAND2_X1
+      + PLACED ( 3420 6840 ) N ;
+   - u2 NOR2_X1
+      + PLACED ( 3420 3420 ) N ;
+   - f1 DFF_X80
+      + FIXED ( 684 0 ) N ;
+   - u3 INV_X1
+      + PLACED ( 6840 3420 ) N ;
+   - u4 INV_X1
+      + PLACED ( 12160 6840 ) N ;
+   - lcb1 INV_Z80
+      + PLACED ( 0 10260 ) N ;
+END COMPONENTS
+
+END DESIGN

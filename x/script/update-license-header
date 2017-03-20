@@ -1,0 +1,77 @@
+#!/usr/bin/python
+
+# Guilherme Flach - 2017/03/18
+
+# This script updates the copyright message at the header of source files by
+# replacing the old one (if any) with a new one.
+#
+# In order to to identify the old copyright message, the script looks for
+# a line containing both strings "/* Copryright" and "Rsyn". Then it skips
+# all lines till it finds a "*/".
+
+import os
+
+copyright = """/* Copyright 2014-2017 Rsyn
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ """
+
+def updateHeader(filename):
+	# Read file
+	file = open(filename, 'r')
+	lines = [line for line in file]
+	file.close()
+
+	# Remove old copyright message.
+	start = -1
+	end = -1
+	counter = 0;
+	for line in lines:
+		if start == -1:
+			if "/* Copyright" in line and "Rsyn/UFRGS" in line:
+				start = counter;
+		elif end == -1:
+			if "*/" in line:
+				end = counter
+		else:
+			# If we already find the start and end of the old header, keep going
+			# until a non-empty line is found.
+			if line.strip() != "":
+				break
+			end = counter
+			
+		counter += 1
+	
+	if start != -1 and end != -1:
+		del lines[start:end+1]
+		
+	# Insert copyright notice in the file.
+	file = open(filename, 'w')
+	file.write(copyright + '\n' + ''.join([line for line in lines]))
+	file.close()
+	return True
+
+# Traverse root directory, and list directories as dirs and files as files
+for root, dirs, files in os.walk("../src"):
+	if "3rdparty" in root:
+		print("Skipping 3rd party directory '" + root + "'...")
+		continue
+
+	for file in files:
+		filename = root + os.sep + file
+		if not file.endswith(('.h','.cpp')):
+			continue
+		print("Processing file '" + root + os.sep + file + "'...")
+		updateHeader(filename)
+        
