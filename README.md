@@ -43,6 +43,7 @@ attr[newNet] = computeSomething(net);
 - [Creators](#creators)
    - [Contributors](#contributors)
    - [Former Contributors](#former-contributors)
+- [Third-Party Projects](#third-party-projects)
 - [Contact](#contact)
 - [License](#license)
 - [Acknowledgement](#acknowledgement)
@@ -100,6 +101,10 @@ G. Flach, M. Fogaça, J. Monteiro, M. Johann and R. Reis, ["Rsyn: An Extensible 
 
 #### Former Contributors
   Julia Puget, André Oliveira, Carolina Lima, Felipe Pinto and Lucas Cavalheiro
+
+## Third-Party Projects
+
+![third-projects](https://github.com/rsyn/rsyn/blob/master/doc/third-parties.png)
 
 ## Contact
 
