@@ -48,6 +48,7 @@ attr[newNet] = computeSomething(net);
 - [License](#license)
 - [Acknowledgement](#acknowledgement)
 
+**More details about Rsyn are available at [wiki](https://github.com/rsyn/rsyn-x/wiki).**
 
 ## Running
 
