@@ -323,8 +323,8 @@ void Timer::setTimingLibraryPinSetupConstraint(
 
 void Timer::init(
 		Rsyn::Design rsynDesign,
-		Engine enginePtr,
-		Scenario * scenario,
+		Rsyn::Engine engine,
+		Rsyn::Scenario * scenario,
 		const ISPD13::LIBInfo &libEarly,
 		const ISPD13::LIBInfo &libLate
 ) {	
@@ -1670,61 +1670,6 @@ void Timer::updateTimingOfNet(Rsyn::Net net) {
 	updateTiming_Net(net);
 	dirtyNets.insert(net);
 } // end method
-
-// -----------------------------------------------------------------------------
-
-Number Timer::getPinSensitivity(Rsyn::Pin pin, const TimingMode mode) const {
-	if(pin.isPort())
-		return 0; // pin has no sensitive 
-
-	Rsyn::Net net = pin.getNet();
-	if(!net)
-		return 0;
-	
-	const TimingTransition transition = getPinTimingTransition(pin, mode);
-	
-	return getPinSensitivity(pin, mode, transition);
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-Number Timer::getPinSensitivity(Rsyn::Pin pin, const TimingMode mode, const TimingTransition transition) const {
-	if (pin.isPort())
-		return 0; // pin has no sensitive 
-
-	Rsyn::Net net = pin.getNet();
-	if (!net)
-		return 0;
-
-	Number slew = getPinSlew(pin, mode, transition);
-	EdgeArray<Number> lumpCap;
-	timingModel->calculateLoadCapacitance(pin, mode, lumpCap);
-
-	int numArcs = 0;
-	Number sens = 0;
-
-	for (Rsyn::Arc arc : pin.allIncomingArcs()) {
-		Rsyn::LibraryArc larc = arc.getLibraryArc();
-		
-		Number maxLoad = timingModel->getLibraryPinInputCapacitance(pin.getLibraryPin());
-		Number minLoad = 4 * maxLoad;
-		Number scalarLoad = 0.05f * (maxLoad - minLoad);
-		Number lowerCap = lumpCap[transition] - scalarLoad;
-		Number upperCap = lumpCap[transition] + scalarLoad;
-		
-		Number lowerDelay;
-		Number upperDelay;
-		Number dummy;
-	
-		timingModel->calculateLibraryArcTiming(larc, mode, transition, slew, lowerCap, lowerDelay, dummy);
-		timingModel->calculateLibraryArcTiming(larc, mode, transition, slew, upperCap, upperDelay, dummy);		
-		
-		sens += (upperDelay - lowerDelay) / (upperCap - lowerCap);
-		numArcs++;
-	} // end for
-
-	return numArcs == 0 ? 0 : sens/numArcs;
-} // end method 
 
 // -----------------------------------------------------------------------------
 
