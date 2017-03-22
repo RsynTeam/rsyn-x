@@ -1,4 +1,4 @@
-# Rsyn <img src="https://raw.githubusercontent.com/rsyn/rsyn-x/master/x/media/ufrgs-logo.png" width=80> 
+# Rsyn <img src="https://raw.githubusercontent.com/rsyn/rsyn-x/master/x/media/ufrgs-logo.png" width=82> 
 
 Rsyn is an open-source C++ framework for physical synthesis (e.g placement, routing, sizing, buffering, restructuring, etc)
 research and education.  The framework integrates parsers for common academic and industrial formats as Bookshelf, LEF/DEF, 
@@ -16,10 +16,10 @@ for (Rsyn::Pin pin : module.allPinsInReverseTopologicalOrder()) {
 	for (Rsyn::Arc arc : pin.allOutgoingArcs()) { /* … */ }
 	for (Rsyn::Arc arc : pin.allIncomingArcs()) { /* … */ }
 
-  Rsyn::Net net = pin.getNet();
-  if (!net) {
-	  std::cout << “Unconnected pin ‘” + pin.getFullName() + “‘\n”;
-  } // end if
+	Rsyn::Net net = pin.getNet();
+	if (!net) {
+		std::cout << “Unconnected pin ‘” + pin.getFullName() + “‘\n”;
+	} // end if
 } // end for 
 ```
 
