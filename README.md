@@ -30,7 +30,7 @@ Objects can be extended via attributes, which internally handle modifications in
 Rsyn::Attribute<Rsyn::Net, int> attr = design.createAttribute();
 
 for (Rsyn::Net net : module.allNets()) {
-  attr[net] = computeSomething(net); 
+	attr[net] = computeSomething(net); 
 } // end for
 
 Rsyn::Net newNet = module.createNet();
