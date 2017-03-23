@@ -529,7 +529,9 @@ public:
 	//!        timing update is performed (incremental or full).
 	//! @note  Useful when performing small local changes that will not cause
 	//!        a whole lot of timing change.
-	void updateTimingLocally(Rsyn::Instance cell);
+	//! @note  2nd level fanout nets are those being driven by the sinks of the
+	//!        cell.
+	void updateTimingLocally(Rsyn::Instance cell, const bool includeSecondFanoutLevelNets = false);
 		
 	//! @brief Helper function to compute the slack given and arrival and
 	//!        required time. It handles internally the differences when

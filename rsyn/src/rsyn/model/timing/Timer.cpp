@@ -1621,7 +1621,7 @@ void Timer::updateTimingIncremental() {
 
 // -----------------------------------------------------------------------------
 
-void Timer::updateTimingLocally(Rsyn::Instance cell) {
+void Timer::updateTimingLocally(Rsyn::Instance cell, const bool includeSecondFanoutLevelNets) {
 	// Process nets in topological order...
 	
 	// Input nets.
@@ -1645,7 +1645,25 @@ void Timer::updateTimingLocally(Rsyn::Instance cell) {
 			dirtyNets.insert(net);
 		} // end method
 	} // end for
-	
+
+	// 2nd level fanout nets.
+	if (includeSecondFanoutLevelNets) {
+		for (Rsyn::Pin pin : cell.allPins(Rsyn::OUT)) {
+			Rsyn::Net net = pin.getNet();
+			if (net) {
+				for (Rsyn::Pin sink : net.allPins(Rsyn::SINK)) {
+					for (Rsyn::Arc arc : sink.allOutgoingArcs()) {
+						Rsyn::Net sinkNet = arc.getToNet();
+						if (sinkNet) {
+							updateTiming_Net(sinkNet);
+							dirtyNets.insert(sinkNet);
+						} // end if
+					} // end for
+				} // end for
+			} // end method
+		} // end for
+	} // end if
+
 	// If this is a sequential cell update the required time at the data pin.
 	if (cell.isSequential()) {
 		Rsyn::Pin dataPin = getDataPin(cell);
