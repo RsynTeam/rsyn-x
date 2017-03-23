@@ -1,16 +1,19 @@
 <a href="http://ufrgs.br">
-    <img src="https://raw.githubusercontent.com/rsyn/rsyn-x/master/x/media/ufrgs-logo.png" width=82 alt="Universidade Federal do Rio Grande do Sul" title="UFRGS" align="right"/>
+    <img src="https://raw.githubusercontent.com/rsyn/rsyn-x/master/x/media/ufrgs-logo.png" height=62 alt="Universidade Federal do Rio Grande do Sul" title="UFRGS" align="right"/>
 </a>
 
 Rsyn
 ======================
 [Getting Started](https://github.com/rsyn/rsyn-x/wiki/Getting-Started) | [Tutorials](https://github.com/rsyn/rsyn-x/wiki#tutorials) |  [Wiki](https://github.com/rsyn/rsyn-x/wiki)
 
-Rsyn is an open-source C++ framework for physical synthesis (e.g placement, routing, sizing, buffering, restructuring, etc)
-research and education.  The framework integrates parsers for common academic and industrial formats as Bookshelf, LEF/DEF, 
-Verilog, Liberty, SDC and SPEF. Benchmarks from several EDA contests from ISPD and ICCAD can be easily loaded. 
+**Rsyn is an open-source C++ framework for physical synthesis research and education.**
 
-It also includes standard tools as static timing analysis (STA), routing and congestion estimation. 
+Typical optimizations that can be built on top of Rsyn include but not limited to placement, routing, sizing, buffering, restructuring.
+
+The framework integrates parsers for common academic and industrial formats as Bookshelf, LEF/DEF, 
+Verilog, Liberty, SDC and SPEF. It provides support for benchmarks from several EDA contests (e.g ISPD, ICCAD).
+
+Standard tools as static timing analysis (STA), routing and congestion estimation are included. 
 A built-in graphics user interface (GUI) is also available.
 
 ![Rsyn-gui](https://raw.githubusercontent.com/rsyn/rsyn/master/doc/rsyn-gui.png)
