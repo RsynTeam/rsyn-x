@@ -4,7 +4,7 @@
 
 Rsyn
 ======================
-[Getting Started](https://github.com/rsyn/rsyn-x/wiki/Getting-Started) | [Tutorials](https://github.com/rsyn/rsyn-x/wiki#tutorials) |  [Wiki](https://github.com/rsyn/rsyn-x/wiki)
+[Getting Started](https://github.com/rsyn/rsyn-x/wiki/Getting-Started) | [Tutorials](https://github.com/rsyn/rsyn-x/wiki/Tutorials) |  [Wiki](https://github.com/rsyn/rsyn-x/wiki)
 
 **Rsyn is an open-source C++ framework for physical synthesis research and education.**
 
