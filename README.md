@@ -1,5 +1,5 @@
 <a href="http://ufrgs.br">
-    <img src="https://raw.githubusercontent.com/rsyn/rsyn-x/master/x/media/ufrgs-logo.png" height=62 alt="Universidade Federal do Rio Grande do Sul" title="UFRGS" align="right"/>
+    <img src="https://raw.githubusercontent.com/rsyn/rsyn-x/master/x/media/ufrgs-logo.png" height=59 alt="Universidade Federal do Rio Grande do Sul" title="UFRGS" align="right"/>
 </a>
 
 Rsyn
