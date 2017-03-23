@@ -1,4 +1,10 @@
-# Rsyn <img src="https://raw.githubusercontent.com/rsyn/rsyn-x/master/x/media/ufrgs-logo.png" width=82> 
+<a href="http://ufrgs.br">
+    <img src="https://raw.githubusercontent.com/rsyn/rsyn-x/master/x/media/ufrgs-logo.png" width=82 alt="Universidade Federal do Rio Grande do Sul" title="UFRGS" align="right"/>
+</a>
+
+Rsyn
+======================
+[Getting Started](https://github.com/rsyn/rsyn-x/wiki/Getting-Started) | [Tutorials](https://github.com/rsyn/rsyn-x/wiki#tutorials) |  [Wiki](https://github.com/rsyn/rsyn-x/wiki)
 
 Rsyn is an open-source C++ framework for physical synthesis (e.g placement, routing, sizing, buffering, restructuring, etc)
 research and education.  The framework integrates parsers for common academic and industrial formats as Bookshelf, LEF/DEF, 
@@ -38,7 +44,6 @@ attr[newNet] = computeSomething(net);
 ```
 ## Index
 
-- [Running](#running)
 - [Reference](#reference)
 - [Creators](#creators)
    - [Contributors](#contributors)
@@ -49,35 +54,6 @@ attr[newNet] = computeSomething(net);
 - [Acknowledgement](#acknowledgement)
 
 **More details about Rsyn are available at [wiki](https://github.com/rsyn/rsyn-x/wiki).**
-
-## Running
-
-Rsyn was tested in Ubuntu 16.04.2 LST and compiled with g++ 5.4.0.
-```sh
-$ git clone https://github.com/rsyn/rsyn-x.git
-$ cd rsyn-x/x/bin/
-$ sudo ../../rsyn/script/install-libs.sh
-$ make all 
-$ make rgui 
-```
-[Bash script to install Rsyn dependencies](https://github.com/rsyn/rsyn-x/blob/master/rsyn/script/install-libs.sh)
-
-#### Opening a design in Rsyn Graphics User Interface:
- * File -> Run Script (ctrl+r)
- * Go to *rsyn-x/x/demo/simple* directory
- * Open simple.rsyn file
- * Rsyn GUI shows the simple circuit
-
-###### Tip: 
-* Selecting a cell: *shift+left click*
-* Moving a cell: Keep *shift key* pressed ->  *left click* on a cell -> *move the mouse*
-
-#### Running with command-line mode:	
-  * GUI is not available in command-line mode
-
-```sh
-$ make rscript script=../demo/simple/simple.rsyn
-```
 
 ## Reference
 
