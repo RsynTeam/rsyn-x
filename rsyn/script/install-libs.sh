@@ -2,7 +2,7 @@
 
 echo "###################################################"
 echo "#                                                 #"
-echo "#   Installing Rsyn Library Dependencies          #"
+echo "#   Installing Uplace Library Dependencies        #"
 echo "#                                                 #"
 echo "###################################################"
 
@@ -19,7 +19,7 @@ declare -a libs=(
 "libpng16-dev"
 )
 
-echo "You are required to have an administrative account to install Rsyn library dependencies!"
+echo "You are required to have an administrative account to install UPlace library dependencies!"
 for i in "${libs[@]}"
 do
         sudo apt install -y $i
