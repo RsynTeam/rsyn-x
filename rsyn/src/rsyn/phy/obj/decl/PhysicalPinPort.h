@@ -35,13 +35,21 @@ class PhysicalPinPort : public Proxy<PhysicalPinPortData> {
 	friend class PhysicalDesign;
 	friend class PhysicalDesignData;
 protected:
+	//! @brief Constructs a Rsyn::PhysicalPinPort object with a pointer to Rsyn::PhysicalPinPortData.
 	PhysicalPinPort(PhysicalPinPortData * data) : Proxy(data) {}
 public:
+	//! @brief Constructs a Rsyn::PhysicalPinPort object with a null pointer to Rsyn::PhysicalPinPortData.
 	PhysicalPinPort() : Proxy(nullptr) {}
+	//! @brief Constructs a Rsyn::PhysicalPinPort object with a null pointer to Rsyn::PhysicalPinPortData.
 	PhysicalPinPort(std::nullptr_t) : Proxy(nullptr) {}
 	
-	PhysicalPinLayer getPinLayer() const;
-	PhysicalPinPortClass getPinPortClass() const;
+	//! @brief Returns the PhysicalPinLayer associated to the PhysicalPinPort.
+	Rsyn::PhysicalPinLayer getPinLayer() const;
+	//! @brief Returns the PhysicalPinPortClass type of the PhysicalPinLayer.
+	//! @details A PhysicalPinPortClass may be: 1) PINPORTCLASS_NONE (default), 2) PINPORTCLASS_CORE, or PINPORTCLASS_BUMP.
+	Rsyn::PhysicalPinPortClass getPinPortClass() const;
+	//! @brief Returns true if a PhysicalPinLayer was associated to the PhysicalPinPort. 
+	//! Otherwise, returns false.
 	bool hasPinLayer() const ;
 }; // end class 
 

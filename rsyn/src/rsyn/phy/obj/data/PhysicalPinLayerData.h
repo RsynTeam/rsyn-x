@@ -41,18 +41,6 @@ public:
 }; // end class 
 
 } // end namespace 
- 
-// TODO
-//#include <boost/geometry.hpp>
-//#include <boost/geometry/geometries/point_xy.hpp>
-//#include <boost/geometry/geometries/polygon.hpp>
-//#include <boost/geometry/core/exterior_ring.hpp>
-//namespace bg = boost::geometry;
-	// source: http://www.boost.org/doc/libs/1_61_0/libs/geometry/doc/html/geometry/reference/models/model_polygon.html
-//	typedef bg::model::point<double, 2, bg::cs::cartesian> point_t;
-//	typedef bg::model::polygon<point_t> polygon_t;
-//	typedef bg::model::ring<point_t> ring_t;
-//	polygon_t poly1; 
 
 #endif /* PHYSICALDESIGN_PHYSICALPINLAYERDATA_H */
 

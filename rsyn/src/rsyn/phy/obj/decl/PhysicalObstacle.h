@@ -35,14 +35,22 @@ class PhysicalObstacle : public Proxy < PhysicalObstacleData > {
 	friend class PhysicalDesign;
 	friend class PhysicalDesignData;
 protected:
+	//! @brief Constructs a Rsyn::PhysicalObstacle object with a pointer to Rsyn::PhysicalObstacleData.
 	PhysicalObstacle(PhysicalObstacleData * data) : Proxy(data) {}
 public:
+	//! @brief Constructs a Rsyn::PhysicalObstacle object with a null pointer to Rsyn::PhysicalObstacleData.
 	PhysicalObstacle() : Proxy(nullptr) {}
+	//! @brief Constructs a Rsyn::PhysicalObstacle object with a null pointer to Rsyn::PhysicalObstacleData.
 	PhysicalObstacle(std::nullptr_t) : Proxy(nullptr) {}
 	
+	//! @brief Returns the Rsyn::PhysicalLayer object related to the current Rsyn::PhysicalObstacle.
 	Rsyn::PhysicalLayer getLayer() const;
+	//! @brief Returns the vector of rectangular Bounds in the Rsyn::PhysicalObstacle.
 	const std::vector<Bounds> & allBounds() const;
+	//! @brief Returns the total number of rectangular Bounds in the Rsyn::PhysicalObstacle.
 	std::size_t getNumObs() const;
+	//! @brief Returns true if Rsyn::PhysicalObstacle has a Rsyn::PhysicalLayer object defined. 
+	//! Otherwise, returns false.
 	bool hasLayer() const;
 }; // end class 
 

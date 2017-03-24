@@ -33,8 +33,13 @@ namespace Rsyn {
 
 class PhysicalPinPortData : public PhysicalObject {
 public:
+	//! @brief An enum PhysicalPinPortClass that determines the class of the PhysicalPinPort object.
 	PhysicalPinPortClass clsPinPortClass;
+	//! @brief The PhysicalPinLayer associated to the PhysicalPinPort.
 	PhysicalPinLayer clsLayer;
+	//! @brief Default constructor.
+	//! @details Users do not have access to this constructor. The reference to 
+	//! PhysicalPinPortData is a protected variable in PhysicalPinPort.
 	PhysicalPinPortData() {
 		clsPinPortClass = PINPORTCLASS_INVALID;
 	} // end constructor 

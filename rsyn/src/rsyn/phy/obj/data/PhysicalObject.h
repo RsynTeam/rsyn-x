@@ -34,6 +34,9 @@ namespace Rsyn {
 
 class PhysicalObject {
 public:
+	//! @brief Unique identifier of the Physical Objects. 
+	//! @details It is used to avoid compare pointer when sorting physical objects. 
+	//! The id variable is protected from users access outside of Physical classes. 
 	PhysicalIndex id;
 	PhysicalObject() : id(INVALID_PHYSICAL_INDEX) {}
 }; // end class 
