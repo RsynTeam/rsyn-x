@@ -112,4 +112,4 @@ G. Flach, M. Fogaça, J. Monteiro, M. Johann and R. Reis, ["Rsyn: An Extensible 
  ## Acknowledgement
  
  This work is partially supported by Brazilian Coordination for the Improvement of Higher Education Personnel
-([CAPES](http://www.capes.gov.br/)) and by the National Council for Scientific and Technological Development ([CNPq](http://cnpq.br/))
+([CAPES](http://www.capes.gov.br/)) and by the National Council for Scientific and Technological Development ([CNPq](http://cnpq.br/)).
