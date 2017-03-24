@@ -151,16 +151,16 @@ public:
 
 	void reverse() { return swap(clsValue[RISE], clsValue[FALL]); }
 
-	double aggregate() const { return clsValue[RISE] + clsValue[FALL]; }
+	T aggregate() const { return clsValue[RISE] + clsValue[FALL]; }
 	
-	pair<TimingTransition,T> maximum() const {
+	std::pair<TimingTransition,T> maximum() const {
 		return ( clsValue[RISE] >= clsValue[FALL] )?
 			make_pair(RISE, clsValue[RISE]) :
 			make_pair(FALL, clsValue[FALL])
 		;
 	} // end method
 
-	pair<TimingTransition,T> minimum() const {
+	std::pair<TimingTransition,T> minimum() const {
 		return ( clsValue[RISE] <= clsValue[FALL] )?
 			make_pair(RISE, clsValue[RISE]) :
 			make_pair(FALL, clsValue[FALL])

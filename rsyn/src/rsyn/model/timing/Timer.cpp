@@ -150,7 +150,7 @@ void Timer::onPostInstanceCreate(Rsyn::Instance instance) {
 // -----------------------------------------------------------------------------
 
 void Timer::onPostCellRemap(Rsyn::Cell cell, Rsyn::LibraryCell oldLibraryCell) {
-	std::cout << "INFO: Timer was notified about a remap.\n";
+	//std::cout << "INFO: Timer was notified about a remap.\n";
 	initializeTimingCell(cell);
 	dirtyInstance(cell);
 } // end method
@@ -1623,60 +1623,51 @@ void Timer::updateTimingIncremental() {
 
 void Timer::updateTimingLocally(Rsyn::Instance cell, const bool includeSecondFanoutLevelNets) {
 	// Process nets in topological order...
-	
-	// Input nets.
+
+	std::vector<std::tuple<TopologicalIndex, Rsyn::Net>> nets;
+	nets.reserve(cell.getNumPins());
+
 	// [NOTE] The input nets should be processed before output nets in order
 	// to process nets in topological order.
-	for (Rsyn::Pin pin : cell.allPins(Rsyn::IN)) {
+	for (Rsyn::Pin pin : cell.allPins()) {
 		Rsyn::Net net = pin.getNet();
 		if (net) {
-			updateTiming_Net(net);
-			dirtyNets.insert(net);
-		} // end method
-	} // end for
-	
-	// Output nets.
-	// [NOTE] The input nets should be processed before output nets in order
-	// to process nets in topological order.	
-	for (Rsyn::Pin pin : cell.allPins(Rsyn::OUT)) {
-		Rsyn::Net net = pin.getNet();
-		if (net) {
-			updateTiming_Net(net);
-			dirtyNets.insert(net);
-		} // end method
-	} // end for
+			nets.push_back(std::make_tuple(net.getTopologicalIndex(), net));
 
-	// 2nd level fanout nets.
-	if (includeSecondFanoutLevelNets) {
-		for (Rsyn::Pin pin : cell.allPins(Rsyn::OUT)) {
-			Rsyn::Net net = pin.getNet();
-			if (net) {
+			if (includeSecondFanoutLevelNets && pin.isOutput()) {
 				for (Rsyn::Pin sink : net.allPins(Rsyn::SINK)) {
 					for (Rsyn::Arc arc : sink.allOutgoingArcs()) {
 						Rsyn::Net sinkNet = arc.getToNet();
 						if (sinkNet) {
-							updateTiming_Net(sinkNet);
-							dirtyNets.insert(sinkNet);
+							nets.push_back(std::make_tuple(sinkNet.getTopologicalIndex(), sinkNet));
 						} // end if
 					} // end for
 				} // end for
-			} // end method
-		} // end for
-	} // end if
+			} // end if
+		} // end method
+	} // end for
+
+	// Sort nets by topological index and update them.
+	std::sort(nets.begin(), nets.end());
+	for (std::tuple<TopologicalIndex, Rsyn::Net> &t : nets) {
+		Rsyn::Net net = std::get<1>(t);
+		updateTiming_Net(net);
+		dirtyNets.insert(net);
+	} // end for
 
 	// If this is a sequential cell update the required time at the data pin.
 	if (cell.isSequential()) {
 		Rsyn::Pin dataPin = getDataPin(cell);
 		if (dataPin) {
 			updateTiming_UpdateTimingTests_SetupHold_DataPin(dataPin);
-			
+
 			Rsyn::Net net = dataPin.getNet();
 			if (net) {
 				dirtyNets.insert(net);
 			} // end if
 		} else {
 			std::cout << "[BUG] Sequential cell without a data pin.\n";
-		} // end else			
+		} // end else
 	} // end if
 } // end method
 

@@ -199,6 +199,19 @@ void Report::start(Engine engine, const Json &params) {
 			reportTree(net);
 		});
 	} // end block
+
+	{ // reportCriticalPath
+		ScriptParsing::CommandDescriptor dscp;
+		dscp.setName("reportCriticalPath");
+		dscp.setDescription("Report critical path.");
+
+		clsEngine.registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command &command) {
+			if (clsTimer) {
+				clsTimer->reportCriticalPath(Rsyn::LATE, std::cout);
+			} // end if
+		});
+	} // end block
+
 } // end method
 
 // -----------------------------------------------------------------------------
