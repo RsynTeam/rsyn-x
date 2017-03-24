@@ -35,14 +35,18 @@ class PhysicalSpacing : public Proxy<PhysicalSpacingData> {
 	friend class PhysicalDesign;
 	friend class PhysicalDesignData;
 protected:
+	//! @brief Constructs a Rsyn::PhysicalSpacing object with a pointer to Rsyn::PhysicalSpacingData.
 	PhysicalSpacing(PhysicalSpacingData * data) : Proxy(data) {}
 public:
+	//! @brief Constructs a Rsyn::PhysicalSpacing object with a null pointer to Rsyn::PhysicalSpacingData.
 	PhysicalSpacing() : Proxy(nullptr) {}
-	
+	//! @brief Constructs a Rsyn::PhysicalSpacing object with a null pointer to Rsyn::PhysicalSpacingData.
 	PhysicalSpacing(std::nullptr_t) : Proxy(nullptr) {}
-	
+	//! @brief Returns the first Rsyn::PhysicalLayer object.
 	Rsyn::PhysicalLayer getLayer1() const;
+	//! @brief Returns the second Rsyn::PhysicalLayer object.
 	Rsyn::PhysicalLayer getLayer2() const;
+	//! @brief Returns the distance in DBU 
 	DBU getDistance() const;
 }; // end class 
 

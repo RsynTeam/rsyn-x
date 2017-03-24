@@ -96,7 +96,7 @@ inline void PhysicalDesign::loadDesign(const DefDscp & design) {
 	} // end if 
 	
 	// This operation always results in a integer number factor. 
-	// LEF/DEF specifications limits the division that results in a real number factor.
+	// LEF/DEF specifications prohibit the division that results in a real number factor.
 	data->clsDBUs[MULT_FACTOR_DBU] = getDatabaseUnits(LIBRARY_DBU) / getDatabaseUnits(DESIGN_DBU);
 	
 	// initializing physical cells (DEF Components)

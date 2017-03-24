@@ -36,15 +36,26 @@ class PhysicalDie : public Proxy<PhysicalDieData> {
 protected:
 	PhysicalDie(PhysicalDieData * data) : Proxy(data) {}
 public:
+	//! @brief	Default constructor. Rectangular bounds are initialized to Bounds(DBUxy(0,0), DBUxy(0,0)).
+	//!		PhysicalDieData pointer is initialized to nullptr.		
+	//! @note	Die is assumed to be a rectangle. It does not support die defined as a polygon.
 	PhysicalDie()  {}
+	//! @brief 
 	PhysicalDie(std::nullptr_t)  {}
 
+	//! @brief	Returns the coordinate (x,y) of the boundary Rsyn::LOWER or Rsyn::UPPER of the die.
 	DBUxy getCoordinate(const Boundary bound) const;
+	//! @brief	Returns the coordinate X or Y of the boundary Rsyn::LOWER or Rsyn::UPPER of the die.
 	DBU getCoordinate(const Boundary bound, const Dimension dim) const;
+	//! @brief	Returns constant reference to Bounds objects.
 	const Bounds & getBounds() const;
+	//! @brief	Returns the dimension length for abscissa (X) or ordinate (Y).
 	DBU getLength(const Dimension dim) const;
+	//! @brief	Returns the coordinate X or Y of the boundary LOWER or UPPER of the die.
 	DBUxy getPosition(const Boundary boundary = LOWER) const;
+	//! @brief	Returns the central position (X, Y) in DBU units of the die bounds.
 	DBUxy getCenterPosition() const;
+	//! @brief	Returns total area of the PhysicalDie Bounds.
 	DBU getArea() const;
 }; //end class 
 

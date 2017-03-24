@@ -34,7 +34,9 @@ namespace Rsyn {
 class PhysicalDieData {
 	friend class PhysicalDesign;
 public:
+	//! @brief	Rectangular PhysicalDie Bounds in DBU  units.
 	Bounds clsBounds;
+	//! @brief	It constructs the default Bounds(DBUxy(0,0), DBUxy(0,0)).
 	PhysicalDieData() {}
 }; // end class 
 } // end namespace 

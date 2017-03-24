@@ -28,10 +28,23 @@ private:
 	Rsyn::Design clsDesign;
 	
 public:
-	
+	/*!
+	  start method to the Rsyn::PhysicalDesign service
+	  \param  Rsyn::Engine engine
+	  \param  const Rsyn::Json &params
+	  \return void 
+	 */
 	virtual void start(Rsyn::Engine engine, const Rsyn::Json &params);
+	
+	/*!
+	  stop method to the Rsyn::PhysicalDesign service
+	 */
 	virtual void stop();
 	
+	/*!
+	  Getting the Rsyn::PhysicalDesign object
+	  \return clsPhysicalDesign 
+	 */
 	Rsyn::PhysicalDesign getPhysicalDesign() { return clsPhysicalDesign; }
 	
 	// Events

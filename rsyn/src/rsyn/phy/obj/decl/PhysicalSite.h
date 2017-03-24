@@ -35,16 +35,25 @@ class PhysicalSite : public Proxy<PhysicalSiteData> {
 	friend class PhysicalDesign;
 	friend class PhysicalDesignData;
 protected:
+	//! @brief Constructs a Rsyn::PhysicalSite object with a pointer to Rsyn::PhysicalSiteData.
 	PhysicalSite(PhysicalSiteData * data) : Proxy(data) {}
 public:
+	//! @brief Constructs a Rsyn::PhysicalSite object with a null pointer to Rsyn::PhysicalSiteData.
 	PhysicalSite() : Proxy(nullptr) {}
+	//! @brief Constructs a Rsyn::PhysicalSite object with a null pointer to Rsyn::PhysicalSiteData.
 	PhysicalSite(std::nullptr_t) : Proxy(nullptr) {}
-	
+	//! @brief Returns the Rsyn::PhysicalSite name.
 	std::string getName() const;
+	//! @brief Returns the Rsyn::PhysicalSit class.
+	//! @param Rsyn::PhysicalSiteClass may be 1) PAD or 2) CORE.
 	Rsyn::PhysicalSiteClass getClass() const;
+	//! @brief Returns the site size. In X is the width and in Y is the height.
 	DBUxy getSize() const;
+	//! @brief Returns the site width.
 	DBU getWidth() const;
+	//! @brief Returns the site heigth.
 	DBU getHeight() const;
+	//! @brief Returns site width if Dimension is X. Otherwise, returns the site height.
 	DBU getLength(const Dimension dim) const;
 }; // end class
 
