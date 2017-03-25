@@ -95,7 +95,7 @@ void BlockageControl::init() {
 				} else {
 					const Rsyn::PhysicalLibraryCell &phLibCell = 
 						clsPhysicalDesign.getPhysicalLibraryCell(instance.asCell());
-					for (Bounds obs : phLibCell.allLayerObs()) {
+					for (Bounds obs : phLibCell.allLayerObstacles()) {
 						obs.translate(pCell.getPosition());
 						if (clsBins(i,j).bound.overlapArea(obs)) {
 							clsBins(i,j).blockages.push_back(

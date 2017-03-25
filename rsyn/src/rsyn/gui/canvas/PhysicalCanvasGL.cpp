@@ -183,7 +183,7 @@ Rsyn::Cell PhysicalCanvasGL::selectCellAt(const float x, const float y, const bo
 				candidates.push_back(cell);
 		} else if (instance.isMacroBlock() && ph.hasLayerBounds()) {
 			const Rsyn::PhysicalLibraryCell &phLibCell = phDesign.getPhysicalLibraryCell(cell);		
-			for (const FloatRectangle &obs : phLibCell.allLayerObs()) {
+			for (const FloatRectangle &obs : phLibCell.allLayerObstacles()) {
 				FloatRectangle rect = obs;
 				float2 lower = obs.getCoordinate(LOWER);
 				rect.moveTo(float2(ph.getPosition().x, ph.getPosition().y) + lower);
@@ -718,7 +718,7 @@ void PhysicalCanvasGL::renderSelectedCell() {
 	} else {
 		if (clsSelectedCell.isMacroBlock() && phCell.hasLayerBounds()) {
 			const Rsyn::PhysicalLibraryCell &phLibCell = phDesign.getPhysicalLibraryCell(clsSelectedCell);
-			for (const FloatRectangle &obs : phLibCell.allLayerObs()) {
+			for (const FloatRectangle &obs : phLibCell.allLayerObstacles()) {
 				FloatRectangle bounds = obs;
 				float2 lower = obs.getCoordinate(LOWER);
 				bounds.moveTo(float2(phCell.getPosition()) + lower);

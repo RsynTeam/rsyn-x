@@ -34,19 +34,29 @@ namespace Rsyn {
 class PhysicalLibraryPin : public Proxy<PhysicalLibraryPinData> {
 	friend class PhysicalDesign;
 protected:
+	//! @brief Constructs a Rsyn::PhysicalLibraryPin object with a pointer to Rsyn::PhysicalLibraryPinData.
 	PhysicalLibraryPin(PhysicalLibraryPinData * data) : Proxy(data) {}
 public:
+	//! @brief Constructs a Rsyn::PhysicalLibraryPin object with a null pointer to Rsyn::PhysicalLibraryPinData.
 	PhysicalLibraryPin() : Proxy(nullptr) {}
+	//! @brief Constructs a Rsyn::PhysicalLibraryPin object with a null pointer to Rsyn::PhysicalLibraryPinData.
 	PhysicalLibraryPin(std::nullptr_t) : Proxy(nullptr) {}
 
+	//! @brief Returns the pin rectangular boundaries defined at 2015 ICCAD contest.
 	Bounds getICCADBounds();
+	//! @brief Returns the pin rectangular boundaries reference defined at 2015 ICCAD contest.
 	const Bounds & getICCADBounds() const;
+	//! @brief Returns a vector reference to PhysicalPinPort objects related to the PhysicalLibraryPin.
 	std::vector<PhysicalPinPort> & allPinPorts();
+	//! @brief Returns a constant vector reference to PhysicalPinPort objects related to the PhysicalLibraryPin.
 	const std::vector<PhysicalPinPort> & allPinPorts() const;
+	//! @brief Returns an integer number that is the total number of PhysicalPinPort related to the PhysicalLibraryPin.
 	std::size_t getNumPinPorts() const;
+	//! @brief Returns true if PhysicalLibraryPin has PhysicalPinPort objects. Otherwise, returns false.
 	bool hasPinPorts() const;
+	//! @brief Returns true if PhysicalLibraryPin has no PhysicalPinPort objects. Otherwise, returns false.
 	bool isPinPortsEmpty() const;
-	bool hasLibraryPin() const;
+	//! @brief Returns an enum indicating the pin direction. 
 	PhysicalPinDirection getPinDirection() const;
 	
 }; // end class  

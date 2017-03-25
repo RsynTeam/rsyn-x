@@ -34,28 +34,55 @@ namespace Rsyn {
 class PhysicalLibraryCell : public Proxy<PhysicalLibraryCellData> {
 	friend class PhysicalDesign;
 protected:
+	//! @brief Constructs a Rsyn::PhysicalLibraryCell object with a pointer to Rsyn::PhysicalLibraryCellData.
 	PhysicalLibraryCell(PhysicalLibraryCellData * data) : Proxy(data) {}
 public:
+	//! @brief Constructs a Rsyn::PhysicalLibraryCell object with a null pointer to Rsyn::PhysicalLibraryCellData.
 	PhysicalLibraryCell() : Proxy(nullptr) {}
+	//! @brief Constructs a Rsyn::PhysicalLibraryCell object with a null pointer to Rsyn::PhysicalLibraryCellData.
 	PhysicalLibraryCell(std::nullptr_t) : Proxy(nullptr) {}
 	
+	//! @brief Returns the PhysicalLibraryCell size. 
+	//! @brief In dimension X is the PhysicalLibraryCell width while in Y is the PhysicalLibraryCell height.
 	DBUxy getSize() const;
+	//! @brief Returns a DBU type that represents the PhysicalLibraryCell width.
 	DBU getWidth() const;
+	//! @brief Returns a DBU type that represents the PhysicalLibraryCell height.
 	DBU getHeight() const;
+	//! @brief Returns a DBU type that represents the PhysicalLibraryCell length in Dimension parameter dim.
 	DBU getLength(const Dimension dim) const ;
+	//! @brief Returns true if the PhysicalLibraryCell is the Macro (enum MACRO_BLOCK) type.
 	bool isMacroBlock() const;
-	bool hasLayerObs() const;
-	const std::vector<Bounds> & allLayerObs() const;
+	//! @brief Returns true if the PhysicalLibraryCell has defined rectangular obstacle Bounds.
+	bool hasLayerObstacles() const;
+	//! @brief Returns the macro class associated to the PhysicalLibraryCell.
 	Rsyn::PhysicalMacroClass getClass() const;
+	//! @brief Returns PhysicalSite object related to the PhysicalLibraryCell.
 	Rsyn::PhysicalSite getSite() const;
-	const std::vector<Rsyn::PhysicalObstacle> & allObs() const ;
-	std::size_t getNumObs() const; 
+	//! @brief Returns a constant vector reference to PhysicalObstacle objects that 
+	//! represent the  metal layers blocked in the top of the PhysicalLibraryCell.
+	const std::vector<Rsyn::PhysicalObstacle> & allObstacles() const ;
+	//! @brief Returns the total number of metal layer (PhysicalObstacle) blocked in the top of the PhysicalLibraryCell.
+	std::size_t getNumObstacles() const; 
 	
-	// return 0  if the cell boundaries is not defined by one of layer metal. 
-	// Otherwise returns the number of rectangles that composes the cell boundary
+	//! @brief Returns the number of cell layer boundaries. 
+	//! @details In 2015 ICCAD contest, the boundaries for some macros are defined by one of the PhysicalLayer, 
+	//! i.e., the PhysicalLibaryCellboundaries are defined by metal1 boundaries. 
+	//! return 0  if the cell boundaries is not defined by one of layer metal. 
+	//! Otherwise returns the number of rectangles that composes the cell boundary
+	//! @warning This method affects 2015 ICCAD contest benchmark.
 	std::size_t getNumPhysicalCellLayerBoundaries() const; 
+	//! @brief Returns the PhysicalObstacle  that defines the cell boundary for 2015 ICCAD contest benchmark.
+	//! @details In 2015 ICCAD contest, the boundaries for some macros are defined by one of the PhysicalLayer, 
+	//! i.e., the PhysicalLibaryCellboundaries are defined by metal1 boundaries. 
+	//! @warning This method affects 2015 ICCAD contest benchmark.
+	Rsyn::PhysicalObstacle getLayerObstacles() const;
+	//! @brief Returns a constant reference vector to all Bounds that defines the cell boundary for 2015 ICCAD contest benchmark.
+	//! @details In 2015 ICCAD contest, the boundaries for some macros are defined by one of the PhysicalLayer, 
+	//! i.e., the PhysicalLibaryCellboundaries are defined by metal1 boundaries. 
+	//! @warning This method affects 2015 ICCAD contest benchmark.
+	const std::vector<Bounds> & allLayerObstacles() const;
 	
-	Rsyn::PhysicalObstacle getLayerObs() const;
 	
 }; // end class 
 

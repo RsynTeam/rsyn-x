@@ -34,8 +34,8 @@ namespace Rsyn {
 class PhysicalPinData {
 public:
 	DBUxy clsDisplacement;
-	// A pin may have several ports. However, each port is weakly connected to other. 
-	// It is assumed that they have high resistance among them. 
+	//! @details A pin may have several ports. However, each port is weakly connected to other. 
+	//! It is assumed that they have high resistance among them. 
 	std::vector<PhysicalPinPort> clsPhysicalPinPorts; 
 	PhysicalPinDirection clsDirection;
 	Bounds clsLayerBound; // The pin bounds is defined by one of the layers

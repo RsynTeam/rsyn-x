@@ -391,7 +391,7 @@ void OverlapRemover::findBlockagesOverlaping(
 			if (pCell.hasLayerBounds()) {
 				const Rsyn::PhysicalLibraryCell &phLibCell = 
 						clsPhysicalDesign.getPhysicalLibraryCell(instance.asCell());
-				for (Bounds obs : phLibCell.allLayerObs()) {
+				for (Bounds obs : phLibCell.allLayerObstacles()) {
 					obs.translate(pCell.getPosition());
 					blockages.push_back(obs);
 				}

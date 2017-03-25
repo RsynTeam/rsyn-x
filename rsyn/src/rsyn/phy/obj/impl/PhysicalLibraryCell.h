@@ -51,13 +51,13 @@ inline bool PhysicalLibraryCell::isMacroBlock() const {
 
 //-----------------------------------------------------------------------------
 
-inline bool PhysicalLibraryCell::hasLayerObs() const {
+inline bool PhysicalLibraryCell::hasLayerObstacles() const {
 	return data->clsLayerBoundIndex > -1;
 } // end method 
 
 //-----------------------------------------------------------------------------
 
-inline const std::vector<Bounds> & PhysicalLibraryCell::allLayerObs() const {
+inline const std::vector<Bounds> & PhysicalLibraryCell::allLayerObstacles() const {
 	return data->clsObs[data->clsLayerBoundIndex].allBounds();
 } // end method 
 
@@ -75,13 +75,13 @@ inline PhysicalSite PhysicalLibraryCell::getSite() const {
 
 //-----------------------------------------------------------------------------
 
-inline const std::vector<PhysicalObstacle> & PhysicalLibraryCell::allObs() const {
+inline const std::vector<PhysicalObstacle> & PhysicalLibraryCell::allObstacles() const {
 	return data->clsObs;
 } // end  method 
 
 //-----------------------------------------------------------------------------
 
-inline std::size_t PhysicalLibraryCell::getNumObs() const {
+inline std::size_t PhysicalLibraryCell::getNumObstacles() const {
 	return data->clsObs.size();
 } // end  method 
 
@@ -95,7 +95,7 @@ inline std::size_t PhysicalLibraryCell::getNumPhysicalCellLayerBoundaries() cons
 
 //-----------------------------------------------------------------------------
 
-inline PhysicalObstacle PhysicalLibraryCell::getLayerObs() const {
+inline PhysicalObstacle PhysicalLibraryCell::getLayerObstacles() const {
 	return data->clsObs[data->clsLayerBoundIndex];
 } // end  method 
 

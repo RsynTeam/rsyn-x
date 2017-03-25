@@ -193,7 +193,7 @@ void Jezz::onPostInstanceCreate(Rsyn::Instance instance) {
 	if (cell.isMacroBlock() || cell.isFixed()) {
 		if (phCell.hasLayerBounds()) {
 			Rsyn::PhysicalLibraryCell phLibCell = clsPhysicalDesign.getPhysicalLibraryCell(cell);
-			for (const Bounds &obs : phLibCell.allLayerObs()) {
+			for (const Bounds &obs : phLibCell.allLayerObstacles()) {
 				Bounds rect = obs;
 				DBUxy lower = obs.getCoordinate(LOWER);
 				rect.moveTo(phCell.getPosition()+ lower);
@@ -259,7 +259,7 @@ void Jezz::initJezz() {
 			Rsyn::PhysicalCell physicalCell = clsPhysicalDesign.getPhysicalCell(cell);
 
 			// Update engine.
-			if (x != physicalCell.getX() || y != physicalCell.getY()) {
+			if (x != physicalCell.getCoordinate(LOWER, X) || y != physicalCell.getCoordinate(LOWER, Y)) {
 				clsPhysicalDesign.placeCell(physicalCell, x, y, true);
 				clsPhysicalDesign.notifyObservers(physicalCell, clsPostInstanceMovedCallbackHandler);
 			} // end if
@@ -306,7 +306,7 @@ void Jezz::initJezz() {
 		if (cell.isMacroBlock() || cell.isFixed()) {
 			if (phCell.hasLayerBounds()) {
 				Rsyn::PhysicalLibraryCell phLibCell = clsPhysicalDesign.getPhysicalLibraryCell(cell);
-				for (const Bounds &obs : phLibCell.allLayerObs()) {
+				for (const Bounds &obs : phLibCell.allLayerObstacles()) {
 					Bounds rect = obs;
 					DBUxy lower = obs.getCoordinate(LOWER);
 					rect.moveTo(phCell.getPosition()+ lower);

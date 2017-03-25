@@ -63,12 +63,6 @@ inline bool PhysicalLibraryPin::isPinPortsEmpty() const {
 
 // -----------------------------------------------------------------------------
 
-inline bool PhysicalLibraryPin::hasLibraryPin() const {
-	return data;
-} // end method 
-
-// -----------------------------------------------------------------------------
-
 inline PhysicalPinDirection PhysicalLibraryPin::getPinDirection() const {
 	return data->clsDirection;
 } // end method 

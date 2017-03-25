@@ -94,8 +94,8 @@ void InstanceOverlay::renderCells(PhysicalCanvasGL * canvas) {
 		} else {
 			if (cell.isMacroBlock()) {
 				const Rsyn::PhysicalLibraryCell &phLibCell = phDesign.getPhysicalLibraryCell(cell);
-				if (phLibCell.hasLayerObs()) {
-					for (const Bounds & obs : phLibCell.allLayerObs()) {
+				if (phLibCell.hasLayerObstacles()) {
+					for (const Bounds & obs : phLibCell.allLayerObstacles()) {
 						Bounds bounds = obs;
 						DBUxy lower = obs.getCoordinate(LOWER);
 						bounds.moveTo(phCell.getPosition() + lower);

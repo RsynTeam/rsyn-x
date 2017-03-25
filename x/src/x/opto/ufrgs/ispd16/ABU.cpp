@@ -137,7 +137,7 @@ void ABU::updateAbu(bool showDetails) {
 		if (phCell.hasLayerBounds()) {
 			//each obs must be treated as a cell, and the common area computed using its size
 			const Rsyn::PhysicalLibraryCell &phLibCell = clsPhDesign.getPhysicalLibraryCell(cell);
-			for (const Bounds &obs : phLibCell.allLayerObs()) {
+			for (const Bounds &obs : phLibCell.allLayerObstacles()) {
 				Bounds rect = obs;
 				DBUxy lower = obs.getCoordinate(LOWER);
 				rect.moveTo(phCell.getPosition() + lower);

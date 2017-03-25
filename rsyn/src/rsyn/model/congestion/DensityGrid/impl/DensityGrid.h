@@ -143,7 +143,7 @@ inline void DensityGrid::updateArea(const AreaType type) {
 		
 		if(type == FIXED_AREA && phCell.hasLayerBounds()) {
 			Rsyn::PhysicalLibraryCell phLibCel = data->clsPhDesign.getPhysicalLibraryCell(cell);
-			for(const Bounds & rect : phLibCel.allLayerObs()){
+			for(const Bounds & rect : phLibCel.allLayerObstacles()){
 				Bounds bound = rect;
 				bound.translate(phCell.getPosition());
 				addArea(type, bound);
@@ -421,8 +421,8 @@ inline void DensityGrid::initBlockages() {
 			if (!inst.isFixed())
 				continue;
 			Rsyn::PhysicalLibraryCell phLibCell = data->clsPhDesign.getPhysicalLibraryCell(inst.asCell());
-			if (phLibCell.hasLayerObs()) {
-				for (const Bounds & rect : phLibCell.allLayerObs()) {
+			if (phLibCell.hasLayerObstacles()) {
+				for (const Bounds & rect : phLibCell.allLayerObstacles()) {
 					Bounds bounds = rect;
 					bounds.translate(phCell.getPosition());
 					addBlockageBound(bounds, inst);

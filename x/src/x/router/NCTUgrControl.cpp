@@ -105,7 +105,7 @@ void NCTUgrControl::initRouter(const int numRows) {
 		if(!cell.isMacroBlock())
 			continue;
 		const Rsyn::PhysicalLibraryCell &phLibCell = clsPhDesign.getPhysicalLibraryCell(cell);
-		for(const Rsyn::PhysicalObstacle phObs : phLibCell.allObs()){
+		for(const Rsyn::PhysicalObstacle phObs : phLibCell.allObstacles()){
 			const int index = clsMapRoutingLayers[phObs.getLayer().getName()];
 			numObs[index] += phObs.getNumObs();
 		} // end for 
@@ -124,7 +124,7 @@ void NCTUgrControl::initRouter(const int numRows) {
 			continue;
 		const DBUxy cellPos = phCell.getPosition();
 		const Rsyn::PhysicalLibraryCell &phLibCell = clsPhDesign.getPhysicalLibraryCell(cell);
-		for(const Rsyn::PhysicalObstacle phObs : phLibCell.allObs()){
+		for(const Rsyn::PhysicalObstacle phObs : phLibCell.allObstacles()){
 			const int index = clsMapRoutingLayers[phObs.getLayer().getName()];
 			for(const Bounds &rect : phObs.allBounds()){
 				clsObstacles[index].push_back(rect);

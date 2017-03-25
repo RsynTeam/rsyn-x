@@ -79,18 +79,6 @@ inline DBUxy PhysicalInstance::getSize() const {
 
 // -----------------------------------------------------------------------------
 
-inline DBU PhysicalInstance::getX() const {
-	return data->clsBounds[LOWER][X];
-} // end method
-
-// -----------------------------------------------------------------------------
-
-inline DBU PhysicalInstance::getY() const {
-	return data->clsBounds[LOWER][Y];
-} // end method
-
-// -----------------------------------------------------------------------------
-
 inline DBUxy PhysicalInstance::getPosition() const {
 	return data->clsBounds[LOWER];
 } // end method 

@@ -144,7 +144,7 @@ Rsyn::Instance Graphics::searchCellAt(const DBU x, const DBU y) {
 				c = cell;
 		} else {
 			Rsyn::PhysicalLibraryCell phLibCell = clsPhysicalDesign.getPhysicalLibraryCell(cell.asCell());
-			for (const Bounds & obs : phLibCell.allLayerObs()) {
+			for (const Bounds & obs : phLibCell.allLayerObstacles()) {
 				Bounds bounds = obs;
 				DBUxy lower = obs.getCoordinate(LOWER);
 				bounds.moveTo(ph.getPosition() + lower);

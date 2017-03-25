@@ -34,19 +34,38 @@ namespace Rsyn {
 class PhysicalPin : public Proxy<PhysicalPinData> {
 	friend class PhysicalDesign;
 protected:
+	//! @brief Constructs a Rsyn::PhysicalPin object with a pointer to Rsyn::PhysicalPinData.
 	PhysicalPin(PhysicalPinData * data) : Proxy(data) {}
 public:
+	//! @brief Constructs a Rsyn::PhysicalPin object with a null pointer to Rsyn::PhysicalPinData.
 	PhysicalPin() : Proxy(nullptr) {}
+	//! @brief Constructs a Rsyn::PhysicalPin object with a null pointer to Rsyn::PhysicalPinData.
 	PhysicalPin(std::nullptr_t) : Proxy(nullptr) {}
 
+	//! @brief Returns the pin displacement. 
+	//! @details The displacement are independent to abscissa (X) and ordinate (X).
+	//! The origin to compute pin displacement is the Left-Lower cell point and it is assumed to be (0,0). 
+	//! @warning It was assumed the pin has a fixed position in the cell.
 	DBUxy getDisplacement () const;
+	//! @brief Returns the pin displacement to the Dimension parameter dim.
+	//! @details The displacement are independent to abscissa (X) and ordinate (X).
+	//! The origin to compute pin displacement is the Left-Lower cell point and it is assumed to be (0,0). 
+	//! @warning It was assumed the pin has a fixed position in the cell.
 	DBU getDisplacement(const Dimension dim);
+	//! @brief Returns a vector reference to PhysicalPinPort objects related to PhysicalPin. 
 	std::vector<PhysicalPinPort> & allPinPorts();
+	//! @brief Returns a constant vector reference to PhysicalPinPort objects related to PhysicalPin.
 	const std::vector<PhysicalPinPort> & allPinPorts() const;
+	//! @brief Returns the total number of PhysicalPinPort objects related to PhysicalPin.
 	std::size_t getNumPinPorts() const;
+	//! @brief Returns true if PhysicalPin has PhysicalPinPort objects. Otherwise, returns false.
 	bool hasPinPorts() const;
+	//! @brief Returns true if PhysicalPin has no PhysicalPinPort objects. Otherwise, returns false.
 	bool isPinPortsEmpty() const;
+	//! @brief Returns an enum of PhysicalPinDirection that gives the PhysicalPin direction.
 	PhysicalPinDirection getDirection () const;
+	//! @brief Returns a constant reference to the Bounds object that defines the PhysicalPin boundaries.
+	//! it is is defined by one of the layer.
 	const Bounds & getLayerBounds() const;
 	
 }; // end class 
