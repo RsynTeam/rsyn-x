@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 ///////////////////////////////////////////////////////////////////////////
 // C++ code generated with wxFormBuilder (version Feb 16 2016)
 // http://www.wxformbuilder.org/
@@ -67,13 +67,15 @@
 #define ID_RESET_CAMERA 1007
 #define ID_ZOOM_IN 1008
 #define ID_ZOOM_OUT 1009
-#define ID_VIEW_CELLS 1010
-#define ID_VIEW_TERMINALS 1011
-#define ID_VIEW_NODES_PORTS 1012
-#define ID_VIEW_NODES_SEQUENTIAL 1013
-#define ID_RAINBOW 1014
-#define ID_COLORING_RANDOM_BLUE 1015
-#define ID_GENERATE_COLORS_FILE 1016
+#define ID_PHYSICAL 1010
+#define ID_SCHEMATIC 1011
+#define ID_VIEW_CELLS 1012
+#define ID_VIEW_TERMINALS 1013
+#define ID_VIEW_NODES_PORTS 1014
+#define ID_VIEW_NODES_SEQUENTIAL 1015
+#define ID_RAINBOW 1016
+#define ID_COLORING_RANDOM_BLUE 1017
+#define ID_GENERATE_COLORS_FILE 1018
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class MainFrameBase
@@ -86,6 +88,8 @@ class MainFrameBase : public wxFrame
 		wxMenuBar* clsMenuBar;
 		wxMenu* clsMenuFile;
 		wxMenu* clsMenuCanvas;
+		wxMenuItem* clsMenuItemPhysicalCanvas;
+		wxMenuItem* clsMenuItemSchematicCanvas;
 		wxMenuItem* clsMenuItemViewMovableNodes;
 		wxMenuItem* clsMenuItemViewFixedNodes;
 		wxMenuItem* clsMenuItemViewPortNodes;
@@ -207,6 +211,7 @@ class MainFrameBase : public wxFrame
 		virtual void OnResetCamera( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnZoomIn( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnZoomOut( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnChangeCanvas( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCheckView( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnColoringColorful( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnColoringRandomBlue( wxCommandEvent& event ) { event.Skip(); }

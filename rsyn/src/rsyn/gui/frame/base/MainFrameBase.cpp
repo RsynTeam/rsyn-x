@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 ///////////////////////////////////////////////////////////////////////////
 // C++ code generated with wxFormBuilder (version Feb 16 2016)
 // http://www.wxformbuilder.org/
@@ -80,6 +80,15 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	wxMenuItem* clsMenuItemZoomOut;
 	clsMenuItemZoomOut = new wxMenuItem( clsMenuCanvas, ID_ZOOM_OUT, wxString( wxT("Zoom Out") ) + wxT('\t') + wxT("Ctrl+-"), wxEmptyString, wxITEM_NORMAL );
 	clsMenuCanvas->Append( clsMenuItemZoomOut );
+	
+	clsMenuCanvas->AppendSeparator();
+	
+	clsMenuItemPhysicalCanvas = new wxMenuItem( clsMenuCanvas, ID_PHYSICAL, wxString( wxT("Physical") ) , wxEmptyString, wxITEM_RADIO );
+	clsMenuCanvas->Append( clsMenuItemPhysicalCanvas );
+	clsMenuItemPhysicalCanvas->Check( true );
+	
+	clsMenuItemSchematicCanvas = new wxMenuItem( clsMenuCanvas, ID_SCHEMATIC, wxString( wxT("Schematic") ) , wxEmptyString, wxITEM_RADIO );
+	clsMenuCanvas->Append( clsMenuItemSchematicCanvas );
 	
 	clsMenuCanvas->AppendSeparator();
 	
@@ -590,6 +599,8 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	this->Connect( clsMenuItemResetCamera->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnResetCamera ) );
 	this->Connect( clsMenuItemZoomIn->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnZoomIn ) );
 	this->Connect( clsMenuItemZoomOut->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnZoomOut ) );
+	this->Connect( clsMenuItemPhysicalCanvas->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnChangeCanvas ) );
+	this->Connect( clsMenuItemSchematicCanvas->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnChangeCanvas ) );
 	this->Connect( clsMenuItemViewMovableNodes->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
 	this->Connect( clsMenuItemViewFixedNodes->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
 	this->Connect( clsMenuItemViewPortNodes->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
@@ -641,6 +652,8 @@ MainFrameBase::~MainFrameBase()
 	this->Disconnect( ID_RESET_CAMERA, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnResetCamera ) );
 	this->Disconnect( ID_ZOOM_IN, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnZoomIn ) );
 	this->Disconnect( ID_ZOOM_OUT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnZoomOut ) );
+	this->Disconnect( ID_PHYSICAL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnChangeCanvas ) );
+	this->Disconnect( ID_SCHEMATIC, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnChangeCanvas ) );
 	this->Disconnect( ID_VIEW_CELLS, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
 	this->Disconnect( ID_VIEW_TERMINALS, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
 	this->Disconnect( ID_VIEW_NODES_PORTS, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );

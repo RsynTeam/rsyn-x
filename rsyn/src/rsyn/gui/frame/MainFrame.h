@@ -13,11 +13,12 @@
  * limitations under the License.
  */
  
-#ifndef MAIN_FRAME_H
-#define MAIN_FRAME_H
+#ifndef RSYN_MAIN_FRAME_H
+#define RSYN_MAIN_FRAME_H
 
 #include "rsyn/gui/frame/base/MainFrameBase.h"
 #include "rsyn/gui/canvas/PhysicalCanvasGL.h"
+#include "rsyn/gui/canvas/SchematicCanvasGL.h"
 #include "rsyn/gui/Redirector.h"
 
 #include "rsyn/io/parser/script/ScriptReader.h"
@@ -55,7 +56,10 @@ class SaveSnapshot;
 
 class MainFrame : public MainFrameBase {
 protected:
-	PhysicalCanvasGL *clsCanvasGLPtr;
+	CanvasGL *clsCanvasGLPtr = nullptr;
+	PhysicalCanvasGL *clsPhysicalCanvasGLPtr = nullptr;
+	SchematicCanvasGL *clsSchematicCanvasGLPtr = nullptr;
+
 private:
 
 	Rsyn::Engine clsEngine = nullptr;
@@ -104,10 +108,10 @@ private:
 		auto it = clsOverlays.find(name);
 		if (it == clsOverlays.end()) {
 			CanvasOverlay * overlay = new T();
-			const bool success = overlay->init(clsCanvasGLPtr);
+			const bool success = overlay->init(clsPhysicalCanvasGLPtr);
 			if (success) {
 				clsOverlays[name] = overlay;
-				clsCanvasGLPtr->addOverlay(name, overlay, visibility);
+				clsPhysicalCanvasGLPtr->addOverlay(name, overlay, visibility);
 
 				const int id = clsLstOverlays->Append(name);
 				clsLstOverlays->Check(id, visibility);
@@ -173,6 +177,8 @@ public:
 	virtual void OnResetCamera(wxCommandEvent& event);
 	virtual void OnZoomIn(wxCommandEvent& event);
 	virtual void OnZoomOut(wxCommandEvent& event);
+
+	virtual void OnChangeCanvas(wxCommandEvent& event);
 
 	virtual void OnColoringColorful(wxCommandEvent &event);
 	virtual void OnColoringRandomBlue(wxCommandEvent &event);

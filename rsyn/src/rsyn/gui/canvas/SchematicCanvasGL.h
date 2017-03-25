@@ -33,6 +33,8 @@ class NVGcontext;
 class SchematicCanvasGL : public CanvasGL {
 private:
 
+	Rsyn::Engine clsEngine;
+
 	// NanoVG
 	NVGcontext* vg = nullptr;
 	bool initialized = false;
@@ -58,7 +60,7 @@ private:
 	// Rendering	
 	void render();
 	void reset();
-	
+
 public:
 	SchematicCanvasGL(wxWindow* parent);
 	virtual ~SchematicCanvasGL();
@@ -87,6 +89,9 @@ public:
 	virtual void resetCamera(const float minx, const float miny, const float maxx, const float maxy) {
 		CanvasGL::resetCamera(minx, miny, maxx, maxy);
 	} // end method
+
+	// Attach the engine.
+	void attachEngine(Rsyn::Engine engine);
 }; // end class
 
 

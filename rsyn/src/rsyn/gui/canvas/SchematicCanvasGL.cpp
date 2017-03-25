@@ -50,6 +50,16 @@ void SchematicCanvasGL::reset() {
 	resetCamera(0, 0, getViewportWidth(), getViewportHeight());
 } // end constructor
 
+// -----------------------------------------------------------------------------
+
+void SchematicCanvasGL::attachEngine(Rsyn::Engine engine) {
+	reset();
+
+	clsEngine = engine;
+
+	Refresh();
+} // end method
+
 ////////////////////////////////////////////////////////////////////////////////
 // Events
 ////////////////////////////////////////////////////////////////////////////////

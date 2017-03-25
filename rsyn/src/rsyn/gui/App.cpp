@@ -19,7 +19,6 @@
 #include <string>
 
 #include "rsyn/gui/frame/MainFrame.h"
-#include "rsyn/gui/frame/SchematicFrame.h"
 #include "rsyn/util/Environment.h"
 
 // -----------------------------------------------------------------------------
@@ -52,9 +51,7 @@ bool MyApp::OnInit(){
 	wxFrame *frame = nullptr;
 	if (clsGui.empty() || clsGui == "default" || clsGui == "iccad") {
 		frame = new MainFrame();
-	} else if (clsGui == "schematic") {
-		frame = new SchematicFrame();
-	}// end else
+	} // end if
 
 	if (frame) {
 		frame->Show(TRUE);

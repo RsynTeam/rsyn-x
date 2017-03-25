@@ -133,7 +133,7 @@
                 <event name="OnSetFocus"></event>
                 <event name="OnSize"></event>
                 <event name="OnUpdateUI"></event>
-                <object class="wxMenu" expanded="0">
+                <object class="wxMenu" expanded="1">
                     <property name="label">File</property>
                     <property name="name">clsMenuFile</property>
                     <property name="permission">protected</property>
@@ -240,7 +240,7 @@
                         <event name="OnUpdateUI"></event>
                     </object>
                 </object>
-                <object class="wxMenu" expanded="0">
+                <object class="wxMenu" expanded="1">
                     <property name="label">Canvas</property>
                     <property name="name">clsMenuCanvas</property>
                     <property name="permission">protected</property>
@@ -310,6 +310,40 @@
                     </object>
                     <object class="separator" expanded="0">
                         <property name="name">m_separator9</property>
+                        <property name="permission">none</property>
+                    </object>
+                    <object class="wxMenuItem" expanded="1">
+                        <property name="bitmap"></property>
+                        <property name="checked">1</property>
+                        <property name="enabled">1</property>
+                        <property name="help"></property>
+                        <property name="id">ID_PHYSICAL</property>
+                        <property name="kind">wxITEM_RADIO</property>
+                        <property name="label">Physical</property>
+                        <property name="name">clsMenuItemPhysicalCanvas</property>
+                        <property name="permission">protected</property>
+                        <property name="shortcut"></property>
+                        <property name="unchecked_bitmap"></property>
+                        <event name="OnMenuSelection">OnChangeCanvas</event>
+                        <event name="OnUpdateUI"></event>
+                    </object>
+                    <object class="wxMenuItem" expanded="1">
+                        <property name="bitmap"></property>
+                        <property name="checked">0</property>
+                        <property name="enabled">1</property>
+                        <property name="help"></property>
+                        <property name="id">ID_SCHEMATIC</property>
+                        <property name="kind">wxITEM_RADIO</property>
+                        <property name="label">Schematic</property>
+                        <property name="name">clsMenuItemSchematicCanvas</property>
+                        <property name="permission">protected</property>
+                        <property name="shortcut"></property>
+                        <property name="unchecked_bitmap"></property>
+                        <event name="OnMenuSelection">OnChangeCanvas</event>
+                        <event name="OnUpdateUI"></event>
+                    </object>
+                    <object class="separator" expanded="1">
+                        <property name="name">m_separator7</property>
                         <property name="permission">none</property>
                     </object>
                     <object class="wxMenuItem" expanded="0">
@@ -443,16 +477,16 @@
                     </object>
                 </object>
             </object>
-            <object class="wxBoxSizer" expanded="0">
+            <object class="wxBoxSizer" expanded="1">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer37</property>
                 <property name="orient">wxVERTICAL</property>
                 <property name="permission">none</property>
-                <object class="sizeritem" expanded="0">
+                <object class="sizeritem" expanded="1">
                     <property name="border">5</property>
                     <property name="flag">wxEXPAND</property>
                     <property name="proportion">1</property>
-                    <object class="wxFlexGridSizer" expanded="0">
+                    <object class="wxFlexGridSizer" expanded="1">
                         <property name="cols">2</property>
                         <property name="flexible_direction">wxBOTH</property>
                         <property name="growablecols">0</property>
@@ -464,11 +498,11 @@
                         <property name="permission">none</property>
                         <property name="rows">2</property>
                         <property name="vgap">0</property>
-                        <object class="sizeritem" expanded="0">
+                        <object class="sizeritem" expanded="1">
                             <property name="border">5</property>
                             <property name="flag">wxALL|wxEXPAND</property>
                             <property name="proportion">1</property>
-                            <object class="wxPanel" expanded="0">
+                            <object class="wxPanel" expanded="1">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
                                 <property name="RightDockable">1</property>

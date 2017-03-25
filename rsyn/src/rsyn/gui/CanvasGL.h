@@ -98,7 +98,7 @@ public:
 	void clearViewport();
 	
 	// Configuration
-	// scaling=2 means that the zoom will be floatd during zoom in and halved
+	// scaling=2 means that the zoom will be doubled during zoom in and halved
 	// during zoom out.
 	void setZoomScaling(const float scaling) { clsZoomScaling = scaling; }
 

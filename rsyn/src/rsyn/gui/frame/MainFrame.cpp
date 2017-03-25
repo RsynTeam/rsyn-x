@@ -27,6 +27,7 @@
 #include "rsyn/io/Report.h"
 #include "rsyn/io/Writer.h"
 #include "rsyn/io/Graphics.h"
+#include "rsyn/gui/canvas/SchematicCanvasGL.h"
 
 #include <wx/window.h>
 #include <wx/filename.h>
@@ -62,10 +63,13 @@ MainFrame::MainFrame() : MainFrameBase((wxFrame *) nullptr), clsConfig("UPlace")
 		} // end switch
 	}); // end lambda
 
-	clsCanvasGLPtr = new PhysicalCanvasGL(clsPanelMain);
+	clsPhysicalCanvasGLPtr = new PhysicalCanvasGL(clsPanelMain);
+	clsSchematicCanvasGLPtr = nullptr;
+	
+	clsCanvasGLPtr = clsPhysicalCanvasGLPtr;
 	clsCanvasGLPtr->Refresh();
 	
-	clsSaveSnapshot = new SaveSnapshot( this, clsCanvasGLPtr );
+	clsSaveSnapshot = new SaveSnapshot( this, clsPhysicalCanvasGLPtr );
 	
 	clsSizerMesh->Add(clsCanvasGLPtr, 1, wxEXPAND, 0);
 	clsSizerMesh->Layout();
@@ -221,8 +225,9 @@ void MainFrame::OnCheckView(wxCommandEvent &WXUNUSED(event)) {
 	instanceOverlayParams["view"]["port"] = clsMenuItemViewPortNodes->IsChecked();
 	instanceOverlayParams["view"]["sequential"] = clsMenuItemViewSequentialNodes->IsChecked();
 	configOverlay("Instances", instanceOverlayParams);
-	
-	clsCanvasGLPtr->Refresh();
+
+	if (clsCanvasGLPtr == clsPhysicalCanvasGLPtr)
+		clsCanvasGLPtr->Refresh();
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -235,8 +240,9 @@ void MainFrame::OnCheckCellTimingMode(wxCommandEvent &event) {
 
 void MainFrame::OnOverlayToggle(wxCommandEvent &event) {
 	const std::string overlayName = clsLstOverlays->GetString(event.GetInt()).ToStdString();
-	clsCanvasGLPtr->setOverlayVisibility(overlayName, clsLstOverlays->IsChecked(event.GetInt()));
-	clsCanvasGLPtr->Refresh();
+	clsPhysicalCanvasGLPtr->setOverlayVisibility(overlayName, clsLstOverlays->IsChecked(event.GetInt()));
+	if (clsCanvasGLPtr == clsPhysicalCanvasGLPtr)
+		clsCanvasGLPtr->Refresh();
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -331,6 +337,36 @@ void MainFrame::OnZoomIn(wxCommandEvent &WXUNUSED(event)) {
 
 void MainFrame::OnZoomOut(wxCommandEvent &WXUNUSED(event)) {
 	clsCanvasGLPtr->zoom(2);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void MainFrame::OnChangeCanvas(wxCommandEvent &event) {
+	CanvasGL *canvas = nullptr;
+
+	// Select the right canvas to show.
+	if (clsMenuItemSchematicCanvas->IsChecked()) {
+		if (!clsSchematicCanvasGLPtr) {
+			clsSchematicCanvasGLPtr = new SchematicCanvasGL(clsPanelMain);
+		} // end if
+		canvas = clsSchematicCanvasGLPtr;
+	} else if (clsMenuItemPhysicalCanvas->IsChecked()) {
+		canvas = clsPhysicalCanvasGLPtr;
+	} // end else
+
+	if (canvas && canvas != clsCanvasGLPtr) {
+		clsSizerMesh->Clear();
+		clsSizerMesh->Add(canvas, 1, wxEXPAND, 0);
+		clsSizerMesh->Layout();
+
+		// All canvas actually are drawing on the same pane, so we need to hide
+		// them otherwise the last created one will always take precedence.
+		if (clsCanvasGLPtr) clsCanvasGLPtr->Hide();
+
+		// Update the current canvas and show it.
+		clsCanvasGLPtr = canvas;
+		clsCanvasGLPtr->Show();
+	} // end if
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -484,7 +520,7 @@ void MainFrame::OnColoringCentrality( wxCommandEvent& event ){
 void MainFrame::OnShowEarlyCriticalPath(wxCommandEvent& event) {
 	if (!clsCanvasGLPtr)
 		return;
-	clsCanvasGLPtr->SetViewEarlyCriticalPath(clsChkShowEarlyCriticalPath->GetValue());
+	clsPhysicalCanvasGLPtr->SetViewEarlyCriticalPath(clsChkShowEarlyCriticalPath->GetValue());
 	UpdateStats(true);
 } // end method
 
@@ -493,7 +529,7 @@ void MainFrame::OnShowEarlyCriticalPath(wxCommandEvent& event) {
 void MainFrame::OnShowLateCriticalPath(wxCommandEvent& event) {
 	if (!clsCanvasGLPtr)
 		return;
-	clsCanvasGLPtr->SetViewLateCriticalPath(clsChkShowLateCriticalPath->GetValue());
+	clsPhysicalCanvasGLPtr->SetViewLateCriticalPath(clsChkShowLateCriticalPath->GetValue());
 	UpdateStats(true);	
 } // end method
 
@@ -502,7 +538,7 @@ void MainFrame::OnShowLateCriticalPath(wxCommandEvent& event) {
 void MainFrame::OnShowFaninTrees(wxCommandEvent& event) {
 	if (!clsCanvasGLPtr)
 		return;
-	clsCanvasGLPtr->SetViewFaninTrees(clsChkShowFaninTrees->GetValue());
+	clsPhysicalCanvasGLPtr->SetViewFaninTrees(clsChkShowFaninTrees->GetValue());
 	UpdateStats(true);	
 } // end method
 
@@ -511,7 +547,7 @@ void MainFrame::OnShowFaninTrees(wxCommandEvent& event) {
 void MainFrame::OnShowFanoutTrees(wxCommandEvent& event) {
 	if (!clsCanvasGLPtr)
 		return;
-	clsCanvasGLPtr->SetViewFanoutTrees(clsChkShowFanoutTrees->GetValue());
+	clsPhysicalCanvasGLPtr->SetViewFanoutTrees(clsChkShowFanoutTrees->GetValue());
 	UpdateStats(true);		
 } // end method
 
@@ -531,8 +567,8 @@ void MainFrame::OnSearch(wxCommandEvent &WXUNUSED(event)) {
 	if (cell == nullptr)
 		return;
 
-	clsCanvasGLPtr->SelectCell(cell);
-	clsCanvasGLPtr->CentralizeAtSelectedCell();
+	clsPhysicalCanvasGLPtr->SelectCell(cell);
+	clsPhysicalCanvasGLPtr->CentralizeAtSelectedCell();
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -611,7 +647,7 @@ void MainFrame::OnLegalize(wxCommandEvent &WXUNUSED(event)) {
 // -----------------------------------------------------------------------------
 
 void MainFrame::OnLegalizeSelectedCell(wxCommandEvent &WXUNUSED(event)) {
-	Rsyn::Cell cell = clsCanvasGLPtr->getSelectedCell();
+	Rsyn::Cell cell = clsPhysicalCanvasGLPtr->getSelectedCell();
 	if (cell) {
 		std::cout << "Legalization method: ";
 		switch (clsSingleCellLegalizationMethod->GetSelection()) {
@@ -642,10 +678,10 @@ void MainFrame::OnScroll(wxScrollEvent& WXUNUSED(event)) {
 
 	if (clsSlider->GetValue() == 0) {
 		sizerViewMode->GetStaticBox()->SetLabel(wxT("Interpolated Mode (Off)"));
-		clsCanvasGLPtr->setInterpolationValue(0.0);
+		clsPhysicalCanvasGLPtr->setInterpolationValue(0.0);
 	} else {
 		sizerViewMode->GetStaticBox()->SetLabel(wxT("Interpolated Mode (On)"));
-		clsCanvasGLPtr->setInterpolationValue(clsSlider->GetValue() / double(clsSlider->GetMax()));
+		clsPhysicalCanvasGLPtr->setInterpolationValue(clsSlider->GetValue() / double(clsSlider->GetMax()));
 	} // end else
 } // end event
 
@@ -653,7 +689,7 @@ void MainFrame::OnScroll(wxScrollEvent& WXUNUSED(event)) {
 
 void MainFrame::OnCheckpoint(wxCommandEvent& WXUNUSED(event)) {
 	if (!clsCanvasGLPtr) return;
-		clsCanvasGLPtr->storeCheckpoint();
+		clsPhysicalCanvasGLPtr->storeCheckpoint();
 } // end event
 
 // -----------------------------------------------------------------------------
@@ -817,7 +853,7 @@ void MainFrame::UpdateStats(const bool redraw) {
 // -----------------------------------------------------------------------------
 
 void MainFrame::UpdateSelectedCellProperties(const bool updateOnlyPropertiesAffectedByPlacementChange) {
-	Rsyn::Cell cell = clsCanvasGLPtr->getSelectedCell();
+	Rsyn::Cell cell = clsPhysicalCanvasGLPtr->getSelectedCell();
 
 	if (cell != nullptr) {
 		Rsyn::PhysicalCell phCell = clsPhysicalDesign.getPhysicalCell(cell);
@@ -938,7 +974,7 @@ void MainFrame::OnSpinChange(wxSpinEvent& event) {
 	if (!clsCanvasGLPtr)
 		return;
 
-	clsCanvasGLPtr->setCriticalPathWidth( (double) m_spinCtrl1->GetValue() );
+	clsPhysicalCanvasGLPtr->setCriticalPathWidth( (double) m_spinCtrl1->GetValue() );
 } // end method
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -961,7 +997,12 @@ void MainFrame::processGraphicsEventDesignLoaded() {
 
 	// Physical design.
 	clsPhysicalDesign = clsPhysicalPtr->getPhysicalDesign();
-	clsCanvasGLPtr->attachEngine(clsEngine);
+
+	if (clsPhysicalCanvasGLPtr)
+		clsPhysicalCanvasGLPtr->attachEngine(clsEngine);
+
+	if (clsSchematicCanvasGLPtr)
+		clsSchematicCanvasGLPtr->attachEngine(clsEngine);
 
 	registerAllOverlays();
 
