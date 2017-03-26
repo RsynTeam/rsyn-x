@@ -20,6 +20,7 @@ namespace Rsyn {
 
 template<class T>
 class Proxy {
+friend struct std::hash<Rsyn::Proxy<T>>;
 protected:
 	T * data;
 
@@ -54,7 +55,19 @@ public:
 	} // end method
 }; // end class
 
-} // end namespace 
+} // end namespace
+
+namespace std {
+//! @brief Specialization of hash functor to allow Rsyn objects to be used
+//!        in unordered collections.
+template <>
+template <typename T>
+struct hash<Rsyn::Proxy<T>> {
+	size_t operator()(const Rsyn::Proxy<T> &proxy) const {
+		return hash<int>()(proxy.data->id);
+	} // end operator
+}; // end struct
+} // end namespace
 
 #endif
 

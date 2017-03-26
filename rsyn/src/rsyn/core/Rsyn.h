@@ -369,5 +369,27 @@ public:
 #include "rsyn/core/obj/impl/LibraryCell.h"
 #include "rsyn/core/obj/impl/LibraryModule.h"
 #include "rsyn/core/obj/impl/Design.h"
-	
+
+// =============================================================================
+// Hashes
+// =============================================================================
+
+namespace std {
+#define RSYN_CREATE_HASH(OBJ) \
+template <> \
+struct hash<OBJ> { \
+	size_t operator()(const OBJ &obj) const { \
+		return hash<Rsyn::Proxy<OBJ##Data>>()(obj); \
+	} \
+};
+
+RSYN_CREATE_HASH(Rsyn::Net);
+RSYN_CREATE_HASH(Rsyn::Pin);
+RSYN_CREATE_HASH(Rsyn::Arc);
+RSYN_CREATE_HASH(Rsyn::Instance);
+RSYN_CREATE_HASH(Rsyn::LibraryPin);
+RSYN_CREATE_HASH(Rsyn::LibraryArc);
+RSYN_CREATE_HASH(Rsyn::LibraryCell);
+} // end namespace
+
 #endif
