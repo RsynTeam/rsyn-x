@@ -27,6 +27,10 @@ InstanceOverlay::InstanceOverlay() {
 // -----------------------------------------------------------------------------
 
 bool InstanceOverlay::init(PhysicalCanvasGL * canvas) {
+	// Jucemar - 2017/03/25 -> Physical variable are initialized only when physical service was started.
+	// It avoids crashes when a design without physical data is loaded. 
+	if(!canvas->isPhysicalDesignInitialized())
+		return false;
 	clsEnginePtr = canvas->getEngine();
 	design = clsEnginePtr.getDesign();
 	module = design.getTopModule(); 

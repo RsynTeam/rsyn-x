@@ -143,8 +143,6 @@
           </logicalFolder>
           <itemPath>../../../rsyn/src/rsyn/gui/frame/MainFrame.cpp</itemPath>
           <itemPath>../../../rsyn/src/rsyn/gui/frame/MainFrame.h</itemPath>
-          <itemPath>../../../rsyn/src/rsyn/gui/frame/SchematicFrame.cpp</itemPath>
-          <itemPath>../../../rsyn/src/rsyn/gui/frame/SchematicFrame.h</itemPath>
         </logicalFolder>
         <itemPath>../../../rsyn/src/rsyn/gui/App.cpp</itemPath>
         <itemPath>../../../rsyn/src/rsyn/gui/App.h</itemPath>
@@ -1140,16 +1138,6 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/gui/frame/MainFrame.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../rsyn/src/rsyn/gui/frame/SchematicFrame.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../../rsyn/src/rsyn/gui/frame/SchematicFrame.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -3086,16 +3074,6 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/gui/frame/MainFrame.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../rsyn/src/rsyn/gui/frame/SchematicFrame.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../../rsyn/src/rsyn/gui/frame/SchematicFrame.h"
             ex="false"
             tool="3"
             flavor2="0">

@@ -27,13 +27,18 @@ namespace Rsyn {
 
 void Graphics::start(Engine engine, const Json &params) {
 	clsEngine = engine;
+
+	// Jucemar - 2017/03/25 -> Physical variable are initialized only when physical service was started.
+	// It avoids crashes when a design without physical data is loaded. 
+	if (clsEngine.isServiceRunning("rsyn.physical")) {
+		clsPhysical = engine.getService("rsyn.physical");
+		clsPhysicalDesign = clsPhysical->getPhysicalDesign();
+	} // end if 
 	
-	clsPhysical = engine.getService("rsyn.physical");
 	clsTimer = engine.getService("rsyn.timer", Rsyn::SERVICE_OPTIONAL);
-	
 	clsDesign = engine.getDesign();
 	clsModule = clsDesign.getTopModule();	
-	clsPhysicalDesign = clsPhysical->getPhysicalDesign();
+	
 
 	clsColorCells = clsDesign.createAttribute();
 	
@@ -132,6 +137,11 @@ void Graphics::onPostInstanceCreate(Rsyn::Instance instance) {
 Rsyn::Instance Graphics::searchCellAt(const DBU x, const DBU y) {
 	Rsyn::Instance c = nullptr;
 
+	// Jucemar - 2017/03/25 -> Physical variable are initialized only when physical service was started.
+	// It avoids crashes when a design without physical data is loaded. 
+	if(!clsPhysical)
+		return c;
+	
 	for (Rsyn::Instance cell : clsModule.allInstances()) {
 		if(cell.getType() != Rsyn::CELL ) {
 			std::cout<<"TODO "<<__func__<<" "<<cell.getName()<<" is not Rsyn::CELL type\n";
@@ -408,6 +418,11 @@ void Graphics::coloringCriticalPath(const TimingMode mode, const bool showNeighb
 void Graphics::coloringQDPMoved() {
 	Color noColor(200, 200, 200);
 
+	// Jucemar - 2017/03/25 -> Physical variable are initialized only when physical service was started.
+	// It avoids crashes when a design without physical data is loaded. 
+	if(!clsPhysical)
+		return;
+	
 	for (Rsyn::Instance instance : clsModule.allInstances()) {
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
 		Rsyn::PhysicalCell phCell = clsPhysicalDesign.getPhysicalCell(cell);

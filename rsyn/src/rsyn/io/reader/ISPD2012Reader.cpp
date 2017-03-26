@@ -145,6 +145,8 @@ void ISPD2012Reader::load(Rsyn::Engine engine, const Json & config ) {
 		} // end for
 	} // end block
 
+	engine.startService("rsyn.graphics", {});
+
 	timer->updateTimingFull();
 	timer->dumpTiming("dump-rsyn.txt");
 	std::cout << "WNS: " << timer->getWns(LATE) << "\n";

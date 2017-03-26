@@ -56,7 +56,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/5b7cf7b1/DensityGridOverlay.o \
 	${OBJECTDIR}/_ext/5b7cf7b1/Instance.o \
 	${OBJECTDIR}/_ext/f067b555/MainFrame.o \
-	${OBJECTDIR}/_ext/f067b555/SchematicFrame.o \
 	${OBJECTDIR}/_ext/a8f1af4b/MainFrameBase.o \
 	${OBJECTDIR}/_ext/a8f1af4b/SchematicFrameBase.o \
 	${OBJECTDIR}/_ext/9a70faea/Graphics.o \
@@ -264,11 +263,6 @@ ${OBJECTDIR}/_ext/f067b555/MainFrame.o: ../../../rsyn/src/rsyn/gui/frame/MainFra
 	${MKDIR} -p ${OBJECTDIR}/_ext/f067b555
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -DDEBUG -DDIAGNOSTIC -DRSYN_DEBUG -D_GLIBCCX_DEBUG -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/f067b555/MainFrame.o ../../../rsyn/src/rsyn/gui/frame/MainFrame.cpp
-
-${OBJECTDIR}/_ext/f067b555/SchematicFrame.o: ../../../rsyn/src/rsyn/gui/frame/SchematicFrame.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/f067b555
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -DDEBUG -DDIAGNOSTIC -DRSYN_DEBUG -D_GLIBCCX_DEBUG -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/f067b555/SchematicFrame.o ../../../rsyn/src/rsyn/gui/frame/SchematicFrame.cpp
 
 ${OBJECTDIR}/_ext/a8f1af4b/MainFrameBase.o: ../../../rsyn/src/rsyn/gui/frame/base/MainFrameBase.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/a8f1af4b

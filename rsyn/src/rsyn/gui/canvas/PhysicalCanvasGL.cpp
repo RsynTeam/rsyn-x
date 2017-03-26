@@ -100,25 +100,29 @@ void PhysicalCanvasGL::attachEngine(Rsyn::Engine engine) {
 	reset();
 
 	clsEnginePtr = engine;
+	
 	timer = clsEnginePtr.getService("rsyn.timer", Rsyn::SERVICE_OPTIONAL);
 	routingEstimator = clsEnginePtr.getService("rsyn.routingEstimator", Rsyn::SERVICE_OPTIONAL);
-	physical = clsEnginePtr.getService("rsyn.physical");
-	
 	design = clsEnginePtr.getDesign();
 	module = design.getTopModule();
-	phDesign = physical->getPhysicalDesign();
-	
 	clsCheckpoint = design.createAttribute();
-	storeCheckpoint();
-
-	Rsyn::PhysicalDie phDie = phDesign.getPhysicalDie();
-	const FloatRectangle &bound = phDie.getBounds();
-	FloatRectangle r = bound;
-	r.scaleCentralized(1.01f);
-	resetCamera(r[LOWER][X], r[LOWER][Y], r[UPPER][X],r[UPPER][Y]);
-
-	renderCoreBounds();
 	
+	// Jucemar - 2017/03/25 -> Initializing and rendering only if physical service is initialized.
+	// This approach avoids crash caused by loading design without physical data.
+	if (clsEnginePtr.isServiceRunning("rsyn.physical")) {
+		physical = clsEnginePtr.getService("rsyn.physical");
+		phDesign = physical->getPhysicalDesign();
+
+		storeCheckpoint();
+
+		Rsyn::PhysicalDie phDie = phDesign.getPhysicalDie();
+		const FloatRectangle &bound = phDie.getBounds();
+		FloatRectangle r = bound;
+		r.scaleCentralized(1.01f);
+		resetCamera(r[LOWER][X], r[LOWER][Y], r[UPPER][X], r[UPPER][Y]);
+
+		renderCoreBounds();
+	}
 	Refresh();
 } // end method
 
@@ -909,6 +913,12 @@ void PhysicalCanvasGL::renderBlockages() {
 // ----------------------------------------------------------------------------- 
 
 void PhysicalCanvasGL::render(const int width, const int height) {
+	
+	// Jucemar - 2017/03/25 -> Physical variable are initialized only when physical service was started.
+	// It avoids crashes when a design without physical data is loaded. 
+	if(!isPhysicalDesignInitialized())
+		return;
+	
 	prepare2DViewport(width, height);
 		
 	if (clsViewCoreBounds) renderCoreBounds();

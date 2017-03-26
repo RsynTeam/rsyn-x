@@ -38,6 +38,10 @@ DensityGridOverlay::DensityGridOverlay() {
 // -----------------------------------------------------------------------------
 
 bool DensityGridOverlay::init(PhysicalCanvasGL * canvas) {
+	// Jucemar - 2017/03/25 -> Physical variable are initialized only when physical service was started.
+	// It avoids crashes when a design without physical data is loaded. 
+	if(!canvas->isPhysicalDesignInitialized())
+		return false;
 	Rsyn::Engine clsEnginePtr = canvas->getEngine();
 	if(!clsEnginePtr.isServiceRunning("rsyn.densityGrid"))
 		return false;

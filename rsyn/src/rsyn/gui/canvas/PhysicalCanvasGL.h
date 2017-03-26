@@ -75,7 +75,7 @@ private:
 
 	Rsyn::Timer * timer;
 	Rsyn::RoutingEstimator * routingEstimator;
-	Rsyn::PhysicalService *physical;
+	Rsyn::PhysicalService *physical = nullptr;
 	Rsyn::Design design;
 	Rsyn::Module module;
 	Rsyn::PhysicalDesign phDesign;
@@ -204,6 +204,9 @@ public:
 
 	void SelectBin(const int binIndex);
 	
+	bool isPhysicalDesignInitialized() const {
+		return physical != nullptr;
+	}
 	
 //**************TEMP**************	
 	float2 getMousePosition();

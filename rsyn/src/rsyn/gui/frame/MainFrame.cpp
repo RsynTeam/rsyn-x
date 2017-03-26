@@ -248,12 +248,20 @@ void MainFrame::OnOverlayToggle(wxCommandEvent &event) {
 // -----------------------------------------------------------------------------
 
 void MainFrame::updateCircuitInfo(){
+	// Jucemar - 2017/03/25 -> Physical variable are initialized only when physical service was started.
+	// It avoids crashes when a design without physical data is loaded. 
+	if (clsPhysicalPtr) {
+		clsPropertyGridItemDesignNumMacros->SetValue(clsPhysicalDesign.getNumElements(Rsyn::PHYSICAL_BLOCK));
+		clsPropertyGridItemDesignNumFixedCells->SetValue(clsPhysicalDesign.getNumElements(Rsyn::PHYSICAL_FIXED));
+		clsPropertyGridItemDesignNumMovableCells->SetValue(clsPhysicalDesign.getNumElements(Rsyn::PHYSICAL_MOVABLE));
+	} else {
+		clsPropertyGridItemDesignNumMacros->SetValueToUnspecified();
+		clsPropertyGridItemDesignNumFixedCells->SetValueToUnspecified();
+		clsPropertyGridItemDesignNumMovableCells->SetValueToUnspecified();
+	}// end if-else  
 	clsPropertyGridItemDesignName->SetValue(clsEngine.getDesign().getName());
 	clsPropertyGridItemDesignNumCells->SetValue(clsEngine.getDesign().getNumInstances(Rsyn::CELL));
-	clsPropertyGridItemDesignNumMacros->SetValue(clsPhysicalDesign.getNumElements(Rsyn::PHYSICAL_BLOCK));
 	clsPropertyGridItemDesignNumNets->SetValue(clsEngine.getDesign().getNumNets());
-	clsPropertyGridItemDesignNumFixedCells->SetValue(clsPhysicalDesign.getNumElements(Rsyn::PHYSICAL_FIXED));
-	clsPropertyGridItemDesignNumMovableCells->SetValue(clsPhysicalDesign.getNumElements(Rsyn::PHYSICAL_MOVABLE));
 	clsPropertyGridItemDesignNumInputPins->SetValue(-1);
 	clsPropertyGridItemDesignNumOutputPins->SetValue(-1);
 
@@ -856,8 +864,22 @@ void MainFrame::UpdateSelectedCellProperties(const bool updateOnlyPropertiesAffe
 	Rsyn::Cell cell = clsPhysicalCanvasGLPtr->getSelectedCell();
 
 	if (cell != nullptr) {
-		Rsyn::PhysicalCell phCell = clsPhysicalDesign.getPhysicalCell(cell);
-		const Bounds &rect = phCell.getBounds();//phDesign.getCellBounds(cell);
+		// Jucemar - 2017/03/25 -> Updating cell information only if the physical design service is running.
+		// This is a protection to crashes when design without physical data are loaded. 
+		if (clsPhysicalPtr) {
+			Rsyn::PhysicalCell phCell = clsPhysicalDesign.getPhysicalCell(cell);
+			const Bounds &rect = phCell.getBounds();
+			clsPropertyGridItemCellX->SetValue(rect[LOWER][X]);
+			clsPropertyGridItemCellY->SetValue(rect[LOWER][Y]);
+			clsPropertyGridItemCellWidth->SetValue(rect.computeLength(X));
+			clsPropertyGridItemCellHeight->SetValue(rect.computeLength(Y));
+		} else {
+			clsPropertyGridItemCellX->SetValueToUnspecified();
+			clsPropertyGridItemCellY->SetValueToUnspecified();
+			clsPropertyGridItemCellWidth->SetValueToUnspecified();
+			clsPropertyGridItemCellHeight->SetValueToUnspecified();
+		} // end if-else
+
 		if (!updateOnlyPropertiesAffectedByPlacementChange) {
 
 			clsPropertyGridItemCellTimingName->SetValue(wxString::FromAscii(cell.getName().c_str()));
@@ -866,12 +888,7 @@ void MainFrame::UpdateSelectedCellProperties(const bool updateOnlyPropertiesAffe
 			clsPropertyGridItemCellPhysicalName->SetValue(wxString::FromAscii(cell.getName().c_str()));
 			clsPropertyGridItemCellPhysicalLibCell->SetValue(wxString::FromAscii(cell.getLibraryCellName().c_str()));
 
-			clsPropertyGridItemCellWidth->SetValue(rect.computeLength(X));
-			clsPropertyGridItemCellHeight->SetValue(rect.computeLength(Y));
-
 			clsPropertyGridItemCellFixedCurrent->SetValue(cell.isFixed());
-			//clsPropertyGridItemCellFixedOriginal->SetValue(phCell.isFixedInInputFile());
-			Rsyn::Design design = clsEngine.getDesign();
 			if (clsTimerPtr) {
 				Rsyn::Timer *timer = clsEngine.getService("rsyn.timer");
 
@@ -924,9 +941,6 @@ void MainFrame::UpdateSelectedCellProperties(const bool updateOnlyPropertiesAffe
 			} // end if 
 		} // end if
 		
-		clsPropertyGridItemCellX->SetValue(rect[LOWER][X]);
-		clsPropertyGridItemCellY->SetValue(rect[LOWER][Y]);
-		
 		clsPropertyGridItemCellLegalized->SetValueToUnspecified();
 		
 		clsChoicebookProperties->SetSelection(1);
@@ -951,20 +965,6 @@ void MainFrame::OnRun(wxCommandEvent& event) {
 
 	clsEngine.runProcess("ufrgs.ISPD16Flow");
 	
-//	std::string flow = "default";
-//	
-//	switch (clsFlow->GetSelection()) {
-//		case 0:	flow = "default"; break;
-//		case 1: flow = "jucemar"; break;
-//		case 2: flow = "qp"; break;
-//
-//		default:
-//			std::cout << "Invalid selection.";
-//			return;
-//	} // end switch
-//
-//	clsInfraPtr->run(flow);
-	
 	UpdateStats(true);
 } // end event 
 
@@ -986,7 +986,14 @@ void MainFrame::processGraphicsEventDesignLoaded() {
 		return;
 
 	// Mandatory services.
-	clsPhysicalPtr = clsEngine.getService("rsyn.physical");
+	// Jucemar - 2017/03/25 -> Physical variable are initialized only when physical service was started.
+	// It avoids crashes when a design without physical data is loaded. 
+	if (clsEngine.isServiceRunning("rsyn.physical")) {
+		clsPhysicalPtr = clsEngine.getService("rsyn.physical");
+		// Physical design.
+		clsPhysicalDesign = clsPhysicalPtr->getPhysicalDesign();
+	} // end if
+
 	clsGraphicsPtr = clsEngine.getService("rsyn.graphics");
 
 	// Optional services.
@@ -995,9 +1002,7 @@ void MainFrame::processGraphicsEventDesignLoaded() {
 	clsReportPtr = clsEngine.getService("rsyn.report", Rsyn::SERVICE_OPTIONAL);
 	clsWriterPtr = clsEngine.getService("rsyn.writer", Rsyn::SERVICE_OPTIONAL);
 
-	// Physical design.
-	clsPhysicalDesign = clsPhysicalPtr->getPhysicalDesign();
-
+	
 	if (clsPhysicalCanvasGLPtr)
 		clsPhysicalCanvasGLPtr->attachEngine(clsEngine);
 
