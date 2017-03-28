@@ -55,6 +55,18 @@ inline DBU PhysicalInstance::getCenter(const Dimension dim) const {
 
 // -----------------------------------------------------------------------------
 
+inline DBU PhysicalInstance::getX() const {
+	return getPosition(X);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBU PhysicalInstance::getY() const {
+	return getPosition(Y);
+} // end method
+
+// -----------------------------------------------------------------------------
+
 inline DBU PhysicalInstance::getHeight() const {
 	return data->clsBounds.computeLength(Y);
 } // end method 

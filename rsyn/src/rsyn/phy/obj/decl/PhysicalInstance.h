@@ -49,6 +49,10 @@ public:
 	DBUxy getCenter() const;
 	//! @brief Returns the central position of the PhysicalInstance boundaries for the given dimension.
 	DBU getCenter(const Dimension dim ) const;
+	//! @brief Returns the x position of the instance.
+	DBU getX() const;
+	//! @brief Returns the y position of the instance.
+	DBU getY() const;
 	//! @brief Returns the Instance height. It is the length of PhysicalInstance boundaries is Y dimension.
 	DBU getHeight() const;
 	//! @brief Returns the Instance width. It is the length of PhysicalInstance boundaries is X dimension.

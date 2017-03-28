@@ -105,6 +105,12 @@ public:
 	// Translate viewport (canvas) coordinates to space (user) coordinates.
 	float translateFromViewportToUserX(const int viewportX) const;
 	float translateFromViewportToUserY(const int viewportY) const;
+
+	// Get the user space coordinates.
+	float getMinX() const { return clsMinX; }
+	float getMinY() const { return clsMinY; }
+	float getMaxX() const { return clsMaxX; }
+	float getMaxY() const { return clsMaxY; }
 	
 	// Get the center of user space.
 	float getCenterX() const { return (clsMaxX + clsMinX) / 2.0f; }

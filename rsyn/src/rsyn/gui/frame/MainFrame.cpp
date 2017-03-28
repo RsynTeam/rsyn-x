@@ -355,7 +355,8 @@ void MainFrame::OnChangeCanvas(wxCommandEvent &event) {
 	// Select the right canvas to show.
 	if (clsMenuItemSchematicCanvas->IsChecked()) {
 		if (!clsSchematicCanvasGLPtr) {
-			clsSchematicCanvasGLPtr = new SchematicCanvasGL(clsPanelMain);
+			//clsSchematicCanvasGLPtr = new SchematicCanvasGL(clsPanelMain);
+			clsSchematicCanvasGLPtr = new NewSchematicCanvasGL(clsPanelMain);
 		} // end if
 		canvas = clsSchematicCanvasGLPtr;
 	} else if (clsMenuItemPhysicalCanvas->IsChecked()) {

@@ -322,7 +322,7 @@
                         <property name="label">Physical</property>
                         <property name="name">clsMenuItemPhysicalCanvas</property>
                         <property name="permission">protected</property>
-                        <property name="shortcut"></property>
+                        <property name="shortcut">Ctrl+1</property>
                         <property name="unchecked_bitmap"></property>
                         <event name="OnMenuSelection">OnChangeCanvas</event>
                         <event name="OnUpdateUI"></event>
@@ -337,7 +337,7 @@
                         <property name="label">Schematic</property>
                         <property name="name">clsMenuItemSchematicCanvas</property>
                         <property name="permission">protected</property>
-                        <property name="shortcut"></property>
+                        <property name="shortcut">Ctrl+2</property>
                         <property name="unchecked_bitmap"></property>
                         <event name="OnMenuSelection">OnChangeCanvas</event>
                         <event name="OnUpdateUI"></event>

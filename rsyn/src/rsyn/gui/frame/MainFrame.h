@@ -58,7 +58,7 @@ class MainFrame : public MainFrameBase {
 protected:
 	CanvasGL *clsCanvasGLPtr = nullptr;
 	PhysicalCanvasGL *clsPhysicalCanvasGLPtr = nullptr;
-	SchematicCanvasGL *clsSchematicCanvasGLPtr = nullptr;
+	NewSchematicCanvasGL *clsSchematicCanvasGLPtr = nullptr;
 
 private:
 

@@ -94,5 +94,69 @@ public:
 	void attachEngine(Rsyn::Engine engine);
 }; // end class
 
+// -----------------------------------------------------------------------------
+
+class NewSchematicCanvasGL : public CanvasGL {
+private:
+
+	static const float LAYER_GRID;
+	static const float LAYER_SHAPES;
+
+	class Shape {
+	protected:
+		int x = 0;
+		int y = 0;
+		int w = 0;
+		int h = 0;
+	public:
+
+		Shape(const int width, const int height) : w(width), h(height) {}
+
+		virtual void render() = 0;		
+		int getX() const { return x; }
+		int getY() const { return y; }
+		int getWidth() const { return w; }
+		int getHeight() const { return h; }
+		void move(const int x, const int y) { this->x = x; this->y = y; }
+	}; // end class
+
+	class Box : public Shape {
+	public:
+		Box() : Shape(4, 4) {}
+		virtual void render() override;
+	}; // end class
+
+	class Line : public Shape {
+	private:
+
+	public:
+		Line() : Shape(0, 0) {}
+		virtual void render() override;
+		void set(const int x0, const int y0, const int x1, const int y1) {
+			this->x = std::min(x0, x1);
+			this->y = std::min(y0, y1);
+			this->w = std::abs(x1 - x0);
+			this->h = std::abs(y1 - y0);
+		} // end method
+	}; // end class
+
+	bool clsFirstRendering = true;
+	std::vector<Shape *> clsShapes;
+
+	void renderShapes();
+	void renderGrid();
+
+public:
+
+	NewSchematicCanvasGL(wxWindow* parent);
+	virtual ~NewSchematicCanvasGL();
+
+	// Events.
+	virtual void onRender(wxPaintEvent& evt);
+
+	// Attach the engine.
+	void attachEngine(Rsyn::Engine engine) {}
+}; // end class
+
 
 #endif

@@ -1,18 +1,3 @@
-/* Copyright 2014-2017 Rsyn
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 ///////////////////////////////////////////////////////////////////////////
 // C++ code generated with wxFormBuilder (version Feb 16 2016)
 // http://www.wxformbuilder.org/
@@ -83,11 +68,11 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	
 	clsMenuCanvas->AppendSeparator();
 	
-	clsMenuItemPhysicalCanvas = new wxMenuItem( clsMenuCanvas, ID_PHYSICAL, wxString( wxT("Physical") ) , wxEmptyString, wxITEM_RADIO );
+	clsMenuItemPhysicalCanvas = new wxMenuItem( clsMenuCanvas, ID_PHYSICAL, wxString( wxT("Physical") ) + wxT('\t') + wxT("Ctrl+1"), wxEmptyString, wxITEM_RADIO );
 	clsMenuCanvas->Append( clsMenuItemPhysicalCanvas );
 	clsMenuItemPhysicalCanvas->Check( true );
 	
-	clsMenuItemSchematicCanvas = new wxMenuItem( clsMenuCanvas, ID_SCHEMATIC, wxString( wxT("Schematic") ) , wxEmptyString, wxITEM_RADIO );
+	clsMenuItemSchematicCanvas = new wxMenuItem( clsMenuCanvas, ID_SCHEMATIC, wxString( wxT("Schematic") ) + wxT('\t') + wxT("Ctrl+2"), wxEmptyString, wxITEM_RADIO );
 	clsMenuCanvas->Append( clsMenuItemSchematicCanvas );
 	
 	clsMenuCanvas->AppendSeparator();

@@ -93,7 +93,7 @@ void SchematicCanvasGL::onMouseMoved(wxMouseEvent& event) {
 
 void SchematicCanvasGL::render() {
 	prepare2DViewport(); // required to setup OpenGL context
-	
+
 	if (!initialized) {
 		if (glewInit() != GLEW_OK) {
 			std::cout << "ERROR: Could not init glew.\n";
@@ -646,3 +646,167 @@ void SchematicCanvasGL::drawGraph(float x, float y, float w, float h, float t) {
 
 	nvgStrokeWidth(vg, 1.0f);
 } // end method
+
+// #############################################################################
+// New Schematic
+// #############################################################################
+
+// -----------------------------------------------------------------------------
+
+const float NewSchematicCanvasGL::LAYER_GRID   = 0.0f;
+const float NewSchematicCanvasGL::LAYER_SHAPES = 0.1f;
+
+// -----------------------------------------------------------------------------
+
+NewSchematicCanvasGL::NewSchematicCanvasGL(wxWindow* parent) : CanvasGL(parent) {
+	setZoomScaling(1.1f);
+
+	Box *box1 = new Box();
+	Box *box2 = new Box();
+	Box *box3 = new Box();
+	box1->move(0, 0);
+	box2->move(0, 8);
+	box3->move(8, 4);
+
+	Line *line1 = new Line();
+	Line *line2 = new Line();
+	Line *line3 = new Line();
+	line1->set(4, 2, 6, 2);
+	line2->set(6, 2, 6, 5);
+	line3->set(6, 5, 8, 5);
+
+	Line *line4 = new Line();
+	Line *line5 = new Line();
+	Line *line6 = new Line();
+	line4->set(4, 10, 6, 10);
+	line5->set(6, 10, 6, 7);
+	line6->set(6, 7, 8, 7);
+
+	clsShapes.push_back(box1);
+	clsShapes.push_back(box2);
+	clsShapes.push_back(box3);
+	clsShapes.push_back(line1);
+	clsShapes.push_back(line2);
+	clsShapes.push_back(line3);
+	clsShapes.push_back(line4);
+	clsShapes.push_back(line5);
+	clsShapes.push_back(line6);
+} // end constructor
+
+// -----------------------------------------------------------------------------
+
+NewSchematicCanvasGL::~NewSchematicCanvasGL() {
+	for (Shape *shape : clsShapes) {
+		delete shape;
+	} // end for
+} // end destructor
+
+// -----------------------------------------------------------------------------
+
+void NewSchematicCanvasGL::renderShapes() {
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glColor3ub(0, 0, 0);
+
+	for (Shape *shape : clsShapes) {
+		glTranslatef(+shape->getX(), +shape->getY(), 0.0f);
+		shape->render();
+		glTranslatef(-shape->getX(), -shape->getY(), 0.0f);
+	} // end for
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void NewSchematicCanvasGL::renderGrid() {
+	const float defaultIntensity = 0.9f;
+	if (getZoom() >= 2.5) {
+		return;
+	} // end if
+
+	const float xmin = getMinX();
+	const float ymin = getMinY();
+	const float xmax = getMaxX();
+	const float ymax = getMaxY();
+
+	// Draw horizontal lines
+	glLineWidth(1);
+	glBegin(GL_LINES);
+	glColor3f(defaultIntensity, defaultIntensity, defaultIntensity);
+
+	for (int y = 0; y <= ymax; y++) {
+		glVertex3f(xmin, y, LAYER_GRID);
+		glVertex3f(xmax, y, LAYER_GRID);
+	} // end for
+
+	for (int y = 0; y >= ymin; y--) {
+		glVertex3f(xmin, y, LAYER_GRID);
+		glVertex3f(xmax, y, LAYER_GRID);
+	} // end for
+
+	for (int x = 0; x <= xmax; x++) {
+		glVertex3f(x, ymin, LAYER_GRID);
+		glVertex3f(x, ymax, LAYER_GRID);
+	} // end for
+
+	for (int x = 0; x >= xmin; x--) {
+		glVertex3f(x, ymin, LAYER_GRID);
+		glVertex3f(x, ymax, LAYER_GRID);
+	} // end for
+
+	glEnd();
+	glLineWidth(1);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void NewSchematicCanvasGL::onRender(wxPaintEvent& evt) {
+	if (!IsShownOnScreen()) return;
+	prepare2DViewport(); // required to setup OpenGL context
+
+	if (clsFirstRendering) {
+		// I'm no sure why resetting in the constructor did not work.
+		resetCamera(-25, -25, 25, 25);
+		clsFirstRendering = false;
+	} // end if
+
+	renderGrid();
+	renderShapes();
+
+	glFlush();
+	SwapBuffers();	
+} // end method
+
+// =============================================================================
+// Shapes
+// =============================================================================
+
+void
+NewSchematicCanvasGL::Box::render() {
+	glBegin(GL_QUADS);
+	glVertex3f(0.5, 0.5, LAYER_SHAPES);
+	glVertex3f(3.5, 0.5, LAYER_SHAPES);
+	glVertex3f(3.5, 3.5, LAYER_SHAPES);
+	glVertex3f(0.5, 3.5, LAYER_SHAPES);
+	glEnd();
+
+	glBegin(GL_LINES);
+	glVertex3f(0.0, 1.0, LAYER_SHAPES);
+	glVertex3f(0.5, 1.0, LAYER_SHAPES);
+
+	glVertex3f(0.0, 3.0, LAYER_SHAPES);
+	glVertex3f(0.5, 3.0, LAYER_SHAPES);
+
+	glVertex3f(3.5, 2.0, LAYER_SHAPES);
+	glVertex3f(4.0, 2.0, LAYER_SHAPES);
+	glEnd();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void
+NewSchematicCanvasGL::Line::render() {
+	glBegin(GL_LINES);
+	glVertex3f(0.0, 0.0, LAYER_SHAPES);
+	glVertex3f(getWidth(), getHeight(), LAYER_SHAPES);
+	glEnd();
+} // end method
+
