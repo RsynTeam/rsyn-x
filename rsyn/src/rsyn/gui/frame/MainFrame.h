@@ -270,6 +270,8 @@ public:
 			m_spinCtrl2->SetValue(canvas->GetSize().x);
 			m_spinCtrl3->SetValue(canvas->GetSize().y);
 		}
+
+		setDimensions(canvas->GetSize().x, canvas->GetSize().y);
 	} // end method
 	
 	//--------------------------------------------------------------------------
@@ -279,7 +281,7 @@ public:
 		if( !m_checkBox7->IsChecked() )
 			return;
 		
-		const int width = m_spinCtrl2->GetValue();
+		const float width = m_spinCtrl2->GetValue();
 		
 		 m_spinCtrl3->SetValue( (int) (width / ratioWH) );
 	}; // end method
