@@ -42,7 +42,6 @@ public:
 	int clsNumSites[2] = {0, 0};
 	DBUxy clsStep;
 	std::string clsRowName;
-	std::vector<Bounds> clsSegments;
 	PhysicalRowData() {
 		clsRowName = Rsyn::getPhysicalInvalidName();
 	} // end constructor 

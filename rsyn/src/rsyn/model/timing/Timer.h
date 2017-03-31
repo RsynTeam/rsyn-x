@@ -209,6 +209,7 @@ private:
 	int getSign() const { return clsSign; }	
 	
 	Number clsTNS[NUM_TIMING_MODES]; // total negative slack (only accounts for the worst edge at each endpoint)
+	Number clsAggregatedTNS[NUM_TIMING_MODES]; // total negative slack (accounts the sum of rise and fall edges)
 	Number clsWNS[NUM_TIMING_MODES]; // worst negative slack (only accounts for the worst edge at each endpoint)
 	Number clsWorstSlack[NUM_TIMING_MODES]; // worst slack (may be positive, only accounts for the worst edge at each endpoint)
 	Number clsMaxArrivalTime[NUM_TIMING_MODES]; // max arrival at any endpoint
@@ -640,6 +641,12 @@ public:
 	//! @brief Returns the total negative slack.
 	Number getTns(const TimingMode mode) const {
 		return clsTNS[mode];
+	} // end method
+	
+	//! @brief Returns the total negative slack. This method considers the   
+	//!        sum of the rise and fall edges at each endpoint.
+	Number getAggregatedTns(const TimingMode mode) const {
+		return clsAggregatedTNS[mode];
 	} // end method
 
 	//! @brief Returns the worst negative slack.

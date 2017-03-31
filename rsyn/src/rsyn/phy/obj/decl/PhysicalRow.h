@@ -83,9 +83,6 @@ public:
 	//! @brief Returns the Rsyn::PhysicalSymmetry of Rsyn::PhysicalRow.
 	//! @details Rsyn::PhysicalSymmetry may be: 1) SYMMETRY_X, or 2) SYMMETRY_Y.
 	Rsyn::PhysicalSymmetry getSymmetry() const;
-	//! @brief DEPRECATED
-	//! @warning Do not use or rely on this method. It will be removed soon.
-	const std::vector<Bounds> & allSegments() const;
 
 }; // end class 
 

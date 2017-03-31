@@ -129,10 +129,4 @@ inline Rsyn::PhysicalSymmetry PhysicalRow::getSymmetry() const {
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<Bounds> & PhysicalRow::allSegments() const {
-	return data->clsSegments;
-} // end method 
-
-// -----------------------------------------------------------------------------
-
 } // end namespace 

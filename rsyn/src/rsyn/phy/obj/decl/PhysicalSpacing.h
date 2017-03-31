@@ -34,6 +34,7 @@ namespace Rsyn {
 class PhysicalSpacing : public Proxy<PhysicalSpacingData> {
 	friend class PhysicalDesign;
 	friend class PhysicalDesignData;
+	RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 protected:
 	//! @brief Constructs a Rsyn::PhysicalSpacing object with a pointer to Rsyn::PhysicalSpacingData.
 	PhysicalSpacing(PhysicalSpacingData * data) : Proxy(data) {}

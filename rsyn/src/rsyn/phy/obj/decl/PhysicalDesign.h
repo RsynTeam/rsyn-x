@@ -199,26 +199,14 @@ public:
 	//! @brief	Returns the Rsyn::PhysicalSite object associated to the parameter site name.
 	Rsyn::PhysicalSite getPhysicalSiteByName(std::string siteName);	
 	//! @brief	Returns the total number of layers. It is the summation of routing, overlap, cut, and so forth layers.
-	std::size_t getNumLayers() const;
-	//! @brief	Returns the total number of routing layer objects. 
-	std::size_t getNumRoutingLayers() const;
-	//! @brief	Returns the total number of overlap layer objects. 
-	std::size_t getNumOverlapLayers() const;
-	//! @brief	Returns the total number of cut layer objects. 
-	std::size_t getNumCutLayers() const;
+	int getNumLayers(const Rsyn::PhysicalLayerType type) const;
 	//! @brief	Returns a reference to the vector of PhysicalLayers. 
-	const std::vector<PhysicalLayer>  & allPhysicalLayers() const;
-	//! @brief	Returns a reference to the vector of PhysicalLayer that are routing type. 
-	const std::vector<PhysicalLayer> & allRoutingPhysicalLayers() const;
-	//! @brief	Returns a reference to the vector of PhysicalLayers that are overlap type.  
-	const std::vector<PhysicalLayer> & allOverlapPhysicalLayers() const;
-	//! @brief	Returns a reference to the vector of PhysicalLayers that are cut type. 
-	const std::vector<PhysicalLayer> & allCutPhysicalLayers() const;
+	Range<ListCollection<PhysicalLayerData, PhysicalLayer>> allPhysicalLayers();
 
 	//! @brief	Returns the total number of spacing objects.  
-	std::size_t getNumSpacing() const;
+	std::size_t getNumPhysicalSpacing() const;
 	//! @brief	Returns a reference to the vector of PhysicalSpacing. 
-	const std::vector<PhysicalSpacing> & allSpacing() const;
+	Range<ListCollection<PhysicalSpacingData, PhysicalSpacing>> allPhysicalSpacing() const;
 	
 	//! @brief Returns the row height. It is assumed all rows have the same height.
 	//! The row height of the first row is returned.
@@ -263,7 +251,13 @@ protected:
 private:
 	//! @brief Returns the Rsyn::PhysicalRow unique identifier.
 	PhysicalIndex getId(Rsyn::PhysicalRow phRow) const;
-
+	
+	//! @brief Returns the Rsyn::PhysicalLayer unique identifier.
+	PhysicalIndex getId(Rsyn::PhysicalLayer phLayer) const;
+	
+	//! @brief Returns the Rsyn::PhysicalSpacing unique identifier.
+	PhysicalIndex getId(Rsyn::PhysicalSpacing spacing) const;
+	
 public:
 	//! @details Creates the physical object to handle the physical object extensions.
 	//! The extension maps the physical object to a null reference.

@@ -29,8 +29,6 @@
 #ifndef PHYSICALDESIGN_PHYSICALDESIGNDATA_H
 #define PHYSICALDESIGN_PHYSICALDESIGNDATA_H
 
-//#include "PhysicalInstanceData.h"
-
 namespace Rsyn {
 
 class PhysicalDesignData : public PhysicalObject {
@@ -47,22 +45,20 @@ public:
 	Rsyn::Attribute<Rsyn::LibraryCell, PhysicalLibraryCellData> clsPhysicalLibraryCells;
 	Rsyn::Attribute<Rsyn::Net, PhysicalNetData> clsPhysicalNets;
 	Rsyn::List<PhysicalRowData> clsPhysicalRows;
+	Rsyn::List<PhysicalLayerData> clsPhysicalLayers;
+	Rsyn::List<PhysicalSpacingData> clsPhysicalSpacing;
 	std::vector<PhysicalSite> clsPhysicalSites;
 	std::unordered_map<std::string, int> clsMapPhysicalSites;
 
 	//From LEF file
-	std::vector<Rsyn::PhysicalLayer> clsPhysicalLayers;
-	std::vector<Rsyn::PhysicalLayer> clsRoutingPhysicalLayers;
-	std::vector<Rsyn::PhysicalLayer> clsCutPhysicalLayers;
-	std::vector<Rsyn::PhysicalLayer> clsOverlapPhysicalLayers;
 	std::unordered_map<std::string, int> clsMapPhysicalLayers;
-
-	std::vector<PhysicalSpacing> clsPhysicalSpacing;
+	//std::vector<PhysicalSpacing> clsPhysicalSpacing;
 
 	Rsyn::PhysicalDieData clsPhysicalDie; // total area of the circuit including core bound. 
 
 	DBU clsTotalAreas[NUM_PHYSICAL_TYPES];
 	int clsNumElements[NUM_PHYSICAL_TYPES];
+	int clsNumLayers[NUM_PHY_LAYER];
 	
 	DBUxy clsHPWL;
 	DBU clsDBUs[NUM_DBU]; // LEF and DEF data base units resolution and DEF/LEF multiplier factor
@@ -92,6 +88,9 @@ public:
 			clsTotalAreas[index] = 0.0;
 			clsNumElements[index] = 0;
 		} // end for  
+		for(int index = 0; index < NUM_PHY_LAYER; index++){
+			clsNumLayers[index] = 0;
+		}
 	} // end constructor 
 }; // end class 
 

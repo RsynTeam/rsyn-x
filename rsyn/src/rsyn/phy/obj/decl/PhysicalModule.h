@@ -34,9 +34,12 @@ namespace Rsyn {
 class PhysicalModule : public PhysicalInstance {
 	friend class PhysicalDesign;
 protected:
+	//! @brief Constructs a Rsyn::PhysicalModule object with a pointer to Rsyn::PhysicalInstanceData.
 	PhysicalModule(PhysicalInstanceData * data) : PhysicalInstance(data) {}
 public:
+	//! @brief Constructs a Rsyn::PhysicalModule object with a null pointer to Rsyn::PhysicalInstanceData.
 	PhysicalModule() : PhysicalInstance(nullptr) {}
+	//! @brief Constructs a Rsyn::PhysicalModule object with a null pointer to Rsyn::PhysicalInstanceData.
 	PhysicalModule(std::nullptr_t) : PhysicalInstance(nullptr) {}
 }; // end class
 

@@ -12,6 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include <vector>
+
  
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -54,6 +57,7 @@ inline void PhysicalDesign::loadLibrary(const LefDscp & library) {
 	} // end for
 
 	// Initializing physical layers
+	data->clsPhysicalLayers.reserve(library.clsLefLayerDscps.size());
 	for (const LefLayerDscp & lefLayer : library.clsLefLayerDscps) {
 		addPhysicalLayer(lefLayer);
 	} // end for 
@@ -347,31 +351,17 @@ inline void PhysicalDesign::addPhysicalLayer(const LefLayerDscp& layer) {
 		return;
 	} // end if 
 
-	Rsyn::PhysicalLayer phLayer(new PhysicalLayerData());
+	Element<PhysicalLayerData> *element = data->clsPhysicalLayers.create();
+	Rsyn::PhysicalLayerData * phLayer = &(element->value);
+	phLayer->id = data->clsPhysicalLayers.lastId();
 	phLayer->clsName = layer.clsName;
 	phLayer->clsDirection = Rsyn::getPhysicalLayerDirection(layer.clsDirection);
 	phLayer->clsType = Rsyn::getPhysicalLayerType(layer.clsType);
 	phLayer->clsPitch = static_cast<DBU>(layer.clsPitch * getDatabaseUnits(LIBRARY_DBU));
 	phLayer->clsSpacing = static_cast<DBU>(layer.clsSpacing * getDatabaseUnits(LIBRARY_DBU));
 	phLayer->clsWidth = static_cast<DBU>(layer.clsWidth * getDatabaseUnits(LIBRARY_DBU));
-
-	data->clsPhysicalLayers.push_back(phLayer);
-	phLayer->id = data->clsPhysicalLayers.size() - 1;
-	data->clsMapPhysicalLayers[layer.clsName] = data->clsPhysicalLayers.size() - 1;
-	switch (phLayer->clsType) {
-		case ROUTING: data->clsRoutingPhysicalLayers.push_back(phLayer);
-			break;
-		case OVERLAP: data->clsOverlapPhysicalLayers.push_back(phLayer);
-			break;
-		case CUT: data->clsCutPhysicalLayers.push_back(phLayer);
-			break;
-		default:
-			//throw Exception("Layer Type "+layer.clsType+" Invalid at "
-			//	+__func__);
-			std::cout << "WARNING: Unsupported layer type '" << layer.clsType << "' in " <<
-				__func__ << ".\n";
-			break;
-	} // end switch 
+	data->clsMapPhysicalLayers[layer.clsName] = phLayer->id;
+	data->clsNumLayers[phLayer->clsType]++;
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -569,12 +559,12 @@ inline void PhysicalDesign::addPhysicalRow(const DefRowDscp& defRow) {
 // -----------------------------------------------------------------------------
 
 inline void PhysicalDesign::addPhysicalSpacing(const LefSpacingDscp & spacing) {
-	PhysicalSpacing phSpacing(new PhysicalSpacingData());
-	phSpacing->id = data->clsPhysicalSpacing.size();
+	Element<PhysicalSpacingData> *element = data->clsPhysicalSpacing.create();
+	Rsyn::PhysicalSpacingData * phSpacing = &(element->value);	
+	phSpacing->id = data->clsPhysicalSpacing.lastId();
 	phSpacing->clsLayer1 = getPhysicalLayerByName(spacing.clsLayer1);
 	phSpacing->clsLayer2 = getPhysicalLayerByName(spacing.clsLayer2);
 	phSpacing->clsDistance = static_cast<DBU>(spacing.clsDistance * getDatabaseUnits(LIBRARY_DBU));
-	data->clsPhysicalSpacing.push_back(phSpacing);
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -587,7 +577,11 @@ inline void PhysicalDesign::addPhysicalPin() {
 
 inline Rsyn::PhysicalLayer PhysicalDesign::getPhysicalLayerByName(const std::string & layerName) {
 	std::unordered_map<std::string, int>::iterator element = data->clsMapPhysicalLayers.find(layerName);
-	return element != data->clsMapPhysicalLayers.end() ? data->clsPhysicalLayers[element->second] : nullptr;
+	if(element == data->clsMapPhysicalLayers.end())
+		return nullptr;
+	const int id = element->second;
+	Element<PhysicalLayerData> * phLayerDataElement = data->clsPhysicalLayers.get(id);
+	return PhysicalLayer(&phLayerDataElement->value);
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -599,62 +593,28 @@ inline Rsyn::PhysicalSite PhysicalDesign::getPhysicalSiteByName(std::string site
 
 // -----------------------------------------------------------------------------
 
-inline std::size_t PhysicalDesign::getNumLayers() const {
-	return data->clsPhysicalLayers.size();
+inline int PhysicalDesign::getNumLayers(const Rsyn::PhysicalLayerType type) const {
+	return data->clsNumLayers[type];
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-inline std::size_t PhysicalDesign::getNumRoutingLayers() const {
-	return data->clsRoutingPhysicalLayers.size();
-} // end method 
+inline Range<ListCollection<PhysicalLayerData, PhysicalLayer>>
+PhysicalDesign::allPhysicalLayers() {
+	return ListCollection<PhysicalLayerData, PhysicalLayer>(data->clsPhysicalLayers);
+} // end method
 
 // -----------------------------------------------------------------------------
 
-inline std::size_t PhysicalDesign::getNumOverlapLayers() const {
-	return data->clsOverlapPhysicalLayers.size();
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-inline std::size_t PhysicalDesign::getNumCutLayers() const {
-	return data->clsCutPhysicalLayers.size();
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-inline const std::vector<PhysicalLayer> & PhysicalDesign::allPhysicalLayers() const {
-	return data->clsPhysicalLayers;
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-inline const std::vector<PhysicalLayer> & PhysicalDesign::allRoutingPhysicalLayers() const {
-	return data->clsRoutingPhysicalLayers;
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-inline const std::vector<PhysicalLayer> & PhysicalDesign::allOverlapPhysicalLayers() const {
-	return data->clsOverlapPhysicalLayers;
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-inline const std::vector<PhysicalLayer> & PhysicalDesign::allCutPhysicalLayers() const {
-	return data->clsCutPhysicalLayers;
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-inline std::size_t PhysicalDesign::getNumSpacing() const {
+inline std::size_t PhysicalDesign::getNumPhysicalSpacing() const {
 	return data->clsPhysicalSpacing.size();
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<PhysicalSpacing> & PhysicalDesign::allSpacing() const {
-	return data->clsPhysicalSpacing;
+inline Range<ListCollection<PhysicalSpacingData, PhysicalSpacing>>
+PhysicalDesign::allPhysicalSpacing() const {
+	return  ListCollection<PhysicalSpacingData, PhysicalSpacing>(data->clsPhysicalSpacing);
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -990,6 +950,18 @@ inline void PhysicalDesign::mergeBounds(const std::vector<Bounds> & source,
 inline PhysicalIndex PhysicalDesign::getId(Rsyn::PhysicalRow phRow) const {
 	return phRow->id;
 } // end method 
+
+// -----------------------------------------------------------------------------
+
+inline PhysicalIndex PhysicalDesign::getId(Rsyn::PhysicalLayer phLayer) const {
+	return phLayer->id;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline PhysicalIndex PhysicalDesign::getId(Rsyn::PhysicalSpacing spacing) const {
+	return spacing->id;
+} // end method
 
 ////////////////////////////////////////////////////////////////////////////////
 // Misc

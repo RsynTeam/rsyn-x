@@ -39,18 +39,42 @@ public:
 	PhysicalCell() : PhysicalInstance(nullptr) {}
 	PhysicalCell(std::nullptr_t): PhysicalInstance(nullptr)   {} 
 
+	//! @brief Returns true if cell is fixed. Otherwise, returns false.
 	bool isFixed() const;
+	//! @brief Returns true if cell is MACRO type. Otherwise, returns false.
 	bool isMacroBlock() const;
+	//! @brief Returns true if cell is placed. Otherwise, returns false. 
 	bool isPlaced() const;
-	//bool isFixedInInputFile() const;
+	//! @brief Returns initial position of the cell. 
+	//! @details Initial position is defined in the circuit placement files. 
+	//! Otherwise, it is defined to the coordinate DBUxy(0,0);
 	DBUxy getInitialPosition() const;
+	//! @brief Returns initial position of the cell for the given dimension. 
+	//! @details Initial position is defined in the circuit placement files. 
+	//! Otherwise, it is defined to the coordinate DBUxy(0,0);
 	DBU getInitialPosition(const Dimension dim) const;
+	//! @brief Returns cell displacement. 
+	//! @details Cell displacement is the difference between the current position of the cell 
+	//! and the initial position of the cell.
 	DBU getDisplacement() const;
+	//! @brief Returns cell displacement. 
+	//! @details Cell displacement is the difference between the current position of the cell 
+	//! and the initial position of the cell.
 	DBU getDisplacement(const Dimension dim) const;
+	//! @brief Returns cell displacement for the given dimension. 
+	//! @details Cell displacement is the difference between the current position of the cell 
+	//! and the given position.
 	DBU getDisplacement(const DBUxy pos) const;
+	//! @brief Returns cell displacement to the given position and given dimension. 
+	//! @details Cell displacement is the difference between the current position of the cell 
+	//! and the given position in the given dimension.
 	DBU getDisplacement(const DBU pos, const Dimension dim) const;
+	//! @brief Returns the orientation of the cell.
 	PhysicalOrientation getOrientation() const;
-	bool hasLayerBounds() const; // The bounds of a cell is defined by one of the layers. 
+	//! @brief Returns true if the cell boundaries is defined by a PhysicalLayer. Otherwise, returns false.
+	//! @details Cell boundaries may be defined by some PhysicalLayer instead of rectangular Bounds.
+	//! In the 2015 ICCAD contest, some macro have their boundaries defined by metal1 layer.
+	bool hasLayerBounds() const; 
 }; // end class 
 
 } // end namespace 

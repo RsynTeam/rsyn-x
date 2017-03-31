@@ -1172,6 +1172,7 @@ void Timer::updateTiming_UpdateTimingViolations() {
 	// Compute slacks for endpoints.
 	for (const TimingMode mode : allTimingModes()) {
 		clsTNS[mode] = 0;
+		clsAggregatedTNS[mode] = 0;
 		clsWNS[mode] = 0;
 		clsWorstSlack[mode] = +std::numeric_limits<Number>::max();
 		clsMaxArrivalTime[mode] = -std::numeric_limits<Number>::infinity();
@@ -1194,6 +1195,7 @@ void Timer::updateTiming_UpdateTimingViolations() {
 
 				wns = std::min(wns, slack);
 				clsSlackChecksum += slack;
+				clsAggregatedTNS[mode] += std::min(0.0f, slack);
 			} // end for
 
 			if (wns < clsWNS[mode]) { //keep the wns pin for early and late violations;

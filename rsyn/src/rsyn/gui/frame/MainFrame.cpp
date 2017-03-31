@@ -357,6 +357,7 @@ void MainFrame::OnChangeCanvas(wxCommandEvent &event) {
 		if (!clsSchematicCanvasGLPtr) {
 			//clsSchematicCanvasGLPtr = new SchematicCanvasGL(clsPanelMain);
 			clsSchematicCanvasGLPtr = new NewSchematicCanvasGL(clsPanelMain);
+			clsSchematicCanvasGLPtr->attachEngine(clsEngine);
 		} // end if
 		canvas = clsSchematicCanvasGLPtr;
 	} else if (clsMenuItemPhysicalCanvas->IsChecked()) {
@@ -1007,9 +1008,9 @@ void MainFrame::processGraphicsEventDesignLoaded() {
 	if (clsPhysicalCanvasGLPtr)
 		clsPhysicalCanvasGLPtr->attachEngine(clsEngine);
 
-	if (clsSchematicCanvasGLPtr)
-		clsSchematicCanvasGLPtr->attachEngine(clsEngine);
-
+	//if (clsSchematicCanvasGLPtr)
+	//	clsSchematicCanvasGLPtr->attachEngine(clsEngine);
+		
 	registerAllOverlays();
 
 	updateCircuitInfo();

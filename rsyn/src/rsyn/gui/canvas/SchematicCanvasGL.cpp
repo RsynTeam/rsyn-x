@@ -647,6 +647,265 @@ void SchematicCanvasGL::drawGraph(float x, float y, float w, float h, float t) {
 	nvgStrokeWidth(vg, 1.0f);
 } // end method
 
+////////////////////////////////////////////////////////////////////////////////
+// Drawing (Experimental)
+////////////////////////////////////////////////////////////////////////////////
+
+enum ShapeType {
+	SHAPE_TYPE_LINE,
+	SHAPE_TYPE_RECTANGLE,
+	SHAPE_TYPE_CIRCLE,
+	SHAPE_TYPE_PATH
+};
+
+class Scribble {
+public:
+	virtual void render(const float ratio, const float z) const = 0;
+}; // end class
+
+class CircleScribble : public Scribble {
+private:
+	float xc;
+	float yc;
+	float r;
+
+public:
+
+	void set(const float x, const float y, const float radius) {
+		xc = x;
+		yc = y;
+		r = radius;
+	} // end method
+
+	virtual void render(const float ratio, const float z) const override {
+		const int numSamples = (int) std::max(10.0f, 10.0f / ratio);
+		const float degreePerStep = (2.0f * 3.14159265359f) / numSamples;
+
+		glBegin(GL_POLYGON);
+		for (int i = 0; i < numSamples; i++) {
+			const float theta = i * degreePerStep;
+			const float x = xc + (r * std::cos(theta));
+			const float y = yc + (r * std::sin(theta));
+			glVertex3f(x, y, z);
+		} // end for
+		glEnd();
+	} // end method
+}; // end class
+
+class PathScribble : public Scribble {
+private:
+	enum PathType {
+		LINE,
+		QUADRATIC,
+		CUBIC
+	};
+
+	std::vector<float> points;
+	std::vector<PathType> cmds;
+
+	void
+	renderLineTo(
+		const float x, const float y, const float z
+	) const {
+		glVertex3f(x, y, z);
+	} // end method
+
+
+	void
+	renderQuadraticCurveTo(
+		const float x0, const float y0,
+		const float x1, const float y1,
+		const float x2, const float y2,
+		const float z
+	) const {
+		const int N = 25;
+		
+		for (int i = 1; i <= N; i++) {  // first point was already processed
+			const float t1 = float(i)/float(N);
+			const float t2 = t1*t1;
+			const float a = 1-t1; // (1-t)^1
+			const float b = a*a;  // (1-t)^2
+
+			const float xt = b*x0 + 2*a*t1*x1 + t2*x2;
+			const float yt = b*y0 + 2*a*t1*y1 + t2*y2;
+
+			glVertex3f(xt, yt, z);
+		} // end for
+	} // end for
+
+	void
+	renderCubicCurveTo(
+		const float x0, const float y0,
+		const float x1, const float y1,
+		const float x2, const float y2,
+		const float x3, const float y3,
+		const float z
+	) const {
+		const int N = 25;
+
+		for (int i = 1; i <= N; i++) { // first point was already processed
+			const float t1 = float(i)/float(N);
+			const float t2 = t1*t1;
+			const float t3 = t2*t1;
+			const float a = 1-t1; // (1-t)^1
+			const float b = a*a;  // (1-t)^2
+			const float c = b*a;  // (1-t)^3
+
+			const float xt = c*x0 + 3*b*t1*x1 + 3*a*t2*x2 + t3*x3;
+			const float yt = c*y0 + 3*b*t1*y1 + 3*a*t2*y2 + t3*y3;
+
+			glVertex3f(xt, yt, z);
+		} // end for
+	} // end method
+
+	void 
+	processLine(
+			const float z,
+			int &head
+	) const {
+		const float x = points[head++];
+		const float y = points[head++];
+		renderLineTo(x, y, z);
+	} // end method
+
+	void 
+	processQuadraticCurve(
+			const float z,
+			int &head
+	) const {
+		const float x0 = points[head-2];
+		const float y0 = points[head-1];
+		const float x1 = points[head++];
+		const float y1 = points[head++];
+		const float x2 = points[head++];
+		const float y2 = points[head++];
+		renderQuadraticCurveTo(x0, y0, x1, y1, x2, y2, z);
+	} // end method
+
+	void 
+	processCubicCurve(
+			const float z,
+			int &head
+	) const {
+		const float x0 = points[head-2];
+		const float y0 = points[head-1];
+		const float x1 = points[head++];
+		const float y1 = points[head++];
+		const float x2 = points[head++];
+		const float y2 = points[head++];
+		const float x3 = points[head++];
+		const float y3 = points[head++];
+		renderCubicCurveTo(x0, y0, x1, y1, x2, y2, x3, y3, z);
+	} // end method
+
+public:
+
+	virtual void render(
+			const float ratio, const float z
+	) const override {
+		if (cmds.empty())
+			return;
+
+		glBegin(GL_POLYGON);
+		glVertex3f(points[0], points[1], z);
+		int head = 2;
+		for (PathType type : cmds) {
+			switch (type) {
+				case LINE:
+					processLine(z, head);
+					break;
+				case QUADRATIC:
+					processQuadraticCurve(z, head);
+					break;
+				case CUBIC:
+					processCubicCurve(z, head);
+					break;
+				default:
+					assert(false);
+			} // end switch
+		} // end for
+
+		glEnd();
+	} // end method
+
+	void moveTo(
+			const float x, const float y
+	) {
+		points.clear();
+		points.push_back(x);
+		points.push_back(y);
+	} // end method
+
+	void lineTo(
+			const float x, const float y
+	) {
+		cmds.push_back(LINE);
+		points.push_back(x);
+		points.push_back(y);
+	} // end method
+
+	void quadraticCurveTo(
+			const float x1, const float y1,
+			const float x2, const float y2
+	) {
+		cmds.push_back(QUADRATIC);
+		points.push_back(x1);
+		points.push_back(y1);
+		points.push_back(x2);
+		points.push_back(y2);
+	} // end method
+
+	void cubicCurveTo(
+			const float x1, const float y1,
+			const float x2, const float y2,
+			const float x3, const float y3
+	) {
+		cmds.push_back(CUBIC);
+		points.push_back(x1);
+		points.push_back(y1);
+		points.push_back(x2);
+		points.push_back(y2);
+		points.push_back(x3);
+		points.push_back(y3);
+	} // end method
+	
+}; // end class
+
+// -----------------------------------------------------------------------------
+
+void NewSchematicCanvasGL::renderExperimental() {
+	const float x = 5;
+	const float y = 5;
+	const float w = 4;
+	const float h = 4;
+	
+	const float alpha = 0.4f;
+	const float r = w*0.15f;
+	const float aw = alpha * w;
+	const float ew = 1.07f * w;
+
+	PathScribble path;
+	path.moveTo(x + aw, y + 0);
+	path.lineTo(x +  0, y + 0);
+	path.lineTo(x +  0, y + h);
+	path.lineTo(x + aw, y + h);
+	path.cubicCurveTo(x + ew, y + h, x + ew, y + 0, x + aw, y + 0);
+
+	CircleScribble circle;
+	circle.set(x+w+r/2-0.1f, y + h/2, r);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glColor3ub(255, 255, 255);
+	path.render(0.1f, LAYER_SHAPE_FILLING);
+	circle.render(0.1f, LAYER_SHAPE_FILLING);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glColor3ub(0, 0, 0);
+	path.render(0.1f, LAYER_SHAPES);
+	circle.render(0.1f, LAYER_SHAPES);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+} // end method
+
 // #############################################################################
 // New Schematic
 // #############################################################################
@@ -654,67 +913,71 @@ void SchematicCanvasGL::drawGraph(float x, float y, float w, float h, float t) {
 // -----------------------------------------------------------------------------
 
 const float NewSchematicCanvasGL::LAYER_GRID   = 0.0f;
+const float NewSchematicCanvasGL::LAYER_SHAPE_FILLING = 0.05f;
 const float NewSchematicCanvasGL::LAYER_SHAPES = 0.1f;
+const float NewSchematicCanvasGL::LAYER_SELECTED = 0.4f;
 
 // -----------------------------------------------------------------------------
 
 NewSchematicCanvasGL::NewSchematicCanvasGL(wxWindow* parent) : CanvasGL(parent) {
-	setZoomScaling(1.1f);
-
-	Box *box1 = new Box();
-	Box *box2 = new Box();
-	Box *box3 = new Box();
-	box1->move(0, 0);
-	box2->move(0, 8);
-	box3->move(8, 4);
-
-	Line *line1 = new Line();
-	Line *line2 = new Line();
-	Line *line3 = new Line();
-	line1->set(4, 2, 6, 2);
-	line2->set(6, 2, 6, 5);
-	line3->set(6, 5, 8, 5);
-
-	Line *line4 = new Line();
-	Line *line5 = new Line();
-	Line *line6 = new Line();
-	line4->set(4, 10, 6, 10);
-	line5->set(6, 10, 6, 7);
-	line6->set(6, 7, 8, 7);
-
-	clsShapes.push_back(box1);
-	clsShapes.push_back(box2);
-	clsShapes.push_back(box3);
-	clsShapes.push_back(line1);
-	clsShapes.push_back(line2);
-	clsShapes.push_back(line3);
-	clsShapes.push_back(line4);
-	clsShapes.push_back(line5);
-	clsShapes.push_back(line6);
+	
+//	setZoomScaling(1.1f);
+//
+//	Box *box1 = new Box();
+//	Box *box2 = new Box();
+//	Box *box3 = new Box();
+//	box1->move(0, 0);
+//	box2->move(0, 8);
+//	box3->move(8, 4);
+//
+//	Line *line1 = new Line();
+//	Line *line2 = new Line();
+//	Line *line3 = new Line();
+//	line1->set(4, 2, 6, 2);
+//	line2->set(6, 2, 6, 5);
+//	line3->set(6, 5, 8, 5);
+//
+//	Line *line4 = new Line();
+//	Line *line5 = new Line();
+//	Line *line6 = new Line();
+//	line4->set(4, 10, 6, 10);
+//	line5->set(6, 10, 6, 7);
+//	line6->set(6, 7, 8, 7);
+//
+//	clsShapes.push_back(box1);
+//	clsShapes.push_back(box2);
+//	clsShapes.push_back(box3);
+//	clsShapes.push_back(line1);
+//	clsShapes.push_back(line2);
+//	clsShapes.push_back(line3);
+//	clsShapes.push_back(line4);
+//	clsShapes.push_back(line5);
+//	clsShapes.push_back(line6);
+	
 } // end constructor
 
 // -----------------------------------------------------------------------------
 
 NewSchematicCanvasGL::~NewSchematicCanvasGL() {
-	for (Shape *shape : clsShapes) {
-		delete shape;
-	} // end for
+//	for (Shape *shape : clsShapes) {
+//		delete shape;
+//	} // end for
 } // end destructor
-
-// -----------------------------------------------------------------------------
-
-void NewSchematicCanvasGL::renderShapes() {
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glColor3ub(0, 0, 0);
-
-	for (Shape *shape : clsShapes) {
-		glTranslatef(+shape->getX(), +shape->getY(), 0.0f);
-		shape->render();
-		glTranslatef(-shape->getX(), -shape->getY(), 0.0f);
-	} // end for
-} // end method
-
-// -----------------------------------------------------------------------------
+//
+//// -----------------------------------------------------------------------------
+//
+//void NewSchematicCanvasGL::renderShapes() {
+//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//	glColor3ub(0, 0, 0);
+//
+//	for (Shape *shape : clsShapes) {
+//		glTranslatef(+shape->getX(), +shape->getY(), 0.0f);
+//		shape->render();
+//		glTranslatef(-shape->getX(), -shape->getY(), 0.0f);
+//	} // end for
+//} // end method
+//
+//// -----------------------------------------------------------------------------
 
 void NewSchematicCanvasGL::renderGrid() {
 	const float defaultIntensity = 0.9f;
@@ -726,6 +989,7 @@ void NewSchematicCanvasGL::renderGrid() {
 	const float ymin = getMinY();
 	const float xmax = getMaxX();
 	const float ymax = getMaxY();
+	
 
 	// Draw horizontal lines
 	glLineWidth(1);
@@ -758,55 +1022,324 @@ void NewSchematicCanvasGL::renderGrid() {
 
 // -----------------------------------------------------------------------------
 
+void NewSchematicCanvasGL::attachEngine(Rsyn::Engine engine){
+	clsEngine = engine;
+	timer = clsEngine.getService("rsyn.timer", Rsyn::SERVICE_OPTIONAL);
+	clsDesign = clsEngine.getDesign();
+	init();
+}
+
+
+// -----------------------------------------------------------------------------
+void NewSchematicCanvasGL::init(){
+	clsVisualInst = clsDesign.createAttribute();
+	criticalPath();
+
+} //end method
+// -----------------------------------------------------------------------------
+
 void NewSchematicCanvasGL::onRender(wxPaintEvent& evt) {
 	if (!IsShownOnScreen()) return;
 	prepare2DViewport(); // required to setup OpenGL context
-
+	
 	if (clsFirstRendering) {
 		// I'm no sure why resetting in the constructor did not work.
-		resetCamera(-25, -25, 25, 25);
+		resetCamera(0, 0, finalPos[X], finalPos[Y]);
 		clsFirstRendering = false;
 	} // end if
 
 	renderGrid();
-	renderShapes();
-
+	//renderExperimental();
+	drawPath();
+	selectCellAt();
+	openNextCells();
 	glFlush();
 	SwapBuffers();	
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void NewSchematicCanvasGL::criticalPath(){
+	int numberPaths = timer->queryTopCriticalPathFromTopCriticalEndpoints(Rsyn::LATE, 1, clsPaths, 0);
+	definePathPos();
+}
+
+// -----------------------------------------------------------------------------
+void NewSchematicCanvasGL::defineInstancePos(Rsyn::Instance instance, DBUxy & lastPos, int y){
+
+	DBU cellSize = 4;
+	DBU cellSpace = 2;
+	DBUxy posMin;
+	DBUxy posMax;
+	VisualInstance & cdInstance = clsVisualInst[instance];
+	posMin[X] = lastPos[X] + cellSpace;
+	posMax[X] = posMin[X] + cellSize;
+	cdInstance.setInst(instance);
+	switch(y){
+		case -1: {posMin[Y] = lastPos[Y] - cellSpace - cellSize; 
+			 posMax[Y] = lastPos[Y] - cellSpace;
+			 break;}
+		case 0: {posMin[Y] = lastPos[Y]; 
+			posMax[Y] = lastPos[Y] + cellSize;
+			break;}
+		case 1: {posMin[Y] = lastPos[Y] + cellSpace; 
+			posMax[Y] = posMin[Y] + cellSize;
+			break;}
+	} //end switch
+	cdInstance.setBounds(posMin[X], posMin[Y], posMax[X], posMax[Y]);
+	if (instance.isSequential())
+		cdInstance.setColor(255, 0, 255);
+	else
+		if (instance.getType() == Rsyn::PORT)
+			cdInstance.setColor(255, 0, 0);
+		else
+			if(instance.isFixed())
+				cdInstance.setColor(0, 0, 0);
+			else
+				cdInstance.setColor(0, 0, 255);	
+	lastPos[X] = posMax[X];
+	lastPos[Y] = posMin[Y];	
+
+} //end method
+// -----------------------------------------------------------------------------
+void NewSchematicCanvasGL::definePathPos(){
+	DBUxy lastPos;
+	int y = 0;
+	DBU finalX = 0;
+	
+	for (std::vector<Rsyn::Timer::PathHop> path : clsPaths){
+		for (Rsyn::Timer::PathHop hop : path){
+			Rsyn::Instance instance = hop.getInstance();
+			VisualInstance & cdInstance = clsVisualInst[instance];
+			if (!cdInstance.getInst()){
+				defineInstancePos(instance, lastPos, y);
+			}
+			y=0;
+		} //end for
+		if (finalX < lastPos[X])
+			finalX = lastPos[X];
+		y = 1;
+	} //end for
+
+	finalPos[X] = finalX;
+	finalPos[Y] = lastPos[Y] + 4;
+	
+}//end method
+
+
+// -----------------------------------------------------------------------------
+void NewSchematicCanvasGL::drawPath(){
+	
+	for (std::vector<Rsyn::Timer::PathHop> path : clsPaths){
+		for (Rsyn::Timer::PathHop hop : path){
+			Rsyn::Instance instance = hop.getInstance();
+			drawInstance(instance);
+		} //end for
+	} //end for
+
+}
+// -----------------------------------------------------------------------------
+
+void NewSchematicCanvasGL::drawInstance(Rsyn::Instance instance){
+		
+		VisualInstance inst = clsVisualInst[instance];
+		if (!inst.init){
+			clsInstances.push_back(inst);
+			Bounds bounds = inst.getBounds();
+			DBUxy posLower;
+			DBUxy posUpper;
+			posLower[X] = bounds[LOWER][X];
+			posLower[Y] = bounds[LOWER][Y];
+			posUpper[X] = bounds[UPPER][X];
+			posUpper[Y] = bounds[UPPER][Y];
+
+			Color color = inst.getColor();
+
+			glColor3ub(color.r, color.g, color.b);
+			glBegin(GL_QUADS);
+			glVertex3f(posLower[X], posLower[Y], LAYER_SHAPES);
+			glVertex3f(posUpper[X], posLower[Y], LAYER_SHAPES);
+			glVertex3f(posUpper[X], posUpper[Y], LAYER_SHAPES);
+			glVertex3f(posLower[X], posUpper[Y], LAYER_SHAPES);
+			glEnd();
+		}
+
+
+} //end method
+
+// -----------------------------------------------------------------------------
+
+void NewSchematicCanvasGL::openNextCells(){
+//	if (selectedInstance.getInst()){
+//		Rsyn::Instance inst = selectedInstance.getInst();
+//		Bounds bounds = selectedInstance.getBounds();
+//		DBUxy pos;
+//		pos[X] = bounds[UPPER][X];
+//		pos[Y] = bounds[LOWER][Y];
+//		int top;
+//
+//		for (Rsyn::Pin pinOut: inst.allPins(Rsyn::OUT)){
+//			Rsyn::Net net = pinOut.getNet();
+//			int numPins = net.getNumSinks();
+//			if ((numPins % 2) != 0){
+//				top = numPins/2 +1;
+//			}
+//			else{
+//				top = numPins/2;
+//			}
+//			for (Rsyn::Pin pinIn : net.allPins(Rsyn::IN)){
+//				Rsyn::Instance instance = pinIn.getInstance();
+//				VisualInstance & instVisual = clsVisualInst[instance];
+//				if (!instVisual.getInst()){
+//					if (top > 0){
+//						defineInstancePos(instance, pos, 1);
+//					} //end if
+//					else{
+//						defineInstancePos(instance, pos, -1);
+//					} //end else
+//					drawInstance(instance);
+//				}
+//				top--;
+//			}//end for 
+//		}//end for
+//	
+//	} //end if	
+}//end method
+
+// -----------------------------------------------------------------------------
+
+void NewSchematicCanvasGL::selectCellAt(){
+	DBUxy mousePos = clsMousePosition.convertToDbu();
+	
+		for (VisualInstance inst: clsInstances){
+			const Bounds & bounds = inst.getBounds();
+			if (bounds.inside(mousePos)){
+				selectedInstance = inst; 
+				selectedInstance.setColor(255,178,100);
+				NewSchematicCanvasGL::renderSelectedCell();
+			}
+			else{
+				selectedInstance.setColor(0,0,0);
+			}
+		}//end for
+} //end method
+
+// -----------------------------------------------------------------------------
+
+void NewSchematicCanvasGL::renderSelectedCell(){
+		Bounds bounds = selectedInstance.getBounds();
+		DBUxy posLower;
+		DBUxy posUpper;
+		posLower[X] = bounds[LOWER][X];
+		posLower[Y] = bounds[LOWER][Y];
+		posUpper[X] = bounds[UPPER][X];
+		posUpper[Y] = bounds[UPPER][Y];
+		
+		Color color = selectedInstance.getColor();
+		
+		glColor3ub(color.r, color.g, color.b);		
+		glBegin(GL_QUADS);
+		glVertex3f(posLower[X], posLower[Y], LAYER_SELECTED);
+		glVertex3f(posUpper[X], posLower[Y], LAYER_SELECTED);
+		glVertex3f(posUpper[X], posUpper[Y], LAYER_SELECTED);
+		glVertex3f(posLower[X], posUpper[Y], LAYER_SELECTED);
+		glEnd();
+		
+		
+		Refresh();		
+}
+
+
+// -----------------------------------------------------------------------------
+void NewSchematicCanvasGL::onMouseMoved(wxMouseEvent& event) {
+    if ( !clsMouseDown )
+		return;
+	
+	clsDragging = true;
+	
+	const float x0 = translateFromViewportToUserX(clsDragStartX);
+	const float y0 = translateFromViewportToUserY(clsDragStartY);
+	
+	const float x1 = translateFromViewportToUserX(event.m_x);
+	const float y1 = translateFromViewportToUserY(event.m_y);
+	
+	const float dx = x1 - x0;
+	const float dy = y1 - y0;
+	
+	clsMinX -= dx;
+	clsMinY -= dy;
+	clsMaxX -= dx;
+	clsMaxY -= dy;
+	
+	clsDragStartX = event.m_x;
+	clsDragStartY = event.m_y;
+	
+	Refresh(); // Note: this happens only when dragging...
+} // end method
+
+
+// -----------------------------------------------------------------------------
+
+void NewSchematicCanvasGL::onMouseDown(wxMouseEvent& event) {
+	
+	if (event.LeftDown()) {
+		clsMouseDown = true;
+		clsDragStartX = event.m_x;
+		clsDragStartY = event.m_y;
+		if (event.ShiftDown()) {
+			clsIsSelected = true;
+		} // end if
+		else{
+			clsIsSelected = false;
+		}
+	} // end if 
+}// end method
+
+// -----------------------------------------------------------------------------
+
+void NewSchematicCanvasGL::onMouseReleased(wxMouseEvent& event) {
+	
+	if (clsIsSelected){
+		clsMousePosition[X] = translateFromViewportToUserX(event.m_x);
+		clsMousePosition[Y] = translateFromViewportToUserY(event.m_y);
+		selectCellAt();
+		openNextCells();
+	}
+	CanvasGL::onMouseReleased(event);
 } // end method
 
 // =============================================================================
 // Shapes
 // =============================================================================
 
-void
-NewSchematicCanvasGL::Box::render() {
-	glBegin(GL_QUADS);
-	glVertex3f(0.5, 0.5, LAYER_SHAPES);
-	glVertex3f(3.5, 0.5, LAYER_SHAPES);
-	glVertex3f(3.5, 3.5, LAYER_SHAPES);
-	glVertex3f(0.5, 3.5, LAYER_SHAPES);
-	glEnd();
-
-	glBegin(GL_LINES);
-	glVertex3f(0.0, 1.0, LAYER_SHAPES);
-	glVertex3f(0.5, 1.0, LAYER_SHAPES);
-
-	glVertex3f(0.0, 3.0, LAYER_SHAPES);
-	glVertex3f(0.5, 3.0, LAYER_SHAPES);
-
-	glVertex3f(3.5, 2.0, LAYER_SHAPES);
-	glVertex3f(4.0, 2.0, LAYER_SHAPES);
-	glEnd();
-} // end method
-
-// -----------------------------------------------------------------------------
-
-void
-NewSchematicCanvasGL::Line::render() {
-	glBegin(GL_LINES);
-	glVertex3f(0.0, 0.0, LAYER_SHAPES);
-	glVertex3f(getWidth(), getHeight(), LAYER_SHAPES);
-	glEnd();
-} // end method
-
+//void
+//NewSchematicCanvasGL::Box::render() {
+//	glBegin(GL_QUADS);
+//	glVertex3f(0.5, 0.5, LAYER_SHAPES);
+//	glVertex3f(3.5, 0.5, LAYER_SHAPES);
+//	glVertex3f(3.5, 3.5, LAYER_SHAPES);
+//	glVertex3f(0.5, 3.5, LAYER_SHAPES);
+//	glEnd();
+//
+//	glBegin(GL_LINES);
+//	glVertex3f(0.0, 1.0, LAYER_SHAPES);
+//	glVertex3f(0.5, 1.0, LAYER_SHAPES);
+//
+//	glVertex3f(0.0, 3.0, LAYER_SHAPES);
+//	glVertex3f(0.5, 3.0, LAYER_SHAPES);
+//
+//	glVertex3f(3.5, 2.0, LAYER_SHAPES);
+//	glVertex3f(4.0, 2.0, LAYER_SHAPES);
+//	glEnd();
+//} // end method
+//
+//// -----------------------------------------------------------------------------
+//
+//void
+//NewSchematicCanvasGL::Line::render() {
+//	glBegin(GL_LINES);
+//	glVertex3f(0.0, 0.0, LAYER_SHAPES);
+//	glVertex3f(getWidth(), getHeight(), LAYER_SHAPES);
+//	glEnd();
+//} // end method
+//

@@ -198,6 +198,57 @@ public:
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// PhysicalAttribute Layer: PhysicalLayer
+////////////////////////////////////////////////////////////////////////////////
+
+template<typename _PhysicalObjectExtension>
+class PhysicalAttributeImplementation<Rsyn::PhysicalLayer, _PhysicalObjectExtension> 
+	: public Rsyn::PhysicalAttributeBase<PhysicalLayerData, PhysicalLayer, _PhysicalObjectExtension> {
+public:
+	PhysicalAttributeImplementation() {}
+	
+	PhysicalAttributeImplementation(PhysicalAttributeInitializer initializer) { operator=(initializer); }
+	void operator=(PhysicalAttributeInitializer initializer) {
+		PhysicalDesign design = initializer.getPhysicalDesign();
+		PhysicalAttributeBase<PhysicalLayerData, PhysicalLayer, _PhysicalObjectExtension>::load(design, design.data->clsPhysicalLayers);
+	} // end operator
+	
+	template<typename PhysicalDefaultValueType>
+	PhysicalAttributeImplementation(PhysicalAttributeInitializerWithDefaultValue<PhysicalDefaultValueType> initializer) { operator=(initializer); }
+	template<typename PhysicalDefaultValueType>
+	void operator=(PhysicalAttributeInitializerWithDefaultValue<PhysicalDefaultValueType> initializer) {
+		PhysicalDesign design = initializer.getPhysicalDesign();
+		PhysicalAttributeBase<PhysicalLayerData, PhysicalLayer, _PhysicalObjectExtension>::load(design, design.data->clsPhysicalLayers, initializer.getDefaultValue());
+	} // end operator		
+}; // end class
+
+
+////////////////////////////////////////////////////////////////////////////////
+// PhysicalAttribute Layer: PhysicalSpacing
+////////////////////////////////////////////////////////////////////////////////
+
+template<typename _PhysicalObjectExtension>
+class PhysicalAttributeImplementation<Rsyn::PhysicalSpacing, _PhysicalObjectExtension> 
+	: public Rsyn::PhysicalAttributeBase<PhysicalSpacingData, PhysicalSpacing, _PhysicalObjectExtension> {
+public:
+	PhysicalAttributeImplementation() {}
+	
+	PhysicalAttributeImplementation(PhysicalAttributeInitializer initializer) { operator=(initializer); }
+	void operator=(PhysicalAttributeInitializer initializer) {
+		PhysicalDesign design = initializer.getPhysicalDesign();
+		PhysicalAttributeBase<PhysicalSpacingData, PhysicalSpacing, _PhysicalObjectExtension>::load(design, design.data->clsPhysicalSpacing);
+	} // end operator
+	
+	template<typename PhysicalDefaultValueType>
+	PhysicalAttributeImplementation(PhysicalAttributeInitializerWithDefaultValue<PhysicalDefaultValueType> initializer) { operator=(initializer); }
+	template<typename PhysicalDefaultValueType>
+	void operator=(PhysicalAttributeInitializerWithDefaultValue<PhysicalDefaultValueType> initializer) {
+		PhysicalDesign design = initializer.getPhysicalDesign();
+		PhysicalAttributeBase<PhysicalSpacingData, PhysicalSpacing, _PhysicalObjectExtension>::load(design, design.data->clsPhysicalSpacing, initializer.getDefaultValue());
+	} // end operator		
+}; // end class
+
+////////////////////////////////////////////////////////////////////////////////
 // PhysicalAttribute
 ////////////////////////////////////////////////////////////////////////////////
 

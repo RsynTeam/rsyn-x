@@ -42,21 +42,21 @@ void NCTUgrControl::initRouter(const int numRows) {
 	Rsyn::PhysicalModule phModule = clsPhDesign.getPhysicalModule(clsModule);
 	clsRouterBounds = phModule.getBounds();
 	int rowHeight = clsPhDesign.getRowHeight();
-	clsNumMetals = clsPhDesign.getNumRoutingLayers();
+	clsNumMetals = clsPhDesign.getNumLayers(Rsyn::PhysicalLayerType::ROUTING);
 	clsNumXGrids = static_cast<int>(std::ceil(clsRouterBounds.computeLength(X)/(rowHeight*numRows)));
 	clsNumYGrids = static_cast<int>(std::ceil(clsRouterBounds.computeLength(Y)/(rowHeight*numRows)));
 	clsTileWidth = clsRouterBounds.computeLength(X)/clsNumXGrids;
 	clsTileHeight = clsRouterBounds.computeLength(Y)/clsNumYGrids;
 	
 	clsMetalSpacing.resize(1);
-	clsMetalSpacing[0].reserve(clsPhDesign.getNumSpacing());
-	for(const Rsyn::PhysicalSpacing spc : clsPhDesign.allSpacing()){
+	clsMetalSpacing[0].reserve(clsPhDesign.getNumPhysicalSpacing());
+	for(const Rsyn::PhysicalSpacing spc : clsPhDesign.allPhysicalSpacing()){
 		clsMetalSpacing[0].push_back(spc.getDistance());
 	} // end for 
 	
 	clsMetalWidth.resize(1);
 	clsMetalWidth[0].reserve(clsNumMetals);
-	for(Rsyn::PhysicalLayer phLayer : clsPhDesign.allRoutingPhysicalLayers()){
+	for(Rsyn::PhysicalLayer phLayer : clsPhDesign.allPhysicalLayers()){
 		clsMetalWidth[0].push_back(phLayer.getWidth());
 	} // end for 
 	
@@ -76,7 +76,7 @@ void NCTUgrControl::initRouter(const int numRows) {
 	clsLayerDirs.reserve(clsNumMetals);
 	//0 for horizontal and 1 vertical. 
 	int index = 0;
-	for(Rsyn::PhysicalLayer phLayer : clsPhDesign.allRoutingPhysicalLayers()){
+	for(Rsyn::PhysicalLayer phLayer : clsPhDesign.allPhysicalLayers()){
 		clsLayerDirs.push_back(phLayer.getDirection());
 		clsMapRoutingLayers[phLayer.getName()] = index; // Mapping routing layer to matrix index;
 		
