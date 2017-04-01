@@ -35,10 +35,8 @@ class PhysicalSpacingData : public PhysicalObject {
 public:
 	PhysicalLayer clsLayer1;
 	PhysicalLayer clsLayer2;
-	DBU clsDistance;
-	PhysicalSpacingData() {
-		clsDistance = 0;
-	} // end constructor 
+	DBU clsDistance = 0;
+	PhysicalSpacingData()=default;
 }; // end class 
 
 } // end namespace 

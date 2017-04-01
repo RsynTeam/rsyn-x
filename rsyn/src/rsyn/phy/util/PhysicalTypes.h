@@ -24,7 +24,7 @@
 #define	PHYSICALDESIGN_PHYSICALTYPES_H
 
 //! @file PhysicalTypes.h 
-//! @brief This file aggregates all Enum definitions for Rsyn::PhysicalDesing.
+//! @brief This file aggregates all Enum definitions for Rsyn::PhysicalDesign.
 
 namespace Rsyn {
 

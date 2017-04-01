@@ -36,6 +36,7 @@
 
   // -----------------------------------------------------------------------------
 
+//! Row descriptor of the Bookshelf format
 class BookshelfRow {
 public:
 	std::string clsDirection;
@@ -47,31 +48,34 @@ public:
 	std::string clsSiteSymmetry;
 	int clsSubRowOrigin;
 	int clsNumSites;
+	BookshelfRow()=default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
+//! Pin descriptor of the Bookshelf format
 class BookshelfPin {
 public:
 	std::string clsNodeName;
 	std::string clsDirection;
 	double2 clsDisplacement;
+	BookshelfPin()=default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
+//! Net descriptor of the Bookshelf format
 class BookshelfNet {
 public:
-	bool clsHasName;
+	bool clsHasName = false;
 	std::string clsName;
 	std::vector<BookshelfPin> clsPins;
-	BookshelfNet() {
-		clsHasName = false;
-	} // end constructor 
+	BookshelfNet()=default; 
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
+//! Node descriptor of the Bookshelf format
 class BookshelfNode {
 public:
 	std::string clsName;
@@ -90,18 +94,17 @@ public:
 
 // -----------------------------------------------------------------------------
 
+//! Bookshelf descriptor. 
 class BookshelfDscp {
 public:
-	int clsNumPins;
+	int clsNumPins = 0;
 	std::string clsDesignName;
 	std::vector<BookshelfRow> clsRows;
 	std::vector<BookshelfNet> clsNets;
 	std::vector<BookshelfNode> clsNodes;
 	std::unordered_map<std::string, int> clsMapNets;
 	std::unordered_map<std::string, int> clsMapNodes;
-	BookshelfDscp() {
-		clsNumPins = 0;
-	} // end constructor 
+	BookshelfDscp()=default;
 }; // end class 
 
 // -----------------------------------------------------------------------------

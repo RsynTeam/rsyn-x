@@ -44,156 +44,144 @@ static const std::string INVALID_LEF_NAME = "*<INVALID_LEF_NAME>*";
 
 // -----------------------------------------------------------------------------
 
+//! Descriptor for LEF Polygon
 class LefPolygonDscp {
 public:
 	std::vector<double2> clsPolygonPoints;
+	LefPolygonDscp()=default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
+//! Descriptor for LEF Port
 class LefPortDscp {
 public:
-	std::string clsMetalName;
+	std::string clsMetalName = INVALID_LEF_NAME;
 	std::vector<DoubleRectangle> clsBounds;
 	std::vector<LefPolygonDscp> clsLefPolygonDscp;
-	LefPortDscp() : clsMetalName(INVALID_LEF_NAME) {}
+	LefPortDscp()=default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
+//! Descriptor for LEF Pin
 class LefPinDscp {
 public:
-	std::string clsPinName;
-	std::string clsPinDirection;
+	bool clsHasPort = false;
+	std::string clsPinName = INVALID_LEF_NAME;
+	std::string clsPinDirection = INVALID_LEF_NAME;
 	DoubleRectangle clsBounds;
-	bool clsHasPort;
 	std::vector<LefPortDscp> clsPorts;
-	LefPinDscp() : clsPinName(INVALID_LEF_NAME), 
-		clsPinDirection(INVALID_LEF_NAME), clsHasPort(false) {}
+	LefPinDscp()=default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
+//! Descriptor for LEF Obstruction
 class LefObsDscp {
 public:
-	std::string clsMetalLayer;
+	std::string clsMetalLayer = INVALID_LEF_NAME;
 	std::vector<DoubleRectangle> clsBounds;
-	LefObsDscp() : clsMetalLayer(INVALID_LEF_NAME) {}
+	LefObsDscp()=default;
 };
 
 // -----------------------------------------------------------------------------
 
+//! Descriptor for LEF Macro
 class LefMacroDscp {
 public:
-	std::string clsMacroName;
-	std::string clsMacroClass;
+	std::string clsMacroName = INVALID_LEF_NAME;
+	std::string clsMacroClass = INVALID_LEF_NAME;
+	std::string clsSite = INVALID_LEF_NAME;
 	double2 clsOrigin;
 	double2 clsSize;
 	std::vector<std::string> clsSymmetry;
-	std::string clsSite;
 	std::vector<LefPinDscp> clsPins;
 	std::vector<LefObsDscp> clsObs;
-	LefMacroDscp() : clsMacroName(INVALID_LEF_NAME), clsMacroClass(INVALID_LEF_NAME),
-		clsSite(INVALID_LEF_NAME) {}
+	LefMacroDscp()=default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
+//! Descriptor for LEF Layer
 class LefLayerDscp {
 public:
-	std::string clsName;
-	std::string clsType;
-	std::string clsDirection;
-	double clsPitch;
-	double clsOffset;
-	double clsWidth;
-	double clsSpacing;
-	LefLayerDscp() : clsName(INVALID_LEF_NAME), clsType(INVALID_LEF_NAME), clsDirection(INVALID_LEF_NAME),
-	clsPitch(0.0), clsOffset(0.0), clsWidth(0.0), clsSpacing(0.0) {}
+	std::string clsName = INVALID_LEF_NAME;
+	std::string clsType = INVALID_LEF_NAME;
+	std::string clsDirection = INVALID_LEF_NAME;
+	double clsPitch = 0.0;
+	double clsOffset = 0.0;
+	double clsWidth = 0.0;
+	double clsSpacing = 0.0;
+	LefLayerDscp()=default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
+//! Descriptor for LEF Site
 class LefSiteDscp {
 public:
-	std::string clsName;
+	std::string clsName = INVALID_LEF_NAME;
 	double2 clsSize;
-	bool clsHasClass;
-	std::string clsSiteClass;
-	LefSiteDscp() : clsName(INVALID_LEF_NAME), clsHasClass(false), 
-		clsSiteClass(INVALID_LEF_NAME) {}
+	bool clsHasClass = false;
+	std::string clsSiteClass = INVALID_LEF_NAME;
+	LefSiteDscp()=default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
+//! Descriptor for LEF Spacing
 class LefSpacingDscp {
 public:
-	std::string clsLayer1;
-	std::string clsLayer2;
-	double clsDistance;
-	LefSpacingDscp() : clsLayer1(INVALID_LEF_NAME), clsLayer2(INVALID_LEF_NAME),
-		clsDistance(0.0) {}
+	std::string clsLayer1 = INVALID_LEF_NAME;
+	std::string clsLayer2 = INVALID_LEF_NAME;
+	double clsDistance = 0.0;
+	LefSpacingDscp()=default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
+//! Descriptor for LEF Units
 class LefUnitsDscp {
 public:
-	bool clsHasTime;
-	bool clsHasCapacitance;
-	bool clsHasResitance;
-	bool clsHasPower;
-	bool clsHasCurrent;
-	bool clsHasVoltage;
-	bool clsHasDatabase;
-	bool clsHasFrequency;
+	bool clsHasTime = false;
+	bool clsHasCapacitance = false;
+	bool clsHasResitance = false;
+	bool clsHasPower = false;
+	bool clsHasCurrent = false;
+	bool clsHasVoltage = false;
+	bool clsHasDatabase = false;
+	bool clsHasFrequency = false;
 	
-	int clsTime;
-	int clsCapacitance;
-	int clsResitance;
-	int clsPower;
-	int clsCurrent;
-	int clsVoltage;
-	int clsDatabase;
-	int clsFrequency;
+	int clsTime = 0;
+	int clsCapacitance = 0;
+	int clsResitance = 0;
+	int clsPower = 0;
+	int clsCurrent = 0;
+	int clsVoltage = 0;
+	int clsDatabase = 100; // default value at LEF/DEF reference
+	int clsFrequency = 0;
 
-	LefUnitsDscp() {
-		clsHasTime = false;
-		clsHasCapacitance = false;
-		clsHasResitance = false;
-		clsHasPower = false;
-		clsHasCurrent = false;
-		clsHasVoltage = false;
-		clsHasDatabase = false;
-		clsHasFrequency = false;
-		clsTime = 0;
-		clsCapacitance = 0;
-		clsResitance = 0;
-		clsPower = 0;
-		clsCurrent = 0;
-		clsVoltage = 0;
-		clsDatabase = 100; // default value at LEF/DEF reference
-		clsFrequency = 0;
-	} // end constructor
+	LefUnitsDscp()=default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
+//! Descriptor for LEF. The LEF elements are kept in the units defined at LefUnitsDscp.
 class LefDscp {
 public:
-	int clsMajorVersion;
-	int clsMinorVersion;
-	std::string clsCaseSensitive;
-	std::string clsBusBitChars;
-	std::string clsDivideChar;
-	double clsManufactGrid;
+	int clsMajorVersion = 0;
+	int clsMinorVersion = 0;
+	std::string clsCaseSensitive = INVALID_LEF_NAME;
+	std::string clsBusBitChars = INVALID_LEF_NAME;
+	std::string clsDivideChar = INVALID_LEF_NAME;
+	double clsManufactGrid = 0.0;
 	LefUnitsDscp clsLefUnitsDscp;
 	std::vector<LefSiteDscp> clsLefSiteDscps;
 	std::vector<LefLayerDscp> clsLefLayerDscps;
 	std::vector<LefMacroDscp> clsLefMacroDscps;
 	std::vector<LefSpacingDscp> clsLefSpacingDscps;
-	LefDscp() : clsMajorVersion(0), clsMinorVersion(0), clsCaseSensitive(INVALID_LEF_NAME),
-		clsBusBitChars(INVALID_LEF_NAME), clsManufactGrid(0.0) {}
+	LefDscp()=default;
 }; // end class 
 
 // -----------------------------------------------------------------------------

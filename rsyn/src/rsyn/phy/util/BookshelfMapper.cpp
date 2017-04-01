@@ -32,17 +32,6 @@
 
 #include <iostream>
 
-BookshelfMapper::BookshelfMapper() {
-	// using the first design units resolution
-	clsDesignUnits = 100;
-	clsNumComponents = 0;
-} // end constructor 
-
-// -----------------------------------------------------------------------------
-
-BookshelfMapper::~BookshelfMapper() {
-} // end destructor 
-
 // -----------------------------------------------------------------------------
 
 // the order which methods are called is mandatory to keep, due to dependence of mapping result between methods.

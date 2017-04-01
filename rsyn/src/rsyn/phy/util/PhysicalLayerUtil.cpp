@@ -27,7 +27,7 @@ static const std::string NULL_PHY_NAME = "*<NULL_PHY_NAME>*";
 static const std::string GEN_NAME = "*<GEN_NAME>*_";
 static const std::string INVALID_NAME = "*<INVALID_NAME>*";
 
-PhysicalLayerType getPhysicalLayerType(std::string type){
+Rsyn::PhysicalLayerType getPhysicalLayerType(const std::string & type){
 	if(type.compare("ROUTING") == 0) return ROUTING;
 	if(type.compare("CUT") == 0) return CUT;
 	if(type.compare("OVERLAP") == 0) return OVERLAP;
@@ -36,7 +36,7 @@ PhysicalLayerType getPhysicalLayerType(std::string type){
 
 // -----------------------------------------------------------------------------
 
-std::string getPhysicalLayerType(PhysicalLayerType type) {
+std::string getPhysicalLayerType(const Rsyn::PhysicalLayerType type) {
  	switch(type) {
 		case ROUTING: return "ROUTING";
 		case CUT: return "CUT";
@@ -47,7 +47,7 @@ std::string getPhysicalLayerType(PhysicalLayerType type) {
 
 // -----------------------------------------------------------------------------
 
-PhysicalLayerDirection getPhysicalLayerDirection(std::string direction) {
+Rsyn::PhysicalLayerDirection getPhysicalLayerDirection(const std::string & direction) {
 	if(direction.compare("HORIZONTAL") == 0) return HORIZONTAL;
 	if(direction.compare("VERTICAL") == 0) return VERTICAL;
 	return INVALID_PHY_LAYER_DIRECTION;
@@ -55,7 +55,7 @@ PhysicalLayerDirection getPhysicalLayerDirection(std::string direction) {
 
 // -----------------------------------------------------------------------------
 
-std::string getPhysicalLayerDirection(PhysicalLayerDirection direction) {
+std::string getPhysicalLayerDirection(const PhysicalLayerDirection direction) {
 	switch(direction) {
 		case HORIZONTAL : return "HORIZONTAL";
 		case VERTICAL : return "VERTICAL";
@@ -65,7 +65,7 @@ std::string getPhysicalLayerDirection(PhysicalLayerDirection direction) {
 
 // -----------------------------------------------------------------------------
 
-PhysicalOrientation getPhysicalOrientation(const std::string &orientation) {
+Rsyn::PhysicalOrientation getPhysicalOrientation(const std::string &orientation) {
 	if(orientation.compare("N") == 0) return ORIENTATION_N;
 	if(orientation.compare("S") == 0) return ORIENTATION_S;
 	if(orientation.compare("E") == 0) return ORIENTATION_E;
@@ -81,7 +81,7 @@ PhysicalOrientation getPhysicalOrientation(const std::string &orientation) {
 
 // -----------------------------------------------------------------------------
 
-std::string getPhysicalOrientation(const PhysicalOrientation orientation) {
+std::string getPhysicalOrientation(const Rsyn::PhysicalOrientation orientation) {
 	switch (orientation) {
 		case ORIENTATION_N: return "N";
 		case ORIENTATION_S: return "S";
@@ -99,7 +99,7 @@ std::string getPhysicalOrientation(const PhysicalOrientation orientation) {
 
 // -----------------------------------------------------------------------------
 
-PhysicalMacroClass getPhysicalMacroClass(const std::string & macroClass) {
+Rsyn::PhysicalMacroClass getPhysicalMacroClass(const std::string & macroClass) {
 	if(macroClass.compare("COVER") == 0) return MACRO_COVER;
 	if(macroClass.compare("RING") == 0) return MACRO_RING;
 	if(macroClass.compare("BLOCK") == 0) return MACRO_BLOCK;
@@ -112,7 +112,7 @@ PhysicalMacroClass getPhysicalMacroClass(const std::string & macroClass) {
 
 // -----------------------------------------------------------------------------
 
-std::string getPhysicalMacroClass(const PhysicalMacroClass macroClass) {
+std::string getPhysicalMacroClass(const Rsyn::PhysicalMacroClass macroClass) {
 	switch(macroClass) {
 		case MACRO_COVER : return "COVER";
 		case MACRO_RING: return "RING";
@@ -155,7 +155,7 @@ Rsyn::PhysicalSiteClass getPhysicalSiteClass(const std::string & siteClass) {
 
 // -----------------------------------------------------------------------------
 
-std::string getPhysicalSiteClass( const PhysicalSiteClass siteClass) { 
+std::string getPhysicalSiteClass( const Rsyn::PhysicalSiteClass siteClass) { 
 	switch(siteClass) {
 		case CORE : return "CORE";
 		break;
@@ -194,7 +194,7 @@ Rsyn::PhysicalPinPortClass getPhysicalPinPortClass ( const std::string & portCla
 
 // -----------------------------------------------------------------------------
 
-std::string getPhysicalPinPortClass ( Rsyn::PhysicalPinPortClass portClass) {
+std::string getPhysicalPinPortClass ( const Rsyn::PhysicalPinPortClass portClass) {
 	switch(portClass) {
 		case PINPORTCLASS_NONE : return "NONE";
 		case PINPORTCLASS_CORE : return "CORE";

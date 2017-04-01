@@ -33,13 +33,10 @@ namespace Rsyn {
 
 class PhysicalSiteData : public PhysicalObject {
 public:
-	Rsyn::PhysicalSiteClass clsSiteClass;
+	Rsyn::PhysicalSiteClass clsSiteClass = INVALID_SITECLASS;
 	DBUxy clsSize;
-	std::string clsSiteName;
-	PhysicalSiteData() {
-		clsSiteClass = INVALID_SITECLASS;
-		clsSiteName = Rsyn::getPhysicalInvalidName();
-	}
+	std::string clsSiteName = Rsyn::getPhysicalInvalidName();
+	PhysicalSiteData()=default;
 }; // end namespace 
 
 } // end namespace  

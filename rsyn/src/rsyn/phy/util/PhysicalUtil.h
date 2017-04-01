@@ -24,45 +24,67 @@
 
 namespace Rsyn {
 
+//! @file PhysicalUtil.h 
+//! @brief This file aggregates conversion methods from/to Enum to/from string for Rsyn::PhysicalDesign.
 
-PhysicalLayerType getPhysicalLayerType(std::string type);
+//! Converts Layer type from string to enum, respectively.
+Rsyn::PhysicalLayerType getPhysicalLayerType(const std::string &type);
 
-std::string getPhysicalLayerType(PhysicalLayerType type);
+//! Converts Layer type from enum to string, respectively.
+std::string getPhysicalLayerType(const Rsyn::PhysicalLayerType type);
 
-PhysicalLayerDirection getPhysicalLayerDirection(std::string direction);
+//! Converts Layer direction from string to enum, respectively.
+Rsyn::PhysicalLayerDirection getPhysicalLayerDirection(const std::string &direction);
 
-std::string getPhysicalLayerDirection(PhysicalLayerDirection direction);
+//! Converts Layer direction from enum to string, respectively.
+std::string getPhysicalLayerDirection(const Rsyn::PhysicalLayerDirection direction);
 
-PhysicalOrientation getPhysicalOrientation(const std::string &orientation);
+//! Converts Orientation from string to enum, respectively.
+Rsyn::PhysicalOrientation getPhysicalOrientation(const std::string &orientation);
 
-std::string getPhysicalOrientation(const PhysicalOrientation orientation);
+//! Converts Orientation from enum to string, respectively.
+std::string getPhysicalOrientation(const Rsyn::PhysicalOrientation orientation);
 
-PhysicalMacroClass getPhysicalMacroClass(const std::string & macroClass);
+//! Converts Macro Class from string to enum, respectively.
+Rsyn::PhysicalMacroClass getPhysicalMacroClass(const std::string & macroClass);
 
-std::string getPhysicalMacroClass(const PhysicalMacroClass macroClass);
+//! Converts Macro Class from enum to string, respectively.
+std::string getPhysicalMacroClass(const Rsyn::PhysicalMacroClass macroClass);
 
+//! Converts Symmetry from string to enum, respectively.
 Rsyn::PhysicalSymmetry getPhysicalSymmetry(const std::string &rowSymmetry);
 
+//! Converts Symmetry from enum to string, respectively.
 std::string getPhysicalSymmetry(const Rsyn::PhysicalSymmetry rowSymmetry);
 
+//! Converts Site Class from string to enum, respectively.
 Rsyn::PhysicalSiteClass getPhysicalSiteClass(const std::string & siteClass);
 
+//! Converts Site Class from enum to string, respectively.
 std::string getPhysicalSiteClass( const Rsyn::PhysicalSiteClass siteClass);
 
+//! Converts Pin Direction from string to enum, respectively.
 Rsyn::PhysicalPinDirection getPhysicalPinDirection ( const std::string &direction);
 
+//! Converts Pin Direction from enum to string, respectively.
 std::string getPhysicalPinDirection (const Rsyn::PhysicalPinDirection pinDirection);
 
+//! Converts Pin Port Class from string to enum, respectively.
 Rsyn::PhysicalPinPortClass getPhysicalPinPortClass ( const std::string & portClass);
 
-std::string getPhysicalPinPortClass ( Rsyn::PhysicalPinPortClass portClass);
+//! Converts Pin Port Class from enum to string, respectively.
+std::string getPhysicalPinPortClass (const Rsyn::PhysicalPinPortClass portClass);
 
+//! Returns a prefix key word to generated names.
 std::string getPhysicalGeneratedNamePrefix() ;
 
+//! Returns a prefix key word to invalid prefix.
 std::string getPhysicalInvalidPrefix();
 
+//! Returns a prefix key word to invalid name.
 std::string getPhysicalInvalidName();
 
+//! Returns a prefix key word to null name.
 std::string getPhysicalNullName();
 
 
@@ -76,48 +98,56 @@ std::string getPhysicalNullName();
 
 // -----------------------------------------------------------------------------
 
+//! Overloads operator << to Symmetry.
 inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalSymmetry symmetry) {
     return out << getPhysicalSymmetry(symmetry);
 } // end operator overloading 
 
 // -----------------------------------------------------------------------------
 
+//! Overloads operator << to Layer type.
 inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalLayerType layerType) {
     return out << getPhysicalLayerType(layerType);
 } // end operator overloading 
 
 // -----------------------------------------------------------------------------
 
+//! Overloads operator << to Layer Direction.
 inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalLayerDirection direction) {
     return out << getPhysicalLayerDirection(direction);
 } // end operator overloading 
 
 // -----------------------------------------------------------------------------
 
+//! Overloads operator << to Orientation.
 inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalOrientation orientation) {
     return out << getPhysicalOrientation(orientation);
 } // end operator overloading 
 
 // -----------------------------------------------------------------------------
 
+//! Overloads operator << to Macro Class.
 inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalMacroClass macroClass) {
     return out << getPhysicalMacroClass(macroClass);
 } // end operator overloading 
 
 // -----------------------------------------------------------------------------
 
+//! Overloads operator << to Site Class.
 inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalSiteClass siteClass) {
     return out << getPhysicalSiteClass(siteClass);
 } // end operator overloading 
 
 // -----------------------------------------------------------------------------
 
+//! Overloads operator << to Pin Direction.
 inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalPinDirection pinDirection) {
     return out << getPhysicalPinDirection(pinDirection);
 } // end operator overloading 
 
 // -----------------------------------------------------------------------------
 
+//! Overloads operator << to Pin Port Class.
 inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalPinPortClass pinPortClass) {
     return out << getPhysicalPinPortClass(pinPortClass);
 } // end operator overloading 

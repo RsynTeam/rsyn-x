@@ -36,15 +36,17 @@
 #include "rsyn/core/Rsyn.h"
 
 #include <unordered_map>
-
+//! Mapper of bookshelf circuit description to LEF/DEF formats.
 class BookshelfMapper {
 protected:
 	std::unordered_map<std::string, int> clsMapNodeToMacros;
 	DoubleRectangle clsDieBounds;
+	//! Associating bookshelf net to its pins.
 	struct Net {
 		std::string name;
 		std::vector<int> pins;
 	};
+	//! Recovering bookshelf pin data
 	struct Pin {
 		std::string clsNode;
 		std::string clsNet;
@@ -52,6 +54,7 @@ protected:
 		double2 displ;
 		std::string clsName;
 	};
+	//! Associating bookshelf macro to its pins.
 	struct Macro {
 		std::string clsName;
 		std::vector<int> pins;
@@ -60,22 +63,38 @@ protected:
 	std::vector<Pin> pins;
 	std::vector<Net> nets;
 	std::unordered_map<std::string, int> mapNets;
-	int clsDesignUnits;
-	int clsNumComponents;
+	int clsDesignUnits = 100;
+	int clsNumComponents = 0;
 public:
-	BookshelfMapper();
-	virtual ~BookshelfMapper();
+	//! @brief Default C++11 constructor
+	BookshelfMapper()=default;
+	//! @brief Default C++11 destructor
+	virtual ~BookshelfMapper()=default;
+	//! @brief Converting bookshelf description into LEF/DEF formats.
 	void mapLefDef(const BookshelfDscp & bookshelf, LefDscp & lef, DefDscp & def);
+	//! @brief Populates Rsyn design from bookshelf format.
 	void populateRsyn(const BookshelfDscp & dscp, LefDscp & lef, DefDscp & def, Rsyn::Design design);
 protected:
+	//! @brief Generates synthetic net name for the circuits with nets not named.
 	void updateNets(const BookshelfDscp & dscp);
+	//! @brief Associating pin names to nodes and nets.
 	void updateNodePins(const BookshelfDscp & dscp);
+	//! @brief Generates a synthetic LEF header.
 	void mapLefHeader(LefDscp & lef);
+	//! @brief Generates a site used in rows.
+	//! @warning Assuming all the rows in bookshelf have the same site.
 	void mapLefSites(const BookshelfDscp & dscp, LefDscp & lef);
+	//! @brief Generates Library cells to LEF from bookshelf macros.
+	//! @warning Each macro from Bookshelf generates a LEF library cell.
+	//! @todo Creates common LEF library cells from bookshelf macros. 
 	void mapLefCells(const BookshelfDscp & dscp, LefDscp & lef);
+	//! @brief Creates 4 layers synthetic metal data. 
 	void createMetal(LefDscp & lef);
+	//! @brief Mapping Row from Bookshelf to DEF.
 	void mapDefRows(const BookshelfDscp & dscp, DefDscp & def);
+	//! @brief Generates a synthetic DEF header.
 	void mapDefHeader(const BookshelfDscp & dscp, DefDscp & def);
+	//! @brief Mapping macros from Bookshelf to DEF.
 	void mapDefComponents(const BookshelfDscp &dscp, DefDscp &def);
 }; // end class 
 

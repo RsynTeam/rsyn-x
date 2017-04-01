@@ -34,80 +34,77 @@
 
 static const std::string INVALID_DEF_NAME = "*<INVALID_DEF_NAME>*";
 
+//! Descriptor for DEF rows.
 class DefRowDscp {
 public:
-	std::string clsName;
-	std::string clsSite;
+	std::string clsName = INVALID_DEF_NAME;
+	std::string clsSite = INVALID_DEF_NAME;
 	DBUxy clsOrigin;
-	std::string clsOrientation;
-	int clsNumX;
-	int clsNumY;
-	int clsStepX;
-	int clsStepY;
-	DefRowDscp() :  clsName(INVALID_DEF_NAME), clsSite(INVALID_DEF_NAME), 
-		clsOrientation(INVALID_DEF_NAME), clsNumX(0), clsNumY(0), 
-		clsStepX(0), clsStepY(0) {}
+	std::string clsOrientation = INVALID_DEF_NAME;
+	int clsNumX = 0;
+	int clsNumY = 0;
+	int clsStepX = 0;
+	int clsStepY = 0;
+	DefRowDscp()=default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
+//! Descriptor for DEF components
 class DefComponentDscp {
 public:
-	std::string clsName;
-	std::string clsMacroName;
-	std::string clsLocationType; // {FIXED | COVER | PLACED | UNPLACED }
+	std::string clsName = INVALID_DEF_NAME;
+	std::string clsMacroName = INVALID_DEF_NAME;
+	std::string clsLocationType = INVALID_DEF_NAME; // {FIXED | COVER | PLACED | UNPLACED }
 	DBUxy clsPos;
-	std::string clsOrientation;
-	bool clsIsFixed;
-	bool clsIsPlaced;
-	DefComponentDscp() : clsName(INVALID_DEF_NAME), clsMacroName(INVALID_DEF_NAME),
-		clsLocationType(INVALID_DEF_NAME), clsOrientation(INVALID_DEF_NAME), 
-		clsIsFixed(false), clsIsPlaced(false) {}
+	std::string clsOrientation = INVALID_DEF_NAME;
+	bool clsIsFixed = false;
+	bool clsIsPlaced = false;
+	DefComponentDscp()=default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
+//! Descriptor for DEF ports
 class DefPortDscp {
 public:
-	std::string clsName;
-	std::string clsNetName;
-	std::string clsDirection; // {INPUT | OUTPUT | INOUT | FEEDTHRU}
-	std::string clsLocationType; // {FIXED | COVER | PLACED }
+	std::string clsName = INVALID_DEF_NAME;
+	std::string clsNetName = INVALID_DEF_NAME;
+	std::string clsDirection = INVALID_DEF_NAME; // {INPUT | OUTPUT | INOUT | FEEDTHRU}
+	std::string clsLocationType = INVALID_DEF_NAME; // {FIXED | COVER | PLACED }
 	DBUxy clsPos;
 	DBUxy clsICCADPos;
-	std::string clsOrientation;
-	std::string clsLayerName;
+	std::string clsOrientation = INVALID_DEF_NAME;
+	std::string clsLayerName = INVALID_DEF_NAME;
 	Bounds clsLayerBounds;
-	DefPortDscp() : clsName(INVALID_DEF_NAME), clsNetName(INVALID_DEF_NAME),
-		clsDirection(INVALID_DEF_NAME), clsLocationType(INVALID_DEF_NAME),
-		clsOrientation(INVALID_DEF_NAME), clsLayerName(INVALID_DEF_NAME) {}
+	DefPortDscp()=default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
+//! Descriptor for DEF Nets
 class DefNetDscp {
 public: 
-	std::string clsName;
-	DefNetDscp() : clsName(INVALID_DEF_NAME) {}
+	std::string clsName = INVALID_DEF_NAME;
+	DefNetDscp()=default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
+//! Descriptor for DEF Design
 class DefDscp {
 public:
-	double clsVersion;
-	std::string clsDeviderChar;
-	std::string clsBusBitChars;
-	std::string clsDesignName;
+	double clsVersion = 0.0;
+	std::string clsDeviderChar = INVALID_DEF_NAME;
+	std::string clsBusBitChars = INVALID_DEF_NAME;
+	std::string clsDesignName = INVALID_DEF_NAME;
 	Bounds clsDieBounds;
-	int clsDatabaseUnits;
+	int clsDatabaseUnits = 0;
 	std::vector<DefRowDscp> clsRows;
 	std::vector<DefComponentDscp> clsComps;
 	std::vector<DefPortDscp> clsPorts;
 	std::vector<DefNetDscp> clsNets;
-	DefDscp() : clsVersion(0.0), clsDeviderChar(INVALID_DEF_NAME), 
-		clsBusBitChars(INVALID_DEF_NAME), clsDesignName(INVALID_DEF_NAME), 
-		clsDatabaseUnits(0) {}
+	DefDscp()=default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
