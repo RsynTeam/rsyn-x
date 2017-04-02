@@ -22,6 +22,8 @@
 #define NANOVG_GL2_IMPLEMENTATION
 #include "rsyn/gui/3rdparty/nanovg/nanovg_gl.h"
 
+DEFINE_LOCAL_EVENT_TYPE(myEVT_SCHEMATIC_CELL_SELECTED)
+
 // -----------------------------------------------------------------------------
 
 SchematicCanvasGL::SchematicCanvasGL(wxWindow* parent) : CanvasGL(parent) {
@@ -920,6 +922,7 @@ const float NewSchematicCanvasGL::LAYER_SELECTED = 0.4f;
 // -----------------------------------------------------------------------------
 
 NewSchematicCanvasGL::NewSchematicCanvasGL(wxWindow* parent) : CanvasGL(parent) {
+	resetClickedView();
 	
 //	setZoomScaling(1.1f);
 //
@@ -978,6 +981,45 @@ NewSchematicCanvasGL::~NewSchematicCanvasGL() {
 //} // end method
 //
 //// -----------------------------------------------------------------------------
+
+void NewSchematicCanvasGL::resetClickedView() {
+	clsDrawCriticalPath = false;
+	clsDrawSelectedCell = false;
+	clsDrawNeighborCells = false;
+	clsDrawLogicCone = false;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void NewSchematicCanvasGL::setViewCriticalPaths(const bool visible) {
+	clsDrawCriticalPath = visible;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void NewSchematicCanvasGL::setViewSelectedCell(const bool visible) {
+	clsDrawSelectedCell = visible;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void NewSchematicCanvasGL::setViewNighborCells(const bool visible) {
+	clsDrawNeighborCells = visible;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void NewSchematicCanvasGL::setViewLogicCone(const bool visible) {
+	clsDrawLogicCone = visible;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void NewSchematicCanvasGL::setNumPathsToDraw(const int numPaths) {
+	clsNumPathsToDraw = numPaths;
+} // end method
+
+// -----------------------------------------------------------------------------
 
 void NewSchematicCanvasGL::renderGrid() {
 	const float defaultIntensity = 0.9f;
@@ -1209,19 +1251,23 @@ void NewSchematicCanvasGL::openNextCells(){
 // -----------------------------------------------------------------------------
 
 void NewSchematicCanvasGL::selectCellAt(){
+
 	DBUxy mousePos = clsMousePosition.convertToDbu();
+
+	for (VisualInstance inst : clsInstances) {
+		const Bounds & bounds = inst.getBounds();
+		if (bounds.inside(mousePos)) {
+			selectedInstance = inst;
+			selectedInstance.setColor(255, 178, 100);
+			NewSchematicCanvasGL::renderSelectedCell();
+		} else {
+			selectedInstance.setColor(0, 0, 0);
+		}
+	}//end for
 	
-		for (VisualInstance inst: clsInstances){
-			const Bounds & bounds = inst.getBounds();
-			if (bounds.inside(mousePos)){
-				selectedInstance = inst; 
-				selectedInstance.setColor(255,178,100);
-				NewSchematicCanvasGL::renderSelectedCell();
-			}
-			else{
-				selectedInstance.setColor(0,0,0);
-			}
-		}//end for
+	wxCommandEvent event(myEVT_SCHEMATIC_CELL_SELECTED); // No specific id
+	//event.SetString(wxT("This is the data"));
+	wxPostEvent(this, event); // to ourselves
 } //end method
 
 // -----------------------------------------------------------------------------

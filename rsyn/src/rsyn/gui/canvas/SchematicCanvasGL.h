@@ -30,6 +30,10 @@
 #include "rsyn/model/timing/Timer.h"
 
 
+BEGIN_DECLARE_EVENT_TYPES()
+DECLARE_EVENT_TYPE(myEVT_SCHEMATIC_CELL_SELECTED, -1)
+BEGIN_DECLARE_EVENT_TYPES()
+ 
 // -----------------------------------------------------------------------------
 
 class NVGcontext;
@@ -136,6 +140,12 @@ public:
 class NewSchematicCanvasGL : public CanvasGL {
 private:
 	
+	bool clsDrawCriticalPath : 1;
+	bool clsDrawSelectedCell : 1;
+	bool clsDrawNeighborCells : 1;
+	bool clsDrawLogicCone : 1;
+	
+	int clsNumPathsToDraw = 1;
 	
 	float2 clsMousePosition;
 	bool clsIsSelected;
@@ -156,6 +166,8 @@ private:
 	static const float LAYER_SHAPES;
 	static const float LAYER_SELECTED;
 
+	void resetClickedView();
+	
 //	class Shape {
 //	protected:
 //		int x = 0;
@@ -202,10 +214,22 @@ private:
 	void openNextCells();
 
 	void renderExperimental();
+	
+
 
 public:
-
 	NewSchematicCanvasGL(wxWindow* parent);
+
+	void setViewCriticalPaths(const bool visible);
+	void setViewSelectedCell(const bool visible);
+	void setViewNighborCells(const bool visible);
+	void setViewLogicCone(const bool visible);
+	void setNumPathsToDraw(const int numPaths);
+	
+	Rsyn::Instance getSelectedInstance() {
+		return selectedInstance.getInst();
+	}
+	
 	virtual ~NewSchematicCanvasGL();
 	void drawInstance(Rsyn::Instance instance);
 	virtual void onMouseReleased(wxMouseEvent& event);

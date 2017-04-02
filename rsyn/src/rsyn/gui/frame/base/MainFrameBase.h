@@ -32,13 +32,13 @@
 #include <wx/checklst.h>
 #include <wx/checkbox.h>
 #include <wx/spinctrl.h>
+#include <wx/textctrl.h>
 #include <wx/choice.h>
 #include <wx/statline.h>
 #include <wx/notebook.h>
-#include <wx/textctrl.h>
 #include <wx/frame.h>
-#include <wx/combobox.h>
 #include <wx/dialog.h>
+#include <wx/combobox.h>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -83,6 +83,8 @@ class MainFrameBase : public wxFrame
 		wxMenuItem* clsMenuItemColoringColorful;
 		wxMenuItem* clsMenuItemColoringRandomBlue;
 		wxMenuItem* clsMenuitemColoringGray;
+		wxMenu* clsHelp;
+		wxMenuItem* clsAbout;
 		wxPanel* clsPanelMain;
 		wxBoxSizer* clsSizerMesh;
 		wxNotebook* clsNotebook;
@@ -139,6 +141,8 @@ class MainFrameBase : public wxFrame
 		wxPGProperty* clsPropertyGridItemCellWidth;
 		wxPGProperty* clsPropertyGridItemCellHeight;
 		wxPanel* canvas_panel;
+		wxChoicebook* clsChoicebookView;
+		wxPanel* clsPanelPhysicalView;
 		wxStaticBoxSizer* sizerViewMode;
 		wxPanel* m_panel10;
 		wxButton* m_button51;
@@ -153,7 +157,7 @@ class MainFrameBase : public wxFrame
 		wxCheckBox* clsChkShowFaninTrees;
 		wxCheckBox* clsChkShowFanoutTrees;
 		wxCheckBox* clsItemSnapshot;
-		wxChoicebook* clsChoiceBookColoring;
+		wxChoicebook* clsChoicebookColoring;
 		wxPanel* m_panel40;
 		wxStaticText* m_staticText180;
 		wxRadioButton* clsOptColoringCriticalityEarly;
@@ -169,6 +173,16 @@ class MainFrameBase : public wxFrame
 		wxRadioButton* clsOptColoringRelativityEarly;
 		wxRadioButton* clsOptColoringRelativityLate1;
 		wxButton* clsBtnColoringRelativity;
+		wxPanel* clsPanelSchematicView;
+		wxStaticText* m_staticText17;
+		wxStaticText* m_staticText15;
+		wxTextCtrl* clsNumCriticalPaths;
+		wxCheckBox* clsSchematicDrawPaths;
+		wxStaticText* m_staticText18;
+		wxTextCtrl* clsSelectedCellName;
+		wxCheckBox* clsSchematicSelectedCell;
+		wxCheckBox* clsSchematicNeighborCells;
+		wxCheckBox* clsSchematicLogicCone;
 		wxPanel* opto_panel;
 		wxChoice* clsFlow;
 		wxButton* clsBtnRun;
@@ -196,17 +210,19 @@ class MainFrameBase : public wxFrame
 		virtual void OnResetCamera( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnZoomIn( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnZoomOut( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnChangeCanvas( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnChangeView( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCheckView( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnColoringColorful( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnColoringRandomBlue( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnColoringGray( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnGenerateColorsFile( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAbout( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnLeftDoubleClick( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnLeftDown( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnLeftUp( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnMouseMotion( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnCheckCellTimingMode( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnChangeView( wxChoicebookEvent& event ) { event.Skip(); }
 		virtual void OnCheckpoint( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnScroll( wxScrollEvent& event ) { event.Skip(); }
 		virtual void OnOverlayToggle( wxCommandEvent& event ) { event.Skip(); }
@@ -218,6 +234,8 @@ class MainFrameBase : public wxFrame
 		virtual void OnColoringCriticality( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnColoringCentrality( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnColoringRelativity( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSchematicNumCriticalPaths( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSchematicClickView( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnRun( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnUpdateSteinerTrees( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnUpdateTiming( wxCommandEvent& event ) { event.Skip(); }
@@ -235,6 +253,26 @@ class MainFrameBase : public wxFrame
 		MainFrameBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Rsyn - Universidade Federal do Rio Grande do Sul (UFRGS)"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1280,720 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 		
 		~MainFrameBase();
+	
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class AboutDialogBase
+///////////////////////////////////////////////////////////////////////////////
+class AboutDialogBase : public wxDialog 
+{
+	private:
+	
+	protected:
+		wxNotebook* m_notebook2;
+		wxPanel* about_panel;
+		wxStdDialogButtonSizer* m_sdbSizer1;
+		wxButton* m_sdbSizer1OK;
+	
+	public:
+		
+		AboutDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Help"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxCLOSE_BOX|wxDEFAULT_DIALOG_STYLE ); 
+		~AboutDialogBase();
 	
 };
 

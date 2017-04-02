@@ -113,6 +113,12 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	
 	clsMenuBar->Append( clsMenuColoring, wxT("Coloring") ); 
 	
+	clsHelp = new wxMenu();
+	clsAbout = new wxMenuItem( clsHelp, wxID_ANY, wxString( wxT("About") ) , wxEmptyString, wxITEM_NORMAL );
+	clsHelp->Append( clsAbout );
+	
+	clsMenuBar->Append( clsHelp, wxT("Help") ); 
+	
 	this->SetMenuBar( clsMenuBar );
 	
 	wxBoxSizer* bSizer37;
@@ -132,7 +138,7 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	clsPanelMain->SetSizer( clsSizerMesh );
 	clsPanelMain->Layout();
 	clsSizerMesh->Fit( clsPanelMain );
-	fgSizer3->Add( clsPanelMain, 1, wxALL|wxEXPAND, 5 );
+	fgSizer3->Add( clsPanelMain, 1, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5 );
 	
 	clsNotebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
 	clsNotebook->SetMinSize( wxSize( 300,-1 ) );
@@ -219,7 +225,7 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	clsPanelCellTiming->SetSizer( bSizer7 );
 	clsPanelCellTiming->Layout();
 	bSizer7->Fit( clsPanelCellTiming );
-	clsChoicebookProperties->AddPage( clsPanelCellTiming, wxT("Cell (Timing)"), true );
+	clsChoicebookProperties->AddPage( clsPanelCellTiming, wxT("Cell (Timing)"), false );
 	m_panel81 = new wxPanel( clsChoicebookProperties, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer71;
 	bSizer71 = new wxBoxSizer( wxVERTICAL );
@@ -242,19 +248,24 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	m_panel81->SetSizer( bSizer71 );
 	m_panel81->Layout();
 	bSizer71->Fit( m_panel81 );
-	clsChoicebookProperties->AddPage( m_panel81, wxT("Cell (Physical)"), false );
+	clsChoicebookProperties->AddPage( m_panel81, wxT("Cell (Physical)"), true );
 	sizerControls->Add( clsChoicebookProperties, 1, wxEXPAND | wxALL, 5 );
 	
 	
 	design_panel->SetSizer( sizerControls );
 	design_panel->Layout();
 	sizerControls->Fit( design_panel );
-	clsNotebook->AddPage( design_panel, wxT("Design"), true );
+	clsNotebook->AddPage( design_panel, wxT("Design"), false );
 	canvas_panel = new wxPanel( clsNotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer56;
 	bSizer56 = new wxBoxSizer( wxVERTICAL );
 	
-	sizerViewMode = new wxStaticBoxSizer( new wxStaticBox( canvas_panel, wxID_ANY, wxT("Interpolated Mode (Off)") ), wxVERTICAL );
+	clsChoicebookView = new wxChoicebook( canvas_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxCHB_DEFAULT );
+	clsPanelPhysicalView = new wxPanel( clsChoicebookView, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer24;
+	bSizer24 = new wxBoxSizer( wxVERTICAL );
+	
+	sizerViewMode = new wxStaticBoxSizer( new wxStaticBox( clsPanelPhysicalView, wxID_ANY, wxT("Interpolated Mode (Off)") ), wxVERTICAL );
 	
 	m_panel10 = new wxPanel( sizerViewMode->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer12;
@@ -281,20 +292,20 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	sizerViewMode->Add( fgSizer2, 1, wxEXPAND, 5 );
 	
 	
-	bSizer56->Add( sizerViewMode, 0, wxEXPAND, 5 );
+	bSizer24->Add( sizerViewMode, 0, wxEXPAND, 5 );
 	
 	wxStaticBoxSizer* sbSizer9;
-	sbSizer9 = new wxStaticBoxSizer( new wxStaticBox( canvas_panel, wxID_ANY, wxT("Overlays") ), wxVERTICAL );
+	sbSizer9 = new wxStaticBoxSizer( new wxStaticBox( clsPanelPhysicalView, wxID_ANY, wxT("Overlays") ), wxVERTICAL );
 	
 	wxArrayString clsLstOverlaysChoices;
 	clsLstOverlays = new wxCheckListBox( sbSizer9->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, clsLstOverlaysChoices, 0 );
 	sbSizer9->Add( clsLstOverlays, 1, wxALL|wxEXPAND, 5 );
 	
 	
-	bSizer56->Add( sbSizer9, 1, wxEXPAND, 5 );
+	bSizer24->Add( sbSizer9, 1, wxEXPAND, 5 );
 	
 	wxStaticBoxSizer* sbSizer15;
-	sbSizer15 = new wxStaticBoxSizer( new wxStaticBox( canvas_panel, wxID_ANY, wxT("Misc") ), wxVERTICAL );
+	sbSizer15 = new wxStaticBoxSizer( new wxStaticBox( clsPanelPhysicalView, wxID_ANY, wxT("Misc") ), wxVERTICAL );
 	
 	wxBoxSizer* bSizer61;
 	bSizer61 = new wxBoxSizer( wxVERTICAL );
@@ -359,13 +370,13 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	sbSizer15->Add( bSizer61, 1, wxEXPAND, 5 );
 	
 	
-	bSizer56->Add( sbSizer15, 0, wxEXPAND, 5 );
+	bSizer24->Add( sbSizer15, 0, wxEXPAND, 5 );
 	
 	wxStaticBoxSizer* sbSizer14;
-	sbSizer14 = new wxStaticBoxSizer( new wxStaticBox( canvas_panel, wxID_ANY, wxT("Coloring") ), wxVERTICAL );
+	sbSizer14 = new wxStaticBoxSizer( new wxStaticBox( clsPanelPhysicalView, wxID_ANY, wxT("Coloring") ), wxVERTICAL );
 	
-	clsChoiceBookColoring = new wxChoicebook( sbSizer14->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxCHB_DEFAULT );
-	m_panel40 = new wxPanel( clsChoiceBookColoring, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	clsChoicebookColoring = new wxChoicebook( sbSizer14->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxCHB_DEFAULT );
+	m_panel40 = new wxPanel( clsChoicebookColoring, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer561;
 	bSizer561 = new wxBoxSizer( wxVERTICAL );
 	
@@ -393,8 +404,8 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	m_panel40->SetSizer( bSizer561 );
 	m_panel40->Layout();
 	bSizer561->Fit( m_panel40 );
-	clsChoiceBookColoring->AddPage( m_panel40, wxT("Criticality"), true );
-	m_panel402 = new wxPanel( clsChoiceBookColoring, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	clsChoicebookColoring->AddPage( m_panel40, wxT("Criticality"), true );
+	m_panel402 = new wxPanel( clsChoicebookColoring, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer5612;
 	bSizer5612 = new wxBoxSizer( wxVERTICAL );
 	
@@ -422,8 +433,8 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	m_panel402->SetSizer( bSizer5612 );
 	m_panel402->Layout();
 	bSizer5612->Fit( m_panel402 );
-	clsChoiceBookColoring->AddPage( m_panel402, wxT("Centrality"), false );
-	m_panel40111 = new wxPanel( clsChoiceBookColoring, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	clsChoicebookColoring->AddPage( m_panel402, wxT("Centrality"), false );
+	m_panel40111 = new wxPanel( clsChoicebookColoring, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer561111;
 	bSizer561111 = new wxBoxSizer( wxVERTICAL );
 	
@@ -451,17 +462,117 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	m_panel40111->SetSizer( bSizer561111 );
 	m_panel40111->Layout();
 	bSizer561111->Fit( m_panel40111 );
-	clsChoiceBookColoring->AddPage( m_panel40111, wxT("Relativity"), false );
-	sbSizer14->Add( clsChoiceBookColoring, 1, wxEXPAND | wxALL, 5 );
+	clsChoicebookColoring->AddPage( m_panel40111, wxT("Relativity"), false );
+	sbSizer14->Add( clsChoicebookColoring, 1, wxEXPAND | wxALL, 5 );
 	
 	
-	bSizer56->Add( sbSizer14, 0, wxEXPAND, 5 );
+	bSizer24->Add( sbSizer14, 0, wxEXPAND, 5 );
+	
+	
+	clsPanelPhysicalView->SetSizer( bSizer24 );
+	clsPanelPhysicalView->Layout();
+	bSizer24->Fit( clsPanelPhysicalView );
+	clsChoicebookView->AddPage( clsPanelPhysicalView, wxT("Physical"), true );
+	clsPanelSchematicView = new wxPanel( clsChoicebookView, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer23;
+	bSizer23 = new wxBoxSizer( wxVERTICAL );
+	
+	m_staticText17 = new wxStaticText( clsPanelSchematicView, wxID_ANY, wxT("Under development..."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText17->Wrap( -1 );
+	m_staticText17->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), 70, 90, 90, false, wxEmptyString ) );
+	m_staticText17->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_HIGHLIGHT ) );
+	
+	bSizer23->Add( m_staticText17, 0, wxALL, 5 );
+	
+	wxStaticBoxSizer* sbSizer10;
+	sbSizer10 = new wxStaticBoxSizer( new wxStaticBox( clsPanelSchematicView, wxID_ANY, wxT("Drawing paths") ), wxVERTICAL );
+	
+	wxFlexGridSizer* fgSizer6;
+	fgSizer6 = new wxFlexGridSizer( 1, 2, 0, 0 );
+	fgSizer6->AddGrowableCol( 0 );
+	fgSizer6->SetFlexibleDirection( wxBOTH );
+	fgSizer6->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_staticText15 = new wxStaticText( sbSizer10->GetStaticBox(), wxID_ANY, wxT("# Critical Paths:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText15->Wrap( -1 );
+	fgSizer6->Add( m_staticText15, 0, wxALL, 5 );
+	
+	clsNumCriticalPaths = new wxTextCtrl( sbSizer10->GetStaticBox(), wxID_ANY, wxT("1"), wxDefaultPosition, wxDefaultSize, 0 );
+	#ifdef __WXGTK__
+	if ( !clsNumCriticalPaths->HasFlag( wxTE_MULTILINE ) )
+	{
+	clsNumCriticalPaths->SetMaxLength( 4 );
+	}
+	#else
+	clsNumCriticalPaths->SetMaxLength( 4 );
+	#endif
+	fgSizer6->Add( clsNumCriticalPaths, 0, wxALL, 5 );
+	
+	
+	sbSizer10->Add( fgSizer6, 1, wxEXPAND, 5 );
+	
+	clsSchematicDrawPaths = new wxCheckBox( sbSizer10->GetStaticBox(), wxID_ANY, wxT("Draw Paths"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizer10->Add( clsSchematicDrawPaths, 0, wxALL|wxEXPAND, 5 );
+	
+	
+	bSizer23->Add( sbSizer10, 0, wxALL|wxEXPAND, 5 );
+	
+	wxStaticBoxSizer* sbSizer11;
+	sbSizer11 = new wxStaticBoxSizer( new wxStaticBox( clsPanelSchematicView, wxID_ANY, wxT("Draw Selected Cells") ), wxVERTICAL );
+	
+	wxStaticBoxSizer* sbSizer12;
+	sbSizer12 = new wxStaticBoxSizer( new wxStaticBox( sbSizer11->GetStaticBox(), wxID_ANY, wxEmptyString ), wxVERTICAL );
+	
+	m_staticText18 = new wxStaticText( sbSizer12->GetStaticBox(), wxID_ANY, wxT("Selected Instance"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText18->Wrap( -1 );
+	sbSizer12->Add( m_staticText18, 1, wxALL, 5 );
+	
+	clsSelectedCellName = new wxTextCtrl( sbSizer12->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_LEFT|wxTE_READONLY );
+	#ifdef __WXGTK__
+	if ( !clsSelectedCellName->HasFlag( wxTE_MULTILINE ) )
+	{
+	clsSelectedCellName->SetMaxLength( 100 );
+	}
+	#else
+	clsSelectedCellName->SetMaxLength( 100 );
+	#endif
+	sbSizer12->Add( clsSelectedCellName, 1, wxALL|wxEXPAND, 5 );
+	
+	
+	sbSizer11->Add( sbSizer12, 1, wxEXPAND, 5 );
+	
+	wxFlexGridSizer* fgSizer7;
+	fgSizer7 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	fgSizer7->SetFlexibleDirection( wxBOTH );
+	fgSizer7->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	clsSchematicSelectedCell = new wxCheckBox( sbSizer11->GetStaticBox(), wxID_ANY, wxT("Selected Cell"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer7->Add( clsSchematicSelectedCell, 0, wxALL, 5 );
+	
+	clsSchematicNeighborCells = new wxCheckBox( sbSizer11->GetStaticBox(), wxID_ANY, wxT("Neighbor Cells"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer7->Add( clsSchematicNeighborCells, 0, wxALL, 5 );
+	
+	clsSchematicLogicCone = new wxCheckBox( sbSizer11->GetStaticBox(), wxID_ANY, wxT("Logic Cone"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer7->Add( clsSchematicLogicCone, 0, wxALL, 5 );
+	
+	
+	sbSizer11->Add( fgSizer7, 0, wxEXPAND, 5 );
+	
+	
+	bSizer23->Add( sbSizer11, 0, wxEXPAND, 5 );
+	
+	
+	clsPanelSchematicView->SetSizer( bSizer23 );
+	clsPanelSchematicView->Layout();
+	bSizer23->Fit( clsPanelSchematicView );
+	clsChoicebookView->AddPage( clsPanelSchematicView, wxT("Schematic"), false );
+	bSizer56->Add( clsChoicebookView, 1, wxEXPAND | wxALL, 5 );
 	
 	
 	canvas_panel->SetSizer( bSizer56 );
 	canvas_panel->Layout();
 	bSizer56->Fit( canvas_panel );
-	clsNotebook->AddPage( canvas_panel, wxT("Canvas"), false );
+	clsNotebook->AddPage( canvas_panel, wxT("View"), true );
 	opto_panel = new wxPanel( clsNotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer( wxVERTICAL );
@@ -510,7 +621,7 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	
 	sbSizer141->Add( bSizer5911, 0, wxEXPAND, 5 );
 	
-	clsBtnUpdateSteinerTrees = new wxButton( sbSizer141->GetStaticBox(), wxID_ANY, wxT("Update Steiner Trees"), wxDefaultPosition, wxDefaultSize, 0 );
+	clsBtnUpdateSteinerTrees = new wxButton( sbSizer141->GetStaticBox(), wxID_ANY, wxT("Update Routing Estimation"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizer141->Add( clsBtnUpdateSteinerTrees, 0, wxALL|wxEXPAND, 5 );
 	
 	clsBtnUpdateTiming = new wxButton( sbSizer141->GetStaticBox(), wxID_ANY, wxT("Update Timing"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -559,7 +670,7 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	#endif
 	fgSizer3->Add( clsTxtCommand, 0, wxALL|wxEXPAND, 5 );
 	
-	clsLblQualityScore = new wxStaticText( this, wxID_ANY, wxT("Quality Score: N/A"), wxDefaultPosition, wxDefaultSize, 0 );
+	clsLblQualityScore = new wxStaticText( this, wxID_ANY, wxT("Rsyn"), wxDefaultPosition, wxDefaultSize, 0 );
 	clsLblQualityScore->Wrap( -1 );
 	fgSizer3->Add( clsLblQualityScore, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 	
@@ -584,8 +695,8 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	this->Connect( clsMenuItemResetCamera->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnResetCamera ) );
 	this->Connect( clsMenuItemZoomIn->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnZoomIn ) );
 	this->Connect( clsMenuItemZoomOut->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnZoomOut ) );
-	this->Connect( clsMenuItemPhysicalCanvas->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnChangeCanvas ) );
-	this->Connect( clsMenuItemSchematicCanvas->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnChangeCanvas ) );
+	this->Connect( clsMenuItemPhysicalCanvas->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnChangeView ) );
+	this->Connect( clsMenuItemSchematicCanvas->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnChangeView ) );
 	this->Connect( clsMenuItemViewMovableNodes->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
 	this->Connect( clsMenuItemViewFixedNodes->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
 	this->Connect( clsMenuItemViewPortNodes->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
@@ -594,12 +705,14 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	this->Connect( clsMenuItemColoringRandomBlue->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnColoringRandomBlue ) );
 	this->Connect( clsMenuitemColoringGray->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnColoringGray ) );
 	this->Connect( clsMenuItemGenerateColorsFile->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnGenerateColorsFile ) );
+	this->Connect( clsAbout->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnAbout ) );
 	clsPanelMain->Connect( wxEVT_LEFT_DCLICK, wxMouseEventHandler( MainFrameBase::OnLeftDoubleClick ), NULL, this );
 	clsPanelMain->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler( MainFrameBase::OnLeftDown ), NULL, this );
 	clsPanelMain->Connect( wxEVT_LEFT_UP, wxMouseEventHandler( MainFrameBase::OnLeftUp ), NULL, this );
 	clsPanelMain->Connect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::OnMouseMotion ), NULL, this );
 	clsOptCellTimingModeEarly->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckCellTimingMode ), NULL, this );
 	clsOptCellTimingModeLate->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckCellTimingMode ), NULL, this );
+	clsChoicebookView->Connect( wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGED, wxChoicebookEventHandler( MainFrameBase::OnChangeView ), NULL, this );
 	m_button51->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnCheckpoint ), NULL, this );
 	clsSlider->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( MainFrameBase::OnScroll ), NULL, this );
 	clsLstOverlays->Connect( wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, wxCommandEventHandler( MainFrameBase::OnOverlayToggle ), NULL, this );
@@ -612,6 +725,11 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	clsBtnColoringCriticality->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnColoringCriticality ), NULL, this );
 	clsBtnColoringCentrality->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnColoringCentrality ), NULL, this );
 	clsBtnColoringRelativity->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnColoringRelativity ), NULL, this );
+	clsNumCriticalPaths->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MainFrameBase::OnSchematicNumCriticalPaths ), NULL, this );
+	clsSchematicDrawPaths->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrameBase::OnSchematicClickView ), NULL, this );
+	clsSchematicSelectedCell->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrameBase::OnSchematicClickView ), NULL, this );
+	clsSchematicNeighborCells->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrameBase::OnSchematicClickView ), NULL, this );
+	clsSchematicLogicCone->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrameBase::OnSchematicClickView ), NULL, this );
 	clsBtnRun->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnRun ), NULL, this );
 	clsBtnUpdateSteinerTrees->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnUpdateSteinerTrees ), NULL, this );
 	clsBtnUpdateTiming->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnUpdateTiming ), NULL, this );
@@ -637,8 +755,8 @@ MainFrameBase::~MainFrameBase()
 	this->Disconnect( ID_RESET_CAMERA, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnResetCamera ) );
 	this->Disconnect( ID_ZOOM_IN, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnZoomIn ) );
 	this->Disconnect( ID_ZOOM_OUT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnZoomOut ) );
-	this->Disconnect( ID_PHYSICAL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnChangeCanvas ) );
-	this->Disconnect( ID_SCHEMATIC, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnChangeCanvas ) );
+	this->Disconnect( ID_PHYSICAL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnChangeView ) );
+	this->Disconnect( ID_SCHEMATIC, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnChangeView ) );
 	this->Disconnect( ID_VIEW_CELLS, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
 	this->Disconnect( ID_VIEW_TERMINALS, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
 	this->Disconnect( ID_VIEW_NODES_PORTS, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
@@ -647,12 +765,14 @@ MainFrameBase::~MainFrameBase()
 	this->Disconnect( ID_COLORING_RANDOM_BLUE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnColoringRandomBlue ) );
 	this->Disconnect( wxID_ANY, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnColoringGray ) );
 	this->Disconnect( ID_GENERATE_COLORS_FILE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnGenerateColorsFile ) );
+	this->Disconnect( wxID_ANY, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnAbout ) );
 	clsPanelMain->Disconnect( wxEVT_LEFT_DCLICK, wxMouseEventHandler( MainFrameBase::OnLeftDoubleClick ), NULL, this );
 	clsPanelMain->Disconnect( wxEVT_LEFT_DOWN, wxMouseEventHandler( MainFrameBase::OnLeftDown ), NULL, this );
 	clsPanelMain->Disconnect( wxEVT_LEFT_UP, wxMouseEventHandler( MainFrameBase::OnLeftUp ), NULL, this );
 	clsPanelMain->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::OnMouseMotion ), NULL, this );
 	clsOptCellTimingModeEarly->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckCellTimingMode ), NULL, this );
 	clsOptCellTimingModeLate->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckCellTimingMode ), NULL, this );
+	clsChoicebookView->Disconnect( wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGED, wxChoicebookEventHandler( MainFrameBase::OnChangeView ), NULL, this );
 	m_button51->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnCheckpoint ), NULL, this );
 	clsSlider->Disconnect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( MainFrameBase::OnScroll ), NULL, this );
 	clsLstOverlays->Disconnect( wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, wxCommandEventHandler( MainFrameBase::OnOverlayToggle ), NULL, this );
@@ -665,6 +785,11 @@ MainFrameBase::~MainFrameBase()
 	clsBtnColoringCriticality->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnColoringCriticality ), NULL, this );
 	clsBtnColoringCentrality->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnColoringCentrality ), NULL, this );
 	clsBtnColoringRelativity->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnColoringRelativity ), NULL, this );
+	clsNumCriticalPaths->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MainFrameBase::OnSchematicNumCriticalPaths ), NULL, this );
+	clsSchematicDrawPaths->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrameBase::OnSchematicClickView ), NULL, this );
+	clsSchematicSelectedCell->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrameBase::OnSchematicClickView ), NULL, this );
+	clsSchematicNeighborCells->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrameBase::OnSchematicClickView ), NULL, this );
+	clsSchematicLogicCone->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrameBase::OnSchematicClickView ), NULL, this );
 	clsBtnRun->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnRun ), NULL, this );
 	clsBtnUpdateSteinerTrees->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnUpdateSteinerTrees ), NULL, this );
 	clsBtnUpdateTiming->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnUpdateTiming ), NULL, this );
@@ -675,6 +800,50 @@ MainFrameBase::~MainFrameBase()
 	clsTxtCommand->Disconnect( wxEVT_KEY_UP, wxKeyEventHandler( MainFrameBase::OnExecuteCommandKeyUp ), NULL, this );
 	clsTxtCommand->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( MainFrameBase::OnExecuteCommand ), NULL, this );
 	
+}
+
+AboutDialogBase::AboutDialogBase( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxSize( 500,700 ), wxDefaultSize );
+	
+	wxFlexGridSizer* fgSizer9;
+	fgSizer9 = new wxFlexGridSizer( 2, 1, 0, 0 );
+	fgSizer9->SetFlexibleDirection( wxVERTICAL );
+	fgSizer9->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	fgSizer9->SetMinSize( wxSize( 500,700 ) ); 
+	m_notebook2 = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	m_notebook2->SetMinSize( wxSize( 500,650 ) );
+	
+	about_panel = new wxPanel( m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxStaticBoxSizer* sbSizer13;
+	sbSizer13 = new wxStaticBoxSizer( new wxStaticBox( about_panel, wxID_ANY, wxEmptyString ), wxVERTICAL );
+	
+	
+	about_panel->SetSizer( sbSizer13 );
+	about_panel->Layout();
+	sbSizer13->Fit( about_panel );
+	m_notebook2->AddPage( about_panel, wxT("About"), true );
+	
+	fgSizer9->Add( m_notebook2, 1, wxEXPAND | wxALL, 5 );
+	
+	m_sdbSizer1 = new wxStdDialogButtonSizer();
+	m_sdbSizer1OK = new wxButton( this, wxID_OK );
+	m_sdbSizer1->AddButton( m_sdbSizer1OK );
+	m_sdbSizer1->Realize();
+	
+	fgSizer9->Add( m_sdbSizer1, 1, wxALIGN_BOTTOM|wxALIGN_CENTER|wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxEXPAND, 5 );
+	
+	
+	this->SetSizer( fgSizer9 );
+	this->Layout();
+	fgSizer9->Fit( this );
+	
+	this->Centre( wxBOTH );
+}
+
+AboutDialogBase::~AboutDialogBase()
+{
 }
 
 SaveSnapshotBase::SaveSnapshotBase( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )

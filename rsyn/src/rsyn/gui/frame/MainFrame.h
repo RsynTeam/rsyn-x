@@ -53,6 +53,7 @@ class Infrastructure;
 }
 
 class SaveSnapshot;
+class AboutDialog;
 
 class MainFrame : public MainFrameBase {
 protected:
@@ -61,6 +62,11 @@ protected:
 	NewSchematicCanvasGL *clsSchematicCanvasGLPtr = nullptr;
 
 private:
+
+	enum View {
+		VIEW_PHYSICAL,
+		VIEW_SCHEMATIC
+	};
 
 	Rsyn::Engine clsEngine = nullptr;
 
@@ -76,6 +82,8 @@ private:
 	Rsyn::Graphics * clsGraphicsPtr = nullptr;
 
 	SaveSnapshot *clsSaveSnapshot = nullptr;
+	AboutDialog * clsAboutDialog = nullptr;
+	
 	wxConfig clsConfig;
 	
 	static const std::string DEFAULT_STORED_SOLUTION_NAME;
@@ -94,6 +102,12 @@ private:
 
 	// Save a snapshot.
 	void DoSaveSnapshot(const wxString &filename);
+
+	// Do change view.
+	void DoChangeView(const View view);
+
+	// Update schematic properties.
+	void UpdateSchematicProperties();
 	
 	// When window is closed, call engine Engine destructor.
 	void OnCloseWindow(wxCloseEvent& event) {
@@ -178,7 +192,8 @@ public:
 	virtual void OnZoomIn(wxCommandEvent& event);
 	virtual void OnZoomOut(wxCommandEvent& event);
 
-	virtual void OnChangeCanvas(wxCommandEvent& event);
+	virtual void OnChangeView(wxCommandEvent& event);
+	virtual void OnChangeView(wxChoicebookEvent& event);
 
 	virtual void OnColoringColorful(wxCommandEvent &event);
 	virtual void OnColoringRandomBlue(wxCommandEvent &event);
@@ -223,6 +238,18 @@ public:
 	virtual void OnRun( wxCommandEvent& event );
 	
 	virtual void OnSpinChange(wxSpinEvent& event) override;
+	
+
+	// Methods of help menu item
+	
+	//! @brief Shows a dialog box presenting data about Rsyn.
+	virtual void OnAbout(wxCommandEvent& event) override;
+	
+	
+	// Methods for schematic canvas control
+	virtual void OnSchematicCellSelected(wxCommandEvent &event);
+	virtual void OnSchematicClickView(wxCommandEvent &event) override;
+	virtual void OnSchematicNumCriticalPaths(wxCommandEvent & event) override;
 }; // end class
 
 // -----------------------------------------------------------------------------
@@ -359,6 +386,15 @@ public:
 		
 		this->Hide();
 	};
+};
+
+class AboutDialog : public AboutDialogBase {
+public:
+
+	/* Constructor */
+	AboutDialog(wxWindow* window) : AboutDialogBase(window) {
+	}
+
 };
 
 #endif

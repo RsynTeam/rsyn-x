@@ -70,19 +70,23 @@ MainFrame::MainFrame() : MainFrameBase((wxFrame *) nullptr), clsConfig("UPlace")
 	clsCanvasGLPtr->Refresh();
 	
 	clsSaveSnapshot = new SaveSnapshot( this, clsPhysicalCanvasGLPtr );
+	clsAboutDialog = new AboutDialog(this);
 	
 	clsSizerMesh->Add(clsCanvasGLPtr, 1, wxEXPAND, 0);
 	clsSizerMesh->Layout();
 
-	// Define initial selection.s
-	clsNotebook->SetSelection(0);
-	clsChoiceBookColoring->SetSelection(0);
+	// Define initial choicebook pages.
+	clsNotebook->ChangeSelection(0);
+	clsChoicebookColoring->ChangeSelection(0);
+	clsChoicebookView->ChangeSelection(0);
+	clsChoicebookProperties->ChangeSelection(1);
 	
 	// Put the focus on the command text box.
 	clsTxtCommand->SetFocus();
 	
 	// Events
 	clsCanvasGLPtr->Connect(myEVT_CELL_SELECTED, wxCommandEventHandler(MainFrame::OnCellSelected), NULL, this);
+	clsCanvasGLPtr->Connect(myEVT_SCHEMATIC_CELL_SELECTED, wxCommandEventHandler(MainFrame::OnSchematicCellSelected), NULL, this);
 	clsCanvasGLPtr->Connect(myEVT_BIN_SELECTED, wxCommandEventHandler(MainFrame::OnBinSelected), NULL, this);
 	clsTxtSearch->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(MainFrame::OnSearch), NULL, this);
 	clsCanvasGLPtr->Connect(myEVT_CELL_DRAGGED, wxCommandEventHandler(MainFrame::OnSelectedCellDrag), NULL, this);
@@ -112,6 +116,7 @@ MainFrame::MainFrame() : MainFrameBase((wxFrame *) nullptr), clsConfig("UPlace")
 MainFrame::~MainFrame() {
 	delete clsCanvasGLPtr;
 	delete clsSaveSnapshot;
+	delete clsAboutDialog;
 	
 	clsEngine.destroy();
 	
@@ -287,6 +292,44 @@ void MainFrame::DoSaveSnapshot(const wxString &filename) {
 	image.SaveFile(filename, wxBITMAP_TYPE_PNG);
 } // end method
 
+
+// -----------------------------------------------------------------------------
+
+void MainFrame::DoChangeView(const View view) {
+	CanvasGL *canvas = nullptr;
+
+	// Select the right canvas to show.
+	switch (view) {
+		case VIEW_PHYSICAL:
+			canvas = clsPhysicalCanvasGLPtr;
+			clsChoicebookView->ChangeSelection(0);
+			break;
+		case VIEW_SCHEMATIC: {
+			if (!clsSchematicCanvasGLPtr) {
+				//clsSchematicCanvasGLPtr = new SchematicCanvasGL(clsPanelMain);
+				clsSchematicCanvasGLPtr = new NewSchematicCanvasGL(clsPanelMain);
+				clsSchematicCanvasGLPtr->attachEngine(clsEngine);
+			} // end if
+			canvas = clsSchematicCanvasGLPtr;
+			clsChoicebookView->ChangeSelection(1);
+		} // end case
+	} // end switch
+
+	if (canvas && canvas != clsCanvasGLPtr) {
+		clsSizerMesh->Clear();
+		clsSizerMesh->Add(canvas, 1, wxEXPAND, 0);
+		clsSizerMesh->Layout();
+
+		// All canvas actually are drawing on the same pane, so we need to hide
+		// them otherwise the last created one will always take precedence.
+		if (clsCanvasGLPtr) clsCanvasGLPtr->Hide();
+
+		// Update the current canvas and show it.
+		clsCanvasGLPtr = canvas;
+		clsCanvasGLPtr->Show();
+	} // end if
+} // end method
+
 // -----------------------------------------------------------------------------
 
 void MainFrame::OnRunScript(wxCommandEvent &WXUNUSED(event)) {
@@ -349,34 +392,24 @@ void MainFrame::OnZoomOut(wxCommandEvent &WXUNUSED(event)) {
 
 // -----------------------------------------------------------------------------
 
-void MainFrame::OnChangeCanvas(wxCommandEvent &event) {
-	CanvasGL *canvas = nullptr;
-
+void MainFrame::OnChangeView(wxCommandEvent &event) {
 	// Select the right canvas to show.
 	if (clsMenuItemSchematicCanvas->IsChecked()) {
-		if (!clsSchematicCanvasGLPtr) {
-			//clsSchematicCanvasGLPtr = new SchematicCanvasGL(clsPanelMain);
-			clsSchematicCanvasGLPtr = new NewSchematicCanvasGL(clsPanelMain);
-			clsSchematicCanvasGLPtr->attachEngine(clsEngine);
-		} // end if
-		canvas = clsSchematicCanvasGLPtr;
+		DoChangeView(VIEW_SCHEMATIC);
 	} else if (clsMenuItemPhysicalCanvas->IsChecked()) {
-		canvas = clsPhysicalCanvasGLPtr;
+		DoChangeView(VIEW_PHYSICAL);
 	} // end else
+} // end method
 
-	if (canvas && canvas != clsCanvasGLPtr) {
-		clsSizerMesh->Clear();
-		clsSizerMesh->Add(canvas, 1, wxEXPAND, 0);
-		clsSizerMesh->Layout();
+// -----------------------------------------------------------------------------
 
-		// All canvas actually are drawing on the same pane, so we need to hide
-		// them otherwise the last created one will always take precedence.
-		if (clsCanvasGLPtr) clsCanvasGLPtr->Hide();
-
-		// Update the current canvas and show it.
-		clsCanvasGLPtr = canvas;
-		clsCanvasGLPtr->Show();
-	} // end if
+void MainFrame::OnChangeView(wxChoicebookEvent &event) {
+	// Select the right canvas to show.
+	if (clsChoicebookView->GetSelection() == 0) {
+		DoChangeView(VIEW_PHYSICAL);
+	} else if (clsChoicebookView->GetSelection() == 1) {
+		DoChangeView(VIEW_SCHEMATIC);
+	} // end else
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -854,6 +887,10 @@ void MainFrame::UpdateStats(const bool redraw) {
 		
 	// Update properties of the selected node.	
 	UpdateSelectedCellProperties();
+	
+	if(clsSchematicCanvasGLPtr) {
+		UpdateSchematicProperties();
+	}
 		
 	// Redraw
 	if (redraw)
@@ -961,6 +998,19 @@ void MainFrame::UpdateSelectedCellProperties(const bool updateOnlyPropertiesAffe
 
 // -----------------------------------------------------------------------------
 
+void MainFrame::UpdateSchematicProperties() {
+	
+	std::cout<<"update prop\n";
+	
+	if(!clsSchematicCanvasGLPtr)
+		return;
+	Rsyn::Instance selected = clsSchematicCanvasGLPtr->getSelectedInstance();
+	if(selected != nullptr)
+		clsSelectedCellName->ChangeValue(selected.getName());	
+	
+	clsSchematicCanvasGLPtr->Refresh();
+}
+
 void MainFrame::OnRun(wxCommandEvent& event) {
 	if (!clsEngine)
 		return;
@@ -1015,6 +1065,43 @@ void MainFrame::processGraphicsEventDesignLoaded() {
 
 	updateCircuitInfo();
 	UpdateStats(true);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void MainFrame::OnSchematicCellSelected(wxCommandEvent &event) {
+	std::cout<<"Running "<<__func__<< "\n";
+	UpdateSchematicProperties();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void MainFrame::OnSchematicClickView(wxCommandEvent &event) {
+	if(clsSchematicCanvasGLPtr) {
+		clsSchematicCanvasGLPtr->setViewCriticalPaths(clsSchematicDrawPaths->IsChecked());
+		clsSchematicCanvasGLPtr->setViewSelectedCell(clsSchematicSelectedCell->IsChecked());
+		clsSchematicCanvasGLPtr->setViewNighborCells(clsSchematicNeighborCells->IsChecked());
+		clsSchematicCanvasGLPtr->setViewLogicCone(clsSchematicLogicCone->IsChecked());
+ 	} // end if 
+	UpdateStats(true);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void MainFrame::OnSchematicNumCriticalPaths(wxCommandEvent & event) {
+	if(clsSchematicCanvasGLPtr) {
+		double val;
+		if(clsNumCriticalPaths->GetValue().ToDouble(&val)) {
+			clsSchematicCanvasGLPtr->setNumPathsToDraw(int(val));
+		}
+	}
+	UpdateStats(true);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void MainFrame::OnAbout(wxCommandEvent& event) {
+	clsAboutDialog->ShowModal();
 } // end method
 
 // -----------------------------------------------------------------------------
