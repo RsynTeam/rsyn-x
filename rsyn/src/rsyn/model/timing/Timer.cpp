@@ -197,7 +197,7 @@ void Timer::initializeTimingCell(Rsyn::Cell rsynCell) {
 		TimingArc &timingArc = getTimingArc(arc);
 		timingBuildTimingArcs_SetupBacktrackEdge(timingArc, timingLibraryArc.sense);
 	} // end for
-		
+
 	// End points
 	if (rysnLibraryCell.isSequential()) {
 		sequentialCells.insert(rsynCell.asCell());

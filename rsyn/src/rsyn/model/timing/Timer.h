@@ -902,7 +902,25 @@ public:
 		} // end for
 		
 		return wireDelay;
-	} // end method	
+	} // end method
+
+	//! @brief   Returns the transition type (rise/fall) at the "from" pin of a
+	//!          arc respective to a transition type at the "to" pin.
+	//! @details For negative and positive-unate arcs this function is context
+	//!          independent:
+	//!            - positive-unate: rise -> rise and fall -> fall;
+	//!            - negative-unate: rise -> fall and fall -> rise.
+	//!          For non-unate arcs, this function is context dependent and
+	//!          returns the worst transition that was used during arrival time
+	//!          propagation.
+	//! @note    This function is necessary as currently the timer does not
+	//!          the four possible combinations for non-unate arcs, but only
+	//!          the two worst ones. Maybe in the future, this function will be
+	//!          deprecated.
+	TimingTransition getArcInputTransition(Rsyn::Arc arc, const TimingMode mode, const TimingTransition oedge) {
+		return arc.getType() == Rsyn::NET_ARC? oedge :
+			getTimingArc(arc).state[mode].backtrack[oedge];
+	} // end method
 	
 	//! @brief Returns the max wire delay of the input pins of this cell.
 	//! @note  The wire delay is the delay from driver to sink.
