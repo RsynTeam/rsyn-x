@@ -33,7 +33,22 @@ private:
 	//! @brief Gets the current sign to be used in some traversal algorithms as
 	//!        topological sorting.
 	int getSign() const;
-	
+
+	//! @brief This method is inherited from Instance. Hide to avoid confusion
+	//!        with internal pins. See allInterfacePins() and allInternalPins().
+	Range<CollectionOfPinsFilteredByDirection>
+	allPins(const Direction direction) const;
+
+	//! @brief This method is inherited from Instance. Hide to avoid confusion
+	//!        with internal pins. See allInterfacePins() and allInternalPins().
+	Range<CollectionOfPins>
+	allPins() const;
+
+	//! @brief This method is inherited from Instance. Hide to avoid confusion
+	//!        with internal pins. See allInterfaceArcs() and allInternalArcs().
+	Range<CollectionOfArcs>
+	allArcs() const;
+
 public:
 
 	//! @brief Default constructor.
@@ -101,6 +116,46 @@ public:
 	//!        module.
 	Range<ReferenceListCollection<Net>>
 	allNets();	
+
+	//! @brief Returns an iterable collection of all interface pins of a given
+	//!        direction.
+	Range<CollectionOfPinsFilteredByDirection>
+	allInterfacePins(const Direction direction) const;
+
+	//! @brief Returns an iterable collection of all interface pins (i.e. outer
+	//!        pin of ports.
+	//! @see   allInterfacePins(const Direction direction)
+	Range<CollectionOfPins>
+	allInterfacePins() const;
+
+	//! @brief Returns an iterable collection of all arcs.
+	Range<CollectionOfArcs>
+	allInterfaceArcs() const;
+
+	//! @brief Returns an iterable collection of all pins of instances that are
+	//!        directly child of this module.
+	Range<CollectionOfPinsFilteredByDirection>
+	allInternalPins(const Direction direction) const;
+
+	//! @brief Returns an iterable collection of all pins of instances that are
+	//!        directly child of this module.
+	Range<CollectionOfPins>
+	allInternalPins() const;
+
+	//! @brief Returns an iterable collection of all arcs of instances that are
+	//!        directly child of this module.
+	Range<CollectionOfArcs>
+	allInternalArcs() const;
+
+	//! @brief Returns an iterable collection of all pins instantiated in this
+	//!        module in topological order (from inputs to outputs).
+	std::vector<TupleElement<1, TopologicalIndex, Pin>>
+	allPinsInTopologicalOrder();
+
+	//! @brief Returns an iterable collection of all pins instantiated in this
+	//!        module in reverse topological order (from outputs to inputs).
+	std::vector<TupleElement<1, TopologicalIndex, Pin>>
+	allPinsInReverseTopologicalOrder();
 
 	//! @brief Returns an iterable collection of all nets instantiated in this
 	//!        module in topological order (from inputs to outputs).

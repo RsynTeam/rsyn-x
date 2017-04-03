@@ -250,7 +250,6 @@ Module::allPorts(const Rsyn::Direction direction) {
 	return data->moduleData->portsByDirection[direction];
 } // end method
 
-
 // -----------------------------------------------------------------------------
 
 inline
@@ -259,6 +258,67 @@ Module::allNets() {
 	return ReferenceListCollection<Net>(data->moduleData->nets);
 } // end method
 
+// -----------------------------------------------------------------------------
+
+inline
+Range<CollectionOfPinsFilteredByDirection>
+Module::allInterfacePins(const Direction direction) const {
+	return Instance::allPins(direction);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline
+Range<CollectionOfPins>
+Module::allInterfacePins() const {
+	return Instance::allPins();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline
+Range<CollectionOfArcs>
+Module::allInterfaceArcs() const {
+	return Instance::allArcs();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline
+std::vector<TupleElement<1, TopologicalIndex, Pin>>
+Module::allPinsInTopologicalOrder() {
+	const int numNets = data->moduleData->nets.size();
+
+	std::vector<TupleElement<1, TopologicalIndex, Pin>> sortedPins;
+	sortedPins.reserve(numNets*3);
+
+	for (Rsyn::Instance instance : allInstances()) {
+		for (Rsyn::Pin pin : instance.allPins())
+			sortedPins.push_back(std::make_tuple(pin.getTopologicalIndex(), pin));
+	} // end for
+
+	std::sort(sortedPins.begin(), sortedPins.end());
+	return sortedPins;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline
+std::vector<TupleElement<1, TopologicalIndex, Pin>>
+Module::allPinsInReverseTopologicalOrder() {
+	const int numNets = data->moduleData->nets.size();
+
+	std::vector<TupleElement<1, TopologicalIndex, Pin>> sortedPins;
+	sortedPins.reserve(numNets*3);
+
+	for (Rsyn::Instance instance : allInstances()) {
+		for (Rsyn::Pin pin : instance.allPins())
+			sortedPins.push_back(std::make_tuple(-pin.getTopologicalIndex(), pin));
+	} // end for
+
+	std::sort(sortedPins.begin(), sortedPins.end());
+	return sortedPins;
+} // end method
 // -----------------------------------------------------------------------------
 
 inline
