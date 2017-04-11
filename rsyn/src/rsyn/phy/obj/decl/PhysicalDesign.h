@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -35,7 +35,7 @@ namespace Rsyn {
 
 class PhysicalDesign : public Proxy<PhysicalDesignData> {
 	friend class PhysicalService;
-	
+
 	template<typename _PhysicalObject, typename _PhysicalObjectReference, typename _PhysicalObjectExtension> friend class PhysicalAttributeBase;
 	template<typename _PhysicalObject, typename _PhysicalObjectExtension> friend class PhysicalAttributeImplementation;
 
@@ -45,42 +45,48 @@ protected:
 	//! @details The data and methods in physical design are split into two different objects. 
 	//! One, the object that is passed as parameter to the methods contains only the methods implementation. 
 	//! while the data is inherent from a Proxy object that have a pointer to the object that stores data. 
-	PhysicalDesign(PhysicalDesignData * dsg) : Proxy(dsg) {}
+
+	PhysicalDesign(PhysicalDesignData * dsg) : Proxy(dsg) {
+	}
 public:
 	//! @brief Constructs a Rsyn::PhysicalDesign object with null pointer to the Rsyn::PhysicalDesignData.
 	//! @details The data and methods in physical design are split into two different objects. 
 	//! One, the object that is passed as parameter to the methods contains only the methods implementation. 
 	//! while the data is inherent from a Proxy object that have a pointer to the object that stores data. 
-	PhysicalDesign() : Proxy(nullptr) {}
+
+	PhysicalDesign() : Proxy(nullptr) {
+	}
 	//! @brief Constructs a Rsyn::PhysicalDesign object with null pointer to the Rsyn::PhysicalDesignData.
 	//! @details The data and methods in physical design are split into two different objects. 
 	//! One, the object that is passed as parameter to the methods contains only the methods implementation. 
 	//! while the data is inherent from a Proxy object that have a pointer to the object that stores data. 
-	PhysicalDesign(std::nullptr_t) : Proxy(nullptr) {}
-	
+
+	PhysicalDesign(std::nullptr_t) : Proxy(nullptr) {
+	}
+
 	//! @brief	loading the technology library specified as LEF to the PhysicalDesign
 	//! @param	library is a reference to the descriptor of the technology library inspired in LEF architecture.
 	void loadLibrary(const LefDscp & library);
-	
-	
+
+
 	//! @brief	loading the design specified as DEF format to the PhysicalDesign. 
 	//! @details	PhysicalDesign stores the dimensions of design elements using LEF Database Units resolution. 
 	//! @param	design is a DefDscp reference to the descriptor of the design inspired in DEF architecture.
 	void loadDesign(const DefDscp & design);
-	
+
 	//! @brief	Initializes the Rsyn::PhysicalDesignData, the attributes to the Rsyn::Design elements and control parameters.
 	//! @param	Json &params may be: 1) "clsEnablePhysicalPins" true enables Rsyn::PhysicalPin, 
 	//! 2) "clsEnableMergeRectangles" true enables merging rectangle bounds to be merged. It does not work to bounds defined as polygon, and 
 	//! 3) "clsEnableNetPinBoundaries" true enables storing the pins (Rsyn::Pin) that defines the Bound box boundaries of the nets.
 	void initPhysicalDesign(Rsyn::Design dsg, const Json &params = {});
-	
+
 	//! @brief	Setting the net clock. Otherwise, it is defined as nullptr.
 	void setClockNet(Rsyn::Net net);
-	
+
 	//! @brief	Updating the Bound Box of all design nets. 
 	//! @param	skipClockNet default is value false. Otherwise, the Bound Box of the clock network is skipped to update and is not added to total HPWL.
 	void updateAllNetBounds(const bool skipClockNet = false);
-	
+
 	//! @brief	Updating the Bound box of method parameter net of the Design.
 	//! @param	net A valid net of the Design.
 	void updateNetBound(Rsyn::Net net);
@@ -95,7 +101,7 @@ public:
 	DBU getDatabaseUnits(const DBUType type) const;
 	//! @brief Returning a DBUxy object that has total nets Bound Box HPWL for abscissa (X dimension in DBUxy) and ordinate (Y dimension in DBUxy).
 	DBUxy getHPWL() const;
-	
+
 	//! @param dim	It is an enum Dimension X or Y. 
 	//! @brief	Returning total nets Bound Box HPWL for the parameter dim.
 	DBU getHPWL(const Dimension dim) const;
@@ -116,7 +122,7 @@ public:
 	//! PHYSICAL_PORT       -> Returning total area of the circuit ports
 	//! PHYSICAL_PLACEABLE  -> Returning total area of the rows
 	//! @return The total area in DBU 
-	DBU getArea(const PhysicalType type ) const; 
+	DBU getArea(const PhysicalType type) const;
 
 	//! @brief Returns true if the Rsyn::PhysicalPin was enabled. Otherwise, it returns false.
 	//! @details For some circuits is irrelevant to initialized Rsyn::PhysicalPin. It will only consume memory.
@@ -131,7 +137,7 @@ public:
 	//! is irrelevant to store the pins that defined the boundaries of the bound box of the net. 
 	//! It will only consume memory and runtime.
 	bool isEnableNetPinBoundaries() const;
-	
+
 	//! @brief Rsyn::PhysicalLibraryPin related to the Rsyn::LibraryPin libPin.
 	Rsyn::PhysicalLibraryPin getPhysicalLibraryPin(Rsyn::LibraryPin libPin) const;
 	//! @brief Rsyn::PhysicalLibraryPin related to the Rsyn::Pin pin.
@@ -140,7 +146,7 @@ public:
 	Rsyn::PhysicalLibraryCell getPhysicalLibraryCell(Rsyn::LibraryCell libCell) const;
 	//! @brief Rsyn::PhysicalLibraryCell related to the Rsyn::Cell cell.
 	Rsyn::PhysicalLibraryCell getPhysicalLibraryCell(Rsyn::Cell cell) const;
-	
+
 	//! @brief Update physical data of the Rsyn::PhysicalCell related to cell.
 	void updatePhysicalCell(Rsyn::Cell cell);
 	//! @brief Remove physical data of the Rsyn::PhysicalCell related to cell.
@@ -164,19 +170,19 @@ public:
 	//! @brief return total number of the movable physical cells.
 	//! @return An integer that is the number of the movable physical cells.
 	int getNumMovedCells() const;
-	
+
 	//! @brief Returns the object that store the physical data of the Rsyn::PhysicalDie.
-	Rsyn::PhysicalDie getPhysicalDie()  const;
+	Rsyn::PhysicalDie getPhysicalDie() const;
 	//! @brief if Rsyn::PhysicalPin was initialized, then returns a valid object. Otherwise, returns nullptr.
 	//! @return Rsyn::PhysicalPin related to the Rsyn::Design Rsyn::Pin pin
 	Rsyn::PhysicalPin getPhysicalPin(Rsyn::Pin pin) const;
-	
+
 	//! @brief Returns the pin displacement from its cell origen. 
 	//! @details Pin displacement is the distance from cell origen to the pin position inside of cell.
 	//! The cell origin is the LOWER and LEFT corner. 
 	//! @return Pin displacement in a DBUxy. The distance unit is DBU.
-	DBUxy getPinDisplacement(Rsyn::Pin pin) const; 
-	
+	DBUxy getPinDisplacement(Rsyn::Pin pin) const;
+
 	//! @brief Returns the pin position. The position is the summation of pin displacement and its cell position.
 	DBUxy getPinPosition(Rsyn::Pin pin) const;
 	//! @brief Returns the relaxed pin position. 
@@ -192,12 +198,17 @@ public:
 	DBU getPinPosition(Rsyn::Pin pin, const Dimension dim) const;
 
 	//! @brief	Returns the Rsyn::PhysicalNet object related to the net parameter.
-	Rsyn::PhysicalNet getPhysicalNet(Rsyn::Net net) const ;
+	Rsyn::PhysicalNet getPhysicalNet(Rsyn::Net net) const;
 
 	//! @brief	Returns the Rsyn::PhysicalLayer object associated to the parameter layer name.
 	Rsyn::PhysicalLayer getPhysicalLayerByName(const std::string & layerName);
 	//! @brief	Returns the Rsyn::PhysicalSite object associated to the parameter site name.
-	Rsyn::PhysicalSite getPhysicalSiteByName(std::string siteName);	
+	Rsyn::PhysicalSite getPhysicalSiteByName(const std::string &siteName);
+	//! @brief	Returns the Rsyn::PhysicalRegion object associated to the parameter region name.
+	Rsyn::PhysicalRegion getPhysicalRegionByName(const std::string &siteName);
+	//! @brief	Returns the Rsyn::PhysicalGroup object associated to the parameter group name.
+	Rsyn::PhysicalGroup getPhysicalGroupByName(const std::string &siteName);
+
 	//! @brief	Returns the total number of layers. It is the summation of routing, overlap, cut, and so forth layers.
 	int getNumLayers(const Rsyn::PhysicalLayerType type) const;
 	//! @brief	Returns a reference to the vector of PhysicalLayers. 
@@ -207,19 +218,29 @@ public:
 	std::size_t getNumPhysicalSpacing() const;
 	//! @brief	Returns a reference to the vector of PhysicalSpacing. 
 	Range<ListCollection<PhysicalSpacingData, PhysicalSpacing>> allPhysicalSpacing() const;
-	
+
+	//! @brief	Returns the total number of region objects.  
+	std::size_t getNumPhysicalRegions() const;
+	//! @brief	Returns a reference to the range list of PhysicalRegion. 
+	std::vector<PhysicalRegion> & allPhysicalRegions() const;
+
+	//! @brief	Returns the total number of group objects.  
+	std::size_t getNumPhysicalGroups() const;
+	//! @brief	Returns a reference to the range list of PhysicalGroup. 
+	std::vector<PhysicalGroup> & allPhysicalGroups() const;
+
 	//! @brief Returns the row height. It is assumed all rows have the same height.
 	//! The row height of the first row is returned.
 	//I'm assuming all rows have the same height.
 	DBU getRowHeight() const;
 	//! @brief Returns the row site width. It is assumed all rows have the same site width.
 	//! The row site width of the first row is returned.
-	DBU getRowSiteWidth() const ;
+	DBU getRowSiteWidth() const;
 	//! @brief Returns the total number of row objects.
-	std::size_t getNumRows() const ;
+	std::size_t getNumRows() const;
 	//! @brief Iterates over all Physical Rows. 
 	Range<ListCollection<PhysicalRowData, PhysicalRow>> allPhysicalRows();
-	
+
 protected:
 	//! @brief initializes the Rsyn::PhysicalSite objects into Rsyn::PhysicalDesign.
 	void addPhysicalSite(const LefSiteDscp & site);
@@ -236,28 +257,32 @@ protected:
 	void addPhysicalPort(Rsyn::Instance cell, const DefPortDscp& port);
 	//! @brief initializes the Rsyn::PhysicalRow objects into Rsyn::PhysicalDesign.
 	void addPhysicalRow(const DefRowDscp& defRow);
+	//! @brief initializes the Rsyn::PhysicalRegion objects into Rsyn::PhysicalDesign.
+	void addPhysicalRegion(const DefRegionDscp& defRegion);
+	//! @brief initializes the Rsyn::PhysicalGroup objects into Rsyn::PhysicalDesign.
+	void addPhysicalGroup(const DefGroupDscp& defGroup);
 	//! @brief initializes the Rsyn::PhysicalSpacing objects into Rsyn::PhysicalDesign.
 	void addPhysicalSpacing(const LefSpacingDscp & spacing);
 	//! @brief initializes the Rsyn::PhysicalPin objects into Rsyn::PhysicalDesign.
 	//! @todo Implements this method
 	void addPhysicalPin();
-	
+
 	//! @brief Merges the rectangles that defines the boundary in a small set of them.
 	//! @details For some circuits, e.g. 2015 ICCAD contest, the boundaries of macros are defined by a set of rectangles. 
 	//! They may be merged into a small set.
 	//! @warning works only for rectangles 
 	void mergeBounds(const std::vector<Bounds> & source, std::vector<Bounds> & target, const Dimension dim = X);
-	
+
 private:
 	//! @brief Returns the Rsyn::PhysicalRow unique identifier.
 	PhysicalIndex getId(Rsyn::PhysicalRow phRow) const;
-	
+
 	//! @brief Returns the Rsyn::PhysicalLayer unique identifier.
 	PhysicalIndex getId(Rsyn::PhysicalLayer phLayer) const;
-	
+
 	//! @brief Returns the Rsyn::PhysicalSpacing unique identifier.
 	PhysicalIndex getId(Rsyn::PhysicalSpacing spacing) const;
-	
+
 public:
 	//! @details Creates the physical object to handle the physical object extensions.
 	//! The extension maps the physical object to a null reference.
@@ -272,7 +297,7 @@ public:
 public:
 
 	//! @brief typedef for callback to the moved instances. 
-	typedef std::function<void(Rsyn::PhysicalInstance instance)> PostInstanceMovedCallback;
+	typedef std::function<void(Rsyn::PhysicalInstance instance) > PostInstanceMovedCallback;
 	//! @brief list of registered call backs. 
 	typedef std::list<std::tuple<int, PostInstanceMovedCallback>>::iterator PostInstanceMovedCallbackHandler;
 
@@ -299,27 +324,27 @@ public:
 	//! We can use it when you may expect the move to be rolled back, but it is
 	//! not, recall to mark the cell as dirty.
 	void placeCell(Rsyn::Cell cell, const DBUxy pos, const bool dontNotifyObservers = false);
-	
+
 	//! @brief Explicitly notify observer that a cell was moved. This is only necessary
 	//! if "dontNotifyObservers = true" in "placeCell" methods.
 	void notifyObservers(Rsyn::PhysicalInstance instance);
 	//! @brief Notify observers that a cell was moved. Ignores to notify the observers passed in the parameter. 
 	void notifyObservers(Rsyn::PhysicalInstance instance, const PostInstanceMovedCallbackHandler &ignoreObserver);
-	
+
 	////////////////////////////////////////////////////////////////////////////
 	// Notification
 	////////////////////////////////////////////////////////////////////////////		
 
 public:
-	
+
 	//! @brief registers an instance to be called when some Rsyn::PhysicalInstance is moved.
-	PostInstanceMovedCallbackHandler 
+	PostInstanceMovedCallbackHandler
 	addPostInstanceMovedCallback(const int priority, PostInstanceMovedCallback f);
 
 	//! @todo 
-	void 
-	deletePostInstanceMovedCallback(PostInstanceMovedCallbackHandler &handler);	
-	
+	void
+	deletePostInstanceMovedCallback(PostInstanceMovedCallbackHandler &handler);
+
 }; // end class 
 
 } // end namespace 

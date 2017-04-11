@@ -12,31 +12,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 
 #ifndef LEFCONTROLPARSER_H
-#define	LEFCONTROLPARSER_H
+#define LEFCONTROLPARSER_H
 
 #include <string>
-	using std::string;
-#include <iostream>
-	using std::cout;
-#include <vector>
-	using std::vector;
 
-//#include "rsyn/io/legacy/PlacerInternals.h"
 #include "rsyn/phy/util/LefDescriptors.h"
-	
+
 //! LEF file must be parsed first than DEF file
-	
+
 class LEFControlParser {
 public:
-	LEFControlParser();
-	//void parseLEF(const std::string &filename, Library &library) ;
-	void parseLEF(const std::string &filename, LefDscp & dscp) ;
-	virtual ~LEFControlParser();
-	
+
+	LEFControlParser() {
+		std::setlocale(LC_ALL, "en_US.UTF-8");
+	}
+
+	virtual ~LEFControlParser() = default;
+	void parseLEF(const std::string &filename, LefDscp & dscp);
 }; // end class
 
-#endif	/* LEFCONTROLPARSER_H */
+#endif /* LEFCONTROLPARSER_H */
 

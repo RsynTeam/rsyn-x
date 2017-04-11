@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -74,6 +74,8 @@ class PhysicalLibraryCellData;
 class PhysicalPinData;
 class PhysicalNetData;
 class PhysicalInstanceData;
+class PhysicalRegionData;
+class PhysicalGroupData;
 class PhysicalDesignData;
 
 class PhysicalDie;
@@ -92,12 +94,14 @@ class PhysicalInstance;
 class PhysicalPort;
 class PhysicalCell;
 class PhysicalModule;
+class PhysicalRegion;
+class PhysicalGroup;
 class PhysicalDesign;
 
 
 class PhysicalAttributeInitializer;
-template<typename DefaultPhysicalValueType> 
-	class PhysicalAttributeInitializerWithDefaultValue;
+template<typename DefaultPhysicalValueType>
+class PhysicalAttributeInitializerWithDefaultValue;
 
 } // end namespace 
 
@@ -119,6 +123,8 @@ template<typename DefaultPhysicalValueType>
 #include "rsyn/phy/obj/decl/PhysicalCell.h"
 #include "rsyn/phy/obj/decl/PhysicalModule.h"
 #include "rsyn/phy/obj/decl/PhysicalPort.h"
+#include "rsyn/phy/obj/decl/PhysicalRegion.h"
+#include "rsyn/phy/obj/decl/PhysicalGroup.h"
 #include "rsyn/phy/obj/decl/PhysicalDesign.h"
 
 // Object's Data
@@ -136,6 +142,8 @@ template<typename DefaultPhysicalValueType>
 #include "rsyn/phy/obj/data/PhysicalPinData.h"
 #include "rsyn/phy/obj/data/PhysicalNetData.h"
 #include "rsyn/phy/obj/data/PhysicalInstanceData.h"
+#include "rsyn/phy/obj/data/PhysicalRegionData.h"
+#include "rsyn/phy/obj/data/PhysicalGroupData.h"
 #include "rsyn/phy/obj/data/PhysicalDesign.h"
 
 // Physical Infrastructure
@@ -158,6 +166,8 @@ template<typename DefaultPhysicalValueType>
 #include "rsyn/phy/obj/impl/PhysicalPort.h"
 #include "rsyn/phy/obj/impl/PhysicalCell.h"
 #include "rsyn/phy/obj/impl/PhysicalModule.h"
+#include "rsyn/phy/obj/impl/PhysicalRegion.h"
+#include "rsyn/phy/obj/impl/PhysicalGroup.h"
 #include "rsyn/phy/obj/impl/PhysicalDesign.h"
 
 

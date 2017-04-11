@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -36,12 +36,10 @@ public:
 	DBUxy clsDisplacement;
 	//! @details A pin may have several ports. However, each port is weakly connected to other. 
 	//! It is assumed that they have high resistance among them. 
-	std::vector<PhysicalPinPort> clsPhysicalPinPorts; 
-	PhysicalPinDirection clsDirection;
+	std::vector<PhysicalPinPort> clsPhysicalPinPorts;
+	PhysicalPinDirection clsDirection = PIN_INVALID_DIRECTION;
 	Bounds clsLayerBound; // The pin bounds is defined by one of the layers
-	PhysicalPinData() {
-		clsDirection = PIN_INVALID_DIRECTION;
-	} // end constructor 
+	PhysicalPinData() = default;
 }; // end class 
 
 } // end namespace 

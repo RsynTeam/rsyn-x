@@ -159,6 +159,7 @@ private:
 	VisualInstance selectedInstance;
 	std::vector<std::vector<Rsyn::Timer::PathHop>> clsPaths;
 	DBUxy finalPos;
+        std::vector<VisualInstance> allSelectedInst;
 	
 
 	static const float LAYER_GRID;
@@ -241,7 +242,7 @@ public:
 	void criticalPath();
 	void definePathPos();
 	void drawPath();
-	
+	void drawAllSelected();
 	// Events.
 	virtual void onRender(wxPaintEvent& evt);
 

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -101,7 +101,7 @@ void PopulateRsyn::populateRsynNetlistFromVerilog(
 
 	Rsyn::Module top = rsynDesign.getTopModule();
 	rsynDesign.updateName(verilogDesign.name);
-	
+
 	keepWarning = true;
 	keepWarningCounter = 0;
 	for (auto &port : verilogDesign.primaryInputs) {
@@ -220,7 +220,7 @@ void PopulateRsyn::populateRsyn(
 
 	Rsyn::Module top = rsynDesign.getTopModule();
 	rsynDesign.updateName(defDscp.clsDesignName);
-	
+
 	// Create library cells.
 	// Some cells (e.g. TIE) only appears in the LEF, not in the Liberty
 	// at least for ICCAD 15 benchmarks. That's why we need to try to create
@@ -343,6 +343,88 @@ void PopulateRsyn::populateRsyn(
 
 // -----------------------------------------------------------------------------
 
+void PopulateRsyn::populateRsyn(
+	const LefDscp &lefDscp,
+	const DefDscp &defDscp,
+	Rsyn::Design rsynDesign) {
+
+	bool keepWarning;
+	int keepWarningCounter;
+
+	Rsyn::Module top = rsynDesign.getTopModule();
+	rsynDesign.updateName(defDscp.clsDesignName);
+
+	// Create library cells.
+	// Some cells (e.g. TIE) only appears in the LEF, not in the Liberty
+	// at least for ICCAD 15 benchmarks. That's why we need to try to create
+	// also cells using LEF.
+	populateRsynLibraryFromLef(lefDscp, rsynDesign);
+
+	// Creates ports.
+	for (const DefPortDscp &port : defDscp.clsPorts) {
+
+		const Rsyn::Direction direction =
+			(port.clsDirection == "INPUT") ? Rsyn::IN : Rsyn::OUT;
+
+		top.createPort(direction, port.clsName);
+	} // end for
+
+
+	//	// Creates cells.
+	for (const DefComponentDscp &component : defDscp.clsComps) {
+		Rsyn::LibraryCell lcell =
+			rsynDesign.findLibraryCellByName(component.clsMacroName);
+
+		if (!lcell) {
+			string str = "Library cell " + component.clsMacroName + " not found\n";
+			throw Exception(str);
+		} // end if
+		top.createCell(lcell, component.clsName);
+	} // end for
+
+
+	// Creates nets and connections.
+	for (const DefNetDscp &net : defDscp.clsNets) {
+		if (net.clsName == "") {
+			std::cout << "[ERROR] Empty net name.\n";
+			for (unsigned i = 0; i < net.clsConnections.size(); i++) {
+				std::cout << "Connection: " << net.clsConnections[i].clsComponentName << ":" << net.clsConnections[i].clsPinName << "\n";
+			} // end for
+			exit(1);
+		} // end if
+
+		Rsyn::Net rsynNet = top.createNet(net.clsName);
+
+		for (const DefNetConnection &connection : net.clsConnections) {
+
+			if (connection.clsComponentName == "PIN") {
+				Rsyn::Port rsynCell =
+					rsynDesign.findPortByName(connection.clsPinName);
+
+				if (!rsynCell) {
+					std::cout << "[ERROR] The primary input/ouput port '"
+						<< connection.clsPinName << "' not found.\n";
+					exit(1);
+				} // end if
+
+				Rsyn::Pin rsynPin = rsynCell.getInnerPin();
+				rsynPin.connect(rsynNet);
+			} else {
+				Rsyn::Cell rsynCell = rsynDesign.findCellByName(connection.clsComponentName);
+				if (!rsynCell) {
+					std::cout << "[ERROR] Cell '"
+						<< connection.clsComponentName << "' not found.\n";
+					exit(1);
+				} // end if
+
+				Rsyn::Pin rsynPin = rsynCell.getPinByName(connection.clsPinName);
+				rsynPin.connect(rsynNet);
+			} // end else
+		} // end for
+	} // end for
+} // end method
+
+// -----------------------------------------------------------------------------
 
 } // end namespace 
 

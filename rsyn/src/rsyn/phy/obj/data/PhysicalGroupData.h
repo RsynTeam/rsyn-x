@@ -20,28 +20,28 @@
  */
 
 /* 
- * File:   PhysicalLibraryPinData.h
+ * File:   PhysicalGroupData.h
  * Author: jucemar
  *
- * Created on 13 de Setembro de 2016, 21:04
+ * Created on 09 de Abril de 2017, 16:45
  */
 
-#ifndef PHYSICALDESIGN_PHYSICALLIBRARYPINDATA_H
-#define PHYSICALDESIGN_PHYSICALLIBRARYPINDATA_H
+#ifndef PHYSICALDESIGN_PHYSICALGROUPDATA_H
+#define PHYSICALDESIGN_PHYSICALGROUPDATA_H
+
 
 namespace Rsyn {
 
-class PhysicalLibraryPinData {
+class PhysicalGroupData : public PhysicalObject {
 public:
-	Bounds clsLayerBound; // The layer bound is defined by one of the layer.
-	PhysicalPinDirection clsDirection = PIN_INVALID_DIRECTION;
-	// A pin may have several ports. However, each port is weakly connected to other. 
-	// It is assumed that they have high resistance among them. 
-	std::vector<PhysicalPinPort> clsPhysicalPinPorts;
-	PhysicalLibraryPinData() = default;
-}; // class 
+
+	std::string clsName = Rsyn::getPhysicalInvalidName();
+	std::vector<std::string> clsPatterns; // e.g. "name/*"
+	Rsyn::PhysicalRegion clsRegion;
+	PhysicalGroupData() = default;
+}; // end class  
 
 } // end namespace 
 
-#endif /* PHYSICALDESIGN_PHYSICALLIBRARYPINDATA_H */
+#endif /* PHYSICALDESIGN_PHYSICALGROUPDATA_H */
 

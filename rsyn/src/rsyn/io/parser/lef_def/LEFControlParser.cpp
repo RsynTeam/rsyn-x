@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 
 
 #include "LEFControlParser.h"
@@ -27,9 +27,8 @@
 #include <string.h>
 #include <malloc.h>
 #include <map>
+#include <iostream>
 
-
-//#include "rsyn/io/legacy/ispd13/global.h"
 #include "rsyn/util/DoubleRectangle.h"
 #include "rsyn/util/double2.h"
 //LEF headers
@@ -38,19 +37,6 @@
 #include "lef5.8/lefwWriter.hpp"
 #include "lef5.8/lefiDebug.hpp"
 #include "lef5.8/lefiUtil.hpp"
-
-// -----------------------------------------------------------------------------
-
-LEFControlParser::LEFControlParser() {
-	std::setlocale(LC_ALL, "en_US.UTF-8");
-
-} // end constructor
-
-// -----------------------------------------------------------------------------
-
-LEFControlParser::~LEFControlParser() {
-
-} // end destructor
 
 // -----------------------------------------------------------------------------
 
@@ -103,7 +89,6 @@ int lefObstructionCB(lefrCallbackType_e c, lefiObstruction* obs, lefiUserData ud
 int lefLayerCB(lefrCallbackType_e c, lefiLayer* layer, lefiUserData ud);
 int lefSpacingCB(lefrCallbackType_e c, lefiSpacing* spacing, lefiUserData ud);
 
-
 LefDscp &getLibraryFromUserData(lefiUserData userData) {
 	return *((LefDscp *) userData);
 } // end function
@@ -113,7 +98,7 @@ LefDscp &getLibraryFromUserData(lefiUserData userData) {
 // =============================================================================
 
 void LEFControlParser::parseLEF(const std::string &filename, LefDscp & dscp) {
-//	int retStr = 0;  unused variable
+	//	int retStr = 0;  unused variable
 
 	FILE* lefFile;
 	int res;
@@ -124,7 +109,7 @@ void LEFControlParser::parseLEF(const std::string &filename, LefDscp & dscp) {
 
 	(void) lefrSetOpenLogFileAppend();
 
-	(void) lefrSetShiftCase(); // will shift name to uppercase if caseinsensitive
+	//(void) lefrSetShiftCase(); // will shift name to uppercase if caseinsensitive
 	// is set to off or not set
 
 	lefrSetMacroBeginCbk(lefMacroBeginCB);
@@ -138,9 +123,9 @@ void LEFControlParser::parseLEF(const std::string &filename, LefDscp & dscp) {
 	lefrSetReallocFunction(reallocCB);
 	lefrSetFreeFunction(freeCB);
 	lefrSetObstructionCbk(lefObstructionCB);
-	lefrSetLayerCbk(lefLayerCB); 
+	lefrSetLayerCbk(lefLayerCB);
 	lefrSetSpacingCbk(lefSpacingCB);
-	
+
 	lefrSetRegisterUnusedCallbacks();
 
 	// Open the lef file for the reader to read
@@ -190,39 +175,37 @@ int lefMacroEndCB(lefrCallbackType_e c, const char* macroName, lefiUserData ud) 
 
 int lefMacroCB(lefrCallbackType_e c, lefiMacro* macro, lefiUserData ud) {
 	LefDscp & dscp = getLibraryFromUserData(ud);
-	
+
 	LefMacroDscp & lefMacro = dscp.clsLefMacroDscps.back();
-	
+
 	lefMacro.clsMacroClass = macro->macroClass();
 	lefMacro.clsMacroName = macro->name();
 	lefMacro.clsSite = macro->siteName();
 	lefMacro.clsSize[X] = macro->sizeX();
 	lefMacro.clsSize[Y] = macro->sizeY();
-	
+
 	return 0;
 } // end function
 
 // -----------------------------------------------------------------------------
 
 int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
-	//Library &library = getLibraryFromUserData(ud);
-	
 	// Skip power and ground pins...
 	if (strcmp(pin->use(), "GROUND") == 0) return 0;
 	if (strcmp(pin->use(), "POWER") == 0) return 0;
-		
+
 	LefDscp & dscp = getLibraryFromUserData(ud);
 	LefMacroDscp & lefMacro = dscp.clsLefMacroDscps.back();
 	lefMacro.clsPins.resize(lefMacro.clsPins.size() + 1);
 	LefPinDscp & lefPin = lefMacro.clsPins.back();
-	
+
 	lefPin.clsPinName = pin->name();
 	lefPin.clsPinDirection = pin->direction();
-	lefPin.clsHasPort = pin->numPorts() > 0 ;
-	
-	if(lefPin.clsHasPort)
+	lefPin.clsHasPort = pin->numPorts() > 0;
+
+	if (lefPin.clsHasPort)
 		lefPin.clsPorts.reserve(pin->numPorts());
-	
+
 	for (int j = 0; j < pin->numPorts(); j++) {
 		const lefiGeometries* geometry = pin->port(j);
 		lefPin.clsPorts.push_back(LefPortDscp());
@@ -236,20 +219,20 @@ int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
 				lefPort.clsBounds.resize(lefPort.clsBounds.size() + 1);
 				DoubleRectangle &bound = lefPort.clsBounds.back();
 				bound.updatePoints(rect->xl, rect->yl, rect->xh, rect->yh);
-			} else if(geometry->itemType(i) == lefiGeomPolygonE) {
+			} else if (geometry->itemType(i) == lefiGeomPolygonE) {
 				const lefiGeomPolygon * poly = geometry->lefiGeometries::getPolygon(i);
 				lefPort.clsLefPolygonDscp.push_back(LefPolygonDscp());
 				LefPolygonDscp & polyDscp = lefPort.clsLefPolygonDscp.back();
-				polyDscp.clsPolygonPoints.resize(poly->numPoints, 
+				polyDscp.clsPolygonPoints.resize(poly->numPoints,
 					double2(std::numeric_limits<double>::infinity(),
 					std::numeric_limits<double>::infinity()));
-				for(int i = 0; i < poly->numPoints; i++) {
+				for (int i = 0; i < poly->numPoints; i++) {
 					double2 & pt = polyDscp.clsPolygonPoints[i];
 					pt[X] = poly->x[i];
 					pt[Y] = poly->y[i];
-				}  // end for 
+				} // end for 
 			} else {
-				std::cout<<"WARNING: function "<<__func__<<" does not supports pin geometry type in the LEF Parser Control.\n";
+				std::cout << "WARNING: function " << __func__ << " does not supports pin geometry type in the LEF Parser Control.\n";
 			} // end else-if 
 		} // end for
 	} // end for 
@@ -259,14 +242,13 @@ int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
 // -----------------------------------------------------------------------------
 
 int lefSiteCB(lefrCallbackType_e c, lefiSite* site, lefiUserData ud) {
-	
 	LefDscp & dscp = getLibraryFromUserData(ud);
 	dscp.clsLefSiteDscps.resize(dscp.clsLefSiteDscps.size() + 1);
 	LefSiteDscp &lefSite = dscp.clsLefSiteDscps.back();
 	lefSite.clsName = site->name();
-	
+
 	lefSite.clsHasClass = site->hasClass();
-	if(site->hasClass())
+	if (site->hasClass())
 		lefSite.clsSiteClass = site->siteClass();
 	lefSite.clsSize[X] = site->sizeX();
 	lefSite.clsSize[Y] = site->sizeY();
@@ -279,8 +261,8 @@ int lefSiteCB(lefrCallbackType_e c, lefiSite* site, lefiUserData ud) {
 int lefUnits(lefrCallbackType_e c, lefiUnits* units, lefiUserData ud) {
 	LefDscp & dscp = getLibraryFromUserData(ud);
 	LefUnitsDscp & lefUnits = dscp.clsLefUnitsDscp;
-	
-	if(units->hasDatabase()){
+
+	if (units->hasDatabase()) {
 		lefUnits.clsDatabase = (int) units->databaseNumber();
 		lefUnits.clsHasDatabase = true;
 	}
@@ -293,21 +275,21 @@ int lefUnits(lefrCallbackType_e c, lefiUnits* units, lefiUserData ud) {
 int lefObstructionCB(lefrCallbackType_e c, lefiObstruction* obs, lefiUserData ud) {
 	LefDscp & dscp = getLibraryFromUserData(ud);
 	LefMacroDscp & lefMacro = dscp.clsLefMacroDscps.back();
-	
+
 	lefiGeometries *geometry;
 	lefiGeomRect *rect;
-	
+
 	geometry = obs->lefiObstruction::geometries();
 	const int numItems = geometry->lefiGeometries::numItems();
 	for (int i = 0; i < numItems; i++) {
-		if(geometry->lefiGeometries::itemType(i) == lefiGeomLayerE) {
+		if (geometry->lefiGeometries::itemType(i) == lefiGeomLayerE) {
 			lefMacro.clsObs.resize(lefMacro.clsObs.size() + 1);
 			LefObsDscp & lefObs = lefMacro.clsObs.back();
 			lefObs.clsMetalLayer = geometry->getLayer(i);
-		}else if(geometry->lefiGeometries::itemType(i) == lefiGeomRectE){
+		} else if (geometry->lefiGeometries::itemType(i) == lefiGeomRectE) {
 			LefObsDscp & lefObs = lefMacro.clsObs.back();
 			rect = geometry->lefiGeometries::getRect(i);
-			DoubleRectangle libRect = DoubleRectangle (rect->xl, rect->yl, rect->xh, rect->yh);
+			DoubleRectangle libRect = DoubleRectangle(rect->xl, rect->yl, rect->xh, rect->yh);
 			lefObs.clsBounds.push_back(libRect);
 		} // end if-else 
 	} // end for 

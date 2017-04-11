@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -37,7 +37,7 @@ public:
 	std::vector<Bounds> clsBounds;
 	std::vector<Polygon> clsPolygons;
 	Rsyn::PhysicalLayer clsLibLayer;
-	PhysicalPinLayerData() {}
+	PhysicalPinLayerData() = default;
 }; // end class 
 
 } // end namespace 

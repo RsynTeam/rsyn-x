@@ -22,6 +22,7 @@
 // state of the overlay.
 
 #include "rsyn/gui/canvas/overlay/Instance.h"
+#include "rsyn/gui/canvas/overlay/Region.h"
 #include "rsyn/gui/canvas/overlay/DensityGridOverlay.h"
 
 #include "x/gui/overlay/Abu.h"
@@ -33,6 +34,7 @@
 void MainFrame::registerAllOverlays() {
 	// Default overlays.
 	registerOverlay<InstanceOverlay>("Instances", true);
+	registerOverlay<RegionOverlay>("Region", true);
 	registerOverlay<AbuOverlay>("Abu");
 	registerOverlay<DensityGridOverlay>("Density Grid");
 	

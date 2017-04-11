@@ -36,7 +36,7 @@ class PhysicalObstacleData : public PhysicalObject {
 public:
 	Rsyn::PhysicalLayer clsLayer;
 	std::vector<Bounds> clsBounds;
-	PhysicalObstacleData() {}
+	PhysicalObstacleData() = default;
 }; // end class 
 
 } // end namespace 

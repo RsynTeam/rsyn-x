@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -39,9 +39,10 @@ namespace Rsyn {
 
 class PopulateRsyn {
 public:
-	PopulateRsyn() {}
-	PopulateRsyn(const PopulateRsyn& orig) {}
-	virtual ~PopulateRsyn() {}
+
+	PopulateRsyn() = default;
+	PopulateRsyn(const PopulateRsyn& orig) = default;
+	virtual ~PopulateRsyn() = default;
 protected:
 	virtual void populateRsynLibraryFromLiberty(
 		const ISPD13::LIBInfo &lib,
@@ -60,8 +61,12 @@ protected:
 		const DefDscp &defDscp,
 		const Legacy::Design &verilogDesign,
 		Rsyn::Design rsynDesign);
-	
-	
+
+	virtual void populateRsyn(
+		const LefDscp &lefDscp,
+		const DefDscp &defDscp,
+		Rsyn::Design rsynDesign);
+
 };
 
 } // end namespace 

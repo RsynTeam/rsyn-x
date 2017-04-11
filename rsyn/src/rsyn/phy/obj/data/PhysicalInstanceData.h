@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -37,18 +37,18 @@ public:
 	bool clsPlaced : 1;
 	bool clsPort : 1;
 	bool clsHasLayerBounds : 1; //  the bounds of a cell is defined by one of the layers. 
-	
+
 	Bounds clsBounds;
 	DBUxy clsInitialPos; // Initial position from global placement when in detailed placement has maximal displacement
-	PhysicalOrientation clsPhysicalOrientation;
+	PhysicalOrientation clsPhysicalOrientation = ORIENTATION_INVALID;
 	PhysicalLayer clsPortLayer;
 	Rsyn::Instance clsInstance;
+
 	PhysicalInstanceData() {
 		clsBlock = false;
 		clsPlaced = false;
 		clsPort = false;
 		clsHasLayerBounds = false;
-		clsPhysicalOrientation = ORIENTATION_INVALID;
 	} // end constructor 
 }; // end class
 

@@ -128,6 +128,8 @@
             <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/DensityGridOverlay.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/Instance.cpp</itemPath>
             <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/Instance.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/Region.cpp</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/Region.h</itemPath>
           </logicalFolder>
           <itemPath>../../../rsyn/src/rsyn/gui/canvas/PhysicalCanvasGL.cpp</itemPath>
           <itemPath>../../../rsyn/src/rsyn/gui/canvas/PhysicalCanvasGL.h</itemPath>
@@ -232,6 +234,8 @@
           <itemPath>../../../rsyn/src/rsyn/io/reader/DesignPositionReader.h</itemPath>
           <itemPath>../../../rsyn/src/rsyn/io/reader/ICCAD15Reader.cpp</itemPath>
           <itemPath>../../../rsyn/src/rsyn/io/reader/ICCAD15Reader.h</itemPath>
+          <itemPath>../../../rsyn/src/rsyn/io/reader/ICCAD17Reader.cpp</itemPath>
+          <itemPath>../../../rsyn/src/rsyn/io/reader/ICCAD17Reader.h</itemPath>
           <itemPath>../../../rsyn/src/rsyn/io/reader/ISPD2012Reader.cpp</itemPath>
           <itemPath>../../../rsyn/src/rsyn/io/reader/ISPD2012Reader.h</itemPath>
           <itemPath>../../../rsyn/src/rsyn/io/reader/ISPD2014Reader.cpp</itemPath>
@@ -313,6 +317,7 @@
           <logicalFolder name="data" displayName="data" projectFiles="true">
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalDesign.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalDieData.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalGroupData.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalInstanceData.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalLayerData.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalLibraryCellData.h</itemPath>
@@ -323,6 +328,7 @@
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalPinData.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalPinLayerData.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalPinPortData.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalRegionData.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalRowData.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalSiteData.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalSpacingData.h</itemPath>
@@ -331,6 +337,7 @@
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalCell.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalDesign.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalDie.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalGroup.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalInstance.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalLayer.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalLibraryCell.h</itemPath>
@@ -342,6 +349,7 @@
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalPinLayer.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalPinPort.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalPort.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalRegion.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalRow.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalSite.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalSpacing.h</itemPath>
@@ -350,6 +358,7 @@
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalCell.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalDesign.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalDie.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalGroup.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalInstance.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalLayer.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalLibraryCell.h</itemPath>
@@ -361,6 +370,7 @@
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalPinLayer.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalPinPort.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalPort.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalRegion.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalRow.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalSite.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalSpacing.h</itemPath>
@@ -1132,6 +1142,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/gui/canvas/overlay/Region.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/gui/canvas/overlay/Region.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/gui/frame/MainFrame.cpp"
             ex="false"
             tool="1"
@@ -1451,6 +1471,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/io/reader/ICCAD17Reader.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/io/reader/ICCAD17Reader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/io/reader/ISPD2012Reader.cpp"
             ex="false"
             tool="1"
@@ -1691,6 +1721,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalGroupData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalInstanceData.h"
             ex="false"
             tool="3"
@@ -1741,6 +1776,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalRegionData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalRowData.h"
             ex="false"
             tool="3"
@@ -1767,6 +1807,11 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalDie.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalGroup.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -1826,6 +1871,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalRegion.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalRow.h"
             ex="false"
             tool="3"
@@ -1852,6 +1902,11 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalDie.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalGroup.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -1907,6 +1962,11 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalPort.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalRegion.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -3068,6 +3128,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/gui/canvas/overlay/Region.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/gui/canvas/overlay/Region.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/gui/frame/MainFrame.cpp"
             ex="false"
             tool="1"
@@ -3387,6 +3457,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/io/reader/ICCAD17Reader.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/io/reader/ICCAD17Reader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/io/reader/ISPD2012Reader.cpp"
             ex="false"
             tool="1"
@@ -3627,6 +3707,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalGroupData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalInstanceData.h"
             ex="false"
             tool="3"
@@ -3677,6 +3762,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalRegionData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalRowData.h"
             ex="false"
             tool="3"
@@ -3703,6 +3793,11 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalDie.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalGroup.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -3762,6 +3857,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalRegion.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalRow.h"
             ex="false"
             tool="3"
@@ -3788,6 +3888,11 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalDie.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalGroup.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -3843,6 +3948,11 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalPort.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalRegion.h"
             ex="false"
             tool="3"
             flavor2="0">

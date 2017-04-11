@@ -55,6 +55,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/1686e670/SchematicCanvasGL.o \
 	${OBJECTDIR}/_ext/5b7cf7b1/DensityGridOverlay.o \
 	${OBJECTDIR}/_ext/5b7cf7b1/Instance.o \
+	${OBJECTDIR}/_ext/5b7cf7b1/Region.o \
 	${OBJECTDIR}/_ext/f067b555/MainFrame.o \
 	${OBJECTDIR}/_ext/a8f1af4b/MainFrameBase.o \
 	${OBJECTDIR}/_ext/a8f1af4b/SchematicFrameBase.o \
@@ -81,6 +82,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/1fbf0388/BookshelfReader.o \
 	${OBJECTDIR}/_ext/1fbf0388/DesignPositionReader.o \
 	${OBJECTDIR}/_ext/1fbf0388/ICCAD15Reader.o \
+	${OBJECTDIR}/_ext/1fbf0388/ICCAD17Reader.o \
 	${OBJECTDIR}/_ext/1fbf0388/ISPD2012Reader.o \
 	${OBJECTDIR}/_ext/1fbf0388/ISPD2014Reader.o \
 	${OBJECTDIR}/_ext/1fbf0388/PopulateRsyn.o \
@@ -259,6 +261,11 @@ ${OBJECTDIR}/_ext/5b7cf7b1/Instance.o: ../../../rsyn/src/rsyn/gui/canvas/overlay
 	${RM} "$@.d"
 	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/5b7cf7b1/Instance.o ../../../rsyn/src/rsyn/gui/canvas/overlay/Instance.cpp
 
+${OBJECTDIR}/_ext/5b7cf7b1/Region.o: ../../../rsyn/src/rsyn/gui/canvas/overlay/Region.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/5b7cf7b1
+	${RM} "$@.d"
+	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/5b7cf7b1/Region.o ../../../rsyn/src/rsyn/gui/canvas/overlay/Region.cpp
+
 ${OBJECTDIR}/_ext/f067b555/MainFrame.o: ../../../rsyn/src/rsyn/gui/frame/MainFrame.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/f067b555
 	${RM} "$@.d"
@@ -388,6 +395,11 @@ ${OBJECTDIR}/_ext/1fbf0388/ICCAD15Reader.o: ../../../rsyn/src/rsyn/io/reader/ICC
 	${MKDIR} -p ${OBJECTDIR}/_ext/1fbf0388
 	${RM} "$@.d"
 	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/ICCAD15Reader.o ../../../rsyn/src/rsyn/io/reader/ICCAD15Reader.cpp
+
+${OBJECTDIR}/_ext/1fbf0388/ICCAD17Reader.o: ../../../rsyn/src/rsyn/io/reader/ICCAD17Reader.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/1fbf0388
+	${RM} "$@.d"
+	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/ICCAD17Reader.o ../../../rsyn/src/rsyn/io/reader/ICCAD17Reader.cpp
 
 ${OBJECTDIR}/_ext/1fbf0388/ISPD2012Reader.o: ../../../rsyn/src/rsyn/io/reader/ISPD2012Reader.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1fbf0388

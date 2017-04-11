@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -35,6 +35,7 @@
 static const std::string INVALID_DEF_NAME = "*<INVALID_DEF_NAME>*";
 
 //! Descriptor for DEF rows.
+
 class DefRowDscp {
 public:
 	std::string clsName = INVALID_DEF_NAME;
@@ -45,12 +46,13 @@ public:
 	int clsNumY = 0;
 	int clsStepX = 0;
 	int clsStepY = 0;
-	DefRowDscp()=default;
+	DefRowDscp() = default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
 //! Descriptor for DEF components
+
 class DefComponentDscp {
 public:
 	std::string clsName = INVALID_DEF_NAME;
@@ -60,12 +62,13 @@ public:
 	std::string clsOrientation = INVALID_DEF_NAME;
 	bool clsIsFixed = false;
 	bool clsIsPlaced = false;
-	DefComponentDscp()=default;
+	DefComponentDscp() = default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
 //! Descriptor for DEF ports
+
 class DefPortDscp {
 public:
 	std::string clsName = INVALID_DEF_NAME;
@@ -77,21 +80,59 @@ public:
 	std::string clsOrientation = INVALID_DEF_NAME;
 	std::string clsLayerName = INVALID_DEF_NAME;
 	Bounds clsLayerBounds;
-	DefPortDscp()=default;
+	DefPortDscp() = default;
+}; // end class 
+
+// -----------------------------------------------------------------------------
+
+//! Descriptor for DEF Net connections
+
+class DefNetConnection {
+public:
+	std::string clsPinName = INVALID_DEF_NAME;
+	std::string clsComponentName = INVALID_DEF_NAME;
+	DefNetConnection() = default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
 //! Descriptor for DEF Nets
+
 class DefNetDscp {
-public: 
+public:
 	std::string clsName = INVALID_DEF_NAME;
-	DefNetDscp()=default;
+	std::vector<DefNetConnection> clsConnections;
+	DefNetDscp() = default;
+}; // end class 
+
+// -----------------------------------------------------------------------------
+
+//! Descriptor for DEF Regions
+
+class DefRegionDscp {
+public:
+	std::string clsName = INVALID_DEF_NAME;
+	std::string clsType = INVALID_DEF_NAME; // FENCE or GUIDE
+	std::vector<Bounds> clsBounds;
+	DefRegionDscp() = default;
+}; // end class 
+
+// -----------------------------------------------------------------------------
+
+//! Descriptor for Def Groups 
+
+class DefGroupDscp {
+public:
+	std::string clsName = INVALID_DEF_NAME;
+	std::vector<std::string> clsPatterns; // It may be a pattern, e.g. "name/*"
+	std::string clsRegion = INVALID_DEF_NAME;
+	DefGroupDscp() = default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
 //! Descriptor for DEF Design
+
 class DefDscp {
 public:
 	double clsVersion = 0.0;
@@ -104,7 +145,9 @@ public:
 	std::vector<DefComponentDscp> clsComps;
 	std::vector<DefPortDscp> clsPorts;
 	std::vector<DefNetDscp> clsNets;
-	DefDscp()=default;
+	std::vector<DefRegionDscp> clsRegions;
+	std::vector<DefGroupDscp> clsGroups;
+	DefDscp() = default;
 }; // end class 
 
 // -----------------------------------------------------------------------------

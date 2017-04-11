@@ -14,8 +14,9 @@
  */
 
 #include <vector>
+#include <unordered_map>
 
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -28,28 +29,28 @@ namespace Rsyn {
 
 inline void PhysicalDesign::loadLibrary(const LefDscp & library) {
 	if (!data) {
-		std::cout << "ERROR: Physical Design was not configured!\n" 
-			<<"Please call first initPhysicalDesign!"
+		std::cout << "ERROR: Physical Design was not configured!\n"
+			<< "Please call first initPhysicalDesign!"
 			<< std::endl;
 		return;
 	} // end if 
-	
-	if(library.clsLefUnitsDscp.clsHasDatabase)  {
-		if(getDatabaseUnits(LIBRARY_DBU) == 0) {
+
+	if (library.clsLefUnitsDscp.clsHasDatabase) {
+		if (getDatabaseUnits(LIBRARY_DBU) == 0) {
 			data->clsDBUs[LIBRARY_DBU] = library.clsLefUnitsDscp.clsDatabase;
 		} else {
-			if(getDatabaseUnits(LIBRARY_DBU) != library.clsLefUnitsDscp.clsDatabase) {
-				std::cout<<"WARNING: Stored LEF database units "
-					<<getDatabaseUnits(LIBRARY_DBU)
-					<<" is not equal to LEF database units defined in Library "
-					<<library.clsLefUnitsDscp.clsDatabase
-					<<".\n";
-				std::cout<<"WARNING: Lef library elements were NOT initialized!\n";
+			if (getDatabaseUnits(LIBRARY_DBU) != library.clsLefUnitsDscp.clsDatabase) {
+				std::cout << "WARNING: Stored LEF database units "
+					<< getDatabaseUnits(LIBRARY_DBU)
+					<< " is not equal to LEF database units defined in Library "
+					<< library.clsLefUnitsDscp.clsDatabase
+					<< ".\n";
+				std::cout << "WARNING: Lef library elements were NOT initialized!\n";
 				return;
 			} // end if 
 		} // end if-else
 	} // end if 
-	
+
 	// Initializing physical sites
 	data->clsPhysicalSites.reserve(library.clsLefSiteDscps.size());
 	for (const LefSiteDscp & lefSite : library.clsLefSiteDscps) {
@@ -68,41 +69,41 @@ inline void PhysicalDesign::loadLibrary(const LefDscp & library) {
 	} // end for 
 
 	// initializing physical cells (LEF macros)
-	for (const LefMacroDscp & macro :  library.clsLefMacroDscps) {
+	for (const LefMacroDscp & macro : library.clsLefMacroDscps) {
 		// Adding Physical Library cell to Physical Layer
 		Rsyn::LibraryCell libCell = addPhysicalLibraryCell(macro);
-		
+
 		// Adding Physical Library pins to Physical Layer
 		for (const LefPinDscp &lpin : macro.clsPins) {
 			addPhysicalLibraryPin(libCell, lpin);
 		} // end for	
 	} // end for
-	
+
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline void PhysicalDesign::loadDesign(const DefDscp & design) {
-	if(data->clsLoadDesign){
-		std::cout<<"WARNING: Design was already loaded. Skipping ... \n";
+	if (data->clsLoadDesign) {
+		std::cout << "WARNING: Design was already loaded. Skipping ... \n";
 		return;
 	} // end if
 	data->clsLoadDesign = true;
-	
+
 	// Adding Library cell to Physical Layer
 	data->clsDBUs[DESIGN_DBU] = design.clsDatabaseUnits;
 	data->clsPhysicalDie.clsBounds = design.clsDieBounds;
 
-	if(getDatabaseUnits(LIBRARY_DBU) % getDatabaseUnits(DESIGN_DBU) != 0){
-		std::cout<<"ERROR: Invalid DEF database units "<<getDatabaseUnits(DESIGN_DBU)<<" (LEF database units: "<<getDatabaseUnits(LIBRARY_DBU)<<").\n";
-		std::cout<<"DEF design units should be lower or equal to LEF design units and must have a integer multiple. Physical design was not initialized!\n";
+	if (getDatabaseUnits(LIBRARY_DBU) % getDatabaseUnits(DESIGN_DBU) != 0) {
+		std::cout << "ERROR: Invalid DEF database units " << getDatabaseUnits(DESIGN_DBU) << " (LEF database units: " << getDatabaseUnits(LIBRARY_DBU) << ").\n";
+		std::cout << "DEF design units should be lower or equal to LEF design units and must have a integer multiple. Physical design was not initialized!\n";
 		return;
 	} // end if 
-	
+
 	// This operation always results in a integer number factor. 
 	// LEF/DEF specifications prohibit the division that results in a real number factor.
 	data->clsDBUs[MULT_FACTOR_DBU] = getDatabaseUnits(LIBRARY_DBU) / getDatabaseUnits(DESIGN_DBU);
-	
+
 	// initializing physical cells (DEF Components)
 	for (const DefComponentDscp & component : design.clsComps) {
 		// Adding Physical cell to Physical Layer
@@ -132,7 +133,17 @@ inline void PhysicalDesign::loadDesign(const DefDscp & design) {
 	for (const DefRowDscp & defRow : design.clsRows) {
 		addPhysicalRow(defRow);
 	} // end for 
-	
+
+	data->clsMapPhysicalRegions.reserve(design.clsRegions.size());
+	data->clsPhysicalRegions.reserve(design.clsRegions.size());
+	for (const DefRegionDscp & defRegion : design.clsRegions)
+		addPhysicalRegion(defRegion);
+
+	data->clsMapPhysicalGroups.reserve(design.clsGroups.size());
+	data->clsPhysicalGroups.reserve(design.clsGroups.size());
+	for (const DefGroupDscp & defGroup : design.clsGroups)
+		addPhysicalGroup(defGroup);
+
 	// only to keep coherence in the design;
 	data->clsNumElements[PHYSICAL_PORT] = data->clsDesign.getNumInstances(Rsyn::PORT);
 } // end method 
@@ -145,19 +156,19 @@ inline void PhysicalDesign::initPhysicalDesign(Rsyn::Design dsg, const Json &par
 		return;
 	} // end if
 	this->data = new PhysicalDesignData();
-	
+
 	if (!params.is_null()) {
 		data->clsEnablePhysicalPins = params.value("clsEnablePhysicalPins", data->clsEnablePhysicalPins);
 		data->clsEnableMergeRectangles = params.value("clsEnableMergeRectangles", data->clsEnableMergeRectangles);
 		data->clsEnableNetPinBoundaries = params.value("clsEnableNetPinBoundaries", data->clsEnableNetPinBoundaries);
 	} // end if 
-	
+
 	data->clsDesign = dsg;
 	data->clsModule = dsg.getTopModule();
 	data->clsPhysicalInstances = dsg.createAttribute();
 	data->clsPhysicalLibraryCells = dsg.createAttribute();
 	data->clsPhysicalLibraryPins = dsg.createAttribute();
-	if(data->clsEnablePhysicalPins)
+	if (data->clsEnablePhysicalPins)
 		data->clsPhysicalPins = dsg.createAttribute();
 	data->clsPhysicalNets = dsg.createAttribute();
 } // end method 
@@ -189,9 +200,9 @@ inline void PhysicalDesign::updateAllNetBounds(const bool skipClockNet) {
 
 inline void PhysicalDesign::updateNetBound(Rsyn::Net net) {
 	// net has not pins. The boundaries are defined by default to 0.
-	if(net.getNumPins() == 0)
+	if (net.getNumPins() == 0)
 		return;
-	
+
 	PhysicalNetData &phNet = data->clsPhysicalNets[net];
 	Bounds &bound = phNet.clsBounds;
 	data->clsHPWL -= bound.computeLength(); // remove old net wirelength
@@ -204,28 +215,28 @@ inline void PhysicalDesign::updateNetBound(Rsyn::Net net) {
 		// upper x corner pos
 		if (pos[X] >= bound[UPPER][X]) {
 			bound[UPPER][X] = pos[X];
-			if(updatePinBound)
+			if (updatePinBound)
 				phNet.clsBoundPins[UPPER][X] = pin;
 		} // end if 
 
 		// lower x corner pos 
 		if (pos[X] <= bound[LOWER][X]) {
 			bound[LOWER][X] = pos[X];
-			if(updatePinBound)
+			if (updatePinBound)
 				phNet.clsBoundPins[LOWER][X] = pin;
 		} // end if 
 
 		// upper y corner pos 
 		if (pos[Y] >= bound[UPPER][Y]) {
 			bound[UPPER][Y] = pos[Y];
-			if(updatePinBound)
+			if (updatePinBound)
 				phNet.clsBoundPins[UPPER][Y] = pin;
 		} // end if 
 
 		// lower y corner pos 
 		if (pos[Y] <= bound[LOWER][Y]) {
 			bound[LOWER][Y] = pos[Y];
-			if(updatePinBound)
+			if (updatePinBound)
 				phNet.clsBoundPins[LOWER][Y] = pin;
 		} // end if 
 	} // end for
@@ -249,48 +260,6 @@ inline DBUxy PhysicalDesign::getHPWL() const {
 inline DBU PhysicalDesign::getHPWL(const Dimension dim) const {
 	return data->clsHPWL[dim];
 }// end method
-
-// -----------------------------------------------------------------------------
-
-//inline DBUxy PhysicalDesign::getDieCoordinate(const Boundary bound) const {
-//	return data->clsDieBounds[bound];
-//} // end method 
-//
-//// -----------------------------------------------------------------------------
-//
-//inline DBU PhysicalDesign::getDieCoordinate(const Boundary bound, const Dimension dim) const {
-//	return data->clsDieBounds[bound][dim];
-//} // end method 
-//
-//// -----------------------------------------------------------------------------
-//
-//inline const Bounds & PhysicalDesign::getDieBounds() const {
-//	return data->clsDieBounds;
-//} // end method 
-//
-//// -----------------------------------------------------------------------------
-//
-//inline DBU PhysicalDesign::getDieLength(const Dimension dim) const {
-//	return data->clsDieBounds.computeLength(dim);
-//} // end method 
-//
-//// -----------------------------------------------------------------------------
-//
-//inline DBUxy PhysicalDesign::getDiePosition(const Boundary boundary) const {
-//	return data->clsDieBounds[boundary];
-//} // end method 
-//
-//// -----------------------------------------------------------------------------
-//
-//inline DBUxy PhysicalDesign::getDieCenterPosition() const {
-//	return data->clsDieBounds.computeCenter();
-//} // end method 
-//
-//// -----------------------------------------------------------------------------
-//
-//inline DBU PhysicalDesign::getDieArea() const {
-//	return data->clsDieBounds.computeArea();
-//} // end method 
 
 // -----------------------------------------------------------------------------
 
@@ -325,13 +294,14 @@ inline bool PhysicalDesign::isEnableNetPinBoundaries() const {
 // -----------------------------------------------------------------------------
 
 // Adding the new Site parameter to PhysicalDesign data structure.
+
 inline void PhysicalDesign::addPhysicalSite(const LefSiteDscp & site) {
 	std::unordered_map<std::string, int>::iterator it = data->clsMapPhysicalSites.find(site.clsName);
 	if (it != data->clsMapPhysicalSites.end()) {
 		std::cout << "WARNING: Site " << site.clsName << " was already defined. Skipping ...\n";
 		return;
 	} // end if 
-	
+
 	// Adding new lib site
 	data->clsPhysicalSites.push_back(PhysicalSite(new PhysicalSiteData()));
 	PhysicalSite phSite = data->clsPhysicalSites.back();
@@ -346,7 +316,7 @@ inline void PhysicalDesign::addPhysicalSite(const LefSiteDscp & site) {
 
 inline void PhysicalDesign::addPhysicalLayer(const LefLayerDscp& layer) {
 	std::unordered_map<std::string, int>::iterator it = data->clsMapPhysicalLayers.find(layer.clsName);
-	if(it != data->clsMapPhysicalLayers.end()){
+	if (it != data->clsMapPhysicalLayers.end()) {
 		std::cout << "WARNING: Layer " << layer.clsName << " was already defined. Skipping ...\n";
 		return;
 	} // end if 
@@ -357,9 +327,9 @@ inline void PhysicalDesign::addPhysicalLayer(const LefLayerDscp& layer) {
 	phLayer->clsName = layer.clsName;
 	phLayer->clsDirection = Rsyn::getPhysicalLayerDirection(layer.clsDirection);
 	phLayer->clsType = Rsyn::getPhysicalLayerType(layer.clsType);
-	phLayer->clsPitch = static_cast<DBU>(layer.clsPitch * getDatabaseUnits(LIBRARY_DBU));
-	phLayer->clsSpacing = static_cast<DBU>(layer.clsSpacing * getDatabaseUnits(LIBRARY_DBU));
-	phLayer->clsWidth = static_cast<DBU>(layer.clsWidth * getDatabaseUnits(LIBRARY_DBU));
+	phLayer->clsPitch = static_cast<DBU> (layer.clsPitch * getDatabaseUnits(LIBRARY_DBU));
+	phLayer->clsSpacing = static_cast<DBU> (layer.clsSpacing * getDatabaseUnits(LIBRARY_DBU));
+	phLayer->clsWidth = static_cast<DBU> (layer.clsWidth * getDatabaseUnits(LIBRARY_DBU));
 	data->clsMapPhysicalLayers[layer.clsName] = phLayer->id;
 	data->clsNumLayers[phLayer->clsType]++;
 } // end method 
@@ -436,7 +406,7 @@ inline void PhysicalDesign::addPhysicalLibraryPin(Rsyn::LibraryCell libCell, con
 			phyPin.clsLayerBound[UPPER] = DBUxy(std::numeric_limits<DBU>::min(), std::numeric_limits<DBU>::min());
 			for (const DoubleRectangle &r : lefPort.clsBounds) {
 				Bounds rect = r.scaleAndConvertToDbu(getDatabaseUnits(LIBRARY_DBU));
-				
+
 				phPinLayer->clsBounds.push_back(rect);
 				phyPin.clsLayerBound[LOWER][X] = std::min(phyPin.clsLayerBound[LOWER][X], rect[LOWER][X]);
 				phyPin.clsLayerBound[LOWER][Y] = std::min(phyPin.clsLayerBound[LOWER][Y], rect[LOWER][Y]);
@@ -558,26 +528,50 @@ inline void PhysicalDesign::addPhysicalRow(const DefRowDscp& defRow) {
 
 // -----------------------------------------------------------------------------
 
+inline void PhysicalDesign::addPhysicalRegion(const DefRegionDscp& defRegion) {
+	data->clsPhysicalRegions.push_back(PhysicalRegion(new PhysicalRegionData()));
+	Rsyn::PhysicalRegion phRegion = data->clsPhysicalRegions.back();
+	phRegion->id = data->clsPhysicalRegions.size() - 1;
+	phRegion->clsName = defRegion.clsName;
+	phRegion->clsType = Rsyn::getPhysicalRegionType(defRegion.clsType);
+	phRegion->clsBounds = defRegion.clsBounds;
+	data->clsMapPhysicalRegions[defRegion.clsName] = phRegion->id;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline void PhysicalDesign::addPhysicalGroup(const DefGroupDscp& defGroup) {
+	data->clsPhysicalGroups.push_back(PhysicalGroup(new PhysicalGroupData()));
+	Rsyn::PhysicalGroup phGroup = data->clsPhysicalGroups.back();
+	phGroup->id = data->clsPhysicalGroups.size() - 1;
+	phGroup->clsName = defGroup.clsName;
+	phGroup->clsPatterns = defGroup.clsPatterns;
+	phGroup->clsRegion = getPhysicalRegionByName(defGroup.clsRegion);
+	data->clsMapPhysicalGroups[defGroup.clsName] = phGroup->id;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
 inline void PhysicalDesign::addPhysicalSpacing(const LefSpacingDscp & spacing) {
 	Element<PhysicalSpacingData> *element = data->clsPhysicalSpacing.create();
-	Rsyn::PhysicalSpacingData * phSpacing = &(element->value);	
+	Rsyn::PhysicalSpacingData * phSpacing = &(element->value);
 	phSpacing->id = data->clsPhysicalSpacing.lastId();
 	phSpacing->clsLayer1 = getPhysicalLayerByName(spacing.clsLayer1);
 	phSpacing->clsLayer2 = getPhysicalLayerByName(spacing.clsLayer2);
-	phSpacing->clsDistance = static_cast<DBU>(spacing.clsDistance * getDatabaseUnits(LIBRARY_DBU));
+	phSpacing->clsDistance = static_cast<DBU> (spacing.clsDistance * getDatabaseUnits(LIBRARY_DBU));
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline void PhysicalDesign::addPhysicalPin() {
-	std::cout<<"TODO "<<__func__<<"\n";
+	std::cout << "TODO " << __func__ << "\n";
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalLayer PhysicalDesign::getPhysicalLayerByName(const std::string & layerName) {
 	std::unordered_map<std::string, int>::iterator element = data->clsMapPhysicalLayers.find(layerName);
-	if(element == data->clsMapPhysicalLayers.end())
+	if (element == data->clsMapPhysicalLayers.end())
 		return nullptr;
 	const int id = element->second;
 	Element<PhysicalLayerData> * phLayerDataElement = data->clsPhysicalLayers.get(id);
@@ -586,9 +580,27 @@ inline Rsyn::PhysicalLayer PhysicalDesign::getPhysicalLayerByName(const std::str
 
 // -----------------------------------------------------------------------------
 
-inline Rsyn::PhysicalSite PhysicalDesign::getPhysicalSiteByName(std::string siteName) {
+inline Rsyn::PhysicalSite PhysicalDesign::getPhysicalSiteByName(const std::string & siteName) {
 	std::unordered_map<std::string, int>::iterator it = data->clsMapPhysicalSites.find(siteName);
 	return it != data->clsMapPhysicalSites.end() ? data->clsPhysicalSites[it->second] : nullptr;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline Rsyn::PhysicalRegion PhysicalDesign::getPhysicalRegionByName(const std::string &siteName) {
+	std::unordered_map<std::string, std::size_t>::iterator it = data->clsMapPhysicalRegions.find(siteName);
+	if (it == data->clsMapPhysicalRegions.end())
+		return nullptr;
+	return data->clsPhysicalRegions[it->second];
+} // end method 
+
+// -----------------------------------------------------------------------------	
+
+inline Rsyn::PhysicalGroup PhysicalDesign::getPhysicalGroupByName(const std::string &siteName) {
+	std::unordered_map<std::string, std::size_t>::iterator it = data->clsMapPhysicalGroups.find(siteName);
+	if (it == data->clsMapPhysicalGroups.end())
+		return nullptr;
+	return data->clsPhysicalGroups[it->second];
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -614,7 +626,31 @@ inline std::size_t PhysicalDesign::getNumPhysicalSpacing() const {
 
 inline Range<ListCollection<PhysicalSpacingData, PhysicalSpacing>>
 PhysicalDesign::allPhysicalSpacing() const {
-	return  ListCollection<PhysicalSpacingData, PhysicalSpacing>(data->clsPhysicalSpacing);
+	return ListCollection<PhysicalSpacingData, PhysicalSpacing>(data->clsPhysicalSpacing);
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline std::size_t PhysicalDesign::getNumPhysicalRegions() const {
+	return data->clsPhysicalRegions.size();
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline std::vector<PhysicalRegion> & PhysicalDesign::allPhysicalRegions() const {
+	return data->clsPhysicalRegions;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline std::size_t PhysicalDesign::getNumPhysicalGroups() const {
+	return data->clsPhysicalGroups.size();
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline std::vector<PhysicalGroup> & PhysicalDesign::allPhysicalGroups() const {
+	return data->clsPhysicalGroups;
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -720,7 +756,7 @@ inline Rsyn::PhysicalModule PhysicalDesign::getPhysicalModule(Rsyn::Module modul
 inline int PhysicalDesign::getNumMovedCells() const {
 	int count = 0;
 	for (Rsyn::Instance instance : data->clsModule.allInstances()) {
-		if(instance.getType() != Rsyn::CELL)
+		if (instance.getType() != Rsyn::CELL)
 			continue;
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
 		Rsyn::PhysicalCell phCell = getPhysicalCell(cell);
@@ -786,14 +822,14 @@ inline void PhysicalDesign::removePhysicalCell(Rsyn::Cell cell) {
 
 // -----------------------------------------------------------------------------
 
-inline Rsyn::PhysicalDie PhysicalDesign::getPhysicalDie()  const {
+inline Rsyn::PhysicalDie PhysicalDesign::getPhysicalDie() const {
 	return PhysicalDie(&data->clsPhysicalDie);
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalPin PhysicalDesign::getPhysicalPin(Rsyn::Pin pin) const {
-	if(!data->clsEnablePhysicalPins)
+	if (!data->clsEnablePhysicalPins)
 		return nullptr;
 	return PhysicalPin(&data->clsPhysicalPins[pin]);
 } // end method 
@@ -802,7 +838,7 @@ inline Rsyn::PhysicalPin PhysicalDesign::getPhysicalPin(Rsyn::Pin pin) const {
 
 inline DBUxy PhysicalDesign::getPinDisplacement(Rsyn::Pin pin) const {
 	Rsyn::Instance inst = pin.getInstance();
-	if(inst.getType() == Rsyn::CELL){
+	if (inst.getType() == Rsyn::CELL) {
 		Rsyn::LibraryPin libPin = pin.getLibraryPin();
 		DBUxy displacement = data->clsPhysicalLibraryPins[libPin].clsLayerBound.computeCenter();
 		return displacement;
@@ -963,6 +999,8 @@ inline PhysicalIndex PhysicalDesign::getId(Rsyn::PhysicalSpacing spacing) const 
 	return spacing->id;
 } // end method
 
+// -----------------------------------------------------------------------------
+
 ////////////////////////////////////////////////////////////////////////////////
 // Misc
 ////////////////////////////////////////////////////////////////////////////////
@@ -991,7 +1029,7 @@ inline void PhysicalDesign::placeCell(Rsyn::PhysicalCell physicalCell, const DBU
 	const double preivousY = physicalCell.getCoordinate(LOWER, Y);
 
 	physicalCell->clsBounds.moveTo(x, y);
-	
+
 	// Only notify observers if the instance actually moved. We noted that many
 	// times the cell end up in the exactly same position.
 	if (!dontNotifyObservers) {
@@ -1026,7 +1064,7 @@ inline void PhysicalDesign::placeCell(Rsyn::Cell cell, const DBUxy pos, const bo
 inline void PhysicalDesign::notifyObservers(Rsyn::PhysicalInstance instance) {
 	// Notify observers...
 	for (auto &f : data->callbackPostInstanceMoved)
-		std::get<1>(f)(instance);
+		std::get<1>(f) (instance);
 } // end method	
 
 // -----------------------------------------------------------------------------
@@ -1034,7 +1072,7 @@ inline void PhysicalDesign::notifyObservers(Rsyn::PhysicalInstance instance) {
 inline void PhysicalDesign::notifyObservers(Rsyn::PhysicalInstance instance, const PostInstanceMovedCallbackHandler &ignoreObserver) {
 	// Notify observers...
 	for (PostInstanceMovedCallbackHandler it = data->callbackPostInstanceMoved.begin();
-			it != data->callbackPostInstanceMoved.end(); it++) {
+		it != data->callbackPostInstanceMoved.end(); it++) {
 		if (it != ignoreObserver) {
 			std::get<1>(*it)(instance);
 		} // end if

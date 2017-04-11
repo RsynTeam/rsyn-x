@@ -25,6 +25,7 @@
 #include "rsyn/io/reader/BookshelfReader.h"
 #include "rsyn/io/reader/DesignPositionReader.h"
 #include "rsyn/io/reader/ICCAD15Reader.h"
+#include "rsyn/io/reader/ICCAD17Reader.h"
 #include "rsyn/io/reader/ISPD2012Reader.h"
 #include "rsyn/io/reader/ISPD2014Reader.h"
 
@@ -36,6 +37,7 @@ namespace Rsyn {
 void Engine::registerReaders() {
 	//ICCAD 2015 contest 
 	registerReader<Rsyn::ICCAD15Reader>("rsyn.iccad2015");
+	registerReader<Rsyn::ICCAD17Reader>("rsyn.iccad2017");
 	registerReader<Rsyn::BookshelfReader>("bookshelf");
 	registerReader<Rsyn::ISPD2014Reader>("ispd14");
 	registerReader<Rsyn::ISPD2012Reader>("ispd12");

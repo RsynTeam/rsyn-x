@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -31,22 +31,15 @@
 
 namespace Rsyn {
 
-class PhysicalLayerData  : public PhysicalObject  {
+class PhysicalLayerData : public PhysicalObject {
 public:
-	DBU clsPitch;
-	DBU clsWidth;
-	DBU clsSpacing;
-	Rsyn::PhysicalLayerType clsType;
-	Rsyn::PhysicalLayerDirection clsDirection;
-	std::string clsName;
-	PhysicalLayerData() {
-		clsPitch = 0;
-		clsWidth = 0;
-		clsSpacing = 0;
-		clsType = INVALID_PHY_LAYER_TYPE;
-		clsDirection = INVALID_PHY_LAYER_DIRECTION;
-		clsName = Rsyn::getPhysicalInvalidName();
-	}
+	DBU clsPitch = 0;
+	DBU clsWidth = 0;
+	DBU clsSpacing = 0;
+	Rsyn::PhysicalLayerType clsType = INVALID_PHY_LAYER_TYPE;
+	Rsyn::PhysicalLayerDirection clsDirection = INVALID_PHY_LAYER_DIRECTION;
+	std::string clsName = Rsyn::getPhysicalInvalidName();
+	PhysicalLayerData() = default;
 }; // end class 
 
 } // end namespace 

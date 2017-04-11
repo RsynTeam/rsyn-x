@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 
 
 #ifndef PHYSICALDESIGN_PHYSICALUTIL_H
@@ -61,22 +61,28 @@ std::string getPhysicalSymmetry(const Rsyn::PhysicalSymmetry rowSymmetry);
 Rsyn::PhysicalSiteClass getPhysicalSiteClass(const std::string & siteClass);
 
 //! Converts Site Class from enum to string, respectively.
-std::string getPhysicalSiteClass( const Rsyn::PhysicalSiteClass siteClass);
+std::string getPhysicalSiteClass(const Rsyn::PhysicalSiteClass siteClass);
 
 //! Converts Pin Direction from string to enum, respectively.
-Rsyn::PhysicalPinDirection getPhysicalPinDirection ( const std::string &direction);
+Rsyn::PhysicalPinDirection getPhysicalPinDirection(const std::string &direction);
 
 //! Converts Pin Direction from enum to string, respectively.
-std::string getPhysicalPinDirection (const Rsyn::PhysicalPinDirection pinDirection);
+std::string getPhysicalPinDirection(const Rsyn::PhysicalPinDirection pinDirection);
 
 //! Converts Pin Port Class from string to enum, respectively.
-Rsyn::PhysicalPinPortClass getPhysicalPinPortClass ( const std::string & portClass);
+Rsyn::PhysicalPinPortClass getPhysicalPinPortClass(const std::string & portClass);
 
 //! Converts Pin Port Class from enum to string, respectively.
-std::string getPhysicalPinPortClass (const Rsyn::PhysicalPinPortClass portClass);
+std::string getPhysicalPinPortClass(const Rsyn::PhysicalPinPortClass portClass);
+
+//! Converts Region type from string to enum, respectively.
+Rsyn::RegionType getPhysicalRegionType(const std::string & type);
+
+//! Converts Region type from enum to string, respectively.
+std::string getPhysicalRegionType(const Rsyn::RegionType type);
 
 //! Returns a prefix key word to generated names.
-std::string getPhysicalGeneratedNamePrefix() ;
+std::string getPhysicalGeneratedNamePrefix();
 
 //! Returns a prefix key word to invalid prefix.
 std::string getPhysicalInvalidPrefix();
@@ -99,57 +105,73 @@ std::string getPhysicalNullName();
 // -----------------------------------------------------------------------------
 
 //! Overloads operator << to Symmetry.
+
 inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalSymmetry symmetry) {
-    return out << getPhysicalSymmetry(symmetry);
+	return out << getPhysicalSymmetry(symmetry);
 } // end operator overloading 
 
 // -----------------------------------------------------------------------------
 
 //! Overloads operator << to Layer type.
+
 inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalLayerType layerType) {
-    return out << getPhysicalLayerType(layerType);
+	return out << getPhysicalLayerType(layerType);
 } // end operator overloading 
 
 // -----------------------------------------------------------------------------
 
 //! Overloads operator << to Layer Direction.
+
 inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalLayerDirection direction) {
-    return out << getPhysicalLayerDirection(direction);
+	return out << getPhysicalLayerDirection(direction);
 } // end operator overloading 
 
 // -----------------------------------------------------------------------------
 
 //! Overloads operator << to Orientation.
+
 inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalOrientation orientation) {
-    return out << getPhysicalOrientation(orientation);
+	return out << getPhysicalOrientation(orientation);
 } // end operator overloading 
 
 // -----------------------------------------------------------------------------
 
 //! Overloads operator << to Macro Class.
+
 inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalMacroClass macroClass) {
-    return out << getPhysicalMacroClass(macroClass);
+	return out << getPhysicalMacroClass(macroClass);
 } // end operator overloading 
 
 // -----------------------------------------------------------------------------
 
 //! Overloads operator << to Site Class.
+
 inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalSiteClass siteClass) {
-    return out << getPhysicalSiteClass(siteClass);
+	return out << getPhysicalSiteClass(siteClass);
 } // end operator overloading 
 
 // -----------------------------------------------------------------------------
 
 //! Overloads operator << to Pin Direction.
+
 inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalPinDirection pinDirection) {
-    return out << getPhysicalPinDirection(pinDirection);
+	return out << getPhysicalPinDirection(pinDirection);
 } // end operator overloading 
 
 // -----------------------------------------------------------------------------
 
 //! Overloads operator << to Pin Port Class.
+
 inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalPinPortClass pinPortClass) {
-    return out << getPhysicalPinPortClass(pinPortClass);
+	return out << getPhysicalPinPortClass(pinPortClass);
+} // end operator overloading 
+
+// -----------------------------------------------------------------------------
+
+//! Overloads operator << to Region type.
+
+inline std::ostream& operator<<(std::ostream& out, const Rsyn::RegionType type) {
+	return out << getPhysicalRegionType(type);
 } // end operator overloading 
 
 // -----------------------------------------------------------------------------

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -29,22 +29,17 @@
 #ifndef PHYSICALDESIGN_PHYSICALLIBRARYCELLDATA_H
 #define PHYSICALDESIGN_PHYSICALLIBRARYCELLDATA_H
 
-#include "PhysicalInstanceData.h"
-
-
 namespace Rsyn {
+
 class PhysicalLibraryCellData {
 public:
-	PhysicalMacroClass clsMacroClass;
-	PhysicalSite clsMacroSite;
+	PhysicalMacroClass clsMacroClass = MACRO_INVALID_CLASS;
+	PhysicalSite clsMacroSite ;
 	DBUxy clsSize;
-	int clsLayerBoundIndex; // The cell bound is defined by one of the layers.
+	int clsLayerBoundIndex = -1; // The cell bound is defined by one of the layers.
 	std::vector< Rsyn::PhysicalObstacle > clsObs;
 
-	PhysicalLibraryCellData() {
-		clsMacroClass = MACRO_INVALID_CLASS;
-		clsLayerBoundIndex = -1;
-	} // end constructor  
+	PhysicalLibraryCellData() = default;
 
 }; // end class 
 

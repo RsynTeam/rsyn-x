@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -29,14 +29,14 @@
 #ifndef PHYSICALDESIGN_PHYSICALSPACINGDATA_H
 #define PHYSICALDESIGN_PHYSICALSPACINGDATA_H
 
-namespace Rsyn { 
+namespace Rsyn {
 
 class PhysicalSpacingData : public PhysicalObject {
 public:
 	PhysicalLayer clsLayer1;
 	PhysicalLayer clsLayer2;
 	DBU clsDistance = 0;
-	PhysicalSpacingData()=default;
+	PhysicalSpacingData() = default;
 }; // end class 
 
 } // end namespace 

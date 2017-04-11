@@ -74,6 +74,12 @@ int defOrient(std::string orient);
 int defDieArea( defrCallbackType_e typ, defiBox* box, defiUserData ud);
 int defTrack (defrCallbackType_e typ, defiTrack * track, defiUserData data);
 int defGCellGrid(defrCallbackType_e typ, defiGcellGrid * gCell, defiUserData data);
+int defRegion(defrCallbackType_e type, defiRegion* region, defiUserData ud);
+int defRegionStart(defrCallbackType_e c, int num, defiUserData ud);
+int defGroupStart(defrCallbackType_e c, int num, defiUserData ud);
+int defGroupMember (defrCallbackType_e type, const char* name, defiUserData userData);
+int defGroupName(defrCallbackType_e type, const char* name, defiUserData ud);
+int defGroups(defrCallbackType_e type, defiGroup *group, defiUserData ud);
 
 DefDscp &getDesignFromUserData(defiUserData userData) {
 	return *((DefDscp *) userData);
@@ -99,11 +105,17 @@ void DEFControlParser::parseDEF(const std::string &filename, DefDscp &defDscp) {
 	defrSetMallocFunction(mallocCB);
 	defrSetReallocFunction(reallocCB);
 	defrSetFreeFunction(freeCB);
-//	defrSetNetStartCbk(defNetStart);
-	//defrSetNetCbk(defNetf);
-	//defrSetTrackCbk(defTrack);
+	defrSetNetStartCbk(defNetStart);
+	defrSetNetCbk(defNetf);
+	defrSetGroupsStartCbk(defGroupStart);
+	defrSetGroupNameCbk(defGroupName);
+	defrSetGroupMemberCbk(defGroupMember);
+	defrSetGroupCbk(defGroups);
+//	defrSetTrackCbk(defTrack);
 //	defrSetGcellGridCbk(defGCellGrid);
-
+	defrSetRegionStartCbk(defRegionStart);
+	defrSetRegionCbk(defRegion);
+	
 	//defrSetGcellGridWarnings(3);
 
 	FILE * f;
@@ -235,13 +247,8 @@ int defComponentStart(defrCallbackType_e c, int num, defiUserData ud) {
 // -----------------------------------------------------------------------------
 
 int defNetStart(defrCallbackType_e c, int num, defiUserData ud) {
-//	Design &design = getDesignFromUserData(ud); unused variable
-	
-	//  ----------------------------------------------------------------------------
-	//  [NOTE] Netlist is read from verilog file.
-	//  ----------------------------------------------------------------------------
-	//	design.nets.reserve(num);
-	//  ----------------------------------------------------------------------------
+	DefDscp & defDscp = getDesignFromUserData(ud);
+	defDscp.clsNets.reserve(num);
 	return 0;
 } // end method
 
@@ -256,22 +263,16 @@ int defDesignName(defrCallbackType_e c, const char* string, defiUserData ud) {
 // -----------------------------------------------------------------------------
 
 int defNetf(defrCallbackType_e c, defiNet* net, defiUserData ud) {
-	// Design &design = getDesignFromUserData(ud); unused variable
-
-	//  ----------------------------------------------------------------------------
-	//  [NOTE] Netlist is read from verilog file.
-	//  ----------------------------------------------------------------------------
-	//	Design::Net designNet;
-	//	designNet.name = net->name();	
-	//	designNet.connections.resize(net->numConnections());
-	//	for (int i = 0; i < net->numConnections(); i++) {	
-	//		Design::Connection &connection = designNet.connections[i];
-	//		connection.pin = net->pin(i);
-	//		connection.instance = net->instance(i);
-	//	} // end for
-	//	
-	//	design.nets.push_back(designNet);
-	//  ----------------------------------------------------------------------------
+	DefDscp & defDscp = getDesignFromUserData(ud);
+	defDscp.clsNets.push_back(DefNetDscp());
+	DefNetDscp & netDscp = defDscp.clsNets.back();
+	netDscp.clsName = net->name();
+	netDscp.clsConnections.resize(net->numConnections());
+	for (int i = 0; i < net->numConnections(); i++) {
+		DefNetConnection &connection = netDscp.clsConnections[i];
+		connection.clsPinName = net->pin(i);
+		connection.clsComponentName = net->instance(i);
+	} // end for
 
 	return 0;
 } // end method
@@ -361,8 +362,8 @@ int defTrack (defrCallbackType_e typ, defiTrack * track, defiUserData data) {
 
 int defGCellGrid(defrCallbackType_e typ, defiGcellGrid * gCell, defiUserData data) {
 	//Design &design = getDesignFromUserData(data);
-	cout<<"callback\n";
-	cout<<gCell->macro()<<"\n";
+	//cout<<"callback\n";
+	//cout<<gCell->macro()<<"\n";
 	/*Design::GCellGrid designGCellGrid;
 	designGCellGrid.master = gCell->macro();
 	designGCellGrid.doStart = gCell->x();
@@ -377,6 +378,71 @@ int defGCellGrid(defrCallbackType_e typ, defiGcellGrid * gCell, defiUserData dat
 	// cout<<" # "<<designGCellGrid.master <<  " " <<designGCellGrid.doStart <<" "<< designGCellGrid.doCount<<
 	//	 " " << designGCellGrid.doStep<<"\n";
 
+	return 0;
+} // end method 
+
+
+// -----------------------------------------------------------------------------
+
+int defRegionStart(defrCallbackType_e c, int num, defiUserData ud) {
+	DefDscp & defDscp = getDesignFromUserData(ud);
+	defDscp.clsRegions.reserve(num);
+	return 0;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+int defRegion(defrCallbackType_e type, defiRegion* region, defiUserData ud) {
+	DefDscp & defDscp = getDesignFromUserData(ud);
+	defDscp.clsRegions.push_back(DefRegionDscp());
+	DefRegionDscp & regionDscp = defDscp.clsRegions.back();
+	regionDscp.clsName = region->name();
+	regionDscp.clsType = region->type();
+	regionDscp.clsBounds.resize(region->numRectangles());
+	
+	for (int i = 0; i < region->numRectangles(); i++) {
+		Bounds & bounds = regionDscp.clsBounds[i];
+		bounds[LOWER][X] = region->xl(i);
+		bounds[LOWER][Y] = region->yl(i);
+		bounds[UPPER][X] = region->xh(i);
+		bounds[UPPER][Y] = region->yh(i);
+	}
+	return 0;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+int defGroupStart(defrCallbackType_e c, int num, defiUserData ud) {
+	DefDscp & defDscp = getDesignFromUserData(ud);
+	defDscp.clsGroups.reserve(num);
+	return 0;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+int defGroupName(defrCallbackType_e type, const char* name, defiUserData ud) {
+	DefDscp & defDscp = getDesignFromUserData(ud);
+	defDscp.clsGroups.push_back(DefGroupDscp());
+	DefGroupDscp & defGroup = defDscp.clsGroups.back();
+	defGroup.clsName = name;
+	return 0;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+int defGroupMember (defrCallbackType_e type, const char* name, defiUserData ud) {
+	DefDscp & defDscp = getDesignFromUserData(ud);
+	DefGroupDscp & defGroup = defDscp.clsGroups.back();
+	defGroup.clsPatterns.push_back(name);
+	return 0;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+int defGroups(defrCallbackType_e type, defiGroup *group, defiUserData ud) {
+	DefDscp & defDscp = getDesignFromUserData(ud);
+	DefGroupDscp & defGroup = defDscp.clsGroups.back();
+	defGroup.clsRegion = group->regionName();
 	return 0;
 } // end method 
 

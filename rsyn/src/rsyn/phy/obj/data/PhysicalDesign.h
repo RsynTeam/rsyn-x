@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -29,6 +29,7 @@
 #ifndef PHYSICALDESIGN_PHYSICALDESIGNDATA_H
 #define PHYSICALDESIGN_PHYSICALDESIGNDATA_H
 
+
 namespace Rsyn {
 
 class PhysicalDesignData : public PhysicalObject {
@@ -36,7 +37,7 @@ class PhysicalDesignData : public PhysicalObject {
 public:
 	Rsyn::Design clsDesign;
 	Rsyn::Module clsModule;
-	
+
 	std::list<std::function<void(Rsyn::Instance cell) >> callbackAddCreatePhysicalCell;
 	std::list<std::function<void(Rsyn::Instance cell) >> callbackOnPreCellRemoveEvent;
 	Rsyn::Attribute<Rsyn::LibraryPin, PhysicalLibraryPinData> clsPhysicalLibraryPins;
@@ -47,8 +48,12 @@ public:
 	Rsyn::List<PhysicalRowData> clsPhysicalRows;
 	Rsyn::List<PhysicalLayerData> clsPhysicalLayers;
 	Rsyn::List<PhysicalSpacingData> clsPhysicalSpacing;
+	std::vector<PhysicalRegion> clsPhysicalRegions;
+	std::vector<PhysicalGroup> clsPhysicalGroups;
 	std::vector<PhysicalSite> clsPhysicalSites;
 	std::unordered_map<std::string, int> clsMapPhysicalSites;
+	std::unordered_map<std::string, std::size_t> clsMapPhysicalRegions;
+	std::unordered_map<std::string, std::size_t> clsMapPhysicalGroups;
 
 	//From LEF file
 	std::unordered_map<std::string, int> clsMapPhysicalLayers;
@@ -59,36 +64,36 @@ public:
 	DBU clsTotalAreas[NUM_PHYSICAL_TYPES];
 	int clsNumElements[NUM_PHYSICAL_TYPES];
 	int clsNumLayers[NUM_PHY_LAYER];
-	
+
 	DBUxy clsHPWL;
 	DBU clsDBUs[NUM_DBU]; // LEF and DEF data base units resolution and DEF/LEF multiplier factor
-	
+
 	bool clsLoadDesign : 1;
 	bool clsEnablePhysicalPins : 1;
 	bool clsEnableMergeRectangles : 1;
 	bool clsEnableNetPinBoundaries : 1;
-	
+
 	Rsyn::Net clsClkNet;
-		
+
 	// Notifications
-	std::list<std::tuple<int, PhysicalDesign::PostInstanceMovedCallback>> 
+	std::list<std::tuple<int, PhysicalDesign::PostInstanceMovedCallback>>
 	callbackPostInstanceMoved;
 	// todo physicalRow notification
 
 	PhysicalDesignData() : clsClkNet(nullptr), clsDesign(nullptr), clsModule(nullptr) {
-		
+
 		clsLoadDesign = false;
 		clsEnablePhysicalPins = false;
-		clsEnableMergeRectangles = false ;
+		clsEnableMergeRectangles = false;
 		clsEnableNetPinBoundaries = false;
-		for(int index = 0; index < NUM_DBU; index++){
+		for (int index = 0; index < NUM_DBU; index++) {
 			clsDBUs[index] = 0;
 		} // end for 
-		for(int index = 0; index < NUM_PHYSICAL_TYPES; index++) {
+		for (int index = 0; index < NUM_PHYSICAL_TYPES; index++) {
 			clsTotalAreas[index] = 0.0;
 			clsNumElements[index] = 0;
 		} // end for  
-		for(int index = 0; index < NUM_PHY_LAYER; index++){
+		for (int index = 0; index < NUM_PHY_LAYER; index++) {
 			clsNumLayers[index] = 0;
 		}
 	} // end constructor 

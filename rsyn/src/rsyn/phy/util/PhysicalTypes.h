@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /* 
  * File:   PhysicalTypes.h
  * Author: jucemar
@@ -21,7 +21,10 @@
  */
 
 #ifndef PHYSICALDESIGN_PHYSICALTYPES_H
-#define	PHYSICALDESIGN_PHYSICALTYPES_H
+#define PHYSICALDESIGN_PHYSICALTYPES_H
+
+#include <cstdint>
+
 
 //! @file PhysicalTypes.h 
 //! @brief This file aggregates all Enum definitions for Rsyn::PhysicalDesign.
@@ -29,23 +32,25 @@
 namespace Rsyn {
 
 //! @brief Enum type associated to the Database Units of the LEF and DEF resolutions.
+
 enum DBUType : std::int8_t {
 	/*! \brief Only used for Rsyn internal control. */
 	INVALID_DBU = -1,
 	/*! \brief Database Units (DBU) defined on LEF technology Library. */
 	LIBRARY_DBU = 0,
 	/*! \brief Database Units (DBU) defined on DEF.  */
-	DESIGN_DBU = 1, 
+	DESIGN_DBU = 1,
 	/*! \brief LEF_DBU = DEF_DBU * DEF_MULT, e.g. 2000 = 1000 x 2. 
 	 * LEF/DEF rules allow only integer multiple between LEF and DEF DBU resolutions.*/
-	MULT_FACTOR_DBU = 2, 
+	MULT_FACTOR_DBU = 2,
 	/*! \brief Only used for Rsyn internal control.*/
-	NUM_DBU = 3 
+	NUM_DBU = 3
 }; // end enum 
 
 // -----------------------------------------------------------------------------
 
 //! @brief Enum type associated to the Rsyn::PhysicalInstance.
+
 enum PhysicalType : std::int8_t {
 	//! @brief Only used for Rsyn internal control.
 	INVALID_PHYSICAL_TYPE = -1,
@@ -68,6 +73,7 @@ enum PhysicalType : std::int8_t {
 // -----------------------------------------------------------------------------
 
 //! @brief Layer type. 
+
 enum PhysicalLayerType : std::int8_t {
 	/*! \brief Only used for Rsyn internal control.*/
 	INVALID_PHY_LAYER_TYPE = -1,
@@ -78,7 +84,7 @@ enum PhysicalLayerType : std::int8_t {
 	//! @brief Layer is defined as overlap type.
 	OVERLAP = 2,
 	//! @brief Layer is defined as master slice type . They are typically polysilicon. 
-	MASTERSLICE = 3, 
+	MASTERSLICE = 3,
 	//! @brief Layer is defined as implant type.
 	IMPLANT = 4,
 	/*! \brief Only used for Rsyn internal control.*/
@@ -86,6 +92,7 @@ enum PhysicalLayerType : std::int8_t {
 };
 
 //! @brief Layer direction. 
+
 enum PhysicalLayerDirection : std::int8_t {
 	/*! \brief Only used for Rsyn internal control.*/
 	INVALID_PHY_LAYER_DIRECTION = -1,
@@ -94,19 +101,20 @@ enum PhysicalLayerDirection : std::int8_t {
 	//! @brief Layer preference direction is defined as vertical.
 	VERTICAL = 1,
 	/*! \brief Only used for Rsyn internal control.*/
-	NUM_PHY_LAYER_DIRECTION = 2	
+	NUM_PHY_LAYER_DIRECTION = 2
 };
 
 // -----------------------------------------------------------------------------
 
 //! @brief Class types of the sites.
+
 enum PhysicalSiteClass : std::int8_t {
 	/*! \brief Only used for Rsyn internal control.*/
 	INVALID_SITECLASS = -1,
 	//! @brief The site is defined as PAD type. Sites are typically used in rows. 
 	PAD = 0,
 	//! @brief The site is defined as Core type. Sites are typically used in rows. 
-	CORE = 1 ,
+	CORE = 1,
 	/*! \brief Only used for Rsyn internal control.*/
 	NUM_PHY_SITECLASS = 2
 };
@@ -114,13 +122,14 @@ enum PhysicalSiteClass : std::int8_t {
 // -----------------------------------------------------------------------------
 
 //! @brief Pin direction
+
 enum PhysicalPinDirection : std::int8_t {
 	//! @brief Only used for Rsyn internal control.
 	PIN_INVALID_DIRECTION = -1,
 	//! @brief Pin direction is input. 
 	PIN_INPUT = 0,
 	//! @brief Pin direction is output. 
-	PIN_OUTPUT = 1, 
+	PIN_OUTPUT = 1,
 	//! @brief Only used for Rsyn internal control.
 	NUM_PHY_PIN_DIRECTION = 2
 };
@@ -128,6 +137,7 @@ enum PhysicalPinDirection : std::int8_t {
 // -----------------------------------------------------------------------------
 
 //! @brief  The class type of macros.
+
 enum PhysicalMacroClass : std::int8_t {
 	/*! \brief Only used for Rsyn internal control.*/
 	MACRO_INVALID_CLASS = -1,
@@ -150,6 +160,7 @@ enum PhysicalMacroClass : std::int8_t {
 // -----------------------------------------------------------------------------
 
 //! @brief The subtype of MACRO_BLOCK type from PhysicalMacroClass.
+
 enum PhysicalMacroBlockClass : std::int8_t {
 	/*! \brief Only used for Rsyn internal control.*/
 	MACRO_INVALID_BLOCK_CLASS = -1,
@@ -168,6 +179,7 @@ enum PhysicalMacroBlockClass : std::int8_t {
 //!        Rotate by 90deg clockwise to get E, S and W, flip to get FN, FE, 
 //!        FS and FW. (think of a dial).		
 //!        Source: http://vlsicad.ucsd.edu/GSRC/bookshelf/Slots/Placement/plFormats.html
+
 enum PhysicalOrientation : std::int8_t {
 	/*! \brief Only used for Rsyn internal control.*/
 	ORIENTATION_INVALID = -1,
@@ -200,6 +212,7 @@ enum PhysicalOrientation : std::int8_t {
 //!        rotations by 0, 90, 180 or 270 degrees.
 //!	   Source: http://vlsicad.ucsd.edu/GSRC/bookshelf/Slots/Fundamental/HGraph/
 //! @todo ROT90
+
 enum PhysicalSymmetry : std::int8_t {
 	//! @brief Only used for Rsyn internal control.
 	SYMMETRY_INVALID = -1,
@@ -214,20 +227,30 @@ enum PhysicalSymmetry : std::int8_t {
 // -----------------------------------------------------------------------------
 
 //! @brief Class type for the Pin Port object. 
+
 enum PhysicalPinPortClass : std::int8_t {
 	//! @brief Only used for Rsyn internal control.
 	PINPORTCLASS_INVALID = -1,
 	//! @brief A pin port has none class defined. It is the default port class type.
-	PINPORTCLASS_NONE = 0, 
+	PINPORTCLASS_NONE = 0,
 	//! @brief A pin port has Core class defined. 
 	PINPORTCLASS_CORE = 1,
 	//! @brief A pin port has Bump class defined. 
-	PINPORTCLASS_BUMP = 2, 
+	PINPORTCLASS_BUMP = 2,
 	//! @brief Only used for Rsyn internal control.
 	NUM_PINPORTCLASS = 3
 }; // end enum 
 
+
+//! @brief Region type for the Region object.
+
+enum class RegionType : std::int8_t {
+	INVALID = -1,
+	FENCE = 0,
+	GUIDE = 1
+}; // end enum class 
+
 } // end namespace 
 
-#endif	/* PHYSICALDESIGN_PHYSICALTYPES_H */
+#endif /* PHYSICALDESIGN_PHYSICALTYPES_H */
 

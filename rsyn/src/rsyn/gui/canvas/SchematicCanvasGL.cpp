@@ -1124,7 +1124,7 @@ void NewSchematicCanvasGL::defineInstancePos(Rsyn::Instance instance, DBUxy & la
 		case 0: {posMin[Y] = lastPos[Y]; 
 			posMax[Y] = lastPos[Y] + cellSize;
 			break;}
-		case 1: {posMin[Y] = lastPos[Y] + cellSpace; 
+		case 1: {posMin[Y] = lastPos[Y] + cellSpace + cellSize; 
 			posMax[Y] = posMin[Y] + cellSize;
 			break;}
 	} //end switch
@@ -1132,6 +1132,9 @@ void NewSchematicCanvasGL::defineInstancePos(Rsyn::Instance instance, DBUxy & la
 	if (instance.isSequential())
 		cdInstance.setColor(255, 0, 255);
 	else
+            if (instance.isLCB())
+                    cdInstance.setColor(0, 255, 0);
+            else
 		if (instance.getType() == Rsyn::PORT)
 			cdInstance.setColor(255, 0, 0);
 		else
@@ -1184,9 +1187,11 @@ void NewSchematicCanvasGL::drawPath(){
 
 void NewSchematicCanvasGL::drawInstance(Rsyn::Instance instance){
 		
-		VisualInstance inst = clsVisualInst[instance];
-		if (!inst.init){
-			clsInstances.push_back(inst);
+                        VisualInstance & inst = clsVisualInst[instance];
+                        if (!inst.init){
+                            clsInstances.push_back(inst);
+                            inst.init = true;
+                        }
 			Bounds bounds = inst.getBounds();
 			DBUxy posLower;
 			DBUxy posUpper;
@@ -1204,49 +1209,79 @@ void NewSchematicCanvasGL::drawInstance(Rsyn::Instance instance){
 			glVertex3f(posUpper[X], posUpper[Y], LAYER_SHAPES);
 			glVertex3f(posLower[X], posUpper[Y], LAYER_SHAPES);
 			glEnd();
-		}
-
+                        inst.init = true;
 
 } //end method
 
 // -----------------------------------------------------------------------------
 
 void NewSchematicCanvasGL::openNextCells(){
-//	if (selectedInstance.getInst()){
-//		Rsyn::Instance inst = selectedInstance.getInst();
-//		Bounds bounds = selectedInstance.getBounds();
-//		DBUxy pos;
-//		pos[X] = bounds[UPPER][X];
-//		pos[Y] = bounds[LOWER][Y];
-//		int top;
-//
-//		for (Rsyn::Pin pinOut: inst.allPins(Rsyn::OUT)){
-//			Rsyn::Net net = pinOut.getNet();
-//			int numPins = net.getNumSinks();
-//			if ((numPins % 2) != 0){
-//				top = numPins/2 +1;
-//			}
-//			else{
-//				top = numPins/2;
-//			}
-//			for (Rsyn::Pin pinIn : net.allPins(Rsyn::IN)){
-//				Rsyn::Instance instance = pinIn.getInstance();
-//				VisualInstance & instVisual = clsVisualInst[instance];
-//				if (!instVisual.getInst()){
-//					if (top > 0){
-//						defineInstancePos(instance, pos, 1);
-//					} //end if
-//					else{
-//						defineInstancePos(instance, pos, -1);
-//					} //end else
-//					drawInstance(instance);
-//				}
-//				top--;
-//			}//end for 
-//		}//end for
-//	
-//	} //end if	
+    
+    
+    if (selectedInstance.getInst()) {
+            allSelectedInst.push_back(selectedInstance);
+            drawAllSelected();
+    }
+		
 }//end method
+
+void NewSchematicCanvasGL::drawAllSelected (){
+    for (VisualInstance selectedInst : allSelectedInst){
+        Rsyn::Instance inst = selectedInst.getInst();
+		Bounds bounds = selectedInst.getBounds();
+		DBUxy pos;
+		pos[X] = bounds[UPPER][X];
+		pos[Y] = bounds[LOWER][Y];
+		int top;
+
+		for (Rsyn::Pin pinOut: inst.allPins(Rsyn::OUT)){
+			Rsyn::Net net = pinOut.getNet();
+			int numPins = net.getNumSinks();   
+			if ((numPins % 2) != 0){
+				top = numPins/2 +1;
+			}
+			else{
+				top = numPins/2;
+			}
+        		for (Rsyn::Pin pinIn : net.allPins(Rsyn::IN)){
+				Rsyn::Instance instance = pinIn.getInstance();
+				VisualInstance & instVisual = clsVisualInst[instance];
+				if (!instVisual.getInst()){
+					if (top > 0){
+                                            defineInstancePos(instance, pos, 1);
+                                            pos[X] = bounds[UPPER][X];
+                                        } //end if
+                                        else if (top == 0){
+                                            pos[X] = bounds[UPPER][X];
+                                            pos[Y] = bounds[LOWER][Y];
+                                        }
+					else{ 
+                                            defineInstancePos(instance, pos, -1);
+                                            pos[X] = bounds[UPPER][X];
+					} //end else
+                                        numPins--;
+				}
+                                else{  //gotta FIX THIS 
+                                    numPins--;
+                                    if ((numPins % 2) != 0){
+                                        top = numPins/2 +1;
+                                    }
+                                    else{
+                                        top = numPins/2;
+                                    } 
+                                }
+				top--;
+                                drawInstance(instance);
+			}//end for 
+		}//end for
+                Refresh();
+    }
+    
+    }
+
+
+
+
 
 // -----------------------------------------------------------------------------
 

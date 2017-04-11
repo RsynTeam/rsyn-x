@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -37,7 +37,7 @@ public:
 	//! @brief	Rectangular PhysicalDie Bounds in DBU  units.
 	Bounds clsBounds;
 	//! @brief	It constructs the default Bounds(DBUxy(0,0), DBUxy(0,0)).
-	PhysicalDieData() {}
+	PhysicalDieData() = default;
 }; // end class 
 } // end namespace 
 

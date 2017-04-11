@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -20,28 +21,32 @@
  */
 
 /* 
- * File:   PhysicalLibraryPinData.h
+ * File:   PhysicalGroup.h
  * Author: jucemar
  *
- * Created on 13 de Setembro de 2016, 21:04
+ * Created on 09 de Abril de 2017, 16:45
  */
-
-#ifndef PHYSICALDESIGN_PHYSICALLIBRARYPINDATA_H
-#define PHYSICALDESIGN_PHYSICALLIBRARYPINDATA_H
-
 namespace Rsyn {
 
-class PhysicalLibraryPinData {
-public:
-	Bounds clsLayerBound; // The layer bound is defined by one of the layer.
-	PhysicalPinDirection clsDirection = PIN_INVALID_DIRECTION;
-	// A pin may have several ports. However, each port is weakly connected to other. 
-	// It is assumed that they have high resistance among them. 
-	std::vector<PhysicalPinPort> clsPhysicalPinPorts;
-	PhysicalLibraryPinData() = default;
-}; // class 
+// -----------------------------------------------------------------------------
+
+inline const std::string & PhysicalGroup::getName() const {
+	return data->clsName;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline Rsyn::PhysicalRegion PhysicalGroup::getPhysicalRegion() const {
+	return data->clsRegion;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline const std::vector<std::string> & PhysicalGroup::allPatterns() const {
+	return data->clsPatterns;
+} // end method 
+
+
+// -----------------------------------------------------------------------------
 
 } // end namespace 
-
-#endif /* PHYSICALDESIGN_PHYSICALLIBRARYPINDATA_H */
-

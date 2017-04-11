@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -34,16 +34,15 @@ namespace Rsyn {
 class PhysicalPinPortData : public PhysicalObject {
 public:
 	//! @brief An enum PhysicalPinPortClass that determines the class of the PhysicalPinPort object.
-	PhysicalPinPortClass clsPinPortClass;
+	PhysicalPinPortClass clsPinPortClass = PINPORTCLASS_INVALID;
 	//! @brief The PhysicalPinLayer associated to the PhysicalPinPort.
 	PhysicalPinLayer clsLayer;
 	//! @brief Default constructor.
 	//! @details Users do not have access to this constructor. The reference to 
 	//! PhysicalPinPortData is a protected variable in PhysicalPinPort.
-	PhysicalPinPortData() {
-		clsPinPortClass = PINPORTCLASS_INVALID;
-	} // end constructor 
-	
+
+	PhysicalPinPortData() = default;
+
 }; // end class 
 
 } // end namespace 

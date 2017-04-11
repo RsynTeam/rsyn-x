@@ -79,9 +79,9 @@ protected:
 	int MAX_LCB_FANOUTS;
 	
 public:
-	ICCAD15Reader() {}
-	ICCAD15Reader(const ICCAD15Reader& orig) {}
-	virtual ~ICCAD15Reader() {}
+	ICCAD15Reader()=default;
+	ICCAD15Reader(const ICCAD15Reader& orig)=delete;
+	virtual ~ICCAD15Reader()=default;
 	void load(Engine engine, const Json &params);
 
 protected:

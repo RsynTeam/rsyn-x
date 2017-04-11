@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -42,13 +42,15 @@ public:
 	int clsNumSites[2] = {0, 0};
 	DBUxy clsStep;
 	std::string clsRowName;
+
 	PhysicalRowData() {
 		clsRowName = Rsyn::getPhysicalInvalidName();
 	} // end constructor 
-	
+
 	// these methods are required in several parts of Physical Design.
 	// Therefore, they are provided by physical row data
 	// another solution was to create a variable to store each information.
+
 	inline DBU getWidth() const {
 		return clsNumSites[X] * clsStep[X];
 	} // end method 
