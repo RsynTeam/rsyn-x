@@ -12,7 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
+#include <random>
+
 #include "rsyn/engine/Engine.h"
 #include "rsyn/phy/PhysicalService.h"
 #include "rsyn/3rdparty/flute/flute.h"

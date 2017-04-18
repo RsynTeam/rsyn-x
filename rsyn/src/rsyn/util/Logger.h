@@ -55,12 +55,14 @@ public:
 		
 		if (!exitHandlerInitialized) {
 			exitHandlerInitialized = true;
+			/* Not working on newer gcc...
 			std::atexit([&]{ 
 				std::cout << "Logger is being killed...\n";
 				for (Logger * logger : loggers) {
 					logger->flush();
 				} // end for
 			});
+			*/
 		} // end if
 		
 		boost::filesystem::path dir("log");

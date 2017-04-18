@@ -29,6 +29,8 @@
 #ifndef DEFDESCRIPTORS_H
 #define DEFDESCRIPTORS_H
 
+#include <vector>
+
 #include "rsyn/util/Bounds.h"
 #include "rsyn/util/dbu.h"
 

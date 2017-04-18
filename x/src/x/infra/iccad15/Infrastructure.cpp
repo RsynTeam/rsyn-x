@@ -44,7 +44,6 @@
 #include "rsyn/phy/util/LefDescriptors.h"
 
 #include "rsyn/io/parser/verilog/SimplifiedVerilogReader.h"
-#include "x/router/NCTUgrControl.h"
 #include "x/util/BlockageControl.h"
 #include "rsyn/io/WebLogger.h"
 #include "rsyn/io/image/SVGDrawingBoard.h"

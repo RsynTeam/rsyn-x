@@ -1,6 +1,7 @@
-x/ide/netbeans/build/
-x/ide/netbeans/dist/
+x/ide/netbeans/*
 x/ide/netbeans/nbproject/private
+!x/ide/netbeans/nbproject/
+!x/ide/netbeans/Makefile
 
 x/bin/*
 !x/bin/src

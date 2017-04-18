@@ -129,8 +129,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/6f699a3e/RelaxedPinPosition.o \
 	${OBJECTDIR}/_ext/6f699a3e/TDQuadraticFlow.o \
 	${OBJECTDIR}/_ext/6f699a3e/qpdpb2b.o \
-	${OBJECTDIR}/_ext/64234a2b/NCTUgrControl.o \
-	${OBJECTDIR}/_ext/3feb8ac5/RoutingEstimator.o \
 	${OBJECTDIR}/_ext/97e9a35b/process.o \
 	${OBJECTDIR}/_ext/97e9a35b/reader.o \
 	${OBJECTDIR}/_ext/97e9a35b/service.o \
@@ -630,16 +628,6 @@ ${OBJECTDIR}/_ext/6f699a3e/qpdpb2b.o: ../../src/x/opto/ufrgs/qpdp/qpdpb2b.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/6f699a3e
 	${RM} "$@.d"
 	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/6f699a3e/qpdpb2b.o ../../src/x/opto/ufrgs/qpdp/qpdpb2b.cpp
-
-${OBJECTDIR}/_ext/64234a2b/NCTUgrControl.o: ../../src/x/router/NCTUgrControl.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/64234a2b
-	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/64234a2b/NCTUgrControl.o ../../src/x/router/NCTUgrControl.cpp
-
-${OBJECTDIR}/_ext/3feb8ac5/RoutingEstimator.o: ../../src/x/router/nctugr/RoutingEstimator.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/3feb8ac5
-	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/3feb8ac5/RoutingEstimator.o ../../src/x/router/nctugr/RoutingEstimator.cpp
 
 ${OBJECTDIR}/_ext/97e9a35b/process.o: ../../src/x/setup/process.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/97e9a35b

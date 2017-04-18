@@ -16,6 +16,8 @@
 #ifndef RSYN_DIM_H
 #define RSYN_DIM_H
 
+#include <string>
+
 // -----------------------------------------------------------------------------
 
 // [NOTE] Although this class use indexing for accessing data members, most of

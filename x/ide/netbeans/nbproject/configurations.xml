@@ -555,14 +555,6 @@
           </logicalFolder>
         </logicalFolder>
       </logicalFolder>
-      <logicalFolder name="router" displayName="router" projectFiles="true">
-        <logicalFolder name="nctugr" displayName="nctugr" projectFiles="true">
-          <itemPath>../../src/x/router/nctugr/RoutingEstimator.cpp</itemPath>
-          <itemPath>../../src/x/router/nctugr/RoutingEstimator.h</itemPath>
-        </logicalFolder>
-        <itemPath>../../src/x/router/NCTUgrControl.cpp</itemPath>
-        <itemPath>../../src/x/router/NCTUgrControl.h</itemPath>
-      </logicalFolder>
       <logicalFolder name="setup" displayName="setup" projectFiles="true">
         <itemPath>../../src/x/setup/process.cpp</itemPath>
         <itemPath>../../src/x/setup/reader.cpp</itemPath>
@@ -2545,23 +2537,6 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../src/x/router/NCTUgrControl.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../src/x/router/NCTUgrControl.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="../../src/x/router/nctugr/RoutingEstimator.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../src/x/router/nctugr/RoutingEstimator.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="../../src/x/setup/process.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../src/x/setup/reader.cpp" ex="false" tool="1" flavor2="0">
@@ -2619,7 +2594,7 @@
             <pElem>../../lib</pElem>
           </linkerAddLib>
           <commandlineTool>g++</commandlineTool>
-          <commandLine>`wx-config --libs --gl-libs` `wx-config --optional-libs propgrid` -lGL -lglut -lGLU -lGLEW -llef -ldef -lmunkres -lboost_filesystem -lboost_system -lboost_program_options -lnctugr -fopenmp -lemon -lCbc -lCbcSolver -lCgl -lOsi -lOsiCbc -lOsiClp -lCoinUtils -lClp -lpng</commandLine>
+          <commandLine>`wx-config --libs --gl-libs` `wx-config --optional-libs propgrid` -lGL -lglut -lGLU -lGLEW -llef -ldef -lmunkres -lboost_filesystem -lboost_system -lboost_program_options -fopenmp -lemon -lCbc -lCbcSolver -lCgl -lOsi -lOsiCbc -lOsiClp -lCoinUtils -lClp -lpng</commandLine>
         </linkerTool>
       </compileType>
       <item path="../../../rsyn/src/rsyn/3rdparty/flute/flute.cpp"
@@ -4527,23 +4502,6 @@
             flavor2="0">
       </item>
       <item path="../../src/x/opto/ufrgs/qpdp/qpdpb2b.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../src/x/router/NCTUgrControl.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../src/x/router/NCTUgrControl.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="../../src/x/router/nctugr/RoutingEstimator.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../src/x/router/nctugr/RoutingEstimator.h"
             ex="false"
             tool="3"
             flavor2="0">
