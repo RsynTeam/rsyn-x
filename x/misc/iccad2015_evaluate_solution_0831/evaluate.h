@@ -24,7 +24,7 @@
 #include <assert.h>
 
 #include "uit_timer.h"
-#include "Flute/flute.h"
+#include "flute/flute.h"
 
 /* density profiling related parms */
 #define BIN_DIM              9.0

@@ -48,6 +48,17 @@ public:
 	enum ListLink {HEAD, TAIL};
 	const static ListLink REVERSE_LIST_LINK[2];
 
+	// As neighbor rows share their horizontal edge, it's ambiguous to ask to
+	// each row a point at the shared-edge belongs to. This enum allows one to
+	// specify how this ambiguity should be resolved.
+	enum SharedRowEdgeResolution {
+		// When the point lies at the shared edge, selects the bottom row.
+		BOTTOM,
+
+		// When the point lies at the shared edge, selects the top row.
+		TOP
+	};
+
 	virtual void start(Rsyn::Engine engine, const Rsyn::Json &params);
 	virtual void stop();
 
@@ -82,11 +93,18 @@ private:
 	// Indicates whether or not Jezz was already initialized.
 	bool clsInitialized;
 
+	// Enable debugging messages.
+	bool clsEnableDebugMessages;
+
 	DBUxy clsInitialHpwl;
 	double clsRuntime;
 	
 	// Helper function to initialize Jezz.
 	void initJezz();
+
+	// Define obstacles (blockages, macro blocks) handling potential overlaps
+	// among them.
+	void initJezz_Obstacles();
 
 	////////////////////////////////////////////////////////////////////////////
 	// Linked List
@@ -462,9 +480,26 @@ public:
 private:	
 	bool jezz_ValidRowIndex(const int row) const { return (row >= 0 && row < clsJezzRows.size()); }
 	bool jezz_ValidSiteIndex(const int col) const { return (col >= 0 && col < clsJezzNumSites); }
-	
-	int jezz_GetRowIndex(const DBU y) const { return (y - clsJezzOriginY)/clsJezzRowHeight; }
-	int jezz_GetRowIndexBounded(const DBU y) const { return std::min(clsJezzNumRows - 1, std::max(0, jezz_GetRowIndex(y))); }
+
+	// Returns the index of the row associated to the y coordinate in user
+	// space. For points that lie exactly on the shared horizontal edge of rows,
+	// resolve the ambiguity using the resolution parameter. If top is provided,
+	// the top row will be returned; if bottom, the bottom row.
+	int jezz_GetRowIndex(const DBU y, const SharedRowEdgeResolution resolution = TOP) const {
+		const int index = (y - clsJezzOriginY)/clsJezzRowHeight;
+		if ((resolution == BOTTOM) && ((y - clsJezzOriginY)%clsJezzRowHeight == 0)) {
+			return index - 1;
+		} else {
+			return index;
+		} // end else
+	} // end method
+
+	// Similar to jezz_GetRowIndex() but clamp the row indexes to be in the
+	// valid range [0, num rows - 1].
+	int jezz_GetRowIndexBounded(const DBU y, const SharedRowEdgeResolution resolution = TOP) const {
+		return std::min(clsJezzNumRows - 1, std::max(0, jezz_GetRowIndex(y, resolution)));
+	} // end method
+
 	JezzRow *jezz_GetRowByIndex(const int row) { return &clsJezzRows[row]; }
 	DBU jezz_GetRowY(const int row) const { return clsJezzOriginY + (clsJezzRowHeight*row); }
 
@@ -528,7 +563,12 @@ public:
 			const DBU ymin,
 			const DBU xmax,
 			const DBU ymax);
-	
+
+	void jezz_DefineObstacleAtRowUsingJezzCoordinates(
+			const int row,
+			const int x,
+			const int w);
+
 	void jezz_DefineObstacle(
 			const DBU xmin, 
 			const DBU ymin,

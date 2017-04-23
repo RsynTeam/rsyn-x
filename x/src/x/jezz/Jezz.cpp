@@ -38,6 +38,7 @@ Jezz::Jezz() {
 	clsJezzInitialized = false;
 	clsJezzTieBreak = false;
 	clsInitialized = false;
+	clsEnableDebugMessages = false;
 } // end constructor
 
 // -----------------------------------------------------------------------------
@@ -241,6 +242,9 @@ void Jezz::initJezz() {
 	clsInitialized = true;
 	clsInitialHpwl = clsPhysicalDesign.getHPWL();
 	clsRuntime = 0.0;
+
+	// Create an attribute to map instances to jezz nodes.
+	clsMapInstancesToJezzNodes = clsDesign.createAttribute();
 	
 	//Initialize Jezz Legalizer
 	const int numRows = clsPhysicalDesign.getNumRows();
@@ -269,75 +273,27 @@ void Jezz::initJezz() {
 			jezz_dp_UpdateReferencePosition(jezzNode, x, y);
 	});
 
-	// Define blockages to mimic uneven rows (different min x and max).
-	for ( const Rsyn::PhysicalRow phRow : clsPhysicalDesign.allPhysicalRows()) {
-		const Bounds &bounds = phRow.getBounds();
-		if (bounds[LOWER][X] > coreBounds[LOWER][X]) {
-			jezz_DefineObstacle(
-					coreBounds[LOWER][X],
-					bounds[LOWER][Y],
-					bounds[LOWER][X],
-					bounds[UPPER][Y]
-					);
-		} // end if
+	// Define obstacles.
+	initJezz_Obstacles();
 
-		if (bounds[UPPER][X] < coreBounds[UPPER][X]) {
-			jezz_DefineObstacle(
-					bounds[UPPER][X],
-					bounds[LOWER][Y],
-					coreBounds[UPPER][X],
-					bounds[UPPER][Y]
-					);
-		} // end if
-	} // end for
-
-	// Define nodes.
-	clsMapInstancesToJezzNodes = clsDesign.createAttribute();
+	// Define movable nodes.
 	for (Rsyn::Instance instance : clsModule.allInstances()) {
 		Jezz::JezzNode * jezzNode = nullptr;
 
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
-		if (cell.isPort()) {
+		if (cell.isPort() || cell.isMacroBlock() || cell.isFixed()) {
 			continue;
 		} // end if
 
 		Rsyn::PhysicalCell phCell = clsPhysicalDesign.getPhysicalCell(cell);
 
-		if (cell.isMacroBlock() || cell.isFixed()) {
-			if (phCell.hasLayerBounds()) {
-				Rsyn::PhysicalLibraryCell phLibCell = clsPhysicalDesign.getPhysicalLibraryCell(cell);
-				for (const Bounds &obs : phLibCell.allLayerObstacles()) {
-					Bounds rect = obs;
-					DBUxy lower = obs.getCoordinate(LOWER);
-					rect.moveTo(phCell.getPosition()+ lower);
-					jezz_DefineObstacle(
-						rect[LOWER][X],
-						rect[LOWER][Y],
-						rect[UPPER][X],
-						rect[UPPER][Y]
-						);
-				} // end for
-			} else {
-				const Bounds &rect = phCell.getBounds();
-				jezz_DefineObstacle(
-				rect[LOWER][X],
-				rect[LOWER][Y],
-				rect[UPPER][X],
-				rect[UPPER][Y]
-				);
-			}
-
-
-		} else {
-
-			const DBUxy lower = phCell.getCoordinate(LOWER);
-			const DBUxy upper = phCell.getCoordinate(UPPER);
-			jezzNode = jezz_DefineNode(cell,
-				lower[X],
-				lower[Y],
-				upper[X],
-				upper[Y]);
-		} // end if-else
+		const DBUxy lower = phCell.getCoordinate(LOWER);
+		const DBUxy upper = phCell.getCoordinate(UPPER);
+		jezzNode = jezz_DefineNode(cell,
+			lower[X],
+			lower[Y],
+			upper[X],
+			upper[Y]);
 
 		clsMapInstancesToJezzNodes[instance] = jezzNode;
 	} // end for
@@ -354,6 +310,130 @@ void Jezz::initJezz() {
 //		cout << "\n";
 //	} // end for
 
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void Jezz::initJezz_Obstacles() {
+	struct Obstacle {
+		int x = 0;
+		int w = 0;
+		Rsyn::Instance instance = nullptr;
+
+		bool operator<(const Obstacle &right) const {
+			return x < right.x;
+		} // end for
+		Obstacle() {}
+		Obstacle(const DBU x, const DBU w, Rsyn::Instance instance) :
+				x(x), w(w), instance(instance) {}
+	};
+
+	Rsyn::PhysicalModule phModule = clsPhysicalDesign.getPhysicalModule(clsModule);
+
+	const int numRows = clsPhysicalDesign.getNumRows();
+	const Bounds &coreBounds = phModule.getBounds();
+
+	// Vector to store obstacles per row.
+	std::vector<std::vector<Obstacle>> rows(numRows);
+
+	// Add an obstacle.
+	auto pushObstacle = [&](const DBU xmin, const DBU ymin, const DBU xmax, const DBU ymax, Rsyn::Instance instance) {
+		const int row0 = jezz_GetRowIndexBounded(ymin, TOP);
+		const int row1 = jezz_GetRowIndexBounded(ymax, BOTTOM);
+		const int x = jezz_SnapPositionX(xmin);
+		const int w = jezz_SnapSizeX(xmin, xmax);
+		for (int row = row0; row <= row1; row++) {
+			rows[row].push_back(Obstacle(x, w, instance));
+		} // end for
+
+		if (clsEnableDebugMessages && ((ymin - ymax) % clsJezzRowHeight)) {
+			std::cout << "WARNING: Obstacle height is not integer multiple of the row height ("
+					<< "ymin=" << ymin << " "
+					<< "ymax=" << ymax << " "
+					<< "height=" << (ymax - ymin) << " "
+					<< "row_height=" << clsJezzRowHeight << ")\n";
+		} // end else
+	};
+
+	// Currently Jezz does not support rows starting/ending at different xmin,
+	// xmax. Therefore we define blockages to mimic uneven rows.
+	for ( const Rsyn::PhysicalRow phRow : clsPhysicalDesign.allPhysicalRows()) {
+		const Bounds &bounds = phRow.getBounds();
+
+		if (bounds[LOWER][X] > coreBounds[LOWER][X]) {
+			pushObstacle(coreBounds[LOWER][X], bounds[LOWER][Y], bounds[LOWER][X], bounds[UPPER][Y], nullptr);
+		} // end if
+
+		if (bounds[UPPER][X] < coreBounds[UPPER][X]) {
+			pushObstacle(bounds[UPPER][X], bounds[LOWER][Y], coreBounds[UPPER][X], bounds[UPPER][Y], nullptr);
+		} // end if
+	} // end for
+
+	// Define obstacles based on macro and fixed cells.
+	for (Rsyn::Instance instance : clsModule.allInstances()) {
+		if (instance.isPort()) {
+			continue;
+		} // end if
+
+		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
+		Rsyn::PhysicalCell phCell = clsPhysicalDesign.getPhysicalCell(cell);
+
+		if (cell.isMacroBlock() || cell.isFixed()) {
+			if (phCell.hasLayerBounds()) {
+				Rsyn::PhysicalLibraryCell phLibCell = clsPhysicalDesign.getPhysicalLibraryCell(cell);
+				for (const Bounds &obs : phLibCell.allLayerObstacles()) {
+					Bounds rect = obs;
+					DBUxy lower = obs.getCoordinate(LOWER);
+					rect.moveTo(phCell.getPosition() + lower);
+					pushObstacle(rect[LOWER][X], rect[LOWER][Y], rect[UPPER][X], rect[UPPER][Y], instance);
+				} // end for
+			} else {
+				const Bounds &rect = phCell.getBounds();
+				pushObstacle(rect[LOWER][X], rect[LOWER][Y], rect[UPPER][X], rect[UPPER][Y], instance);
+			} // end else
+		} // end if
+	} // end for
+
+	// Sort obstacles by x.
+	for (std::vector<Obstacle> &row : rows) {
+		std::sort(row.begin(), row.end());
+	} // end for
+
+	// Define obstacles merging overlapping ones.
+	for (int i = 0; i < numRows; i++) {
+		const std::vector<Obstacle> &row = rows[i];
+
+		int previousX = 0;
+		Rsyn::Instance previousInstance = nullptr;
+		const int numElements = row.size();
+		for (int k = 0; k < numElements; k++) {
+			const Obstacle &obs = row[k];
+			const int x0 = std::max(previousX, obs.x);
+			const int x1 = obs.x + obs.w;
+			const int w = x1 - x0;
+			if (w > 0) {
+				jezz_DefineObstacleAtRowUsingJezzCoordinates(i, x0, w);
+			} // end if
+
+			// Warn user about overlap.
+			if (clsEnableDebugMessages && (obs.x < previousX)) {
+				// An obstacle with null instance is an obstacle create to 
+				// handle uneven row (starting/ending after/before the core
+				// bounds).
+				std::cout << "INFO: Obstacle overlap at row " << i << " ("
+						<< "previous=" << previousInstance.getName() << ", "
+						<< "current=" << obs.instance.getName() << ").\n";		
+			} // end if
+
+			// Keep track of previous instance.
+			if (x1 > previousX) {
+				// The current node maybe enclosed by the previous one. Only
+				// change previous node if it does not enclose the current node.
+				previousX = x1;
+				previousInstance = obs.instance;
+			} // end if
+		} // end
+	} // end for
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -619,6 +699,38 @@ Jezz::JezzNode *Jezz::jezz_DefineNode(
 	jezzNode->snnaped_refy = jezz_SnapPositionY(jezzNode->refy);
 
 	return jezzNode;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void Jezz::jezz_DefineObstacleAtRowUsingJezzCoordinates(
+		const int row,
+		const int x,
+		const int w
+) {
+	JezzRow *jezzRow = &clsJezzRows[row];
+
+	clsJezzObstacles.resize(clsJezzObstacles.size() + 1);
+
+	JezzNode *jezzNode = &clsJezzObstacles.back();
+	jezzNode->obstacle = true;
+	jezzNode->fixed = true;
+	jezzNode->x = std::max(x, jezzRow->x);
+	jezzNode->w = w;
+	jezzNode->refx = jezz_UnsnapPositionX(x);
+	jezzNode->refy = jezz_UnsnapPositionY(row);
+	jezzNode->snapped_refx = jezz_SnapPositionX(jezzNode->refx);
+	jezzNode->snnaped_refy = jezz_SnapPositionY(jezzNode->refy);
+
+	if (jezzNode->xmax() > jezzRow->xmax())
+		jezzNode->w = jezzRow->xmax() - jezzNode->x;
+
+	bool overflow;
+	double smallestMaxDisplacement;
+	jezz_InsertNode(jezzRow, jezzNode, jezzNode->x, false, overflow, smallestMaxDisplacement);
+	if (overflow) {
+		std::cout << "[WARNING] Jezz: Overflow when inserting a obstacle.\n";
+	} // end if
 } // end method
 
 // -----------------------------------------------------------------------------

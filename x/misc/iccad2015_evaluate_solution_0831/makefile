@@ -5,7 +5,7 @@ SRC = $(wildcard *.cpp)
 DEP = $(wildcard *.h)
 OBJ = flute_new.o
 
-CFLAGS = -std=c++0x -Wall -O3
+CFLAGS = -std=c++11 -Wall -O3
 LFLAGS = -fopenmp -static -L./libs -lui-timer
 INC = -I./includes
 
@@ -13,9 +13,9 @@ $(EXE): $(SRC) $(DEP) $(OBJ)
 	/bin/rm -f $(EXE) 
 	$(CXX) $(CFLAGS) $(SRC) $(OBJ) $(INC) $(LFLAGS) -o $(EXE)
 
-flute_new.o: Flute/flute.h Flute/flute_new.cpp
+flute_new.o: flute/flute.h flute/flute_new.cpp
 	/bin/rm -f flute_new.o
-	$(CXX) $(CFLAGS) Flute/flute_new.cpp -c 
+	$(CXX) $(CFLAGS) flute/flute_new.cpp -c 
 
 .PHONY: test
 test: $(EXE) 
