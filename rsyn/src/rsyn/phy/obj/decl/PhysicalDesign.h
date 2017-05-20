@@ -208,11 +208,19 @@ public:
 	Rsyn::PhysicalRegion getPhysicalRegionByName(const std::string &siteName);
 	//! @brief	Returns the Rsyn::PhysicalGroup object associated to the parameter group name.
 	Rsyn::PhysicalGroup getPhysicalGroupByName(const std::string &siteName);
+	//! @brief	Returns the Rsyn::PhysicalVia object associated to the parameter vias name.
+	Rsyn::PhysicalVia getPhysicalViaByName(const std::string &viaName);
 
 	//! @brief	Returns the total number of layers. It is the summation of routing, overlap, cut, and so forth layers.
 	int getNumLayers(const Rsyn::PhysicalLayerType type) const;
 	//! @brief	Returns a reference to the vector of PhysicalLayers. 
 	Range<ListCollection<PhysicalLayerData, PhysicalLayer>> allPhysicalLayers();
+
+	//! @brief	Returns the total number of vias.
+	std::size_t getNumPhysicalVias() const;
+	//! @brief	Returns a vector reference to the vector of PhysicalVias. 
+	const std::vector<PhysicalVia> & allPhysicalVias() const;
+
 
 	//! @brief	Returns the total number of spacing objects.  
 	std::size_t getNumPhysicalSpacing() const;
@@ -246,6 +254,8 @@ protected:
 	void addPhysicalSite(const LefSiteDscp & site);
 	//! @brief initializes the Rsyn::PhysicalLayer objects into Rsyn::PhysicalDesign.
 	void addPhysicalLayer(const LefLayerDscp& layer);
+	//! @brief initializes the Rsyn::PhysicalVia objects into Rsyn::PhysicalDesign.
+	void addPhysicalVia(const LefViaDscp & via);
 	//! @brief initializes the Rsyn::PhysicalLibraryCell objects into Rsyn::PhysicalDesign.
 	Rsyn::LibraryCell addPhysicalLibraryCell(const LefMacroDscp& macro);
 	//! @brief initializes the Rsyn::PhysicalLibraryPin objects of the library cell into 
@@ -261,6 +271,9 @@ protected:
 	void addPhysicalRegion(const DefRegionDscp& defRegion);
 	//! @brief initializes the Rsyn::PhysicalGroup objects into Rsyn::PhysicalDesign.
 	void addPhysicalGroup(const DefGroupDscp& defGroup);
+	//! @brief Initializes Rsyn::PhysicalNetObject into Ryn::PhysicalDesign.
+	//! @warning Only initializes routed wires.
+	void addPhysicalNet(const DefNetDscp & netDscp);
 	//! @brief initializes the Rsyn::PhysicalSpacing objects into Rsyn::PhysicalDesign.
 	void addPhysicalSpacing(const LefSpacingDscp & spacing);
 	//! @brief initializes the Rsyn::PhysicalPin objects into Rsyn::PhysicalDesign.

@@ -106,6 +106,8 @@
       <logicalFolder name="engine" displayName="engine" projectFiles="true">
         <itemPath>../../../rsyn/src/rsyn/engine/Engine.cpp</itemPath>
         <itemPath>../../../rsyn/src/rsyn/engine/Engine.h</itemPath>
+        <itemPath>../../../rsyn/src/rsyn/engine/Message.cpp</itemPath>
+        <itemPath>../../../rsyn/src/rsyn/engine/Message.h</itemPath>
         <itemPath>../../../rsyn/src/rsyn/engine/Process.h</itemPath>
         <itemPath>../../../rsyn/src/rsyn/engine/Reader.h</itemPath>
         <itemPath>../../../rsyn/src/rsyn/engine/Service.h</itemPath>
@@ -126,8 +128,8 @@
           <logicalFolder name="overlay" displayName="overlay" projectFiles="true">
             <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/DensityGridOverlay.cpp</itemPath>
             <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/DensityGridOverlay.h</itemPath>
-            <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/Instance.cpp</itemPath>
-            <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/Instance.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/Layout.cpp</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/Layout.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/Region.cpp</itemPath>
             <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/Region.h</itemPath>
           </logicalFolder>
@@ -428,6 +430,9 @@
         </logicalFolder>
         <itemPath>../../../rsyn/src/rsyn/sandbox/Sandbox.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="setup" displayName="setup" projectFiles="true">
+        <itemPath>../../../rsyn/src/rsyn/setup/message.cpp</itemPath>
+      </logicalFolder>
       <logicalFolder name="shell" displayName="shell" projectFiles="true">
         <itemPath>../../../rsyn/src/rsyn/shell/Shell.cpp</itemPath>
         <itemPath>../../../rsyn/src/rsyn/shell/Shell.h</itemPath>
@@ -490,6 +495,8 @@
       </logicalFolder>
       <logicalFolder name="io" displayName="io" projectFiles="true">
         <logicalFolder name="reader" displayName="reader" projectFiles="true">
+          <itemPath>../../src/x/io/reader/GenericReader.cpp</itemPath>
+          <itemPath>../../src/x/io/reader/GenericReader.h</itemPath>
           <itemPath>../../src/x/io/reader/ICCAD15Reader.cpp</itemPath>
           <itemPath>../../src/x/io/reader/ICCAD15Reader.h</itemPath>
         </logicalFolder>
@@ -556,6 +563,7 @@
         </logicalFolder>
       </logicalFolder>
       <logicalFolder name="setup" displayName="setup" projectFiles="true">
+        <itemPath>../../src/x/setup/message.cpp</itemPath>
         <itemPath>../../src/x/setup/process.cpp</itemPath>
         <itemPath>../../src/x/setup/reader.cpp</itemPath>
         <itemPath>../../src/x/setup/service.cpp</itemPath>
@@ -580,6 +588,7 @@
     <Elem>../../../rsyn/src/rsyn/io/visualization</Elem>
     <Elem>../../src/x/visualization</Elem>
     <Elem>../../../rsyn/src/rsyn/3rdparty/parser</Elem>
+    <Elem>../../../rsyn/src/rsyn/setup</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -1020,6 +1029,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/engine/Message.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/engine/Message.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/engine/Process.h"
             ex="false"
             tool="3"
@@ -1124,12 +1143,12 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../rsyn/src/rsyn/gui/canvas/overlay/Instance.cpp"
+      <item path="../../../rsyn/src/rsyn/gui/canvas/overlay/Layout.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="../../../rsyn/src/rsyn/gui/canvas/overlay/Instance.h"
+      <item path="../../../rsyn/src/rsyn/gui/canvas/overlay/Layout.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -2148,6 +2167,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/setup/message.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/shell/Shell.cpp"
             ex="false"
             tool="1"
@@ -2347,6 +2371,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../src/x/io/reader/GenericReader.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../src/x/io/reader/GenericReader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../src/x/io/reader/ICCAD15Reader.cpp"
             ex="false"
             tool="1"
@@ -2536,6 +2570,8 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="../../src/x/setup/message.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../src/x/setup/process.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -2989,6 +3025,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/engine/Message.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/engine/Message.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/engine/Process.h"
             ex="false"
             tool="3"
@@ -3093,12 +3139,12 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../rsyn/src/rsyn/gui/canvas/overlay/Instance.cpp"
+      <item path="../../../rsyn/src/rsyn/gui/canvas/overlay/Layout.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="../../../rsyn/src/rsyn/gui/canvas/overlay/Instance.h"
+      <item path="../../../rsyn/src/rsyn/gui/canvas/overlay/Layout.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -4117,6 +4163,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/setup/message.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/shell/Shell.cpp"
             ex="false"
             tool="1"
@@ -4316,6 +4367,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../src/x/io/reader/GenericReader.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../src/x/io/reader/GenericReader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../src/x/io/reader/ICCAD15Reader.cpp"
             ex="false"
             tool="1"
@@ -4505,6 +4566,8 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="../../src/x/setup/message.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../src/x/setup/process.cpp" ex="false" tool="1" flavor2="0">
       </item>

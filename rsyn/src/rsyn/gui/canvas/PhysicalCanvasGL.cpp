@@ -45,6 +45,8 @@ const float PhysicalCanvasGL::LAYER_GRADIENTS	= 0.2f;
 const float PhysicalCanvasGL::LAYER_MOVABLE	= 0.3f;
 const float PhysicalCanvasGL::LAYER_GRID	= 0.4f;
 const float PhysicalCanvasGL::LAYER_METAL	= 0.5f;
+const float PhysicalCanvasGL::LAYER_ROUTING_MIN = 0.6f;
+const float PhysicalCanvasGL::LAYER_ROUTING_MAX = 0.7f;
 const float PhysicalCanvasGL::LAYER_FOREGROUND	= 1.0f;
 
 // -----------------------------------------------------------------------------

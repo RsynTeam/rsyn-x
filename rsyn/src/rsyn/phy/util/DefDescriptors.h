@@ -98,12 +98,53 @@ public:
 
 // -----------------------------------------------------------------------------
 
+//! Descriptor for wire path associated to wires 
+
+class DefWireSegmentDscp {
+public:
+	std::string clsLayerName = INVALID_DEF_NAME;
+	std::string clsViaName = INVALID_DEF_NAME;
+	int clsExtensionBegin =  -1;
+	int clsExtensionEnd = -1;
+	int clsMask = -1;
+	int clsWidth = 0;
+	bool clsNew : 1;
+	bool clsHasVia : 1;
+	bool clsHasRectangle : 1;
+	/*
+	 * "RECT ( deltax1 deltay1 deltax2 deltay2 )
+	 * Indicates that a rectangle is created from the previous ( x y ) 
+	 * routing point using the delta values. The RECT values leave the 
+	 * current point and layer unchanged." Source: LEf/DEf Reference Manual 5.8
+	 */
+	Bounds clsRect;
+	std::vector<DBUxy> clsPoints;
+
+	DefWireSegmentDscp() {
+		clsNew = false;
+		clsHasVia = false;
+		clsHasRectangle = false;
+	} // end constructor 
+}; // end class 
+
+//! Descriptor for routed wires 
+
+class DefWireDscp {
+public:
+	std::vector<DefWireSegmentDscp> clsWireSegments;
+	std::string clsWireType = INVALID_DEF_NAME;
+	DefWireDscp() = default;
+}; // end class 
+
+// -----------------------------------------------------------------------------
+
 //! Descriptor for DEF Nets
 
 class DefNetDscp {
 public:
 	std::string clsName = INVALID_DEF_NAME;
 	std::vector<DefNetConnection> clsConnections;
+	std::vector<DefWireDscp> clsWires;
 	DefNetDscp() = default;
 }; // end class 
 

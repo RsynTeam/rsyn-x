@@ -29,6 +29,7 @@
 #ifndef PHYSICALDESIGN_PHYSICALNET_H
 #define PHYSICALDESIGN_PHYSICALNET_H
 
+
 namespace Rsyn { 
 
 class PhysicalNet : public Proxy<PhysicalNetData> {
@@ -61,6 +62,12 @@ public:
 	//! @brief Return the PhysicalPin object that determines the boundary of PhysicalNet 
 	//! in one of its demensions.
 	Rsyn::Pin getPinBoundary(const Boundary bound, const Dimension dim) const;
+	
+	//! @brief Returns a reference to a vector that stores routed net wires.
+	const std::vector<Rsyn::PhysicalWire> & allWires() const;
+	
+	//! @brief Returns a constant reference to a vector that stores Instance of vias associated to the net.
+	const std::vector<Rsyn::PhysicalViaInstance> & allVias() const;
 }; // end class 
 
 } // end namespace 

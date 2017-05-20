@@ -17,8 +17,28 @@
 #define	RSYN_FLOATING_POINT_H
 
 #include <cmath>
+#include <cassert>
+
+enum RoundingStrategy {
+	ROUND_DOWN,
+	ROUND_UP,
+	ROUND_NEAREST
+}; // end enum
 
 class FloatingPoint {
+private:
+
+	template<typename T, typename R> inline
+	static
+	R round(const T value, const RoundingStrategy roudingStrategy) {
+		switch (roudingStrategy) {
+			case ROUND_DOWN:    return (R)           (value);
+			case ROUND_UP:      return (R) std::ceil (value);
+			case ROUND_NEAREST: return (R) std::round(value);
+			default: assert(false); return 0;
+		} // end switch
+	} // end  function
+
 public:
 
 	template<typename T>
@@ -63,7 +83,13 @@ public:
 				((std::abs(a) < std::abs(b) ? std::abs(b) : std::abs(a)) * precision);
 	} // end method
 
-	
+	static int round(const float value, const RoundingStrategy roudingStrategy) {
+		return round<float, int>(value, roudingStrategy);
+	} // end  function
+
+	static long round(const double value, const RoundingStrategy roudingStrategy) {
+		return round<double, long>(value, roudingStrategy);
+	} // end  function
 }; // end class
 
 #endif

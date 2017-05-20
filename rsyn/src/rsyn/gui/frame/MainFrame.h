@@ -20,10 +20,11 @@
 #include "rsyn/gui/canvas/PhysicalCanvasGL.h"
 #include "rsyn/gui/canvas/SchematicCanvasGL.h"
 #include "rsyn/gui/Redirector.h"
-
+#include "rsyn/3rdparty/json/json.hpp"
 #include "rsyn/io/parser/script/ScriptReader.h"
 #include "rsyn/io/parser/bookshelf/BookshelfParser.h"
 #include "rsyn/engine/Engine.h"
+#include "rsyn/gui/canvas/Stipple.h"
 
 #include <wx/config.h>
 #include <wx/filedlg.h>
@@ -37,6 +38,7 @@ using std::endl;
 using std::vector;
 #include <map>
 #include <string>
+#include <wx-3.0/wx/propgrid/property.h>
 
 // -----------------------------------------------------------------------------
 
@@ -116,26 +118,92 @@ private:
 	
 	// Canvas overlay management.
 	std::map<std::string, CanvasOverlay *> clsOverlays;
-	
+	std::map<wxPGProperty*, int> propToStipple;
+
 	template<typename T>
 	void registerOverlay(const std::string &name, const bool visibility = false) {
 		auto it = clsOverlays.find(name);
 		if (it == clsOverlays.end()) {
 			CanvasOverlay * overlay = new T();
-			const bool success = overlay->init(clsPhysicalCanvasGLPtr);
+			Rsyn::Json properties;
+			const bool success = overlay->init(clsPhysicalCanvasGLPtr, properties);
 			if (success) {
 				clsOverlays[name] = overlay;
 				clsPhysicalCanvasGLPtr->addOverlay(name, overlay, visibility);
 
-				const int id = clsLstOverlays->Append(name);
-				clsLstOverlays->Check(id, visibility);
+				wxPGProperty* overlay = clsOverlayPropertyGrid->Append(
+					new wxBoolProperty(name, 
+					wxPG_LABEL, 
+					visibility));
+				
+				for (const Rsyn::Json prop : properties) {
+					if (!prop.count("name") || !prop.count("type")) {
+						std::cout << "ERROR: Overlay properties must have 'name' and 'type' specified.\n";
+						std::cout << prop << "\n";
+						std::exit(1);
+					} // end if 
+					
+					wxPGProperty* parent = overlay;
+					if (prop.count("parent")) {
+						parent = overlay->GetPropertyByName(prop["parent"]);
+						if (!parent) { 
+							std::cout << "ERROR: Parent property " << prop["parent"] <<
+								" not found.\n";
+							std::exit(1);
+						} // end if
+					} // end if
+					
+					const std::string name = prop.at("name");
+					const std::string label = prop.value("label", name);
+					const std::string type = prop.at("type");
+
+					wxPGProperty* child = nullptr;
+					if (type == "bool") {
+						const bool defaultValue = prop.value("default", false);
+						child = parent->AppendChild(new wxBoolProperty(label, name, defaultValue));
+					} else if (type == "int") {
+						const int defaultValue = prop.value("default", 0);
+						child = parent->AppendChild(new wxIntProperty(label, name,	defaultValue));
+					} else if (type == "color") {
+						Rsyn::Json defaultValue = {{"r", 0}, {"g", 0}, {"b", 0}};
+						
+						if (prop.count("default"))
+							defaultValue = prop["default"];
+						
+						wxColour color(
+							defaultValue["r"], 
+							defaultValue["g"], 
+							defaultValue["b"]
+						);
+						
+						const int stipple = prop.value("stipple", 0);
+						wxBitmap bitmap = 
+							createBitmapFromMask(STIPPLE_MASKS[stipple], color, color);
+						parent->SetValueImage(bitmap);
+												
+						child = parent->AppendChild(new wxColourProperty(label, name, color));
+						// Awful... a way to store the stipple from a mask...
+						propToStipple[child] = stipple;
+					} else {
+						std::cout << "ERROR: Property type '" << type << 
+							" not supported.\n";
+						std::exit(1);
+					} // end if
+
+					if (child) {
+						child->SetExpanded(false);
+					} // end if
+
+				} // end for
 			} else {
-				if (visibility) {
+				if (visibility) {	
 					std::cout << "WARNING: Overlay '" + name + "' was not successfully initialized.\n";
 				} // end if
 				delete overlay;
 			} // end else
 		} // end else
+		
+		clsOverlayPropertyGrid->SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX, true);
 	} // end method
 	
 	void registerAllOverlays();
@@ -160,6 +228,9 @@ private:
 	void processGraphicsEventDesignLoaded();
 	void processGraphicsEventRefresh();
 	void processGraphicsEventUpdateOverlayList();
+
+	// Generate an icon from technology layer pattern.
+	wxImage createBitmapFromMask(const unsigned char * mask, wxColor line, wxColor fill);
 
 public:
 
@@ -203,19 +274,13 @@ public:
 	virtual void OnColoringCriticality(wxCommandEvent& event);
 	virtual void OnColoringCentrality(wxCommandEvent& event);
 	virtual void OnColoringRelativity(wxCommandEvent& event);
-
-	virtual void OnShowEarlyCriticalPath(wxCommandEvent& event);
-	virtual void OnShowLateCriticalPath(wxCommandEvent& event);
-	virtual void OnShowFaninTrees(wxCommandEvent& event);
-	virtual void OnShowFanoutTrees(wxCommandEvent& event);
 	
 	virtual void OnGenerateColorsFile(wxCommandEvent &event);
 
 	virtual void OnSearch(wxCommandEvent &event);
 
-	virtual void OnCheckView(wxCommandEvent &event);
 	virtual void OnCheckCellTimingMode(wxCommandEvent &event);
-	virtual void OnOverlayToggle(wxCommandEvent &event);
+	virtual void OnOverlayPropertyGridChanged(wxPropertyGridEvent &event);
 
 	virtual void OnKeyDown(wxKeyEvent &event);
 	virtual void OnMouseMotion(wxMouseEvent &event);
@@ -236,9 +301,7 @@ public:
 	virtual void OnLegalizeSelectedCell(wxCommandEvent& event);
 	
 	virtual void OnRun( wxCommandEvent& event );
-	
-	virtual void OnSpinChange(wxSpinEvent& event) override;
-	
+		
 
 	// Methods of help menu item
 	

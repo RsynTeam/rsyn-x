@@ -51,12 +51,14 @@ public:
 	std::vector<PhysicalRegion> clsPhysicalRegions;
 	std::vector<PhysicalGroup> clsPhysicalGroups;
 	std::vector<PhysicalSite> clsPhysicalSites;
+	std::vector<PhysicalVia> clsPhysicalVias;
 	std::unordered_map<std::string, int> clsMapPhysicalSites;
 	std::unordered_map<std::string, std::size_t> clsMapPhysicalRegions;
 	std::unordered_map<std::string, std::size_t> clsMapPhysicalGroups;
 
 	//From LEF file
-	std::unordered_map<std::string, int> clsMapPhysicalLayers;
+	std::unordered_map<std::string, std::size_t> clsMapPhysicalLayers;
+	std::unordered_map<std::string, std::size_t> clsMapPhysicalVias;
 	//std::vector<PhysicalSpacing> clsPhysicalSpacing;
 
 	Rsyn::PhysicalDieData clsPhysicalDie; // total area of the circuit including core bound. 

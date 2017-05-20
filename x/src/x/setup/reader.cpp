@@ -29,6 +29,7 @@
 #include "rsyn/io/reader/ISPD2012Reader.h"
 #include "rsyn/io/reader/ISPD2014Reader.h"
 
+#include "x/io/reader/GenericReader.h"
 #include "x/io/reader/ICCAD15Reader.h"
 
 // Registration
@@ -43,6 +44,7 @@ void Engine::registerReaders() {
 	registerReader<Rsyn::ISPD2012Reader>("ispd12");
 	registerReader<Rsyn::DesignPositionReader>("loadDesignPosition");
 
+	registerReader<Rsyn::GenericReader>("generic");
 	registerReader<ICCAD15::ICCAD15Reader>("iccad2015");
 } // end method 
 } // end namespace 

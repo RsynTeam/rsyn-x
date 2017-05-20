@@ -22,7 +22,7 @@
 
 // -----------------------------------------------------------------------------
 
-bool RegionOverlay::init(PhysicalCanvasGL * canvas) {
+bool RegionOverlay::init(PhysicalCanvasGL* canvas, nlohmann::json& properties) {
 	// Jucemar - 2017/03/25 -> Physical variable are initialized only when physical service was started.
 	// It avoids crashes when a design without physical data is loaded. 
 	if(!canvas->isPhysicalDesignInitialized())

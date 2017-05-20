@@ -149,6 +149,29 @@ public:
 
 // -----------------------------------------------------------------------------
 
+//! Descriptor for LEF Via Layer. A via layer is composed by a layer and a set of rectangles.
+
+class LefViaLayerDscp {
+public:
+	std::string clsLayerName = INVALID_LEF_NAME;
+	std::vector<DoubleRectangle> clsBounds;
+	LefViaLayerDscp() = default;
+}; // end class 
+
+// -----------------------------------------------------------------------------
+
+//! Descriptor for LEF Via
+
+class LefViaDscp {
+public:
+	int clsHasDefault = false;
+	std::string clsName = INVALID_LEF_NAME;
+	std::vector<LefViaLayerDscp> clsViaLayers;
+	LefViaDscp() = default;
+}; // end class 
+
+// -----------------------------------------------------------------------------
+
 //! Descriptor for LEF Units
 
 class LefUnitsDscp {
@@ -191,6 +214,7 @@ public:
 	std::vector<LefLayerDscp> clsLefLayerDscps;
 	std::vector<LefMacroDscp> clsLefMacroDscps;
 	std::vector<LefSpacingDscp> clsLefSpacingDscps;
+	std::vector<LefViaDscp> clsLefViaDscps;
 	LefDscp() = default;
 }; // end class 
 

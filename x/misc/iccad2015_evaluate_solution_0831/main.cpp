@@ -7,6 +7,9 @@
 /*  Created:  03/12/2015                                           */
 /*-----------------------------------------------------------------*/
 
+#include <iostream>
+#include <iomanip>
+
 #include "evaluate.h"
 
 int main(int argc, char** argv)
@@ -72,9 +75,12 @@ int main(int argc, char** argv)
   cout << "Analyzing timing .. "<<endl;
   ckt.measure_HPWL();
   bool timer_done = ckt.measure_timing();
+  cout << std::fixed << setprecision(2);
   cout << "  HPWL, StWL (um) : " << ckt.total_HPWL << ", " <<ckt.total_StWL << endl;
   cout << "  Scaled StWL     : " << ckt.total_StWL * (1 + ALPHA * ckt.ABU_penalty) << " ( "<< ALPHA * ckt.ABU_penalty*100 << "% )"<<endl;
 	cout << "  Clock period    : " << ckt.clock_period << endl;
+
+	cout << std::scientific << setprecision(5);
 	if(timer_done)
 	{
 		cout << "  early WNS, TNS  : " << ckt.eWNS << ", " << ckt.eTNS <<endl;

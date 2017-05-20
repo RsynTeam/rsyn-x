@@ -28,6 +28,7 @@
 #include "rsyn/engine/Service.h"
 #include "rsyn/engine/Process.h"
 #include "rsyn/engine/Reader.h"
+#include "rsyn/engine/Message.h"
 
 #include "rsyn/3rdparty/json/json.hpp"
 
@@ -46,12 +47,6 @@ enum GraphicsEvent {
 	GRAPHICS_EVENT_DESIGN_LOADED,
 	GRAPHICS_EVENT_REFRESH,
 	GRAPHICS_EVENT_UPDATE_OVERLAY_LIST
-}; // end enum
-
-enum MessageLevel {
-	INFO,
-	WARNING,
-	ERROR
 }; // end enum
 
 typedef std::function<Service *()> ServiceInstantiatonFunction;
@@ -86,12 +81,21 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 struct EngineData {
+	bool clsInitialized = false;
+	Message msgMessageRegistrationFail;
+
 	////////////////////////////////////////////////////////////////////////////
 	// Session Variables
 	////////////////////////////////////////////////////////////////////////////
 	
 	std::map<std::string, Json> clsSessionVariables;
-	
+
+	////////////////////////////////////////////////////////////////////////////
+	// Message System
+	////////////////////////////////////////////////////////////////////////////
+
+	MessageManager clsMessageManager;
+
 	////////////////////////////////////////////////////////////////////////////
 	// Services
 	////////////////////////////////////////////////////////////////////////////
@@ -155,7 +159,7 @@ public:
 		return *this;
 	}	
 	
-//	~Engine();
+	//~Engine();
 	
 	void create();
 	void destroy();
@@ -412,10 +416,17 @@ public:
 	// Messages
 	////////////////////////////////////////////////////////////////////////////
 
+private:
+	void registerInternalMessages();
+	void registerDefaultMessages();
+
 public:
 
-	static void registerMessage(const std::string &label, const MessageLevel &level, const std::string &title, const std::string &msg);
+	void registerMessages();
 
+	void registerMessage(const std::string &label, const MessageLevel &level, const std::string &title, const std::string &msg);
+	Message getMessage(const std::string &label);
+	
 	////////////////////////////////////////////////////////////////////////////
 	// Misc
 	////////////////////////////////////////////////////////////////////////////

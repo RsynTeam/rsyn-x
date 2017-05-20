@@ -29,15 +29,15 @@
 #include <wx/button.h>
 #include <wx/slider.h>
 #include <wx/statbox.h>
-#include <wx/checklst.h>
-#include <wx/checkbox.h>
-#include <wx/spinctrl.h>
+#include <wx/propgrid/advprops.h>
 #include <wx/textctrl.h>
+#include <wx/checkbox.h>
 #include <wx/choice.h>
 #include <wx/statline.h>
 #include <wx/notebook.h>
 #include <wx/frame.h>
 #include <wx/dialog.h>
+#include <wx/spinctrl.h>
 #include <wx/combobox.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -54,13 +54,9 @@
 #define ID_ZOOM_OUT 1009
 #define ID_PHYSICAL 1010
 #define ID_SCHEMATIC 1011
-#define ID_VIEW_CELLS 1012
-#define ID_VIEW_TERMINALS 1013
-#define ID_VIEW_NODES_PORTS 1014
-#define ID_VIEW_NODES_SEQUENTIAL 1015
-#define ID_RAINBOW 1016
-#define ID_COLORING_RANDOM_BLUE 1017
-#define ID_GENERATE_COLORS_FILE 1018
+#define ID_RAINBOW 1012
+#define ID_COLORING_RANDOM_BLUE 1013
+#define ID_GENERATE_COLORS_FILE 1014
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class MainFrameBase
@@ -75,10 +71,6 @@ class MainFrameBase : public wxFrame
 		wxMenu* clsMenuCanvas;
 		wxMenuItem* clsMenuItemPhysicalCanvas;
 		wxMenuItem* clsMenuItemSchematicCanvas;
-		wxMenuItem* clsMenuItemViewMovableNodes;
-		wxMenuItem* clsMenuItemViewFixedNodes;
-		wxMenuItem* clsMenuItemViewPortNodes;
-		wxMenuItem* clsMenuItemViewSequentialNodes;
 		wxMenu* clsMenuColoring;
 		wxMenuItem* clsMenuItemColoringColorful;
 		wxMenuItem* clsMenuItemColoringRandomBlue;
@@ -147,16 +139,7 @@ class MainFrameBase : public wxFrame
 		wxPanel* m_panel10;
 		wxButton* m_button51;
 		wxSlider* clsSlider;
-		wxCheckListBox* clsLstOverlays;
-		wxStaticText* m_staticText59;
-		wxCheckBox* clsChkShowEarlyCriticalPath;
-		wxCheckBox* clsChkShowLateCriticalPath;
-		wxStaticText* m_staticText21;
-		wxStaticText* m_staticText22;
-		wxStaticText* m_staticText60;
-		wxCheckBox* clsChkShowFaninTrees;
-		wxCheckBox* clsChkShowFanoutTrees;
-		wxCheckBox* clsItemSnapshot;
+		wxPropertyGrid* clsOverlayPropertyGrid;
 		wxChoicebook* clsChoicebookColoring;
 		wxPanel* m_panel40;
 		wxStaticText* m_staticText180;
@@ -211,7 +194,6 @@ class MainFrameBase : public wxFrame
 		virtual void OnZoomIn( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnZoomOut( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnChangeView( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnCheckView( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnColoringColorful( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnColoringRandomBlue( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnColoringGray( wxCommandEvent& event ) { event.Skip(); }
@@ -225,12 +207,7 @@ class MainFrameBase : public wxFrame
 		virtual void OnChangeView( wxChoicebookEvent& event ) { event.Skip(); }
 		virtual void OnCheckpoint( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnScroll( wxScrollEvent& event ) { event.Skip(); }
-		virtual void OnOverlayToggle( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnShowEarlyCriticalPath( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnShowLateCriticalPath( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnSpinChange( wxSpinEvent& event ) { event.Skip(); }
-		virtual void OnShowFaninTrees( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnShowFanoutTrees( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnOverlayPropertyGridChanged( wxPropertyGridEvent& event ) { event.Skip(); }
 		virtual void OnColoringCriticality( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnColoringCentrality( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnColoringRelativity( wxCommandEvent& event ) { event.Skip(); }
@@ -248,7 +225,6 @@ class MainFrameBase : public wxFrame
 		
 	
 	public:
-		wxSpinCtrl* m_spinCtrl1;
 		
 		MainFrameBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Rsyn - Universidade Federal do Rio Grande do Sul (UFRGS)"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1280,720 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 		

@@ -56,6 +56,13 @@ public:
 	DBU getPitch() const;
 	//! @brief Returns the layer spacing in DBU.
 	DBU getSpacing() const;
+	//! @brief Returns the layer index w.r.t to all physical layers. It starts
+	//!        from 0 that is the bottom layer
+	//! @note  If you need an index relative to the layer type, see
+	//!        getRelativeIndex().
+	int getIndex() const;
+	//! @brief Returns the relative layer index w.r.t. the layers of same type.
+	int getRelativeIndex() const;
 }; // end class 
 
 } // end namespace 

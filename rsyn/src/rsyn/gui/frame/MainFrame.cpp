@@ -28,6 +28,7 @@
 #include "rsyn/io/Writer.h"
 #include "rsyn/io/Graphics.h"
 #include "rsyn/gui/canvas/SchematicCanvasGL.h"
+#include "rsyn/gui/canvas/Stipple.h"
 
 #include <wx/window.h>
 #include <wx/filename.h>
@@ -223,29 +224,57 @@ void MainFrame::OnKeyDown(wxKeyEvent &WXUNUSED(event)) {
 
 // -----------------------------------------------------------------------------
 
-void MainFrame::OnCheckView(wxCommandEvent &WXUNUSED(event)) {
-	nlohmann::json instanceOverlayParams;
-	instanceOverlayParams["view"]["movable"] = clsMenuItemViewMovableNodes->IsChecked();
-	instanceOverlayParams["view"]["fixed"] = clsMenuItemViewFixedNodes->IsChecked();
-	instanceOverlayParams["view"]["port"] = clsMenuItemViewPortNodes->IsChecked();
-	instanceOverlayParams["view"]["sequential"] = clsMenuItemViewSequentialNodes->IsChecked();
-	configOverlay("Instances", instanceOverlayParams);
-
-	if (clsCanvasGLPtr == clsPhysicalCanvasGLPtr)
-		clsCanvasGLPtr->Refresh();
-} // end method
-
-// -----------------------------------------------------------------------------
-
 void MainFrame::OnCheckCellTimingMode(wxCommandEvent &event) {
 	UpdateStats(false);
 } // end method
 
 // -----------------------------------------------------------------------------
 
-void MainFrame::OnOverlayToggle(wxCommandEvent &event) {
-	const std::string overlayName = clsLstOverlays->GetString(event.GetInt()).ToStdString();
-	clsPhysicalCanvasGLPtr->setOverlayVisibility(overlayName, clsLstOverlays->IsChecked(event.GetInt()));
+void MainFrame::OnOverlayPropertyGridChanged(wxPropertyGridEvent& event) {
+	wxPGProperty* property = event.GetProperty();
+	
+	const std::string name = property->GetName().ToStdString();
+	
+	if (clsPhysicalCanvasGLPtr->isOverlay(name)) {
+		const bool visible = property->GetValue();
+		clsPhysicalCanvasGLPtr->setOverlayVisibility(name, visible);
+	} else {
+		const std::string overlayName = name.substr(0, name.find_first_of('.'));
+		const std::string propertyName = 
+			name.substr(name.find_first_of('.')+1, name.size());
+		
+		Rsyn::Json param;
+		if (property->GetValueType() == "bool") {
+			param[propertyName] = property->GetValue().GetBool(); 
+		} else if (property->GetValueType() == "long") {
+			param[propertyName] = property->GetValue().GetInteger(); 
+		} else if (property->GetValueType() == "wxColour") {
+			const wxVariant variant = property->GetValue();
+			wxColor color;
+			// Awful..
+			color << variant;
+			const Rsyn::Json value = {
+				{"r", int(color.Red())},
+				{"g", int(color.Green())},
+				{"b", int(color.Blue())}
+			};
+			
+			// Refresh stipple icon
+			const int stipple = propToStipple[property];
+			wxBitmap bitmap = 
+				createBitmapFromMask(STIPPLE_MASKS[stipple], color, color);
+			property->GetParent()->SetValueImage(bitmap);
+			
+			param[propertyName] = value;
+		} else {
+			std::cout << "ERROR: Property type '" << property->GetValueType() << 
+							" not supported\n";
+			std::exit(1);
+		} // end if
+		
+		configOverlay(overlayName, param);
+	} // end if
+	
 	if (clsCanvasGLPtr == clsPhysicalCanvasGLPtr)
 		clsCanvasGLPtr->Refresh();
 } // end method
@@ -560,42 +589,6 @@ void MainFrame::OnColoringCentrality( wxCommandEvent& event ){
 
 // -----------------------------------------------------------------------------
 
-void MainFrame::OnShowEarlyCriticalPath(wxCommandEvent& event) {
-	if (!clsCanvasGLPtr)
-		return;
-	clsPhysicalCanvasGLPtr->SetViewEarlyCriticalPath(clsChkShowEarlyCriticalPath->GetValue());
-	UpdateStats(true);
-} // end method
-
-// -----------------------------------------------------------------------------
-
-void MainFrame::OnShowLateCriticalPath(wxCommandEvent& event) {
-	if (!clsCanvasGLPtr)
-		return;
-	clsPhysicalCanvasGLPtr->SetViewLateCriticalPath(clsChkShowLateCriticalPath->GetValue());
-	UpdateStats(true);	
-} // end method
-
-// -----------------------------------------------------------------------------
-
-void MainFrame::OnShowFaninTrees(wxCommandEvent& event) {
-	if (!clsCanvasGLPtr)
-		return;
-	clsPhysicalCanvasGLPtr->SetViewFaninTrees(clsChkShowFaninTrees->GetValue());
-	UpdateStats(true);	
-} // end method
-
-// -----------------------------------------------------------------------------
-
-void MainFrame::OnShowFanoutTrees(wxCommandEvent& event) {
-	if (!clsCanvasGLPtr)
-		return;
-	clsPhysicalCanvasGLPtr->SetViewFanoutTrees(clsChkShowFanoutTrees->GetValue());
-	UpdateStats(true);		
-} // end method
-
-// -----------------------------------------------------------------------------
-
 void MainFrame::OnGenerateColorsFile(wxCommandEvent &event) {
 	//DoGenerateColorsFile();
 } // end method
@@ -724,7 +717,7 @@ void MainFrame::OnScroll(wxScrollEvent& WXUNUSED(event)) {
 		clsPhysicalCanvasGLPtr->setInterpolationValue(0.0);
 	} else {
 		sizerViewMode->GetStaticBox()->SetLabel(wxT("Interpolated Mode (On)"));
-		clsPhysicalCanvasGLPtr->setInterpolationValue(clsSlider->GetValue() / double(clsSlider->GetMax()));
+		clsPhysicalCanvasGLPtr->setInterpolationValue(clsSlider->GetValue() / float(clsSlider->GetMax()));
 	} // end else
 } // end event
 
@@ -1020,15 +1013,6 @@ void MainFrame::OnRun(wxCommandEvent& event) {
 	UpdateStats(true);
 } // end event 
 
-// -----------------------------------------------------------------------------
-
-void MainFrame::OnSpinChange(wxSpinEvent& event) {
-	if (!clsCanvasGLPtr)
-		return;
-
-	clsPhysicalCanvasGLPtr->setCriticalPathWidth( (double) m_spinCtrl1->GetValue() );
-} // end method
-
 ////////////////////////////////////////////////////////////////////////////////
 // Engine Graphics Events
 ////////////////////////////////////////////////////////////////////////////////
@@ -1120,4 +1104,57 @@ void MainFrame::processGraphicsEventUpdateOverlayList() {
 		return;
 	
 	registerAllOverlays();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+wxImage MainFrame::createBitmapFromMask(const unsigned char * mask, wxColor line, wxColor fill) {
+	struct RGB {
+		unsigned char r, g, b;
+		RGB() {
+			r = g = b = 0;
+		}
+		RGB(const Color &color) {
+			r = color.r;
+			g = color.g;
+			b = color.b;
+		}
+	};
+	static_assert(sizeof(RGB) == 3,  "RGB must have exactly 3 bytes.");
+
+	RGB *data = new RGB[ 32*32 ];
+
+	Color backgroundColor = Color();
+	Color borderColor = Color(line.Red(), line.Green(), line.Blue());
+
+	Color fillColor = Color(fill.Red(), fill.Green(), fill.Blue()) ;
+
+	// Interior
+	for ( int i = 0; i < 128; i++ ) {
+		unsigned char byte = mask[ i ];
+		for ( int k = 0; k < 8; k++ ) {
+			const int index = i * 8;
+			if ( byte & ( ( (unsigned char) 128 ) >> k ) )
+				data[ index + k ] = fillColor;
+			else
+				data[ index + k ] = backgroundColor;
+		} // end for k
+	} // end for i
+
+	wxImage image;
+	image.SetData( (unsigned char*) data, 32, 32 );
+
+	const int w = 19;
+	const int h = 19;
+
+	image.Resize( wxSize( w, h ), wxPoint( 0, 0 ) ); // Remark: this delete the contents of data
+
+	// Border
+	data = (RGB * ) image.GetData();
+	for ( int i1 =       0; i1 <       w; i1 += 1 ) data[ i1 ] = borderColor; // top
+	for ( int i2 =       w; i2 < w*(h-1); i2 += w ) data[ i2 ] = borderColor; // left
+	for ( int i3 =   w*2-1; i3 <     w*h; i3 += w ) data[ i3 ] = borderColor; // right
+	for ( int i4 = w*(h-1); i4 <     w*h; i4 += 1 ) data[ i4 ] = borderColor; // bottom
+
+	return image;
 } // end method

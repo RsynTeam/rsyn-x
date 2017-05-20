@@ -198,7 +198,7 @@ void ICCAD15Reader::openBenchmarkFromICCAD15()  {
 	routingExtractionModel->initialize(
 			resPerMicron / clsDesignDistanceUnit,
 			capPerMicron / clsDesignDistanceUnit,
-			MAX_WIRE_SEGMENT_IN_MICRON * clsDesignDistanceUnit);
+			(DBU) (MAX_WIRE_SEGMENT_IN_MICRON * clsDesignDistanceUnit));
 
 	engine.startService("rsyn.routingEstimator", {});
 	clsRoutingEstimator = engine.getService("rsyn.routingEstimator");
@@ -344,30 +344,67 @@ void ICCAD15Reader::parseParams(const std::string &filename) {
 		cerr << "the script will use the default parameters for evaluation." << endl;
 		exit(1);
 	} else {
+		bool paramWireCap = false;
+		bool paramWireRes = false;
+		bool paramMaxWireSegment = false;
+		bool paramMaxLcbs = false;
+
 		string tmpStr;
 		dot_parm >> tmpStr;
 		while (!dot_parm.eof()) {
-			if (tmpStr == "LOCAL_WIRE_CAPACITANCE_PER_MICRON")
+			if (tmpStr == "LOCAL_WIRE_CAPACITANCE_PER_MICRON") {
 				dot_parm >> LOCAL_WIRE_CAP_PER_MICRON;
-			else if (tmpStr == "LOCAL_WIRE_RESISTANCE_PER_MICRON")
+				paramWireCap = true;
+			} else if (tmpStr == "LOCAL_WIRE_RESISTANCE_PER_MICRON") {
 				dot_parm >> LOCAL_WIRE_RES_PER_MICRON;
-			else if (tmpStr == "MAX_WIRE_SEGMENT_LENGTH_IN_MICRON")
+				paramWireRes = true;
+			} else if (tmpStr == "MAX_WIRE_SEGMENT_LENGTH_IN_MICRON") {
 				dot_parm >> MAX_WIRE_SEGMENT_IN_MICRON;
-			else if (tmpStr == "MAX_LCB_FANOUTS")
+				paramMaxWireSegment = true;
+			} else if (tmpStr == "MAX_LCB_FANOUTS") {
 				dot_parm >> MAX_LCB_FANOUTS;
-			else {
-				cout << "unrecognized keyword : " << tmpStr << endl;
+				paramMaxLcbs = true;
+			} else {
+				std::cout << "Error: Unrecognized keyword '" << tmpStr << "'.\n" << std::endl;
+				std::exit(1);
 				dot_parm >> tmpStr;
-			}
+			} // end else
+			
+			if (dot_parm.fail()) {
+				std::cout << "Error: Unable to parse .pram file correctly." << std::endl;
+				std::exit(1);
+			} // end if
+			
 			dot_parm >> tmpStr;
-		}
-	}
+		} // end while
+
+		if (!paramWireCap) {
+			std::cout << "Error: Missing LOCAL_WIRE_CAPACITANCE_PER_MICRON parameter." << std::endl;
+			std::exit(1);
+		} // end if
+
+		if (!paramWireRes) {
+			std::cout << "Error: Missing LOCAL_WIRE_RES_PER_MICRON parameter." << std::endl;
+			std::exit(1);
+		} // end if
+
+		if (!paramMaxWireSegment) {
+			std::cout << "Error: Missing MAX_WIRE_SEGMENT_IN_MICRON parameter." << std::endl;
+			std::exit(1);
+		} // end if
+
+		if (!paramMaxLcbs) {
+			std::cout << "Error: Missing MAX_LCB_FANOUTS parameter." << std::endl;
+			std::exit(1);
+		} // end if
+	} // end else
 	dot_parm.close();
-	cout << "Timer Parameters:\n";
-	cout << "\tLOCAL_WIRE_RESISTANCE   : " << LOCAL_WIRE_RES_PER_MICRON << " Ohm/um\n" ;
-	cout << "\tLOCAL_WIRE_CAPACITANCE  : " << LOCAL_WIRE_CAP_PER_MICRON << " Farad/um\n" ;
-	cout << "\tMAX_WIRE_SEGMENT_LENGTH : " << MAX_WIRE_SEGMENT_IN_MICRON << " um\n";
-	cout << "\tMAX_LCB_FANOUTS         : " << MAX_LCB_FANOUTS << "\n";
+
+	std::cout << "Timer Parameters:\n";
+	std::cout << "\tLOCAL_WIRE_RESISTANCE   : " << LOCAL_WIRE_RES_PER_MICRON << " Ohm/um\n" ;
+	std::cout << "\tLOCAL_WIRE_CAPACITANCE  : " << LOCAL_WIRE_CAP_PER_MICRON << " Farad/um\n" ;
+	std::cout << "\tMAX_WIRE_SEGMENT_LENGTH : " << MAX_WIRE_SEGMENT_IN_MICRON << " um\n";
+	std::cout << "\tMAX_LCB_FANOUTS         : " << MAX_LCB_FANOUTS << "\n";
 } // end method
 
 // -----------------------------------------------------------------------------

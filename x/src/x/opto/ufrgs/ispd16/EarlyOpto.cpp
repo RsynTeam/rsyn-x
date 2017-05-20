@@ -1,18 +1,3 @@
-/* Copyright 2014-2017 Rsyn
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
- 
 #include "EarlyOpto.h"
 
 #include "rsyn/util/AsciiProgressBar.h"
@@ -36,12 +21,23 @@ bool EarlyOpto::run(Rsyn::Engine engine, const Rsyn::Json &params) {
 	this->module = design.getTopModule();
 	this->physical = engine.getService("rsyn.physical");
 	this->phDesign = physical->getPhysicalDesign();
-	
+
+	// Define a small clock uncertainty to account for the small mismatches
+	// between our built-in timer and ui-timer. In this way our optimization
+	// pushes the early slack further down, which than can zero the early slack
+	// when measured in the ui-timer. It seems main source of mismatches are
+	// due to CCPR, which we currently not implement in our flow.
+	const Number oldClockUncertainty = timer->getClockUncertainty(Rsyn::EARLY);
+	timer->setClockUncertainty(Rsyn::EARLY, 2);
+	infra->updateQualityScore();
+	infra->reportSummary("set-clock-uncertainty");
+	infra->updateTDPSolution(true);
+
 	if (params.count("runOnlyEarlySpreadingIterative") && params["runOnlyEarlySpreadingIterative"]) {
 		runEarlySpreadingIterative(true);
 	} else {
 		stepSkewOptimization();
-		infra->statePush("skew-opto");	
+		infra->statePush("skew-opto");
 
 		stepIterativeSpreading();
 		infra->statePush("iterative-spreading");
@@ -52,7 +48,16 @@ bool EarlyOpto::run(Rsyn::Engine engine, const Rsyn::Json &params) {
 		stepRegisterToRegisterPathFix();
 		infra->statePush("reg-to-reg-path-fix");
 	} // end else	
-	
+
+	// Revert clock uncertainty.
+	timer->setClockUncertainty(Rsyn::EARLY, oldClockUncertainty);
+	infra->updateQualityScore();
+	infra->reportSummary("reset-clock-uncertainty");
+	infra->updateTDPSolution(true);
+
+	// Restore best solution.
+	infra->restoreBestSolution();
+
 	return true;
 } // end method
 

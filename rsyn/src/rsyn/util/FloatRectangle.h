@@ -62,14 +62,27 @@ public:
 		clsPoints[1].y = bounds[1].y;
 	} // end constructor
 
-	Bounds scaleAndConvertToDbu(const float scale) const {
+	Bounds scaleAndConvertToDbu(const float scale,
+			const RoundingStrategy roundingLower,
+			const RoundingStrategy roundingUpper) const {
 		FloatRectangle copy = *this;
 		copy.scaleCoordinates(scale);
-		return copy.convertToDbu();
+		return copy.convertToDbu(roundingLower, roundingUpper);
 	} // end method
 
-	Bounds convertToDbu() const {
-		return Bounds(clsPoints[0].convertToDbu(), clsPoints[1].convertToDbu());
+	Bounds convertToDbu(
+			const RoundingStrategy roundingLower,
+			const RoundingStrategy roundingUpper) const {
+		return Bounds(clsPoints[0].convertToDbu(roundingLower), clsPoints[1].convertToDbu(roundingUpper));
+	} // end method
+
+	Bounds scaleAndConvertToDbu(const float scale,
+			const RoundingStrategy rounding = ROUND_DOWN) const {
+		return scaleAndConvertToDbu(scale, rounding, rounding);
+	} // end method
+
+	Bounds convertToDbu(const RoundingStrategy rounding = ROUND_DOWN) const {
+		return convertToDbu(rounding, rounding);
 	} // end method
 
 	void updatePoints(const float2 pmin, const float2 pmax){

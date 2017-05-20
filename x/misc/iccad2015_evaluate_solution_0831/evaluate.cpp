@@ -410,7 +410,8 @@ void circuit::build_steiner()
     // two pin nets
     if(numpins==2)
     {
-      double wirelength = fabs(pins[ theNet->source ].x_coord - pins[ theNet->sinks[0] ].x_coord) +
+      double wirelength = 
+       	fabs(pins[ theNet->source ].x_coord - pins[ theNet->sinks[0] ].x_coord) +
         fabs(pins[ theNet->source ].y_coord - pins[ theNet->sinks[0] ].y_coord);
       total_StWL += wirelength;
 			theNet->wire_segs.push_back( make_pair (make_pair(pins[ theNet->source ].name, pins[ theNet->sinks[0] ].name), wirelength) );

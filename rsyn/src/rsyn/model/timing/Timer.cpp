@@ -28,14 +28,6 @@
 
 #define TIMER_DEBUG_PRUNING 0
 
-Rsyn::Startup startup([]{
-	Rsyn::Engine::registerMessage(
-			"rsyn.timer.1",
-			Rsyn::WARNING,
-			"Unusual timing arc.",
-			"Timing arc '<arc>' of library cell '<cell>' is not supported.");
-}); // end startup
-
 namespace Rsyn {
 
 // -----------------------------------------------------------------------------	
@@ -128,6 +120,9 @@ void Timer::start(Engine engine, const Json &params) {
 			if (full) updateTimingFull();
 			else updateTimingIncremental();
 		});
+
+		msgUnusualArcSense = engine.getMessage("TIMER-001");
+		msgUnusualArcType = engine.getMessage("TIMER-002");
 	} // end block
 } // end method
 
@@ -161,7 +156,9 @@ bool Timer::isUnusualTimingArc(const ISPD13::LibParserTimingInfo &libArc) const 
 	if (libArc.timingSense != "non_unate" &&
 			libArc.timingSense != "positive_unate" &&
 			libArc.timingSense != "negative_unate") {
-		std::cout << "unusual sense: " << libArc.timingSense << "\n";
+		msgUnusualArcSense.replace("arc", libArc.fromPin + "->" + libArc.toPin);
+		msgUnusualArcSense.replace("sense", libArc.timingSense);
+		msgUnusualArcSense.print();
 		return true;
 	} // end if
 	
@@ -169,7 +166,9 @@ bool Timer::isUnusualTimingArc(const ISPD13::LibParserTimingInfo &libArc) const 
 			libArc.timingType != "combinational" &&
 			libArc.timingType != "rising_edge" && 
 			libArc.timingType != "falling_edge") {
-		std::cout << "unusual type: " << libArc.timingType << "\n";
+		msgUnusualArcType.replace("arc", libArc.fromPin + "->" + libArc.toPin);
+		msgUnusualArcType.replace("type", libArc.timingType);
+		msgUnusualArcType.print();
 		return true;
 	} // end if
 	
@@ -317,6 +316,19 @@ void Timer::setTimingLibraryPinSetupConstraint(
 	TimingLibraryPin &constrained,
 	TimingLibraryPin &related) {
 	constrained.control = related.index;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void Timer::setClockUncertainty(const TimingMode mode, const Number uncertainty) {
+	clockUncertainty[mode] = uncertainty;
+
+	// Update required times.
+	updateTiming_UpdateTimingTests();
+	updateTiming_UpdateTimingViolations();
+	updateTiming_PropagateRequiredTimes();
+	updateTiming_Centrality();
+	updateTiming_CriticalEndpoints();
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -849,11 +861,11 @@ void Timer::updateTiming_UpdateTimingTests_SetupHold_DataPin(Rsyn::Pin pin) {
 
 	// Setup
 	EdgeArray<Number> tsetup = timingModel->getSetupTime(pin);
-	timingPin.state[LATE].q = T + clk.state[EARLY].a[RISE] - tsetup;
+	timingPin.state[LATE].q = T + (clk.state[EARLY].a[RISE] - clockUncertainty[LATE]) - tsetup;
 
 	// Hold
 	EdgeArray<Number> thold = timingModel->getHoldTime(pin);
-	timingPin.state[EARLY].q = clk.state[LATE].a[RISE] + thold; 
+	timingPin.state[EARLY].q = (clk.state[LATE].a[RISE] + clockUncertainty[EARLY]) + thold;
 } // end method
 
 // -----------------------------------------------------------------------------

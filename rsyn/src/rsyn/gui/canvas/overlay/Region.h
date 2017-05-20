@@ -39,7 +39,7 @@ public:
 
 	RegionOverlay() = default;
 
-	virtual bool init(PhysicalCanvasGL * canvas);
+	virtual bool init(PhysicalCanvasGL* canvas, nlohmann::json& properties);
 	virtual void render(PhysicalCanvasGL * canvas);
 	virtual void config(const nlohmann::json &params);
 

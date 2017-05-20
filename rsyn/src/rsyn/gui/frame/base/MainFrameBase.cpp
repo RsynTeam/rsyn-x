@@ -75,24 +75,6 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	clsMenuItemSchematicCanvas = new wxMenuItem( clsMenuCanvas, ID_SCHEMATIC, wxString( wxT("Schematic") ) + wxT('\t') + wxT("Ctrl+2"), wxEmptyString, wxITEM_RADIO );
 	clsMenuCanvas->Append( clsMenuItemSchematicCanvas );
 	
-	clsMenuCanvas->AppendSeparator();
-	
-	clsMenuItemViewMovableNodes = new wxMenuItem( clsMenuCanvas, ID_VIEW_CELLS, wxString( wxT("View Nodes (Movable)") ) , wxEmptyString, wxITEM_CHECK );
-	clsMenuCanvas->Append( clsMenuItemViewMovableNodes );
-	clsMenuItemViewMovableNodes->Check( true );
-	
-	clsMenuItemViewFixedNodes = new wxMenuItem( clsMenuCanvas, ID_VIEW_TERMINALS, wxString( wxT("View Nodes (Fixed)") ) , wxEmptyString, wxITEM_CHECK );
-	clsMenuCanvas->Append( clsMenuItemViewFixedNodes );
-	clsMenuItemViewFixedNodes->Check( true );
-	
-	clsMenuItemViewPortNodes = new wxMenuItem( clsMenuCanvas, ID_VIEW_NODES_PORTS, wxString( wxT("View Nodes (Ports)") ) , wxEmptyString, wxITEM_CHECK );
-	clsMenuCanvas->Append( clsMenuItemViewPortNodes );
-	clsMenuItemViewPortNodes->Check( true );
-	
-	clsMenuItemViewSequentialNodes = new wxMenuItem( clsMenuCanvas, ID_VIEW_NODES_SEQUENTIAL, wxString( wxT("View Nodes (Sequential)") ) , wxEmptyString, wxITEM_CHECK );
-	clsMenuCanvas->Append( clsMenuItemViewSequentialNodes );
-	clsMenuItemViewSequentialNodes->Check( true );
-	
 	clsMenuBar->Append( clsMenuCanvas, wxT("Canvas") ); 
 	
 	clsMenuColoring = new wxMenu();
@@ -297,80 +279,11 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	wxStaticBoxSizer* sbSizer9;
 	sbSizer9 = new wxStaticBoxSizer( new wxStaticBox( clsPanelPhysicalView, wxID_ANY, wxT("Overlays") ), wxVERTICAL );
 	
-	wxArrayString clsLstOverlaysChoices;
-	clsLstOverlays = new wxCheckListBox( sbSizer9->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, clsLstOverlaysChoices, 0 );
-	sbSizer9->Add( clsLstOverlays, 1, wxALL|wxEXPAND, 5 );
+	clsOverlayPropertyGrid = new wxPropertyGrid(sbSizer9->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_DEFAULT_STYLE);
+	sbSizer9->Add( clsOverlayPropertyGrid, 1, wxALL|wxEXPAND, 5 );
 	
 	
-	bSizer24->Add( sbSizer9, 1, wxEXPAND, 5 );
-	
-	wxStaticBoxSizer* sbSizer15;
-	sbSizer15 = new wxStaticBoxSizer( new wxStaticBox( clsPanelPhysicalView, wxID_ANY, wxT("Misc") ), wxVERTICAL );
-	
-	wxBoxSizer* bSizer61;
-	bSizer61 = new wxBoxSizer( wxVERTICAL );
-	
-	wxBoxSizer* bSizer73;
-	bSizer73 = new wxBoxSizer( wxHORIZONTAL );
-	
-	m_staticText59 = new wxStaticText( sbSizer15->GetStaticBox(), wxID_ANY, wxT("Critical Path:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText59->Wrap( -1 );
-	bSizer73->Add( m_staticText59, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-	
-	clsChkShowEarlyCriticalPath = new wxCheckBox( sbSizer15->GetStaticBox(), wxID_ANY, wxT("Early"), wxDefaultPosition, wxDefaultSize, 0 );
-	clsChkShowEarlyCriticalPath->SetValue(true); 
-	bSizer73->Add( clsChkShowEarlyCriticalPath, 0, wxALL, 5 );
-	
-	clsChkShowLateCriticalPath = new wxCheckBox( sbSizer15->GetStaticBox(), wxID_ANY, wxT("Late"), wxDefaultPosition, wxDefaultSize, 0 );
-	clsChkShowLateCriticalPath->SetValue(true); 
-	bSizer73->Add( clsChkShowLateCriticalPath, 0, wxALL, 5 );
-	
-	
-	bSizer61->Add( bSizer73, 1, wxEXPAND, 5 );
-	
-	wxBoxSizer* bSizer28;
-	bSizer28 = new wxBoxSizer( wxHORIZONTAL );
-	
-	m_staticText21 = new wxStaticText( sbSizer15->GetStaticBox(), wxID_ANY, wxT("Line width:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText21->Wrap( -1 );
-	bSizer28->Add( m_staticText21, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-	
-	m_spinCtrl1 = new wxSpinCtrl( sbSizer15->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, 1, 10, 5 );
-	bSizer28->Add( m_spinCtrl1, 0, wxALL, 5 );
-	
-	m_staticText22 = new wxStaticText( sbSizer15->GetStaticBox(), wxID_ANY, wxT("px"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText22->Wrap( -1 );
-	bSizer28->Add( m_staticText22, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-	
-	
-	bSizer61->Add( bSizer28, 1, wxEXPAND, 5 );
-	
-	wxBoxSizer* bSizer74;
-	bSizer74 = new wxBoxSizer( wxHORIZONTAL );
-	
-	m_staticText60 = new wxStaticText( sbSizer15->GetStaticBox(), wxID_ANY, wxT("Tree(s):"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText60->Wrap( -1 );
-	bSizer74->Add( m_staticText60, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-	
-	clsChkShowFaninTrees = new wxCheckBox( sbSizer15->GetStaticBox(), wxID_ANY, wxT("Fanin"), wxDefaultPosition, wxDefaultSize, 0 );
-	clsChkShowFaninTrees->SetValue(true); 
-	bSizer74->Add( clsChkShowFaninTrees, 0, wxALL, 5 );
-	
-	clsChkShowFanoutTrees = new wxCheckBox( sbSizer15->GetStaticBox(), wxID_ANY, wxT("Fanout"), wxDefaultPosition, wxDefaultSize, 0 );
-	clsChkShowFanoutTrees->SetValue(true); 
-	bSizer74->Add( clsChkShowFanoutTrees, 0, wxALL, 5 );
-	
-	
-	bSizer61->Add( bSizer74, 1, wxEXPAND, 5 );
-	
-	clsItemSnapshot = new wxCheckBox( sbSizer15->GetStaticBox(), wxID_ANY, wxT("Snapshot"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer61->Add( clsItemSnapshot, 0, wxALL|wxEXPAND, 5 );
-	
-	
-	sbSizer15->Add( bSizer61, 1, wxEXPAND, 5 );
-	
-	
-	bSizer24->Add( sbSizer15, 0, wxEXPAND, 5 );
+	bSizer24->Add( sbSizer9, 1, wxALL|wxEXPAND, 5 );
 	
 	wxStaticBoxSizer* sbSizer14;
 	sbSizer14 = new wxStaticBoxSizer( new wxStaticBox( clsPanelPhysicalView, wxID_ANY, wxT("Coloring") ), wxVERTICAL );
@@ -657,7 +570,7 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	bSizer6->Fit( opto_panel );
 	clsNotebook->AddPage( opto_panel, wxT("Opto"), false );
 	
-	fgSizer3->Add( clsNotebook, 0, wxALL|wxEXPAND, 5 );
+	fgSizer3->Add( clsNotebook, 1, wxALL|wxEXPAND, 5 );
 	
 	clsTxtCommand = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER|wxTE_PROCESS_TAB );
 	#ifdef __WXGTK__
@@ -697,10 +610,6 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	this->Connect( clsMenuItemZoomOut->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnZoomOut ) );
 	this->Connect( clsMenuItemPhysicalCanvas->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnChangeView ) );
 	this->Connect( clsMenuItemSchematicCanvas->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnChangeView ) );
-	this->Connect( clsMenuItemViewMovableNodes->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
-	this->Connect( clsMenuItemViewFixedNodes->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
-	this->Connect( clsMenuItemViewPortNodes->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
-	this->Connect( clsMenuItemViewSequentialNodes->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
 	this->Connect( clsMenuItemColoringColorful->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnColoringColorful ) );
 	this->Connect( clsMenuItemColoringRandomBlue->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnColoringRandomBlue ) );
 	this->Connect( clsMenuitemColoringGray->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnColoringGray ) );
@@ -715,13 +624,7 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	clsChoicebookView->Connect( wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGED, wxChoicebookEventHandler( MainFrameBase::OnChangeView ), NULL, this );
 	m_button51->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnCheckpoint ), NULL, this );
 	clsSlider->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( MainFrameBase::OnScroll ), NULL, this );
-	clsLstOverlays->Connect( wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, wxCommandEventHandler( MainFrameBase::OnOverlayToggle ), NULL, this );
-	clsChkShowEarlyCriticalPath->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrameBase::OnShowEarlyCriticalPath ), NULL, this );
-	clsChkShowLateCriticalPath->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrameBase::OnShowLateCriticalPath ), NULL, this );
-	m_spinCtrl1->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( MainFrameBase::OnSpinChange ), NULL, this );
-	clsChkShowFaninTrees->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrameBase::OnShowFaninTrees ), NULL, this );
-	clsChkShowFanoutTrees->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrameBase::OnShowFanoutTrees ), NULL, this );
-	clsItemSnapshot->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrameBase::OnCheckView ), NULL, this );
+	clsOverlayPropertyGrid->Connect( wxEVT_PG_CHANGED, wxPropertyGridEventHandler( MainFrameBase::OnOverlayPropertyGridChanged ), NULL, this );
 	clsBtnColoringCriticality->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnColoringCriticality ), NULL, this );
 	clsBtnColoringCentrality->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnColoringCentrality ), NULL, this );
 	clsBtnColoringRelativity->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnColoringRelativity ), NULL, this );
@@ -757,10 +660,6 @@ MainFrameBase::~MainFrameBase()
 	this->Disconnect( ID_ZOOM_OUT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnZoomOut ) );
 	this->Disconnect( ID_PHYSICAL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnChangeView ) );
 	this->Disconnect( ID_SCHEMATIC, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnChangeView ) );
-	this->Disconnect( ID_VIEW_CELLS, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
-	this->Disconnect( ID_VIEW_TERMINALS, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
-	this->Disconnect( ID_VIEW_NODES_PORTS, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
-	this->Disconnect( ID_VIEW_NODES_SEQUENTIAL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnCheckView ) );
 	this->Disconnect( ID_RAINBOW, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnColoringColorful ) );
 	this->Disconnect( ID_COLORING_RANDOM_BLUE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnColoringRandomBlue ) );
 	this->Disconnect( wxID_ANY, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnColoringGray ) );
@@ -775,13 +674,7 @@ MainFrameBase::~MainFrameBase()
 	clsChoicebookView->Disconnect( wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGED, wxChoicebookEventHandler( MainFrameBase::OnChangeView ), NULL, this );
 	m_button51->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnCheckpoint ), NULL, this );
 	clsSlider->Disconnect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( MainFrameBase::OnScroll ), NULL, this );
-	clsLstOverlays->Disconnect( wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, wxCommandEventHandler( MainFrameBase::OnOverlayToggle ), NULL, this );
-	clsChkShowEarlyCriticalPath->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrameBase::OnShowEarlyCriticalPath ), NULL, this );
-	clsChkShowLateCriticalPath->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrameBase::OnShowLateCriticalPath ), NULL, this );
-	m_spinCtrl1->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( MainFrameBase::OnSpinChange ), NULL, this );
-	clsChkShowFaninTrees->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrameBase::OnShowFaninTrees ), NULL, this );
-	clsChkShowFanoutTrees->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrameBase::OnShowFanoutTrees ), NULL, this );
-	clsItemSnapshot->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrameBase::OnCheckView ), NULL, this );
+	clsOverlayPropertyGrid->Disconnect( wxEVT_PG_CHANGED, wxPropertyGridEventHandler( MainFrameBase::OnOverlayPropertyGridChanged ), NULL, this );
 	clsBtnColoringCriticality->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnColoringCriticality ), NULL, this );
 	clsBtnColoringCentrality->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnColoringCentrality ), NULL, this );
 	clsBtnColoringRelativity->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrameBase::OnColoringRelativity ), NULL, this );

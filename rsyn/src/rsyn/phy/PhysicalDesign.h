@@ -20,7 +20,7 @@
  */
 
 /* 
- * File:   rsyn/phy.h
+ * File:   PhysicalDesign.h
  * Author: jucemar
  *
  * Created on 12 de Setembro de 2016, 20:09
@@ -76,6 +76,11 @@ class PhysicalNetData;
 class PhysicalInstanceData;
 class PhysicalRegionData;
 class PhysicalGroupData;
+class PhysicalViaLayerData;
+class PhysicalViaData;
+class PhysicalViaInstanceData;
+class PhysicalWireSegmentData;
+class PhysicalWireData;
 class PhysicalDesignData;
 
 class PhysicalDie;
@@ -96,6 +101,11 @@ class PhysicalCell;
 class PhysicalModule;
 class PhysicalRegion;
 class PhysicalGroup;
+class PhysicalViaLayer;
+class PhysicalVia;
+class PhysicalViaInstance;
+class PhysicalWireSegment;
+class PhysicalWire;
 class PhysicalDesign;
 
 
@@ -125,6 +135,11 @@ class PhysicalAttributeInitializerWithDefaultValue;
 #include "rsyn/phy/obj/decl/PhysicalPort.h"
 #include "rsyn/phy/obj/decl/PhysicalRegion.h"
 #include "rsyn/phy/obj/decl/PhysicalGroup.h"
+#include "rsyn/phy/obj/decl/PhysicalViaLayer.h"
+#include "rsyn/phy/obj/decl/PhysicalVia.h"
+#include "rsyn/phy/obj/decl/PhysicalViaInstance.h"
+#include "rsyn/phy/obj/decl/PhysicalWireSegment.h"
+#include "rsyn/phy/obj/decl/PhysicalWire.h"
 #include "rsyn/phy/obj/decl/PhysicalDesign.h"
 
 // Object's Data
@@ -144,6 +159,11 @@ class PhysicalAttributeInitializerWithDefaultValue;
 #include "rsyn/phy/obj/data/PhysicalInstanceData.h"
 #include "rsyn/phy/obj/data/PhysicalRegionData.h"
 #include "rsyn/phy/obj/data/PhysicalGroupData.h"
+#include "rsyn/phy/obj/data/PhysicalViaLayerData.h"
+#include "rsyn/phy/obj/data/PhysicalViaData.h"
+#include "rsyn/phy/obj/data/PhysicalViaInstanceData.h"
+#include "rsyn/phy/obj/data/PhysicalWireSegmentData.h"
+#include "rsyn/phy/obj/data/PhysicalWireData.h"
 #include "rsyn/phy/obj/data/PhysicalDesign.h"
 
 // Physical Infrastructure
@@ -168,6 +188,11 @@ class PhysicalAttributeInitializerWithDefaultValue;
 #include "rsyn/phy/obj/impl/PhysicalModule.h"
 #include "rsyn/phy/obj/impl/PhysicalRegion.h"
 #include "rsyn/phy/obj/impl/PhysicalGroup.h"
+#include "rsyn/phy/obj/impl/PhysicalViaLayer.h"
+#include "rsyn/phy/obj/impl/PhysicalVia.h"
+#include "rsyn/phy/obj/impl/PhysicalViaInstance.h"
+#include "rsyn/phy/obj/impl/PhysicalWireSegment.h"
+#include "rsyn/phy/obj/impl/PhysicalWire.h"
 #include "rsyn/phy/obj/impl/PhysicalDesign.h"
 
 

@@ -28,6 +28,7 @@
 
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/engine/Service.h"
+#include "rsyn/engine/Message.h"
 #include "rsyn/model/timing/EdgeArray.h"
 
 #include "rsyn/util/Stepwatch.h"
@@ -56,7 +57,7 @@ class Scenario;
 // Static Timing Analysis
 ////////////////////////////////////////////////////////////////////////////////
 
- class Timer : public Service, public Rsyn::Observer {
+class Timer : public Service, public Rsyn::Observer {
 public:
 
 	enum InputDriverDelayMode {
@@ -77,6 +78,9 @@ private:
 	
 	TimingModel *timingModel;
 	InputDriverDelayMode inputDriverDelayMode = INPUT_DRIVER_DELAY_MODE_UI_TIMER;
+
+	Rsyn::Message msgUnusualArcType;
+	Rsyn::Message msgUnusualArcSense;
 	
 public:
 	
@@ -207,7 +211,9 @@ private:
 	int clsSign;
 	int generateNextSign() { return ++clsSign; /*must be pre-increment*/ }
 	int getSign() const { return clsSign; }	
-	
+
+	Number clockUncertainty[NUM_TIMING_MODES] = {0, 0};
+
 	Number clsTNS[NUM_TIMING_MODES]; // total negative slack (only accounts for the worst edge at each endpoint)
 	Number clsAggregatedTNS[NUM_TIMING_MODES]; // total negative slack (accounts the sum of rise and fall edges)
 	Number clsWNS[NUM_TIMING_MODES]; // worst negative slack (only accounts for the worst edge at each endpoint)
@@ -490,6 +496,9 @@ public:
 		inputDriverDelayMode = mode;
 	} // end method
 
+	//! @brief Sets the clock uncertainty.
+	void setClockUncertainty(const TimingMode mode, const Number uncertainty);
+
 	//! @brief Notifies the timer about a change in an instance.
 	//! @note  Changes observed via Rsyn::Design do not need to be notified as
 	//!        the timer already handle that internally. A typical change that
@@ -549,7 +558,12 @@ public:
 	TimingModel *getTimingModel() {
 		return timingModel;
 	} // end method
-	
+
+	//! @brief Gets the clock uncertainty.
+	Number getClockUncertainty(const TimingMode mode) const {
+		return clockUncertainty[mode];
+	} // end method
+
 	//! @brief Returns the input pin capacitance of a library pin.
 	Number getLibraryPinInputCapacitance(Rsyn::LibraryPin lpin) const { 
 		return timingModel->getLibraryPinInputCapacitance(lpin);

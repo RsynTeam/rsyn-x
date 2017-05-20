@@ -28,6 +28,7 @@ using std::vector;
 
 #include "dim.h"
 #include "dbu.h"
+#include "FloatingPoint.h"
 
 // -----------------------------------------------------------------------------
 
@@ -77,12 +78,16 @@ struct double2 {
 	explicit double2( const DBUxy &xy ) : x(xy.x), y(xy.y) {}
 	explicit double2( const double scalar ) : x(scalar), y(scalar) {} // explicit to avoid accidentally assigning to scalar
 
-	DBUxy scaleAndConvertToDbu(const double scale) const {
-		return DBUxy((DBU) (x*scale), (DBU) (y*scale));
+	DBUxy scaleAndConvertToDbu(const double scale, const RoundingStrategy roundingStrategy = ROUND_DOWN) const {
+		return DBUxy(
+				(DBU) FloatingPoint::round(x*scale, roundingStrategy),
+				(DBU) FloatingPoint::round(y*scale, roundingStrategy));
 	} // end method
 
-	DBUxy convertToDbu() const {
-		return DBUxy((DBU) (x), (DBU) (y));
+	DBUxy convertToDbu(const RoundingStrategy roundingStrategy = ROUND_DOWN) const {
+		return DBUxy(
+				(DBU) FloatingPoint::round(x, roundingStrategy),
+				(DBU) FloatingPoint::round(y, roundingStrategy));
 	} // end method
 
 	// Operators.

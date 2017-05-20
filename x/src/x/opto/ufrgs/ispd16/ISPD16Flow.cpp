@@ -1,18 +1,3 @@
-/* Copyright 2014-2017 Rsyn
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
- 
 #include "ISPD16Flow.h"
 
 #include "rsyn/io/Writer.h"
@@ -41,7 +26,7 @@ bool ISPD16Flow::run(Rsyn::Engine engine, const Rsyn::Json &params) {
 void ISPD16Flow::runFlow() {
 	Stepwatch watch("Flow: ISPD 2016");
 	infra->legalize();
-	
+
 	// Initialization.
 	timer->updateTimingIncremental();
 	infra->updateQualityScore();
@@ -52,7 +37,7 @@ void ISPD16Flow::runFlow() {
 
 	const bool earlyZeroed 
 			= FloatingPoint::approximatelyZero(timer->getTns(Rsyn::EARLY));
-	
+
 	// Late optimizations.
 	engine.runProcess("ufrgs.clusteredMove");
 	infra->statePush("clustered-move");
@@ -101,7 +86,7 @@ void ISPD16Flow::runFlow() {
 	infra->statePush("abu-fix");
 	
 	// Fix early violations.
-	if (earlyZeroed) {
+	if (earlyZeroed && FloatingPoint::notApproximatelyZero(timer->getTns(Rsyn::EARLY))) {
 		// If early was zeroed, but is not zero anymore, tries to optimize it
 		// again.
 		engine.runProcess("ufrgs.earlyOpto", {{"runOnlyEarlySpreadingIterative", true}});

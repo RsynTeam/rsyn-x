@@ -36,6 +36,8 @@ public:
 	DBU clsPitch = 0;
 	DBU clsWidth = 0;
 	DBU clsSpacing = 0;
+	int clsIndex = -1;
+	int clsRelativeIndex = -1;
 	Rsyn::PhysicalLayerType clsType = INVALID_PHY_LAYER_TYPE;
 	Rsyn::PhysicalLayerDirection clsDirection = INVALID_PHY_LAYER_DIRECTION;
 	std::string clsName = Rsyn::getPhysicalInvalidName();

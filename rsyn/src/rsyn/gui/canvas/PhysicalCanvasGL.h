@@ -48,7 +48,7 @@ class PhysicalCanvasGL;
 
 class CanvasOverlay {
 public:
-	virtual bool init(PhysicalCanvasGL * canvas) = 0;
+	virtual bool init(PhysicalCanvasGL * canvas, nlohmann::json& properties) = 0;
 	virtual void render(PhysicalCanvasGL * canvas) = 0;
 	virtual void config(const nlohmann::json &params) = 0;
 }; // end class
@@ -64,6 +64,8 @@ public:
 	static const float LAYER_MOVABLE;
 	static const float LAYER_GRID;
 	static const float LAYER_METAL;
+	static const float LAYER_ROUTING_MIN;
+	static const float LAYER_ROUTING_MAX;
 	static const float LAYER_FOREGROUND;
 	
 //**************TEMP**************
@@ -136,6 +138,11 @@ private:
 	// Path width.
 	float clsCriticalPathWidth;
 
+public:
+	inline bool isOverlay(const std::string name) { 
+		return (clsOverlayMapping.find(name) != clsOverlayMapping.end());
+	} //end method
+	
 private:
 	DBUxy clsDeltaXY;
 

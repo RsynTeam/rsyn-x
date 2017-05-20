@@ -1,18 +1,3 @@
-/* Copyright 2014-2017 Rsyn
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
- 
 #include "Abu.h"
 #include "x/infra/iccad15/Infrastructure.h"
 
@@ -25,8 +10,11 @@ AbuOverlay::AbuOverlay() {
 
 // -----------------------------------------------------------------------------
 
-bool AbuOverlay::init(PhysicalCanvasGL * canvas) {
+bool AbuOverlay::init(PhysicalCanvasGL* canvas, nlohmann::json& properties) {
 	clsEnginePtr = canvas->getEngine();
+	// Jucemar - 03/26/17 -> Initializes overlay only if physical design is running. 
+	if(!clsEnginePtr.isServiceRunning("rsyn.physical")) 
+		return false;
 	infra = clsEnginePtr.getService("ufrgs.ispd16.infra", Rsyn::SERVICE_OPTIONAL);
 	if ( !infra )
 		return false;

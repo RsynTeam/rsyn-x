@@ -38,13 +38,18 @@ void Engine::create() {
 	// TODO: hard coded
 	data->clsInstallationPath = "../../rsyn/install";
 
+	// Register messages.
+	registerInternalMessages(); // engine
+	registerDefaultMessages();  // default services/processes
+	registerMessages();         // user services/processes
+
 	// Register processes.
 	registerProcesses();
 	
 	// Register services
 	registerServices();
 
-	// register Loaders
+	// Register readers.
 	registerReaders();
 	
 	// Initialize logger
@@ -56,6 +61,12 @@ void Engine::create() {
 	
 	// Create design.
 	data->clsDesign.create("__Root_Design__");
+
+	// Cache messages.
+	data->msgMessageRegistrationFail = getMessage("ENGINE-001");
+
+	// Mark as initialized
+	data->clsInitialized = true;
 } // end constructor 
 
 // -----------------------------------------------------------------------------
@@ -79,8 +90,27 @@ void Engine::destroy() {
 // Message
 ////////////////////////////////////////////////////////////////////////////////
 
+void Engine::registerInternalMessages() {
+	registerMessage("ENGINE-001", WARNING,
+			"Message registration failed.",
+			"Cannot register message <message> after initialization.");
+} // end method
+
+// -----------------------------------------------------------------------------
+
 void Engine::registerMessage(const std::string& label, const MessageLevel& level, const std::string& title, const std::string& msg) {
-	//std::cout << "Registering message '" << label << "'.\n";
+	if (data->clsInitialized) {
+		data->msgMessageRegistrationFail.replace("message", label);
+		data->msgMessageRegistrationFail.print();
+	} else {
+		data->clsMessageManager.registerMessage(label, level, title, msg);
+	} // end else
+} // end method
+
+// -----------------------------------------------------------------------------
+
+Message Engine::getMessage(const std::string &label) {
+	return data->clsMessageManager.getMessage(label);
 } // end method
 
 ////////////////////////////////////////////////////////////////////////////////

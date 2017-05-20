@@ -75,7 +75,7 @@ protected:
 	////////////////////////////////////////////////////////////////////////////	
 	Number LOCAL_WIRE_CAP_PER_MICRON;
 	Number LOCAL_WIRE_RES_PER_MICRON;
-	DBU MAX_WIRE_SEGMENT_IN_MICRON;
+	Number MAX_WIRE_SEGMENT_IN_MICRON;
 	int MAX_LCB_FANOUTS;
 	
 public:

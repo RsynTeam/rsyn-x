@@ -13,10 +13,6 @@
  * limitations under the License.
  */
 
-#include <vector>
-#include <unordered_map>
-
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -63,6 +59,12 @@ inline void PhysicalDesign::loadLibrary(const LefDscp & library) {
 		addPhysicalLayer(lefLayer);
 	} // end for 
 
+	// Initializing physical vias
+	data->clsPhysicalVias.reserve(library.clsLefViaDscps.size());
+	for (const LefViaDscp & via : library.clsLefViaDscps) {
+		addPhysicalVia(via);
+	} // end for 
+
 	// initializing physical spacing 
 	for (const LefSpacingDscp & spc : library.clsLefSpacingDscps) {
 		addPhysicalSpacing(spc);
@@ -100,8 +102,8 @@ inline void PhysicalDesign::loadDesign(const DefDscp & design) {
 		return;
 	} // end if 
 
-	// This operation always results in a integer number factor. 
-	// LEF/DEF specifications prohibit the division that results in a real number factor.
+	// This operation always results in an integer number factor. 
+	// LEF/DEF specifications prohibit division that results in a real number factor.
 	data->clsDBUs[MULT_FACTOR_DBU] = getDatabaseUnits(LIBRARY_DBU) / getDatabaseUnits(DESIGN_DBU);
 
 	// initializing physical cells (DEF Components)
@@ -143,6 +145,9 @@ inline void PhysicalDesign::loadDesign(const DefDscp & design) {
 	data->clsPhysicalGroups.reserve(design.clsGroups.size());
 	for (const DefGroupDscp & defGroup : design.clsGroups)
 		addPhysicalGroup(defGroup);
+
+	for (const DefNetDscp & net : design.clsNets)
+		addPhysicalNet(net);
 
 	// only to keep coherence in the design;
 	data->clsNumElements[PHYSICAL_PORT] = data->clsDesign.getNumInstances(Rsyn::PORT);
@@ -308,14 +313,17 @@ inline void PhysicalDesign::addPhysicalSite(const LefSiteDscp & site) {
 	data->clsMapPhysicalSites[site.clsName] = data->clsPhysicalSites.size() - 1;
 	phSite->id = data->clsPhysicalSites.size() - 1;
 	phSite->clsSiteName = site.clsName;
-	phSite->clsSize = site.clsSize.scaleAndConvertToDbu(getDatabaseUnits(LIBRARY_DBU));
+	double2 size = site.clsSize;
+	size.scale(static_cast<double> (getDatabaseUnits(LIBRARY_DBU)));
+	phSite->clsSize[X] = static_cast<DBU> (std::round(size[X]));
+	phSite->clsSize[Y] = static_cast<DBU> (std::round(size[Y]));
 	phSite->clsSiteClass = getPhysicalSiteClass(site.clsSiteClass);
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline void PhysicalDesign::addPhysicalLayer(const LefLayerDscp& layer) {
-	std::unordered_map<std::string, int>::iterator it = data->clsMapPhysicalLayers.find(layer.clsName);
+	std::unordered_map<std::string, std::size_t>::iterator it = data->clsMapPhysicalLayers.find(layer.clsName);
 	if (it != data->clsMapPhysicalLayers.end()) {
 		std::cout << "WARNING: Layer " << layer.clsName << " was already defined. Skipping ...\n";
 		return;
@@ -327,11 +335,44 @@ inline void PhysicalDesign::addPhysicalLayer(const LefLayerDscp& layer) {
 	phLayer->clsName = layer.clsName;
 	phLayer->clsDirection = Rsyn::getPhysicalLayerDirection(layer.clsDirection);
 	phLayer->clsType = Rsyn::getPhysicalLayerType(layer.clsType);
-	phLayer->clsPitch = static_cast<DBU> (layer.clsPitch * getDatabaseUnits(LIBRARY_DBU));
-	phLayer->clsSpacing = static_cast<DBU> (layer.clsSpacing * getDatabaseUnits(LIBRARY_DBU));
-	phLayer->clsWidth = static_cast<DBU> (layer.clsWidth * getDatabaseUnits(LIBRARY_DBU));
+	phLayer->clsPitch = static_cast<DBU> (std::round(layer.clsPitch * getDatabaseUnits(LIBRARY_DBU)));
+	phLayer->clsSpacing = static_cast<DBU> (std::round(layer.clsSpacing * getDatabaseUnits(LIBRARY_DBU)));
+	phLayer->clsWidth = static_cast<DBU> (std::round(layer.clsWidth * getDatabaseUnits(LIBRARY_DBU)));
+	phLayer->clsRelativeIndex = data->clsNumLayers[phLayer->clsType];
 	data->clsMapPhysicalLayers[layer.clsName] = phLayer->id;
 	data->clsNumLayers[phLayer->clsType]++;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline void PhysicalDesign::addPhysicalVia(const LefViaDscp & via) {
+	std::unordered_map<std::string, std::size_t>::iterator it = data->clsMapPhysicalVias.find(via.clsName);
+	if (it != data->clsMapPhysicalVias.end()) {
+		std::cout << "WARNING: Site " << via.clsName << " was already defined. Skipping ...\n";
+		return;
+	} // end if 
+
+	// Adding new lib site
+	data->clsMapPhysicalVias[via.clsName] = data->clsPhysicalVias.size();
+	data->clsPhysicalVias.push_back(PhysicalVia(new PhysicalViaData()));
+	PhysicalVia phVia = data->clsPhysicalVias.back();
+	phVia->clsName = via.clsName;
+	phVia->clsViaLayers.reserve(via.clsViaLayers.size());
+	for (const LefViaLayerDscp & layerDscp : via.clsViaLayers) {
+		phVia->clsViaLayers.push_back(PhysicalViaLayer(new PhysicalViaLayerData()));
+		PhysicalViaLayer phViaLayer = phVia->clsViaLayers.back();
+		phViaLayer->clsLayer = getPhysicalLayerByName(layerDscp.clsLayerName);
+		phViaLayer->clsBounds.reserve(layerDscp.clsBounds.size());
+		for (DoubleRectangle doubleRect : layerDscp.clsBounds) {
+			doubleRect.scaleCoordinates(static_cast<double> (getDatabaseUnits(LIBRARY_DBU)));
+			phViaLayer->clsBounds.push_back(Bounds());
+			Bounds & bds = phViaLayer->clsBounds.back();
+			bds[LOWER][X] = static_cast<DBU> (std::round(doubleRect[LOWER][X]));
+			bds[LOWER][Y] = static_cast<DBU> (std::round(doubleRect[LOWER][Y]));
+			bds[UPPER][X] = static_cast<DBU> (std::round(doubleRect[UPPER][X]));
+			bds[UPPER][Y] = static_cast<DBU> (std::round(doubleRect[UPPER][Y]));
+		} // end for 
+	} // end for
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -342,7 +383,10 @@ inline Rsyn::LibraryCell PhysicalDesign::addPhysicalLibraryCell(const LefMacroDs
 		throw Exception("Library Cell " + macro.clsMacroName + " not found.\n");
 	} // end if
 	Rsyn::PhysicalLibraryCellData &phlCell = data->clsPhysicalLibraryCells[lCell];
-	phlCell.clsSize = macro.clsSize.scaleAndConvertToDbu(getDatabaseUnits(LIBRARY_DBU));
+	double2 size = macro.clsSize;
+	size.scale(static_cast<double> (getDatabaseUnits(LIBRARY_DBU)));
+	phlCell.clsSize[X] = static_cast<DBU> (std::round(size[X]));
+	phlCell.clsSize[Y] = static_cast<DBU> (std::round(size[Y]));
 	phlCell.clsMacroClass = Rsyn::getPhysicalMacroClass(macro.clsMacroClass);
 	// Initializing obstacles in the physical library cell
 	phlCell.clsObs.reserve(macro.clsObs.size());
@@ -352,8 +396,15 @@ inline Rsyn::LibraryCell PhysicalDesign::addPhysicalLibraryCell(const LefMacroDs
 		// Guilherme Flach - 2016/11/04 - micron to dbu
 		std::vector<Bounds> scaledBounds;
 		scaledBounds.reserve(libObs.clsBounds.size());
-		for (DoubleRectangle r : libObs.clsBounds) {
-			scaledBounds.push_back(r.scaleAndConvertToDbu(getDatabaseUnits(LIBRARY_DBU)));
+		for (DoubleRectangle doubleRect : libObs.clsBounds) {
+			// Jucemar Monteiro - 2017/05/20 - Avoiding cast round errors.
+			doubleRect.scaleCoordinates(static_cast<double> (getDatabaseUnits(LIBRARY_DBU)));
+			scaledBounds.push_back(Bounds());
+			Bounds & bds = scaledBounds.back();
+			bds[LOWER][X] = static_cast<DBU> (std::round(doubleRect[LOWER][X]));
+			bds[LOWER][Y] = static_cast<DBU> (std::round(doubleRect[LOWER][Y]));
+			bds[UPPER][X] = static_cast<DBU> (std::round(doubleRect[UPPER][X]));
+			bds[UPPER][Y] = static_cast<DBU> (std::round(doubleRect[UPPER][Y]));
 		} // end for
 
 		phlCell.clsObs.push_back(phObs);
@@ -404,14 +455,19 @@ inline void PhysicalDesign::addPhysicalLibraryPin(Rsyn::LibraryCell libCell, con
 		if (!lefPort.clsBounds.empty()) {
 			phyPin.clsLayerBound[LOWER] = DBUxy(std::numeric_limits<DBU>::max(), std::numeric_limits<DBU>::max());
 			phyPin.clsLayerBound[UPPER] = DBUxy(std::numeric_limits<DBU>::min(), std::numeric_limits<DBU>::min());
-			for (const DoubleRectangle &r : lefPort.clsBounds) {
-				Bounds rect = r.scaleAndConvertToDbu(getDatabaseUnits(LIBRARY_DBU));
+			for (DoubleRectangle doubleRect : lefPort.clsBounds) {
+				doubleRect.scaleCoordinates(static_cast<double> (getDatabaseUnits(LIBRARY_DBU)));
+				phPinLayer->clsBounds.push_back(Bounds());
+				Bounds & bds = phPinLayer->clsBounds.back();
+				bds[LOWER][X] = static_cast<DBU> (std::round(doubleRect[LOWER][X]));
+				bds[LOWER][Y] = static_cast<DBU> (std::round(doubleRect[LOWER][Y]));
+				bds[UPPER][X] = static_cast<DBU> (std::round(doubleRect[UPPER][X]));
+				bds[UPPER][Y] = static_cast<DBU> (std::round(doubleRect[UPPER][Y]));
 
-				phPinLayer->clsBounds.push_back(rect);
-				phyPin.clsLayerBound[LOWER][X] = std::min(phyPin.clsLayerBound[LOWER][X], rect[LOWER][X]);
-				phyPin.clsLayerBound[LOWER][Y] = std::min(phyPin.clsLayerBound[LOWER][Y], rect[LOWER][Y]);
-				phyPin.clsLayerBound[UPPER][X] = std::max(phyPin.clsLayerBound[UPPER][X], rect[UPPER][X]);
-				phyPin.clsLayerBound[UPPER][Y] = std::max(phyPin.clsLayerBound[UPPER][Y], rect[UPPER][Y]);
+				phyPin.clsLayerBound[LOWER][X] = std::min(phyPin.clsLayerBound[LOWER][X], bds[LOWER][X]);
+				phyPin.clsLayerBound[LOWER][Y] = std::min(phyPin.clsLayerBound[LOWER][Y], bds[LOWER][Y]);
+				phyPin.clsLayerBound[UPPER][X] = std::max(phyPin.clsLayerBound[UPPER][X], bds[UPPER][X]);
+				phyPin.clsLayerBound[UPPER][Y] = std::max(phyPin.clsLayerBound[UPPER][Y], bds[UPPER][Y]);
 			} // end for
 		} // end if 
 		if (!lefPort.clsLefPolygonDscp.empty()) {
@@ -422,8 +478,9 @@ inline void PhysicalDesign::addPhysicalLibraryPin(Rsyn::LibraryCell libCell, con
 				phPinLayer->clsPolygons.push_back(Polygon());
 				Polygon &phPoly = phPinLayer->clsPolygons.back();
 				phPoly.reserve(poly.clsPolygonPoints.size());
-				for (const double2 point : poly.clsPolygonPoints) {
-					DBUxy pt = point.scaleAndConvertToDbu(getDatabaseUnits(LIBRARY_DBU));
+				for (double2 point : poly.clsPolygonPoints) {
+					point.scale(static_cast<double> (getDatabaseUnits(LIBRARY_DBU)));
+					DBUxy pt(static_cast<DBU> (std::round(pt[X])), static_cast<DBU> (std::round(pt[Y])));
 					phPoly.addPoint(pt);
 					phyPin.clsLayerBound[LOWER][X] = std::min(phyPin.clsLayerBound[LOWER][X], pt[X]);
 					phyPin.clsLayerBound[LOWER][Y] = std::min(phyPin.clsLayerBound[LOWER][Y], pt[Y]);
@@ -552,13 +609,81 @@ inline void PhysicalDesign::addPhysicalGroup(const DefGroupDscp& defGroup) {
 
 // -----------------------------------------------------------------------------
 
+inline void PhysicalDesign::addPhysicalNet(const DefNetDscp & netDscp) {
+	Rsyn::Net net = data->clsDesign.findNetByName(netDscp.clsName);
+	PhysicalNetData & netData = data->clsPhysicalNets[net];
+	netData.clsWires.reserve(netDscp.clsWires.size());
+	if (netDscp.clsWires.size() > 0)
+		netData.clsViaInstances.reserve(100);
+	for (const DefWireDscp & wireDscp : netDscp.clsWires) {
+		netData.clsWires.push_back(PhysicalWire(new PhysicalWireData()));
+		PhysicalWire phWire = netData.clsWires.back();
+		phWire->clsWireSegments.reserve(wireDscp.clsWireSegments.size());
+		for (const DefWireSegmentDscp & segmentDscp : wireDscp.clsWireSegments) {
+			phWire->clsWireSegments.push_back(PhysicalWireSegment(new PhysicalWireSegmentData()));
+			PhysicalWireSegment phWireSegment = phWire->clsWireSegments.back();
+			phWireSegment->clsPoints = segmentDscp.clsPoints;
+			phWireSegment->clsNew = segmentDscp.clsNew;
+			phWireSegment->clsPhysicalLayer = getPhysicalLayerByName(segmentDscp.clsLayerName);
+			if (segmentDscp.clsHasVia) {
+				phWireSegment->clsPhysicalVia = getPhysicalViaByName(segmentDscp.clsViaName);
+				PhysicalViaInstance phViaInst = PhysicalViaInstance(new PhysicalViaInstanceData());
+				phViaInst->clsPhysicalVia = phWireSegment->clsPhysicalVia;
+				phViaInst->clsPos = phWireSegment->clsPoints.back();
+				netData.clsViaInstances.push_back(phViaInst);
+			} // end if 
+			if (segmentDscp.clsHasRectangle) {
+				phWireSegment->clsHasRectangle = true;
+				phWireSegment->clsRectangle = segmentDscp.clsRect;
+			} // end if
+
+			// Adjust path point according to extensions and direction.
+			if (segmentDscp.clsPoints.size() >= 2) {
+				const DBU extensionBegin = segmentDscp.clsExtensionBegin >= 0 ?
+					segmentDscp.clsExtensionBegin : phWireSegment->clsPhysicalLayer->clsWidth / 2; // TODO: non-default rule
+				if (extensionBegin > 0) {
+					const int x0 = segmentDscp.clsPoints[0].x;
+					const int y0 = segmentDscp.clsPoints[0].y;
+					const int x1 = segmentDscp.clsPoints[1].x;
+					const int y1 = segmentDscp.clsPoints[1].y;
+
+					const int dx = x0 == x1 ? 0 : (x1 > x0 ? -1 : +1);
+					const int dy = y0 == y1 ? 0 : (y1 > y0 ? -1 : +1);
+					phWireSegment->clsPoints[0].x += dx*extensionBegin;
+					phWireSegment->clsPoints[0].y += dy*extensionBegin;
+				} // end if
+
+				const DBU extensionEnd = segmentDscp.clsExtensionEnd >= 0 ?
+					segmentDscp.clsExtensionEnd : phWireSegment->clsPhysicalLayer->clsWidth / 2; // TODO: non-default rule
+				if (extensionEnd > 0) {
+					const int k = (int) segmentDscp.clsPoints.size() - 1;
+
+					const int x0 = segmentDscp.clsPoints[k - 1].x;
+					const int y0 = segmentDscp.clsPoints[k - 1].y;
+					const int x1 = segmentDscp.clsPoints[k].x;
+					const int y1 = segmentDscp.clsPoints[k].y;
+
+					const int dx = x0 == x1 ? 0 : (x1 > x0 ? +1 : -1);
+					const int dy = y0 == y1 ? 0 : (y1 > y0 ? +1 : -1);
+					phWireSegment->clsPoints[k].x += dx*extensionEnd;
+					phWireSegment->clsPoints[k].y += dy*extensionEnd;
+				} // end if
+			} // end if
+		} // end for 
+	} // end for
+	if (netDscp.clsWires.size() > 0)
+		netData.clsViaInstances.shrink_to_fit();
+} // end method 
+
+// -----------------------------------------------------------------------------
+
 inline void PhysicalDesign::addPhysicalSpacing(const LefSpacingDscp & spacing) {
 	Element<PhysicalSpacingData> *element = data->clsPhysicalSpacing.create();
 	Rsyn::PhysicalSpacingData * phSpacing = &(element->value);
 	phSpacing->id = data->clsPhysicalSpacing.lastId();
 	phSpacing->clsLayer1 = getPhysicalLayerByName(spacing.clsLayer1);
 	phSpacing->clsLayer2 = getPhysicalLayerByName(spacing.clsLayer2);
-	phSpacing->clsDistance = static_cast<DBU> (spacing.clsDistance * getDatabaseUnits(LIBRARY_DBU));
+	phSpacing->clsDistance = static_cast<DBU> (std::round(spacing.clsDistance * getDatabaseUnits(LIBRARY_DBU)));
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -570,7 +695,7 @@ inline void PhysicalDesign::addPhysicalPin() {
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalLayer PhysicalDesign::getPhysicalLayerByName(const std::string & layerName) {
-	std::unordered_map<std::string, int>::iterator element = data->clsMapPhysicalLayers.find(layerName);
+	std::unordered_map<std::string, std::size_t>::iterator element = data->clsMapPhysicalLayers.find(layerName);
 	if (element == data->clsMapPhysicalLayers.end())
 		return nullptr;
 	const int id = element->second;
@@ -605,6 +730,15 @@ inline Rsyn::PhysicalGroup PhysicalDesign::getPhysicalGroupByName(const std::str
 
 // -----------------------------------------------------------------------------
 
+inline Rsyn::PhysicalVia PhysicalDesign::getPhysicalViaByName(const std::string &viaName) {
+	std::unordered_map<std::string, std::size_t>::iterator it = data->clsMapPhysicalVias.find(viaName);
+	if (it == data->clsMapPhysicalVias.end())
+		return nullptr;
+	return data->clsPhysicalVias[it->second];
+} // end method 
+
+// -----------------------------------------------------------------------------
+
 inline int PhysicalDesign::getNumLayers(const Rsyn::PhysicalLayerType type) const {
 	return data->clsNumLayers[type];
 } // end method 
@@ -615,6 +749,16 @@ inline Range<ListCollection<PhysicalLayerData, PhysicalLayer>>
 PhysicalDesign::allPhysicalLayers() {
 	return ListCollection<PhysicalLayerData, PhysicalLayer>(data->clsPhysicalLayers);
 } // end method
+
+inline std::size_t PhysicalDesign::getNumPhysicalVias() const {
+	return data->clsPhysicalVias.size();
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline const std::vector<PhysicalVia> & PhysicalDesign::allPhysicalVias() const {
+	return data->clsPhysicalVias;
+} // end method 
 
 // -----------------------------------------------------------------------------
 

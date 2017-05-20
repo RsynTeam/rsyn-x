@@ -5,7 +5,7 @@ SRC = $(wildcard *.cpp)
 DEP = $(wildcard *.h)
 OBJ = flute_new.o
 
-CFLAGS = -std=c++11 -Wall -O3
+CFLAGS = -std=c++11 -Wall -O3 -D_GLIBCXX_USE_CXX11_ABI=0
 LFLAGS = -fopenmp -static -L./libs -lui-timer
 INC = -I./includes
 
@@ -25,7 +25,7 @@ test: $(EXE)
 dsg = superblue18
 ut = 0.85
 riccad15: $(EXE)
-	./$(EXE) ICCAD15.parm $(dsg)/$(dsg).iccad2015 $(ut) ../bin/$(dsg)-cada085.def ../bin/$(dsg)-cada085.ops || true
+	./$(EXE) ICCAD15.parm $(dsg)/$(dsg).iccad2015 $(ut) ../../bin/$(dsg)-cada085.def ../../bin/$(dsg)-cada085.ops || true
 ############################################################################################
 
 .PHONY: clean

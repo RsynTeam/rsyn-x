@@ -57,4 +57,14 @@ inline DBU PhysicalLayer::getSpacing() const {
 
 // -----------------------------------------------------------------------------
 
+inline int PhysicalLayer::getIndex() const {
+	return data->id;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline int PhysicalLayer::getRelativeIndex() const {
+	return data->clsRelativeIndex;
+} // end method 
+
 } // end namespace 

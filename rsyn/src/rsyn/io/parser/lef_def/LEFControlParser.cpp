@@ -88,6 +88,7 @@ int lefUnits(lefrCallbackType_e c, lefiUnits* units, lefiUserData ud);
 int lefObstructionCB(lefrCallbackType_e c, lefiObstruction* obs, lefiUserData ud);
 int lefLayerCB(lefrCallbackType_e c, lefiLayer* layer, lefiUserData ud);
 int lefSpacingCB(lefrCallbackType_e c, lefiSpacing* spacing, lefiUserData ud);
+int lefViaCb(lefrCallbackType_e typ, lefiVia* via, lefiUserData data);
 
 LefDscp &getLibraryFromUserData(lefiUserData userData) {
 	return *((LefDscp *) userData);
@@ -125,7 +126,7 @@ void LEFControlParser::parseLEF(const std::string &filename, LefDscp & dscp) {
 	lefrSetObstructionCbk(lefObstructionCB);
 	lefrSetLayerCbk(lefLayerCB);
 	lefrSetSpacingCbk(lefSpacingCB);
-
+	lefrSetViaCbk(lefViaCb);
 	lefrSetRegisterUnusedCallbacks();
 
 	// Open the lef file for the reader to read
@@ -325,6 +326,30 @@ int lefSpacingCB(lefrCallbackType_e c, lefiSpacing* spacing, lefiUserData ud) {
 	lefSpacing.clsLayer1 = spacing->lefiSpacing::name1();
 	lefSpacing.clsLayer2 = spacing->lefiSpacing::name2();
 	lefSpacing.clsDistance = spacing->lefiSpacing::distance();
+	return 0;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+int lefViaCb(lefrCallbackType_e typ, lefiVia* via, lefiUserData data) {
+	LefDscp & dscp = getLibraryFromUserData(data);
+	dscp.clsLefViaDscps.resize(dscp.clsLefViaDscps.size() + 1);
+	LefViaDscp & viaDscp = dscp.clsLefViaDscps.back();
+	viaDscp.clsName = via->name();
+	viaDscp.clsHasDefault = via->hasDefault();
+	viaDscp.clsViaLayers.resize(via->numLayers());
+	for (int i = 0; i < via->numLayers(); i++) {
+		LefViaLayerDscp & layerDscp = viaDscp.clsViaLayers[i];
+		layerDscp.clsLayerName = via->layerName(i);
+		layerDscp.clsBounds.resize(via->numRects(i));
+		for (int j = 0; j < via->numRects(i); j++) {
+			DoubleRectangle & bounds = layerDscp.clsBounds[j];
+			bounds[LOWER][X] = via->xl(i, j);
+			bounds[LOWER][Y] = via->yl(i, j);
+			bounds[UPPER][X] = via->xh(i, j);
+			bounds[UPPER][Y] = via->yh(i, j);
+		} // end for 
+	} // end for 
 	return 0;
 } // end method 
 

@@ -1,18 +1,3 @@
-/* Copyright 2014-2017 Rsyn
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
- 
 /*
  * Engine.cpp
  *
@@ -167,6 +152,9 @@ void Infrastructure::init(Rsyn::Engine engine) {
 	clsJezz->jezz_Legalize();
 	checkMaxDisplacementViolation("after initial legalization");
 	watchJezz.finish();
+
+	// Store initial solution as the best one.
+	clsJezz->jezz_storeSolution("best");
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -1709,7 +1697,6 @@ void Infrastructure::reportPathManhattanLengthBySegment(
 	} //
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // Reports
 ////////////////////////////////////////////////////////////////////////////////
@@ -1720,16 +1707,22 @@ void Infrastructure::reportDigest() {
 	const double abu = getAbu();
 	
 	StreamStateSaver sss(cout);
-	cout << std::scientific << setprecision(5);
+
+	const float hpwlInUm = clsPhysicalDesign.getHPWL().aggregated() /
+			(float) clsPhysicalDesign.getDatabaseUnits(Rsyn::DESIGN_DBU);
+	const float steinierWlInUm = (clsRoutingEstimator->getTotalWirelength() /
+			(float) clsPhysicalDesign.getDatabaseUnits(Rsyn::DESIGN_DBU));
+	const double scaledSteinierWlInUm = steinierWlInUm * (1 + ALPHA * abu);
 
 	cout << "Report Digest" << "\n";
 	cout << "--------------------------------------------------------------------------------\n";
 	cout << "Circuit              : " << clsDesign.getName() << "\n";
-	cout << "Steiner WL (dbu)     : " << (clsRoutingEstimator->getTotalWirelength()) << "\n";
-	cout << "Scaled Steiner WL    : " << (clsRoutingEstimator->getTotalWirelength())
-		* (1 + ALPHA * abu) << " ( " << ALPHA * abu * 100 << "% )\n";
-	cout << "HPWL (dbu)           : " << clsPhysicalDesign.getHPWL().aggregated() << "\n";
+	cout << std::fixed << setprecision(2);
+	cout << "Steiner WL (um)      : " << steinierWlInUm << "\n";
+	cout << "Scaled Steiner WL    : " << scaledSteinierWlInUm << " ( " << ALPHA * abu * 100 << "% )\n";
+	cout << "HPWL (um)            : " << hpwlInUm << "\n";
 	cout << "Clock period (ps)    : " << clsTimer->getClockPeriod() << "\n";
+	cout << std::scientific << setprecision(5);
 	cout << "Early WNS, TNS (ps)  : " << clsTimer->getWns(Rsyn::EARLY) << ", " << clsTimer->getTns(Rsyn::EARLY) << " #Endpoints: " << clsTimer->getNumCriticalEndpoints(Rsyn::EARLY)<<"\n";
 	cout << "Late  WNS, TNS (ps)  : " << clsTimer->getWns(Rsyn::LATE) << ", " << clsTimer->getTns(Rsyn::LATE) << " #Endpoints: " << clsTimer->getNumCriticalEndpoints(Rsyn::LATE) << "\n";
 
@@ -1809,7 +1802,7 @@ void Infrastructure::reportSummary(const std::string &step) {
 	cout << " ABU=" << getAbu();
 
 	cout << std::scientific << std::setprecision(5);
-	cout << " StWL=" << (clsRoutingEstimator->getTotalWirelength());
+	cout << " StWL=" << (clsRoutingEstimator->getTotalWirelength()  / (float)clsPhysicalDesign.getDatabaseUnits(Rsyn::DESIGN_DBU));
 	cout << " eWNS=" << clsTimer->getWns(Rsyn::EARLY);
 	cout << " eTNS=" << clsTimer->getTns(Rsyn::EARLY);
 	cout << " lWNS=" << clsTimer->getWns(Rsyn::LATE);
@@ -1860,7 +1853,7 @@ void Infrastructure::reportFinalResult() {
 	cout << std::fixed << std::setprecision(2);
 	cout << std::setw(8) << getQualityScore();
 	cout << std::scientific << std::setprecision(5);
-	cout << std::setw(N) << (clsRoutingEstimator->getTotalWirelength() );
+	cout << std::setw(N) << (clsRoutingEstimator->getTotalWirelength() / (float)clsPhysicalDesign.getDatabaseUnits(Rsyn::DESIGN_DBU) );
 	
 	cout << "\n";
 	cout << std::endl;

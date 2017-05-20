@@ -17,6 +17,7 @@
                 <sourceRootElem>../../../rsyn/src/rsyn/io/visualization</sourceRootElem>
                 <sourceRootElem>../../src/x/visualization</sourceRootElem>
                 <sourceRootElem>../../../rsyn/src/rsyn/3rdparty/parser</sourceRootElem>
+                <sourceRootElem>../../../rsyn/src/rsyn/setup</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
