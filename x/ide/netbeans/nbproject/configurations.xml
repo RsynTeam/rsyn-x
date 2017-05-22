@@ -234,6 +234,8 @@
           <itemPath>../../../rsyn/src/rsyn/io/reader/BookshelfReader.h</itemPath>
           <itemPath>../../../rsyn/src/rsyn/io/reader/DesignPositionReader.cpp</itemPath>
           <itemPath>../../../rsyn/src/rsyn/io/reader/DesignPositionReader.h</itemPath>
+          <itemPath>../../../rsyn/src/rsyn/io/reader/GenericReader.cpp</itemPath>
+          <itemPath>../../../rsyn/src/rsyn/io/reader/GenericReader.h</itemPath>
           <itemPath>../../../rsyn/src/rsyn/io/reader/ICCAD15Reader.cpp</itemPath>
           <itemPath>../../../rsyn/src/rsyn/io/reader/ICCAD15Reader.h</itemPath>
           <itemPath>../../../rsyn/src/rsyn/io/reader/ICCAD17Reader.cpp</itemPath>
@@ -495,8 +497,6 @@
       </logicalFolder>
       <logicalFolder name="io" displayName="io" projectFiles="true">
         <logicalFolder name="reader" displayName="reader" projectFiles="true">
-          <itemPath>../../src/x/io/reader/GenericReader.cpp</itemPath>
-          <itemPath>../../src/x/io/reader/GenericReader.h</itemPath>
           <itemPath>../../src/x/io/reader/ICCAD15Reader.cpp</itemPath>
           <itemPath>../../src/x/io/reader/ICCAD15Reader.h</itemPath>
         </logicalFolder>
@@ -1472,6 +1472,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/io/reader/GenericReader.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/io/reader/GenericReader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/io/reader/ICCAD15Reader.cpp"
             ex="false"
             tool="1"
@@ -2367,16 +2377,6 @@
             flavor2="0">
       </item>
       <item path="../../src/x/infra/iccad15/utilICCAD15.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../src/x/io/reader/GenericReader.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../src/x/io/reader/GenericReader.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -3468,6 +3468,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/io/reader/GenericReader.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/io/reader/GenericReader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/io/reader/ICCAD15Reader.cpp"
             ex="false"
             tool="1"
@@ -4363,16 +4373,6 @@
             flavor2="0">
       </item>
       <item path="../../src/x/infra/iccad15/utilICCAD15.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../src/x/io/reader/GenericReader.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../src/x/io/reader/GenericReader.h"
             ex="false"
             tool="3"
             flavor2="0">

@@ -28,8 +28,8 @@
 #include "rsyn/io/reader/ICCAD17Reader.h"
 #include "rsyn/io/reader/ISPD2012Reader.h"
 #include "rsyn/io/reader/ISPD2014Reader.h"
+#include "rsyn/io/reader/GenericReader.h"
 
-#include "x/io/reader/GenericReader.h"
 #include "x/io/reader/ICCAD15Reader.h"
 
 // Registration
