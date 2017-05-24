@@ -13,5 +13,6 @@ before_install:
 - sudo apt-get install -qq libboost-all-dev flex bison coinor-* libwxgtk3.0-dev libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev libglew-dev libpng-dev
 
 install:
+- cd x/bin/
 - make clean
 - make all
