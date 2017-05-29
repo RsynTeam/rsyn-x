@@ -19,7 +19,7 @@
 void MainFrame::registerAllOverlays() {
 	// Default overlays.
 	registerOverlay<LayoutOverlay>("Layout", true);
-	registerOverlay<RegionOverlay>("Region", true);
+	registerOverlay<RegionOverlay>("Region");
 	registerOverlay<AbuOverlay>("Abu");
 	registerOverlay<DensityGridOverlay>("Density Grid");
 	
