@@ -93,6 +93,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/3998ef9c/DefaultRoutingEstimationModel.o \
 	${OBJECTDIR}/_ext/3998ef9c/DefaultRoutingExtractionModel.o \
 	${OBJECTDIR}/_ext/3998ef9c/RoutingEstimator.o \
+	${OBJECTDIR}/_ext/3998ef9c/RsttRoutingEstimatorModel.o \
 	${OBJECTDIR}/_ext/caf5bf7a/Scenario.o \
 	${OBJECTDIR}/_ext/1db32eb4/DefaultTimingModel.o \
 	${OBJECTDIR}/_ext/1db32eb4/SandboxTimer.o \
@@ -452,6 +453,11 @@ ${OBJECTDIR}/_ext/3998ef9c/RoutingEstimator.o: ../../../rsyn/src/rsyn/model/rout
 	${MKDIR} -p ${OBJECTDIR}/_ext/3998ef9c
 	${RM} "$@.d"
 	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/3998ef9c/RoutingEstimator.o ../../../rsyn/src/rsyn/model/routing/RoutingEstimator.cpp
+
+${OBJECTDIR}/_ext/3998ef9c/RsttRoutingEstimatorModel.o: ../../../rsyn/src/rsyn/model/routing/RsttRoutingEstimatorModel.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/3998ef9c
+	${RM} "$@.d"
+	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/3998ef9c/RsttRoutingEstimatorModel.o ../../../rsyn/src/rsyn/model/routing/RsttRoutingEstimatorModel.cpp
 
 ${OBJECTDIR}/_ext/caf5bf7a/Scenario.o: ../../../rsyn/src/rsyn/model/scenario/Scenario.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/caf5bf7a
