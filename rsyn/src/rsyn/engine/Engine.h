@@ -424,7 +424,7 @@ public:
 
 	void registerMessages();
 
-	void registerMessage(const std::string &label, const MessageLevel &level, const std::string &title, const std::string &msg);
+	void registerMessage(const std::string &label, const MessageLevel &level, const std::string &title, const std::string &msg = "");
 	Message getMessage(const std::string &label);
 	
 	////////////////////////////////////////////////////////////////////////////

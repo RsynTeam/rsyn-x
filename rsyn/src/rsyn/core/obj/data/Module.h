@@ -23,13 +23,16 @@ struct ModuleData {
 	// pin and arc pointers as they can be deduced from cell pointers. Nets
 	// on the other may exist without connecting any cell (pin) so can not be 
 	// completely deduced from cells.
+	//
+	// TODO: Find a better way to store module-specific data. It seems we are
+	// spending too much memory to keep this.
 	List<Instance> instances;
 	List<Net> nets;
 	
 	// Ports.
 	// Redundant with instances, but allow faster access to ports.
 	List<Port> ports;
-	std::set<Port> portsByDirection[Rsyn::NUM_PIN_DIRECTIONS]; // TODO: unify these too
+	std::set<Port> portsByDirection[Rsyn::NUM_SIGNAL_DIRECTIONS]; // TODO: unify these too
 	
 	// Used for some netlist traversing...
 	int sign;	

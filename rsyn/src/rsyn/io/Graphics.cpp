@@ -163,7 +163,7 @@ Rsyn::Instance Graphics::searchCellAt(const DBU x, const DBU y) {
 			} // end for 
 		}// end if 
 	} // end for
-
+	
 	return c;
 } // end method
 
@@ -187,6 +187,25 @@ void Graphics::coloringRandomBlue() {
 		} else {
 			color.r = 0;
 			color.g = 0;
+			color.b = (unsigned) (127 + 128 * (rand() / float(RAND_MAX)));
+		} // end else
+	} // end for
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void Graphics::coloringRandomGray() {
+	for (Rsyn::Instance instance : clsModule.allInstances()) {
+		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
+		Color & color = clsColorCells[cell];
+
+		if (instance.isFixed()) {
+			color.r = 0;
+			color.g = 0;
+			color.b = 0;
+		} else {
+			color.r =
+			color.g =
 			color.b = (unsigned) (127 + 128 * (rand() / float(RAND_MAX)));
 		} // end else
 	} // end for
@@ -219,7 +238,6 @@ void Graphics::coloringByCellType() {
 			color.b = (unsigned) (127 + 128 * (rand() / float(RAND_MAX)));
 		} // end else
 	} // end for
-
 } // end method
 
 // -----------------------------------------------------------------------------

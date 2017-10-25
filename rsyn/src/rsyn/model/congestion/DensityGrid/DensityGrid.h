@@ -29,21 +29,6 @@
 #ifndef DENSITYGRID_H
 #define DENSITYGRID_H
 
-/* density profiling related parms */
-#define BIN_DIM              9.0
-#define ALPHA                1.0
-#define BIN_AREA_THRESHOLD   0.2
-#define FREE_SPACE_THRESHOLD 0.2
-
-#define ABU2_WGT 10
-#define ABU5_WGT  4
-#define ABU10_WGT 2
-#define ABU20_WGT 1
-
-#define NUM_BLOCK_BINS_X 500
-#define NUM_BLOCK_BINS_Y 500 
-
-
 #include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/util/dbu.h"

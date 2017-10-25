@@ -73,6 +73,8 @@ public:
 	DBU getCoordinate(const Boundary bound, const Dimension dim) const;
 	//! @brief Returns the bound box Bounds that defines the limits of PhysicalInstance.
 	const Bounds &getBounds() const;
+	
+	Rsyn::PhysicalCell asPhysicalCell() const;
 }; // end class 
 
 } // end namespace 

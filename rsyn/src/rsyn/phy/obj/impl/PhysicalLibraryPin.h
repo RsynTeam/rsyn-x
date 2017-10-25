@@ -33,32 +33,32 @@ inline const Bounds & PhysicalLibraryPin::getICCADBounds() const {
 
 // -----------------------------------------------------------------------------
 
-inline std::vector<PhysicalPinPort> & PhysicalLibraryPin::allPinPorts() {
-	return data->clsPhysicalPinPorts;
+inline std::vector<PhysicalPinGeometry> & PhysicalLibraryPin::allPinGeometries() {
+	return data->clsPhysicalPinGeometries;
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<PhysicalPinPort> & PhysicalLibraryPin::allPinPorts() const {
-	return data->clsPhysicalPinPorts;
+inline const std::vector<PhysicalPinGeometry> & PhysicalLibraryPin::allPinGeometries() const {
+	return data->clsPhysicalPinGeometries;
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-inline std::size_t PhysicalLibraryPin::getNumPinPorts() const {
-	return data->clsPhysicalPinPorts.size();
+inline std::size_t PhysicalLibraryPin::getNumPinGeometries() const {
+	return data->clsPhysicalPinGeometries.size();
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-inline bool PhysicalLibraryPin::hasPinPorts() const {
-	return !data->clsPhysicalPinPorts.empty();
+inline bool PhysicalLibraryPin::hasPinGeometries() const {
+	return !data->clsPhysicalPinGeometries.empty();
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-inline bool PhysicalLibraryPin::isPinPortsEmpty() const {
-	return data->clsPhysicalPinPorts.empty();
+inline bool PhysicalLibraryPin::isEmptyPinGeometries() const {
+	return data->clsPhysicalPinGeometries.empty();
 } // end method 
 
 // -----------------------------------------------------------------------------

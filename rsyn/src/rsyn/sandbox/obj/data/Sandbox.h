@@ -42,7 +42,7 @@ struct SandboxData {
 	std::map<Net, SandboxNet> mappingNet;
 
 	List<SandboxPort, RSYN_SANDBOX_LIST_CHUNCK_SIZE> ports;
-	std::set<SandboxPort> portsByDirection[Rsyn::NUM_PIN_DIRECTIONS];
+	std::set<SandboxPort> portsByDirection[Rsyn::NUM_SIGNAL_DIRECTIONS];
 
 	SandboxData() :
 		initialized(false),

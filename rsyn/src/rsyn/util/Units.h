@@ -132,6 +132,14 @@ public:
 		const UnitPrefix targetUnitPrefix = getInternalUnitPrefix(measure);
 		return convertUnits(sourceValue, sourceUnitPrefix, targetUnitPrefix);
 	} // end method
+
+	static double convertFromInternalUnits(
+			const Measure measure,
+			const double sourceValue,
+			const UnitPrefix targetUnitPrefix) {
+		const UnitPrefix sourceUnitPrefix = getInternalUnitPrefix(measure);
+		return convertUnits(sourceValue, sourceUnitPrefix, targetUnitPrefix);
+	} // end method
 	
 }; // end class
 

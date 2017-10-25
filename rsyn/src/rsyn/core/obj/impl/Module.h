@@ -215,7 +215,7 @@ inline
 void
 Module::getNetsPerLogicalDepth(std::vector<std::vector<Rsyn::Net>> &levels) {
 	levels.clear();
-	std::cout << "TODO: getLevelizedNets() not implemented\n";
+	std::cout << "TODO: getNetsPerLogicalDepth() not implemented\n";
 } // end method
 
 // -----------------------------------------------------------------------------

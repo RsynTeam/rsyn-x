@@ -18,7 +18,7 @@ namespace Rsyn {
 struct SandboxPinData : ObjectData {
 	// #> bit pack
 	int index : 20;           // index of this pin in the library cell.
-	Direction direction : 2;  // direction of this pin
+	Direction direction : 3;  // direction of this pin
 	InstanceType type : 3;    // the type of instance that this pin belongs to
 	bool boundary : 1;        // Is this pin a port? Pins belonging to both
 	                          // Rsyn::PORT and Rsyn::MODULE are marked as boundary

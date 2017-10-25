@@ -19,7 +19,8 @@ namespace Rsyn {
 class Net : public Proxy<NetData> {
 	
 RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
-	
+
+friend class RawPointer;
 friend class Design;
 friend class Module;
 friend class Pin;

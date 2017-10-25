@@ -31,7 +31,7 @@ namespace Rsyn {
 
 class Engine;
 
-class RoutingEstimator : public Service, public Rsyn::Observer {
+class RoutingEstimator : public Service, public Rsyn::Observer, public Rsyn::PhysicalObserver {
 private:
 
 	Rsyn::Design design;
@@ -71,6 +71,9 @@ public:
 
 	virtual void
 	onPostCellRemap(Rsyn::Cell cell, Rsyn::LibraryCell oldLibraryCell) override;
+	
+	virtual void
+	onPostMovedInstance(Rsyn::PhysicalInstance phInstance) override;
 	
 	Number getLocalWireResPerUnitLength() const { return routingExtractionModel->getLocalWireResPerUnitLength(); }
 	Number getLocalWireCapPerUnitLength() const { return routingExtractionModel->getLocalWireCapPerUnitLength(); }

@@ -37,7 +37,7 @@ public:
 	PhysicalPinDirection clsDirection = PIN_INVALID_DIRECTION;
 	// A pin may have several ports. However, each port is weakly connected to other. 
 	// It is assumed that they have high resistance among them. 
-	std::vector<PhysicalPinPort> clsPhysicalPinPorts;
+	std::vector<PhysicalPinGeometry> clsPhysicalPinGeometries;
 	PhysicalLibraryPinData() = default;
 }; // class 
 

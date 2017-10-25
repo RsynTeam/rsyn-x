@@ -825,11 +825,11 @@ public:
 	} // end method
 
 	//! @brief Returns the worst (maximum for late, minimum for early) path
-	//!        delay of all paths passing thorugh this pin.
+	//!        delay of all paths passing through this pin.
 	Number getPinWorstPathDelay(Rsyn::Pin pin, const TimingMode mode, const TimingTransition edge) const {
 		return getPinWorstPathDelay(getTimingPin(pin), mode, edge);
 	} // end method
-	
+
 	//! @brief   Returns the percentage of the worst path delay passing through
 	//!          an arc due to the arc delay.
 	//! @details For instance, if the worst path delay is 100 and the cell delay
@@ -845,6 +845,12 @@ public:
 	//! @brief Returns the current delay of an arc.
 	Number getArcDelay(Rsyn::Arc arc, const TimingMode mode, const TimingTransition oedge) const {
 		return getArcDelay(getTimingArc(arc), mode, oedge);
+	} // end method
+
+	//! @brief Returns the current worst delay among rise/fall of an arc.
+	Number getArcWorstDelay(Rsyn::Arc arc, const TimingMode mode) const {
+		return std::max(getArcDelay(getTimingArc(arc), mode, Rsyn::RISE),
+				getArcDelay(getTimingArc(arc), mode, Rsyn::FALL));
 	} // end method
 
 	//! @brief Returns the slew at the input pin of an arc.
@@ -931,11 +937,11 @@ public:
 	//!          the four possible combinations for non-unate arcs, but only
 	//!          the two worst ones. Maybe in the future, this function will be
 	//!          deprecated.
-	TimingTransition getArcInputTransition(Rsyn::Arc arc, const TimingMode mode, const TimingTransition oedge) {
-		return arc.getType() == Rsyn::NET_ARC? oedge :
-			getTimingArc(arc).state[mode].backtrack[oedge];
+	TimingTransition getArcTransitionTypeAtFromPin(Rsyn::Arc arc, const TimingMode mode, const TimingTransition toEdge) const {
+		return arc.getType() == Rsyn::NET_ARC? toEdge :
+			getTimingArc(arc).state[mode].backtrack[toEdge];
 	} // end method
-	
+
 	//! @brief Returns the max wire delay of the input pins of this cell.
 	//! @note  The wire delay is the delay from driver to sink.
 	Number getCellMaxInputWireDelay(Rsyn::Instance cell, const TimingMode mode) const {
@@ -963,15 +969,27 @@ public:
 		return maxWireDelay;
 	} // end method		
 	
-	//! @brief Returns the arrival time propagated to the "to" pin of an arc.
+	//! @brief Returns the arrival time propagated to the "to" pin of an arc
+	//!        given the transition type at the "to" pin.
 	//! @note  The arrival time may be different than the actual arrival time 
 	//!        stored at "to" since "to" stores the worst arrival time.
-	Number getArcArrivalTimeAtToPin(Rsyn::Arc arc, const TimingMode mode, const TimingTransition oedge) const {
-			const TimingPin &from = getTimingPin(arc.getFromPin());
-			const TimingArc &timingArc = getTimingArc(arc);
+	Number getArcArrivalTimeAtToPin(Rsyn::Arc arc, const TimingMode mode, const TimingTransition toEdge) const {
+		const TimingPin &from = getTimingPin(arc.getFromPin());
+		const TimingTransition fromEdge = getArcTransitionTypeAtFromPin(arc, mode, toEdge);
+		const TimingArc &timingArc = getTimingArc(arc);
 
-			return timingArc.state[mode].delay[oedge]
-					+ from.state[mode].a[timingArc.state[mode].backtrack[oedge]];
+		return timingArc.state[mode].delay[toEdge] + from.state[mode].a[fromEdge];
+	} // end method
+
+	//! @brief Returns the required time propagated to the "from" pin of an arc
+	//!        given the transition type at the "to" pin.
+	//! @note  The required time may be different than the actual required time
+	//!        stored at "from" since "from" stores the worst required time.
+	Number getArcRequiredTimeAtFromPin(Rsyn::Arc arc, const TimingMode mode, const TimingTransition toEdge) const {
+		const TimingPin &to = getTimingPin(arc.getToPin());
+		const TimingArc &timingArc = getTimingArc(arc);
+
+		return to.state[mode].q[toEdge]	- timingArc.state[mode].delay[toEdge];
 	} // end method
 
 	//! @brief Returns the worst arrival (between rise/fall) time propagated to
@@ -982,6 +1000,66 @@ public:
 		const Number fall = getArcArrivalTimeAtToPin(arc, mode, FALL);
 		const Number rise = getArcArrivalTimeAtToPin(arc, mode, RISE);
 		return TM_MODE_WORST_DELAY_AND_ARRIVAL[mode](fall, rise);
+	} // end method
+
+	//! @brief Returns the slack at the "to" pin of an arc given a transition
+	//!        type at the "to" pin and assuming the arrival time at the "to"
+	//!        pin is propagated from the arc passed as argument. The required
+	//!        time used for slack computation is the one stored in the "to"
+	//!        pin.
+	//! @note  This may return a different value than getPinSlack("to") as the
+	//!        arrival time at "to" is assumed to be the one propagate from this
+	//!        arc.
+	Number getArcSlackAtToPin(Rsyn::Arc arc, const TimingMode mode, const TimingTransition toEdge) const {
+		const Number a = getArcArrivalTimeAtToPin(arc, mode, toEdge);
+		const Number q = getPinRequiredTime(arc.getToPin(), mode, toEdge);
+		return computeSlack(mode, a, q);
+	} // end method
+
+	//! @brief Returns the worst slack (among rise/fall) at the "to" pin of an
+	//!        arc given a transition type at the "to" pin and assuming the
+	//!        arrival time at the "to" pin is propagated from the arc passed as
+	//!        argument. The required time used for slack computation is the one
+	//!        stored in the "to" pin.
+	//! @note  This may return a different value than getPinSlack("to") as the
+	//!        arrival time at "to" is assumed to be the one propagate from this
+	//!        arc.
+	Number getArcWorstSlackAtToPin(Rsyn::Arc arc, const TimingMode mode) const {
+		const Number fslack = getArcSlackAtToPin(arc, mode, Rsyn::FALL);
+		const Number rslack = getArcSlackAtToPin(arc, mode, Rsyn::RISE);
+		if (isUninitializedValue(fslack)) return rslack;
+		if (isUninitializedValue(rslack)) return fslack;
+		return std::min(rslack, fslack);
+	} // end method
+
+	//! @brief Same as getArcWorstSlackAtToPin() but also returns the transition
+	//!        that generates the worst delay.
+	std::tuple<Number, TimingTransition>
+	getArcWorstSlackAndTransitionAtToPin(Rsyn::Arc arc, const TimingMode mode) const {
+		const Number fslack = getArcSlackAtToPin(arc, mode, Rsyn::FALL);
+		const Number rslack = getArcSlackAtToPin(arc, mode, Rsyn::RISE);
+		if (isUninitializedValue(fslack)) return std::make_tuple(rslack, Rsyn::RISE);
+		if (isUninitializedValue(rslack)) return std::make_tuple(fslack, Rsyn::FALL);
+		if (rslack < fslack) {
+			return std::make_tuple(rslack, Rsyn::RISE);
+		} else {
+			return std::make_tuple(fslack, Rsyn::FALL);
+		} // end else
+	} // end method
+
+	//! @brief Returns the slack at the "from" pin of an arc given a transition
+	//!        type at the "to" pin and assuming the required time at the "from"
+	//!        pin is propagated from the arc passed as argument. The arrival
+	//!        time used for slack computation is the one stored in the "from"
+	//!        pin.
+	//! @note  This may return a different value than getPinSlack("from") as
+	//!        the required time at "from" is assumed to be the one propagate
+	//!        from the arc passed as argument.
+	Number getArcSlackAtFromPin(Rsyn::Arc arc, const TimingMode mode, const TimingTransition toEdge) const {
+		const TimingTransition fromEdge = getArcTransitionTypeAtFromPin(arc, mode, toEdge);
+		const Number a = getPinArrivalTime(arc.getFromPin(), mode, fromEdge);
+		const Number q = getArcRequiredTimeAtFromPin(arc, mode, toEdge);
+		return computeSlack(mode, a, q);
 	} // end method
 
 	//! @brief Returns the slack criticality i.e. the ratio of the slack and wns.
@@ -1347,17 +1425,23 @@ public:
 		Rsyn::Pin previousPin;
 		Rsyn::Pin nextPin;
 		TimingTransition transition;
+		TimingTransition previousTransition;
+		TimingTransition nextTransition;
 		TimingMode mode; // stored for commodity, used to compute slack
 		
 		PathHop() :
-		arrival(std::numeric_limits<Number>::quiet_NaN()),
-		required(std::numeric_limits<Number>::quiet_NaN()),
-		delay(std::numeric_limits<Number>::quiet_NaN()),
-		pin(nullptr),
-		previousPin(nullptr),
-		nextPin(nullptr),
-		rsynArcFromThisPin(nullptr),
-		rsynArcToThisPin(nullptr){}
+			arrival(std::numeric_limits<Number>::quiet_NaN()),
+			required(std::numeric_limits<Number>::quiet_NaN()),
+			delay(std::numeric_limits<Number>::quiet_NaN()),
+			pin(nullptr),
+			previousPin(nullptr),
+			nextPin(nullptr),
+			rsynArcFromThisPin(nullptr),
+			rsynArcToThisPin(nullptr),
+			transition(Rsyn::TIMING_TRANSITION_INVALID),
+			previousTransition(Rsyn::TIMING_TRANSITION_INVALID),
+			nextTransition(Rsyn::TIMING_TRANSITION_INVALID)
+		{}
 				
 	public:
 		
@@ -1367,9 +1451,12 @@ public:
 				
 		Rsyn::Net getNet() const { return pin.getNet(); }
 		Rsyn::Instance getInstance() const { return pin.getInstance(); }
-		
-		TimingMode getTimingMode() const { return mode; }
+
 		TimingTransition getTransition() const { return transition; }
+		TimingTransition getPreviousTransition() const { return previousTransition; }
+		TimingTransition getNextTransition() const { return nextTransition; }
+
+		TimingMode getTimingMode() const { return mode; }
 		Number getArrival() const { return arrival; }
 		Number getRequired() const { return required; }
 		
@@ -1421,7 +1508,8 @@ private:
 			propRsynArcFromThisPin(nullptr),
 			propRequired(std::numeric_limits<Number>::quiet_NaN()),
 			propSlack(std::numeric_limits<Number>::quiet_NaN()),
-			propParentPartialPath(-1)
+			propParentPartialPath(-1),
+			propTransition(Rsyn::TIMING_TRANSITION_INVALID)
 		{}
 		
 		Reference(Rsyn::Pin pin, 
@@ -1715,7 +1803,27 @@ public:
 			std::make_tuple(RISE, FALL),
 			std::make_tuple(RISE, RISE)};
 	} // end method
-		
+
+	//! @brief Returns an iterable collation of valid timing transition pairs
+	//!        given a timing arc sense.
+	const std::vector<std::tuple<TimingTransition, TimingTransition>> &
+	allValidTimingTransitionPairs(const Rsyn::TimingSense sense) const {
+		static const std::vector<std::tuple<TimingTransition, TimingTransition>>
+			positiveUnate {std::make_tuple(FALL, FALL), std::make_tuple(RISE, RISE)};
+		static const std::vector<std::tuple<TimingTransition, TimingTransition>>
+			negativeUnate {std::make_tuple(FALL, RISE), std::make_tuple(RISE, FALL)};
+		static const std::vector<std::tuple<TimingTransition, TimingTransition>>
+			nonUnate {std::make_tuple(FALL, FALL), std::make_tuple(RISE, RISE),
+					std::make_tuple(FALL, RISE), std::make_tuple(RISE, FALL)};
+
+		switch (sense) {
+			case POSITIVE_UNATE: return positiveUnate;
+			case NEGATIVE_UNATE: return negativeUnate;
+			default:
+				return nonUnate;
+		} // end switch
+	} // end method
+
 	//! @brief Returns an iterable collation of timing mode and transition
 	//!        pairs.
 	std::array<std::tuple<TimingMode, TimingTransition>, 4>

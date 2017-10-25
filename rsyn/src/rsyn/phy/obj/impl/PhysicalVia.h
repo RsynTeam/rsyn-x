@@ -47,5 +47,12 @@ inline std::size_t PhysicalVia::getNumLayers() const {
 
 // -----------------------------------------------------------------------------
 
+inline bool PhysicalVia::isDesignVia() const {
+	return data->clsDesignVia;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+
 } // end namespace 
 

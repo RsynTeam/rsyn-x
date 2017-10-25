@@ -53,6 +53,21 @@ const TimingTransition REVERSE_EDGE_TYPE[2] = {
 extern const Number UNINITVALUE; 
 extern const Number DEFAULT_UNINIT_VALUE[NUM_TIMING_MODES];
 
+// TODO: Find an appropriate place for this function.
+inline
+bool isValidTransitionCombination(
+		const TimingSense sense,
+		const TimingTransition fromEdge,
+		const TimingTransition toEdge) {
+	switch (sense) {
+		case NEGATIVE_UNATE: return fromEdge != toEdge;
+		case POSITIVE_UNATE: return fromEdge == toEdge;
+		case NON_UNATE: return true;
+		default:
+			return false;
+	} // end switch
+} // end function
+
 } // end namespace
 
 #endif

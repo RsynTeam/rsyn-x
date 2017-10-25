@@ -83,8 +83,36 @@ inline DBU PhysicalCell::getDisplacement(const DBU pos, const Dimension dim) con
 
 // -----------------------------------------------------------------------------
 
+inline DBU PhysicalCell::getDisplacementFromCurrentPosition(const DBUxy pos) const {
+	const DBUxy lower = getPosition();
+	return std::abs(lower[X] - pos[X]) + std::abs(lower[Y] - pos[Y]);
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline DBU PhysicalCell::getDisplacementFromCurrentPosition(const DBU pos, const Dimension dim) const {
+	const DBU lower = getPosition(dim);
+	return std::abs(lower - pos);
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline DBU PhysicalCell::getDisplacementFromInitialPosition(const DBUxy pos) const {
+	const DBUxy lower = getInitialPosition();
+	return std::abs(lower[X] - pos[X]) + std::abs(lower[Y] - pos[Y]);
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline DBU PhysicalCell::getDisplacementFromInitialPosition(const DBU pos, const Dimension dim) const {
+	const DBU lower = getInitialPosition(dim);
+	return std::abs(lower - pos);
+} // end method 
+
+// -----------------------------------------------------------------------------
+
 inline PhysicalOrientation PhysicalCell::getOrientation() const {
-	return data->clsPhysicalOrientation;
+	return data->clsOrientation;
 } // end method 
 
 // -----------------------------------------------------------------------------

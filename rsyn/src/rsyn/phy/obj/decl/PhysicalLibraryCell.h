@@ -55,6 +55,7 @@ public:
 	bool isMacroBlock() const;
 	//! @brief Returns true if the PhysicalLibraryCell has defined rectangular obstacle Bounds.
 	bool hasLayerObstacles() const;
+	bool hasObstacles() const;
 	//! @brief Returns the macro class associated to the PhysicalLibraryCell.
 	Rsyn::PhysicalMacroClass getClass() const;
 	//! @brief Returns PhysicalSite object related to the PhysicalLibraryCell.
@@ -82,6 +83,9 @@ public:
 	//! i.e., the PhysicalLibaryCellboundaries are defined by metal1 boundaries. 
 	//! @warning This method affects 2015 ICCAD contest benchmark.
 	const std::vector<Bounds> & allLayerObstacles() const;
+	
+	bool hasPolygonBoundaries() const;
+	const PhysicalPolygon & getPolygonBoundaries() const;
 	
 	
 }; // end class 

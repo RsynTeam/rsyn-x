@@ -31,6 +31,8 @@ Rsyn::PhysicalLayerType getPhysicalLayerType(const std::string & type) {
 	if (type.compare("ROUTING") == 0) return ROUTING;
 	if (type.compare("CUT") == 0) return CUT;
 	if (type.compare("OVERLAP") == 0) return OVERLAP;
+	if (type.compare("MASTERSLICE") == 0) return MASTERSLICE;
+	if (type.compare("IMPLANT") == 0) return IMPLANT;
 	return INVALID_PHY_LAYER_TYPE;
 } // end method 
 
@@ -41,6 +43,8 @@ std::string getPhysicalLayerType(const Rsyn::PhysicalLayerType type) {
 		case ROUTING: return "ROUTING";
 		case CUT: return "CUT";
 		case OVERLAP: return "OVERLAP";
+		case MASTERSLICE: return "MASTERSLICE";
+		case IMPLANT: return "IMPLANT";
 		default: return Rsyn::getPhysicalInvalidName();
 	} // end switch 
 } // end method 
@@ -181,21 +185,21 @@ std::string getPhysicalPinDirection(const Rsyn::PhysicalPinDirection pinDirectio
 	} // end switch 
 } // end method 
 
-Rsyn::PhysicalPinPortClass getPhysicalPinPortClass(const std::string & portClass) {
-	if (portClass.compare("NONE") == 0) return PINPORTCLASS_NONE;
-	if (portClass.compare("CORE") == 0) return PINPORTCLASS_CORE;
-	if (portClass.compare("BUMP") == 0) return PINPORTCLASS_BUMP;
+Rsyn::PhysicalPinGeometryClass getPhysicalPinGeometryClass(const std::string & geometryClass) {
+	if (geometryClass.compare("NONE") == 0) return PINGEOMETRYCLASS_NONE;
+	if (geometryClass.compare("CORE") == 0) return PINGEOMETRYCLASS_CORE;
+	if (geometryClass.compare("BUMP") == 0) return PINGEOMETRYCLASS_BUMP;
 
-	return PINPORTCLASS_INVALID;
+	return PINGEOMETRYCLASS_INVALID;
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-std::string getPhysicalPinPortClass(const Rsyn::PhysicalPinPortClass portClass) {
-	switch (portClass) {
-		case PINPORTCLASS_NONE: return "NONE";
-		case PINPORTCLASS_CORE: return "CORE";
-		case PINPORTCLASS_BUMP: return "BUMP";
+std::string getPhysicalPinGeometryClass(const Rsyn::PhysicalPinGeometryClass geometryClass) {
+	switch (geometryClass) {
+		case PINGEOMETRYCLASS_NONE: return "NONE";
+		case PINGEOMETRYCLASS_CORE: return "CORE";
+		case PINGEOMETRYCLASS_BUMP: return "BUMP";
 		default: return Rsyn::getPhysicalInvalidName();
 	} // end switch 
 } // end method 
@@ -214,6 +218,30 @@ std::string getPhysicalRegionType(const Rsyn::RegionType type) {
 	switch (type) {
 		case RegionType::FENCE: return "FENCE";
 		case RegionType::GUIDE: return "GUIDE";
+		default: return Rsyn::getPhysicalInvalidName();
+	} // end switch 
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+Rsyn::PhysicalDesignMode getPhysicalDesignModeType(const std::string & type) {
+	if (type.compare("ALL") == 0) return PhysicalDesignMode::ALL;
+	if (type.compare("CTS") == 0) return PhysicalDesignMode::CTS;
+	if (type.compare("FLOORPLANNING") == 0) return PhysicalDesignMode::FLOORPLANNING;
+	if (type.compare("PLACEMENT") == 0) return PhysicalDesignMode::PLACEMENT;
+	if (type.compare("ROUTING") == 0) return PhysicalDesignMode::ROUTING;
+	return PhysicalDesignMode::INVALID;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+std::string getPhysicalDesignModeType(const Rsyn::PhysicalDesignMode type) {
+	switch (type) {
+		case PhysicalDesignMode::ALL: return "ALL";
+		case PhysicalDesignMode::CTS: return "CTS";
+		case PhysicalDesignMode::FLOORPLANNING: return "FLOORPLANNING";
+		case PhysicalDesignMode::PLACEMENT: return "PLACEMENT";
+		case PhysicalDesignMode::ROUTING: return "ROUTING";
 		default: return Rsyn::getPhysicalInvalidName();
 	} // end switch 
 } // end method 

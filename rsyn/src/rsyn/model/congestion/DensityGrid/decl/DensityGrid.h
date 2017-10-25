@@ -46,7 +46,7 @@ public:
 
 	// initialize abu
 	void init(Rsyn::PhysicalDesign phDesign, Rsyn::Module module, double targetUtilization, 
-		double unit = BIN_DIM, bool showDetails = false, const bool keepRowBounds = false);
+		double unit = 9.0, bool showDetails = false, const bool keepRowBounds = false);
 	void updateBinLength(const DBU binLength, bool showDetails = false, const bool keepRowBounds = false);
 	void updateArea(const AreaType type);
 	void clearAreaOfBins(const AreaType type);

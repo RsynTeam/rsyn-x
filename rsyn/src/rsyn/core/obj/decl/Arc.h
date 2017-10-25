@@ -18,7 +18,7 @@ namespace Rsyn {
 //! @brief A proxy class representing a netlist arc.
 class Arc : public Proxy<ArcData> {
 RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
-
+friend class RawPointer;
 friend class Design;
 private:
 	Arc(ArcData * data) : Proxy(data) {}

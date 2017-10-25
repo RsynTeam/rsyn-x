@@ -31,7 +31,7 @@ struct SandboxNetData : SandboxObjectData {
 	SandboxPin driver;
 
 	// Cache number of pins per direction.
-	std::array<int, NUM_PIN_DIRECTIONS> numPinsOfType;
+	std::array<int, NUM_SIGNAL_DIRECTIONS> numPinsOfType;
 	
 	// Ussed in some netlist traversals.
 	int sign;

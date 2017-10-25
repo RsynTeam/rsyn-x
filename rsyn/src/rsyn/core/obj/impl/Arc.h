@@ -90,7 +90,9 @@ Arc::getName() const {
 inline
 std::string
 Arc::getFullName() const {
-	return getInstance().getName() + ":" + getName();
+	return getType() == NET_ARC?
+		(getFromPin().getFullName() + "->" + getToPin().getFullName()) :
+		(getInstance().getName() + ":" + getName());
 } // end method
 
 // -----------------------------------------------------------------------------

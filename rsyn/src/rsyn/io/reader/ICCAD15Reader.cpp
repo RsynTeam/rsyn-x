@@ -171,9 +171,10 @@ void ICCAD15Reader::openBenchmarkFromICCAD15()  {
 
 	Stepwatch watchPopulateLayers("Initializing Physical Layer");
 	Json phDesignJason;
-	if(ENABLE_RECTANGLE_MERGE) {
+	if (ENABLE_RECTANGLE_MERGE) {
 		phDesignJason["clsEnableMergeRectangles"] = true;
 	}// end if 
+	phDesignJason["clsContestMode"] = "ICCAD15";
 	engine.startService("rsyn.physical", phDesignJason);	
 	Rsyn::PhysicalService * phService = engine.getService("rsyn.physical");
 	Rsyn::PhysicalDesign clsPhysicalDesign = phService->getPhysicalDesign();

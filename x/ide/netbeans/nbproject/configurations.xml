@@ -133,10 +133,13 @@
             <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/Region.cpp</itemPath>
             <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/Region.h</itemPath>
           </logicalFolder>
+          <itemPath>../../../rsyn/src/rsyn/gui/canvas/GeometryManager.cpp</itemPath>
+          <itemPath>../../../rsyn/src/rsyn/gui/canvas/GeometryManager.h</itemPath>
           <itemPath>../../../rsyn/src/rsyn/gui/canvas/PhysicalCanvasGL.cpp</itemPath>
           <itemPath>../../../rsyn/src/rsyn/gui/canvas/PhysicalCanvasGL.h</itemPath>
           <itemPath>../../../rsyn/src/rsyn/gui/canvas/SchematicCanvasGL.cpp</itemPath>
           <itemPath>../../../rsyn/src/rsyn/gui/canvas/SchematicCanvasGL.h</itemPath>
+          <itemPath>../../../rsyn/src/rsyn/gui/canvas/Stipple.h</itemPath>
         </logicalFolder>
         <logicalFolder name="frame" displayName="frame" projectFiles="true">
           <logicalFolder name="base" displayName="base" projectFiles="true">
@@ -246,6 +249,8 @@
           <itemPath>../../../rsyn/src/rsyn/io/reader/ISPD2014Reader.h</itemPath>
           <itemPath>../../../rsyn/src/rsyn/io/reader/PopulateRsyn.cpp</itemPath>
           <itemPath>../../../rsyn/src/rsyn/io/reader/PopulateRsyn.h</itemPath>
+          <itemPath>../../../rsyn/src/rsyn/io/reader/SizingISPDReader.cpp</itemPath>
+          <itemPath>../../../rsyn/src/rsyn/io/reader/SizingISPDReader.h</itemPath>
         </logicalFolder>
         <itemPath>../../../rsyn/src/rsyn/io/Graphics.cpp</itemPath>
         <itemPath>../../../rsyn/src/rsyn/io/Graphics.h</itemPath>
@@ -318,6 +323,7 @@
       <logicalFolder name="phy" displayName="phy" projectFiles="true">
         <logicalFolder name="infra" displayName="infra" projectFiles="true">
           <itemPath>../../../rsyn/src/rsyn/phy/infra/PhysicalAttribute.h</itemPath>
+          <itemPath>../../../rsyn/src/rsyn/phy/infra/PhysicalObserver.h</itemPath>
         </logicalFolder>
         <logicalFolder name="obj" displayName="obj" projectFiles="true">
           <logicalFolder name="data" displayName="data" projectFiles="true">
@@ -332,12 +338,21 @@
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalObject.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalObstacleData.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalPinData.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalPinGeometryData.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalPinLayerData.h</itemPath>
-            <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalPinPortData.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalRegionData.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalRoutingPointData.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalRowData.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalSiteData.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalSpacingData.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalSpecialNetData.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalSpecialWireData.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalTrackData.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalViaData.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalViaInstanceData.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalViaLayerData.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalWireData.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/data/PhysicalWireSegmentData.h</itemPath>
           </logicalFolder>
           <logicalFolder name="decl" displayName="decl" projectFiles="true">
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalCell.h</itemPath>
@@ -352,16 +367,26 @@
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalNet.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalObstacle.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalPin.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalPinGeometry.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalPinLayer.h</itemPath>
-            <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalPinPort.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalPort.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalRegion.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalRoutingPoint.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalRow.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalSite.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalSpacing.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalSpecialNet.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalSpecialWire.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalTrack.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalVia.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalViaInstance.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalViaLayer.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalWire.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/decl/PhysicalWireSegment.h</itemPath>
           </logicalFolder>
           <logicalFolder name="impl" displayName="impl" projectFiles="true">
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalCell.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalDesign.cpp</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalDesign.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalDie.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalGroup.h</itemPath>
@@ -373,13 +398,22 @@
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalNet.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalObstacle.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalPin.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalPinGeometry.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalPinLayer.h</itemPath>
-            <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalPinPort.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalPort.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalRegion.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalRoutingPoint.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalRow.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalSite.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalSpacing.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalSpecialNet.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalSpecialWire.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalTrack.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalVia.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalViaInstance.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalViaLayer.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalWire.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalWireSegment.h</itemPath>
           </logicalFolder>
         </logicalFolder>
         <logicalFolder name="util" displayName="util" projectFiles="true">
@@ -458,6 +492,8 @@
         <itemPath>../../../rsyn/src/rsyn/util/MemoryUsage.h</itemPath>
         <itemPath>../../../rsyn/src/rsyn/util/Polygon.h</itemPath>
         <itemPath>../../../rsyn/src/rsyn/util/Proxy.h</itemPath>
+        <itemPath>../../../rsyn/src/rsyn/util/RCTreeExtractor.cpp</itemPath>
+        <itemPath>../../../rsyn/src/rsyn/util/RCTreeExtractor.h</itemPath>
         <itemPath>../../../rsyn/src/rsyn/util/RangeBasedLoop.h</itemPath>
         <itemPath>../../../rsyn/src/rsyn/util/Stepwatch.cpp</itemPath>
         <itemPath>../../../rsyn/src/rsyn/util/Stepwatch.h</itemPath>
@@ -472,6 +508,7 @@
         <itemPath>../../../rsyn/src/rsyn/util/dim.h</itemPath>
         <itemPath>../../../rsyn/src/rsyn/util/double2.h</itemPath>
         <itemPath>../../../rsyn/src/rsyn/util/float2.h</itemPath>
+        <itemPath>../../../rsyn/src/rsyn/util</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="x" displayName="x" projectFiles="true">
@@ -591,6 +628,7 @@
     <Elem>../../src/x/visualization</Elem>
     <Elem>../../../rsyn/src/rsyn/3rdparty/parser</Elem>
     <Elem>../../../rsyn/src/rsyn/setup</Elem>
+    <Elem>../../../rsyn/src/rsyn/phy</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -1115,6 +1153,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/gui/canvas/GeometryManager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/gui/canvas/GeometryManager.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/gui/canvas/PhysicalCanvasGL.cpp"
             ex="false"
             tool="1"
@@ -1131,6 +1179,11 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/gui/canvas/SchematicCanvasGL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/gui/canvas/Stipple.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -1534,6 +1587,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/io/reader/SizingISPDReader.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/io/reader/SizingISPDReader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/model/congestion/DensityGrid/DensityGrid.h"
             ex="false"
             tool="3"
@@ -1744,6 +1807,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/phy/infra/PhysicalObserver.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalDesign.h"
             ex="false"
             tool="3"
@@ -1799,17 +1867,22 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalPinGeometryData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalPinLayerData.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalPinPortData.h"
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalRegionData.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalRegionData.h"
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalRoutingPointData.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -1825,6 +1898,46 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalSpacingData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalSpecialNetData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalSpecialWireData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalTrackData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalViaData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalViaInstanceData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalViaLayerData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalWireData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalWireSegmentData.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -1889,12 +2002,12 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalPinLayer.h"
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalPinGeometry.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalPinPort.h"
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalPinLayer.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -1905,6 +2018,11 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalRegion.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalRoutingPoint.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -1924,9 +2042,54 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalSpecialNet.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalSpecialWire.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalTrack.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalVia.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalViaInstance.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalViaLayer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalWire.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalWireSegment.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalCell.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalDesign.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalDesign.h"
@@ -1984,12 +2147,12 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalPinLayer.h"
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalPinGeometry.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalPinPort.h"
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalPinLayer.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -2000,6 +2163,11 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalRegion.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalRoutingPoint.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -2015,6 +2183,46 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalSpacing.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalSpecialNet.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalSpecialWire.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalTrack.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalVia.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalViaInstance.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalViaLayer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalWire.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalWireSegment.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -2204,6 +2412,8 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/util" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/util/AsciiProgressBar.h"
             ex="false"
             tool="3"
@@ -2277,6 +2487,16 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/util/Proxy.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/util/RCTreeExtractor.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/util/RCTreeExtractor.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -3121,6 +3341,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/gui/canvas/GeometryManager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/gui/canvas/GeometryManager.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/gui/canvas/PhysicalCanvasGL.cpp"
             ex="false"
             tool="1"
@@ -3137,6 +3367,11 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/gui/canvas/SchematicCanvasGL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/gui/canvas/Stipple.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -3540,6 +3775,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/io/reader/SizingISPDReader.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/io/reader/SizingISPDReader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/model/congestion/DensityGrid/DensityGrid.h"
             ex="false"
             tool="3"
@@ -3750,6 +3995,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/phy/infra/PhysicalObserver.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalDesign.h"
             ex="false"
             tool="3"
@@ -3805,17 +4055,22 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalPinGeometryData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalPinLayerData.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalPinPortData.h"
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalRegionData.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalRegionData.h"
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalRoutingPointData.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -3831,6 +4086,46 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalSpacingData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalSpecialNetData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalSpecialWireData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalTrackData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalViaData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalViaInstanceData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalViaLayerData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalWireData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/data/PhysicalWireSegmentData.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -3895,12 +4190,12 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalPinLayer.h"
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalPinGeometry.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalPinPort.h"
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalPinLayer.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -3911,6 +4206,11 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalRegion.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalRoutingPoint.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -3930,9 +4230,54 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalSpecialNet.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalSpecialWire.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalTrack.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalVia.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalViaInstance.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalViaLayer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalWire.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/decl/PhysicalWireSegment.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalCell.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalDesign.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalDesign.h"
@@ -3990,12 +4335,12 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalPinLayer.h"
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalPinGeometry.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalPinPort.h"
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalPinLayer.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -4006,6 +4351,11 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalRegion.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalRoutingPoint.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -4021,6 +4371,46 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalSpacing.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalSpecialNet.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalSpecialWire.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalTrack.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalVia.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalViaInstance.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalViaLayer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalWire.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalWireSegment.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -4210,6 +4600,8 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../rsyn/src/rsyn/util" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../../../rsyn/src/rsyn/util/AsciiProgressBar.h"
             ex="false"
             tool="3"
@@ -4283,6 +4675,16 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/util/Proxy.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/util/RCTreeExtractor.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/util/RCTreeExtractor.h"
             ex="false"
             tool="3"
             flavor2="0">

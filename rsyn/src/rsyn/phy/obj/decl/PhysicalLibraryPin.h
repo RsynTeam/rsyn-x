@@ -46,16 +46,16 @@ public:
 	Bounds getICCADBounds();
 	//! @brief Returns the pin rectangular boundaries reference defined at 2015 ICCAD contest.
 	const Bounds & getICCADBounds() const;
-	//! @brief Returns a vector reference to PhysicalPinPort objects related to the PhysicalLibraryPin.
-	std::vector<PhysicalPinPort> & allPinPorts();
-	//! @brief Returns a constant vector reference to PhysicalPinPort objects related to the PhysicalLibraryPin.
-	const std::vector<PhysicalPinPort> & allPinPorts() const;
-	//! @brief Returns an integer number that is the total number of PhysicalPinPort related to the PhysicalLibraryPin.
-	std::size_t getNumPinPorts() const;
-	//! @brief Returns true if PhysicalLibraryPin has PhysicalPinPort objects. Otherwise, returns false.
-	bool hasPinPorts() const;
-	//! @brief Returns true if PhysicalLibraryPin has no PhysicalPinPort objects. Otherwise, returns false.
-	bool isPinPortsEmpty() const;
+	//! @brief Returns a vector reference to PhysicalPinGeometry objects related to the PhysicalLibraryPin.
+	std::vector<PhysicalPinGeometry> & allPinGeometries();
+	//! @brief Returns a constant vector reference to PhysicalPinGeometry objects related to the PhysicalLibraryPin.
+	const std::vector<PhysicalPinGeometry> & allPinGeometries() const;
+	//! @brief Returns an integer number that is the total number of PhysicalPinGeometry related to the PhysicalLibraryPin.
+	std::size_t getNumPinGeometries() const;
+	//! @brief Returns true if PhysicalLibraryPin has PhysicalPinGeometry objects. Otherwise, returns false.
+	bool hasPinGeometries() const;
+	//! @brief Returns true if PhysicalLibraryPin has no PhysicalPinGeometry objects. Otherwise, returns false.
+	bool isEmptyPinGeometries() const;
 	//! @brief Returns an enum indicating the pin direction. 
 	PhysicalPinDirection getPinDirection() const;
 	

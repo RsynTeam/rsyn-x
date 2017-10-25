@@ -62,6 +62,7 @@ protected:
 	CanvasGL *clsCanvasGLPtr = nullptr;
 	PhysicalCanvasGL *clsPhysicalCanvasGLPtr = nullptr;
 	NewSchematicCanvasGL *clsSchematicCanvasGLPtr = nullptr;
+	SchematicCanvasGL *clsSchematicCanvas = nullptr;
 
 private:
 
@@ -93,11 +94,17 @@ private:
 	//Update circuit informations
 	void updateCircuitInfo();
 
+	// Shows the properties of an instance.
+	void updateInstanceProperties(Rsyn::Instance instance, const bool updateOnlyPropertiesAffectedByPlacementChange = false);
+
+	// Shows the properties of a net.
+	void updateNetProperties(Rsyn::Net net);
+
+	// Shows the properties of a pin.
+	void updatePinProperties(Rsyn::Pin pin);
+
 	// Update stats.
 	void UpdateStats(const bool redraw);
-	
-	// Update properties of selected node.
-	void UpdateSelectedCellProperties(const bool updateOnlyPropertiesAffectedByPlacementChange = false);
 
 	// Open Configure file for ICCAD 2015 Contest.
 	void DoRunScript(const string &filename);
@@ -289,7 +296,7 @@ public:
 	virtual void OnSelectedCellDrag(wxCommandEvent &event);
 
 	virtual void OnCellSelected(wxCommandEvent &event);
-	virtual void OnBinSelected(wxCommandEvent &event);
+	virtual void OnHoverOverObject(wxCommandEvent &event);
 
 	virtual void OnCheckpoint(wxCommandEvent& event);
 	virtual void OnScroll(wxScrollEvent &event);

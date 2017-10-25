@@ -226,19 +226,19 @@ enum PhysicalSymmetry : std::int8_t {
 
 // -----------------------------------------------------------------------------
 
-//! @brief Class type for the Pin Port object. 
+//! @brief Class type for the Pin geometry object. 
 
-enum PhysicalPinPortClass : std::int8_t {
+enum PhysicalPinGeometryClass : std::int8_t {
 	//! @brief Only used for Rsyn internal control.
-	PINPORTCLASS_INVALID = -1,
-	//! @brief A pin port has none class defined. It is the default port class type.
-	PINPORTCLASS_NONE = 0,
-	//! @brief A pin port has Core class defined. 
-	PINPORTCLASS_CORE = 1,
-	//! @brief A pin port has Bump class defined. 
-	PINPORTCLASS_BUMP = 2,
+	PINGEOMETRYCLASS_INVALID = -1,
+	//! @brief A pin geometry has none class defined. It is the default geometry class type.
+	PINGEOMETRYCLASS_NONE = 0,
+	//! @brief A pin geometry has Core class defined. 
+	PINGEOMETRYCLASS_CORE = 1,
+	//! @brief A pin geometry has Bump class defined. 
+	PINGEOMETRYCLASS_BUMP = 2,
 	//! @brief Only used for Rsyn internal control.
-	NUM_PINPORTCLASS = 3
+	NUM_PINGEOMETRYCLASS = 3
 }; // end enum 
 
 
@@ -249,6 +249,30 @@ enum class RegionType : std::int8_t {
 	FENCE = 0,
 	GUIDE = 1
 }; // end enum class 
+
+//! @brief Layout may be upload in physical design only for Floorplanning, Placement, CTS or Routing. It avoids loading unnecessary data.
+
+enum class PhysicalDesignMode : std::int8_t {
+	INVALID = -1,
+	ALL = 0,
+	FLOORPLANNING = 1,
+	PLACEMENT = 2,
+	CTS = 3,
+	ROUTING = 4,
+}; // end enum class 
+
+
+
+enum PhysicalEventType {
+	PHYSICAL_EVENT_DESTRUCTION,
+	PHYSICAL_EVENT_CELL_REMAP,
+	//PHYSICAL_EVENT_POST_INSTANCE_CREATE,
+	//PHYSICAL_EVENT_PRE_INSTANCE_REMOVE,
+	PHYSICAL_EVENT_PRE_INSTANCE_MOVED,
+	PHYSICAL_EVENT_POS_INSTANCE_MOVED,
+	NUM_PHYSICAL_EVENTS
+}; // end enum
+
 
 } // end namespace 
 

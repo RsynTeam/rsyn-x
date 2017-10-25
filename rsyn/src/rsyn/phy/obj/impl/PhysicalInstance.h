@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -44,12 +44,16 @@ inline DBU PhysicalInstance::getArea() const {
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalInstance::getCenter() const {
+	if (data->clsPort)
+		return getPosition();
 	return data->clsBounds.computeCenter();
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalInstance::getCenter(const Dimension dim) const {
+	if (data->clsPort)
+		return getPosition(dim);
 	return data->clsBounds.computeCenter(dim);
 } // end method 
 
@@ -92,24 +96,32 @@ inline DBUxy PhysicalInstance::getSize() const {
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalInstance::getPosition() const {
+	if (data->clsPort)
+		return data->clsPortPos;
 	return data->clsBounds[LOWER];
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalInstance::getPosition(const Dimension dim) const {
+	if (data->clsPort)
+		return data->clsPortPos[dim];
 	return data->clsBounds[LOWER][dim];
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalInstance::getCoordinate(const Boundary bound) const {
+	if (data->clsPort)
+		return getPosition();
 	return data->clsBounds[bound];
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalInstance::getCoordinate(const Boundary bound, const Dimension dim) const {
+	if (data->clsPort)
+		getPosition(dim);
 	return data->clsBounds[bound][dim];
 } // end method 
 
@@ -118,5 +130,17 @@ inline DBU PhysicalInstance::getCoordinate(const Boundary bound, const Dimension
 inline const Bounds &PhysicalInstance::getBounds() const {
 	return data->clsBounds;
 } // end method 
+
+// -----------------------------------------------------------------------------
+
+inline Rsyn::PhysicalCell PhysicalInstance::asPhysicalCell() const {
+//#ifdef RSYN_SAFE_MODE
+	if (data->clsInstance.getType() != Rsyn::CELL)
+		throw SafeModeException("Invalid instance casting. Instance is not a cell.");
+//#endif
+	return PhysicalCell(data);
+} // end method 
+
+// -----------------------------------------------------------------------------
 
 } // end namespace 

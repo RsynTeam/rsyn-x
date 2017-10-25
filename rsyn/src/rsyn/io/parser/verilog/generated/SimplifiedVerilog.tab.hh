@@ -301,8 +301,11 @@ namespace Parsing {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
+      // INTEGER
+      char dummy1[sizeof(int)];
+
       // IDENTIFIER
-      char dummy1[sizeof(std::string)];
+      char dummy2[sizeof(std::string)];
 };
 
     /// Symbol semantic values.
@@ -326,13 +329,14 @@ namespace Parsing {
       enum yytokentype
       {
         END = 0,
-        MODULE = 258,
-        END_MODULE = 259,
-        INPUT = 260,
-        OUTPUT = 261,
-        WIRE = 262,
-        IDENTIFIER = 263,
-        CHAR = 264
+        INTEGER = 258,
+        MODULE = 259,
+        END_MODULE = 260,
+        INPUT = 261,
+        OUTPUT = 262,
+        WIRE = 263,
+        IDENTIFIER = 264,
+        CHAR = 265
       };
     };
 
@@ -369,6 +373,8 @@ namespace Parsing {
       /// Constructor for valueless symbols, and symbols from each type.
 
   basic_symbol (typename Base::kind_type t, const location_type& l);
+
+  basic_symbol (typename Base::kind_type t, const int v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l);
 
@@ -442,6 +448,10 @@ namespace Parsing {
     static inline
     symbol_type
     make_END (const location_type& l);
+
+    static inline
+    symbol_type
+    make_INTEGER (const int& v, const location_type& l);
 
     static inline
     symbol_type
@@ -673,12 +683,12 @@ namespace Parsing {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 43,     ///< Last index in yytable_.
-      yynnts_ = 20,  ///< Number of nonterminal symbols.
+      yylast_ = 69,     ///< Last index in yytable_.
+      yynnts_ = 23,  ///< Number of nonterminal symbols.
       yyfinal_ = 5, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 15  ///< Number of tokens.
+      yyntokens_ = 19  ///< Number of tokens.
     };
 
 
@@ -690,7 +700,7 @@ namespace Parsing {
 
 #line 4 "SimplifiedVerilog.yy" // lalr1.cc:377
 } // Parsing
-#line 694 "SimplifiedVerilog.tab.hh" // lalr1.cc:377
+#line 704 "SimplifiedVerilog.tab.hh" // lalr1.cc:377
 
 
 

@@ -46,16 +46,32 @@ private:
 	bool clsViewInstances_Cells = true;
 	bool clsViewInstances_Macros = true;
 	bool clsViewInstances_Ports = true;
+	bool clsViewInstances_Pins = false;
 
 	bool clsViewFloorplan = false;
 	bool clsViewFloorplan_Rows = true;
-	bool clsViewFloorplan_Sites = true;
+	bool clsViewFloorplan_Sites = false;
+	bool clsViewFloorplan_SpecialNets = false;
+	bool clsViewFloorplan_Tracks = false;
+	bool clsViewFloorplan_Blockages = false;
+	bool clsViewFloorplan_Regions = false;
 
 	bool clsViewRouting = false;
 
+	GeometryManager * geoMgr = nullptr;
+	GLUtriangulatorObj *tess;
+
 	void renderCells(PhysicalCanvasGL * canvas);
+	void renderPorts(PhysicalCanvasGL * canvas);
+	void renderPins(PhysicalCanvasGL * canvas);
 	void renderRouting(PhysicalCanvasGL * canvas);
-	
+	void renderRows(PhysicalCanvasGL * canvas);
+	void renderRowSites(PhysicalCanvasGL * canvas);
+	void renderSpecialNets(PhysicalCanvasGL * canvas);
+	void renderTracks(PhysicalCanvasGL * canvas);
+	void renderBlockages(PhysicalCanvasGL * canvas);
+	void renderRegions(PhysicalCanvasGL * canvas);
+
 	////////////////////////////////////////////////////////////////////////////
 	// Experimental
 	////////////////////////////////////////////////////////////////////////////
@@ -63,46 +79,46 @@ private:
 	std::vector<bool> clsViewLayer;
 	
 	class Layer {
-		private:
-			Color clsFillColor;
-			Color clsBorderColor;
-			StippleMask clsStippleMask;
+	private:
+		Color clsFillColor;
+		Color clsBorderColor;
+		FillStippleMask clsStippleMask;
 
-			float clsZ;
-			int clsLayerId;
-			string clsName;
+		float clsZ;
+		int clsLayerId;
+		string clsName;
 
-			bool clsVisible;
-		public:
+		bool clsVisible;
+	public:
 
-			Layer() { clsVisible = true; clsZ = 0; }
+		Layer() { clsVisible = true; clsZ = 0; }
 
-			bool isVisible() const { return clsVisible; }
+		bool isVisible() const { return clsVisible; }
 
-			float getZ()const {return clsZ;}
-			StippleMask getStippleMask()const{ return clsStippleMask; }
-			Color getFillColor() const { return clsFillColor; }
-			Color getBorderColor() const { return clsBorderColor; }
-			const string &getName() const { return clsName; }
+		float getZ()const {return clsZ;}
+		FillStippleMask getStippleMask()const{ return clsStippleMask; }
+		Color getFillColor() const { return clsFillColor; }
+		Color getBorderColor() const { return clsBorderColor; }
+		const string &getName() const { return clsName; }
 
-			void setZ(const float z) {clsZ = z;}
-			void setFillColor(unsigned char r, unsigned char g, unsigned char b) {
-				setFillColor(Color( r, g, b));
-			} // end method
-			void setFillColor(const Color c) { clsFillColor = c; } 
-			void setBorderColor(unsigned char r, unsigned char g, unsigned char b) {
-				setBorderColor(Color( r, g, b));
-			} // end method
-			void setBorderColor(const Color c) { clsBorderColor = c; } 
-			
-			void configure( const string name, const int layerId, const Color &fillColor, const Color &borderColor, const StippleMask stippleMask, const float z = 0) {
-				clsName = name;
-				clsLayerId = layerId;
-				clsFillColor = fillColor;
-				clsBorderColor = borderColor;
-				clsStippleMask = stippleMask;
-				clsZ = z;
-			} // end method
+		void setZ(const float z) {clsZ = z;}
+		void setFillColor(unsigned char r, unsigned char g, unsigned char b) {
+			setFillColor(Color( r, g, b));
+		} // end method
+		void setFillColor(const Color c) { clsFillColor = c; }
+		void setBorderColor(unsigned char r, unsigned char g, unsigned char b) {
+			setBorderColor(Color( r, g, b));
+		} // end method
+		void setBorderColor(const Color c) { clsBorderColor = c; }
+
+		void configure( const string name, const int layerId, const Color &fillColor, const Color &borderColor, const FillStippleMask stippleMask, const float z = 0) {
+			clsName = name;
+			clsLayerId = layerId;
+			clsFillColor = fillColor;
+			clsBorderColor = borderColor;
+			clsStippleMask = stippleMask;
+			clsZ = z;
+		} // end method
 	}; // end class
 
 	std::vector<Layer> clsLayers;
@@ -124,7 +140,7 @@ public:
 	virtual bool init(PhysicalCanvasGL* canvas, nlohmann::json& properties);
 	virtual void render(PhysicalCanvasGL * canvas);
 	virtual void config(const nlohmann::json &params);
-	
+
 }; // end class
 
 #endif

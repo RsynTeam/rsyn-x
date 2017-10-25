@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_WRITER_H
 #define RSYN_WRITER_H
 
@@ -53,12 +53,11 @@ public:
 	virtual void stop();
 
 public:
-
-	void writeDEF() { writeDEF( clsDesign.getName() + "-cada085.def"); } // write def in accordance with iccad15 file format
-	void writeVerilog() { writeVerilog( clsDesign.getName() + "-cada085.v"); } // write verilog file
+	void writeVerilog() { writeVerilog(clsDesign.getName() + "-cada085.v");	} // write verilog file
 	void writeTimingFile();
 	void writeTimingFile(ostream &out);
-	void writeDEF(std::string fileName);
+	void writeDEF(const std::string & filename = "", const bool full = false);
+	void writeICCAD15DEF(std::string fileName);
 	void writeFullDEF(std::string filename);
 	void writeSPEF() { writeSPEF(clsDesign.getName() + ".spef"); };
 	void writeSPEF(const std::string fileName);
@@ -70,7 +69,7 @@ public:
 	void writeSPEFFile(ostream &out, const bool onlyFixed = false);
 
 	// Debug function. Should be rethought...
-	void printTimingPropagation(ostream &out, bool newLine = false );
+	void printTimingPropagation(ostream &out, bool newLine = false);
 
 }; // end class
 

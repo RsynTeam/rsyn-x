@@ -19,7 +19,9 @@ namespace Rsyn {
 class LibraryArc : public Proxy<LibraryArcData> {
 
 RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
-	
+
+friend class RawPointer;
+
 friend class Design;
 friend class Arc;
 friend class Sandbox;

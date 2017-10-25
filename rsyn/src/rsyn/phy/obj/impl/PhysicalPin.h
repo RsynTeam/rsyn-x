@@ -40,32 +40,32 @@ inline DBU PhysicalPin::getDisplacement(const Dimension dim) {
 
 // -----------------------------------------------------------------------------
 
-inline std::vector<PhysicalPinPort> & PhysicalPin::allPinPorts() {
-	return data->clsPhysicalPinPorts;
+inline std::vector<PhysicalPinGeometry> & PhysicalPin::allPinGeometries() {
+	return data->clsPhysicalPinGeometries;
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<PhysicalPinPort> & PhysicalPin::allPinPorts() const {
-	return data->clsPhysicalPinPorts;
+inline const std::vector<PhysicalPinGeometry> & PhysicalPin::allPinGeometries() const {
+	return data->clsPhysicalPinGeometries;
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-inline std::size_t PhysicalPin::getNumPinPorts() const {
-	return data->clsPhysicalPinPorts.size();
+inline std::size_t PhysicalPin::getNumPinGeometries() const {
+	return data->clsPhysicalPinGeometries.size();
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-inline bool PhysicalPin::hasPinPorts() const {
-	return !data->clsPhysicalPinPorts.empty();
+inline bool PhysicalPin::hasPinGeometries() const {
+	return !data->clsPhysicalPinGeometries.empty();
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-inline bool PhysicalPin::isPinPortsEmpty() const {
-	return data->clsPhysicalPinPorts.empty();
+inline bool PhysicalPin::isEmptyPinGeometries() const {
+	return data->clsPhysicalPinGeometries.empty();
 } // end method 
 
 // -----------------------------------------------------------------------------

@@ -42,7 +42,7 @@ struct NetData : ObjectData {
 	// Parent
 	Module parent;
 	
-	std::array<int, NUM_PIN_DIRECTIONS> numPinsOfType;
+	std::array<int, NUM_SIGNAL_DIRECTIONS> numPinsOfType;
 	
 	// Helper used for netlist traversals.
 	int sign;

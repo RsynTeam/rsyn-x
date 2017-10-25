@@ -38,16 +38,18 @@ void RoutingEstimator::start(Engine engine, const Json &params) {
 	// to physical layer
 	Rsyn::PhysicalService *physical =
 			engine.getService("rsyn.physical", Rsyn::SERVICE_OPTIONAL);
+	
 	if (physical) {
 		Rsyn::PhysicalDesign phDesign;
 		phDesign = physical->getPhysicalDesign();
-		phDesign.addPostInstanceMovedCallback(0, [&](Rsyn::PhysicalInstance instance) {
-			dirtyInstance(instance.getInstance());
-		});
+		// Observe changes in the physical design
+		phDesign.registerObserver(this);
 	} // end if
 
 	// Observe changes in the netlist.
 	design.registerObserver(this);
+	
+	
 	
 	{ // updateRoutingEstimation
 		ScriptParsing::CommandDescriptor dscp;
@@ -109,6 +111,12 @@ void RoutingEstimator::onPreNetRemove(Rsyn::Net net) {
 
 void RoutingEstimator::onPostCellRemap(Rsyn::Cell cell, Rsyn::LibraryCell oldLibraryCell) {
 	dirtyInstance(cell);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void RoutingEstimator::onPostMovedInstance(Rsyn::PhysicalInstance phInstance) {
+	dirtyInstance(phInstance.getInstance());
 } // end method
 
 // -----------------------------------------------------------------------------

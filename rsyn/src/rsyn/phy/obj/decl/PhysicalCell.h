@@ -33,6 +33,7 @@ namespace Rsyn {
 
 class PhysicalCell : public PhysicalInstance {
 	friend class PhysicalDesign;
+	friend class PhysicalInstance;
 protected:
 	PhysicalCell(PhysicalInstanceData * data) : PhysicalInstance(data) {}
 public:
@@ -69,6 +70,16 @@ public:
 	//! @details Cell displacement is the difference between the current position of the cell 
 	//! and the given position in the given dimension.
 	DBU getDisplacement(const DBU pos, const Dimension dim) const;
+	//! @brief Returns cell displacement for the given dimension. 
+	//! @details Cell displacement is the difference between the current position of the cell 
+	//! and the given position.
+	DBU getDisplacementFromCurrentPosition(const DBUxy pos) const;
+	//! @brief Returns cell displacement to the given position and given dimension. 
+	//! @details Cell displacement is the difference between the current position of the cell 
+	//! and the given position in the given dimension.
+	DBU getDisplacementFromCurrentPosition(const DBU pos, const Dimension dim) const;
+	DBU getDisplacementFromInitialPosition(const DBUxy pos) const;
+	DBU getDisplacementFromInitialPosition(const DBU pos, const Dimension dim) const;
 	//! @brief Returns the orientation of the cell.
 	PhysicalOrientation getOrientation() const;
 	//! @brief Returns true if the cell boundaries is defined by a PhysicalLayer. Otherwise, returns false.

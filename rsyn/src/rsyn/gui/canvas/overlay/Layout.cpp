@@ -18,7 +18,47 @@
 #include "rsyn/phy/PhysicalService.h"
 #include "rsyn/io/Graphics.h"
 
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// Temporary. I need to understand and find a better way to integrate this into
+//            C++.
+
+#ifndef CALLBACK
+#define CALLBACK
+#endif
+
+void CALLBACK beginCallback(GLenum type) {
+	glBegin(type);
+} // end function
+
+void CALLBACK endCallback() {
+	glEnd();
+} // end function
+
+void CALLBACK errorCallback(GLenum errorCode) {
+	const GLubyte *errString;
+	errString = gluErrorString(errorCode);
+	std::cout << "ERROR: " << errString << "\n";
+	std::exit(0);
+} // end function
+
+void CALLBACK vertexCallback(GLvoid *vertex) {
+	glVertex3dv((GLdouble *) vertex);
+} // end cuntion
+
+GLUtesselator * initTess() {
+	GLUtesselator * tobj = gluNewTess();
+	gluTessCallback(tobj, GLU_TESS_VERTEX, (_GLUfuncptr) vertexCallback);
+	gluTessCallback(tobj, GLU_TESS_BEGIN, (_GLUfuncptr) beginCallback);
+	gluTessCallback(tobj, GLU_TESS_END, (_GLUfuncptr) endCallback);
+	gluTessCallback(tobj, GLU_TESS_ERROR, (_GLUfuncptr) errorCallback);
+	gluTessProperty(tobj, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_POSITIVE);
+	return tobj;
+} // end function
+
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 LayoutOverlay::LayoutOverlay() {
+	tess = initTess();
 	setupLayers();
 } // end constructor
 
@@ -40,6 +80,8 @@ bool LayoutOverlay::init(PhysicalCanvasGL* canvas, nlohmann::json& properties) {
 		return false;
 	phDesign = physical->getPhysicalDesign();
 
+	geoMgr = canvas->getGeometryManager();
+
 	properties = {
 		{{"name", "instances"}, {"label", "Instances"},  {"type", "bool"}, {"default", clsViewInstances}},
 		{{"name", "floorplan"}, {"label", "Floorplan"},  {"type", "bool"}, {"default", clsViewFloorplan}},
@@ -48,16 +90,21 @@ bool LayoutOverlay::init(PhysicalCanvasGL* canvas, nlohmann::json& properties) {
 
 	properties += {{"name", "rows"}, {"label", "Rows"},  {"type", "bool"}, {"default", clsViewFloorplan_Rows}, {"parent", "floorplan"}};
 	properties += {{"name", "sites"}, {"label", "Sites"},  {"type", "bool"}, {"default", clsViewFloorplan_Sites}, {"parent", "floorplan"}};
+	properties += {{"name", "specialNets"}, {"label", "Special Nets"},  {"type", "bool"}, {"default", clsViewFloorplan_SpecialNets}, {"parent", "floorplan"}};
+	properties += {{"name", "tracks"}, {"label", "Tracks"},  {"type", "bool"}, {"default", clsViewFloorplan_Tracks}, {"parent", "floorplan"}};
+	properties += {{"name", "blockages"}, {"label", "Blockages"},  {"type", "bool"}, {"default", clsViewFloorplan_Blockages}, {"parent", "floorplan"}};
+	properties += {{"name", "regions"}, {"label", "Regions"},  {"type", "bool"}, {"default", clsViewFloorplan_Regions}, {"parent", "floorplan"}};
 
 	properties += {{"name", "cells"}, {"label", "Cells"},  {"type", "bool"}, {"default", clsViewInstances_Cells}, {"parent", "instances"}};
 	properties += {{"name", "macros"}, {"label", "Macros"}, {"type", "bool"}, {"default", clsViewInstances_Macros}, {"parent", "instances"}};
 	properties += {{"name", "ports"}, {"label", "Ports"}, {"type", "bool"}, {"default", clsViewInstances_Ports}, {"parent", "instances"}};
+	properties += {{"name", "pins"}, {"label", "Pins"}, {"type", "bool"}, {"default", clsViewInstances_Pins}, {"parent", "instances"}};
 
 	// Initialize layer colors on GUI View tab
 	int index = 0;
 	for (const Rsyn::PhysicalLayer phLayer : phDesign.allPhysicalLayers()) {
 		const std::string name = phLayer.getName();
-
+		
 		const Layer layer = getLayer(std::min(index++, (int)clsLayers.size()-1));
 		const Color color = layer.getFillColor();
 
@@ -103,15 +150,23 @@ bool LayoutOverlay::init(PhysicalCanvasGL* canvas, nlohmann::json& properties) {
 //		{"parent", "metal1.color"},
 //		{"default", {{"r", 0}, {"g", 0}, {"b", 255}}}
 //	};
-	
+
 	return true;
 } // end method
 
 // -----------------------------------------------------------------------------
 
 void LayoutOverlay::render(PhysicalCanvasGL * canvas) {
-	renderCells(canvas);
-	renderRouting(canvas);
+	//renderCells(canvas);
+	renderPorts(canvas);
+	//renderPins(canvas);
+	//renderRouting(canvas);
+	renderRows(canvas);
+	renderRowSites(canvas);
+	//renderSpecialNets(canvas);
+	renderTracks(canvas);
+	renderBlockages(canvas);
+	renderRegions(canvas);
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -120,22 +175,95 @@ void LayoutOverlay::config(const nlohmann::json &params) {
 	clsViewInstances = params.value("instances", clsViewInstances);
 	clsViewInstances_Cells = params.value("instances.cells", clsViewInstances_Cells);
 	clsViewInstances_Ports = params.value("instances.ports", clsViewInstances_Ports);
+	clsViewInstances_Pins = params.value("instances.pins", clsViewInstances_Pins);
 	clsViewInstances_Macros = params.value("instances.macros", clsViewInstances_Macros);
-
+	clsViewFloorplan_Rows = params.value("floorplan.rows", clsViewFloorplan_Rows);
+	clsViewFloorplan_Sites = params.value("floorplan.sites", clsViewFloorplan_Sites);
+	clsViewFloorplan_SpecialNets = params.value("floorplan.specialNets", clsViewFloorplan_SpecialNets);
+	clsViewFloorplan_Tracks = params.value("floorplan.tracks", clsViewFloorplan_Tracks);
+	clsViewFloorplan_Blockages = params.value("floorplan.blockages", clsViewFloorplan_Blockages);
+	clsViewFloorplan_Regions = params.value("floorplan.regions", clsViewFloorplan_Regions);
+	
 	clsViewFloorplan = params.value("floorplan", clsViewFloorplan);
 	clsViewRouting = params.value("routing", clsViewRouting);
-	
+
+	geoMgr->setLayerVisibility("cells", !clsViewInstances? false : clsViewInstances_Cells);
+	geoMgr->setLayerVisibility("ports", !clsViewInstances? false : clsViewInstances_Ports);
+	geoMgr->setLayerVisibility("macros", !clsViewInstances? false : clsViewInstances_Macros);
+	geoMgr->setLayerVisibility("pins", clsViewInstances_Pins);
+
 	for (Rsyn::PhysicalLayer layer : phDesign.allPhysicalLayers()) {			
 		clsViewLayer[layer.getIndex()] =
-			params.value("routing." + layer.getName(), (bool)clsViewLayer[layer.getIndex()]);
-		
+			params.value("routing." + layer.getName(), (bool) clsViewLayer[layer.getIndex()]);
+
 		if (params.count(layer.getName() + ".color")) {
 			Rsyn::Json param = params["routing." + layer.getName() + ".color"];
 			Color c(param["r"], param["g"], param["b"]);
 			getLayer(layer.getIndex()).setBorderColor(c);
 			getLayer(layer.getIndex()).setBorderColor(c);
 		} // end if
+
+		if (geoMgr) {
+			geoMgr->setLayerVisibility(layer.getName(), !clsViewRouting? false : clsViewLayer[layer.getIndex()]);
+		} // end if
 	} // end for	
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void LayoutOverlay::renderPorts(PhysicalCanvasGL * canvas) {
+	if (!clsViewInstances || !clsViewInstances_Ports)
+		return;
+	
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glBegin(GL_QUADS);
+	for(Rsyn::Instance instance : module.allInstances()) {
+		if(instance.getType() != Rsyn::PORT)
+			continue;
+		Rsyn::PhysicalPort phPort = phDesign.getPhysicalPort(instance.asPort());
+		Rsyn::PhysicalLayer phLayer = phPort.getLayer();
+		if (!clsViewLayer[phLayer.getIndex()])
+			continue;
+		const Layer &graphicsLayer = getLayer(std::min(phLayer.getIndex(), (int) clsLayers.size() - 1));
+		const Color &color = graphicsLayer.getBorderColor();
+		glColor3ub(color.r, color.g, color.b);
+		const DBUxy disp = phPort.getPosition();
+		const Bounds &bounds = phPort.getBounds();
+		
+		glVertex3d(bounds[LOWER][X] + disp[X], bounds[LOWER][Y] + disp[Y], graphicsLayer.getZ());
+		glVertex3d(bounds[UPPER][X] + disp[X], bounds[LOWER][Y] + disp[Y], graphicsLayer.getZ());
+		glVertex3d(bounds[UPPER][X] + disp[X], bounds[UPPER][Y] + disp[Y], graphicsLayer.getZ());
+		glVertex3d(bounds[LOWER][X] + disp[X], bounds[UPPER][Y] + disp[Y], graphicsLayer.getZ());
+		
+	} // end for 
+	
+	glEnd();
+	
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glEnable(GL_POLYGON_STIPPLE);
+	for(Rsyn::Instance instance : module.allInstances()) {
+		if(instance.getType() != Rsyn::PORT)
+			continue;
+		Rsyn::PhysicalPort phPort = phDesign.getPhysicalPort(instance.asPort());
+		Rsyn::PhysicalLayer phLayer = phPort.getLayer();
+		if (!clsViewLayer[phLayer.getIndex()])
+			continue;
+		const Layer &graphicsLayer = getLayer(std::min(phLayer.getIndex(), (int) clsLayers.size() - 1));
+		const Color &color = graphicsLayer.getBorderColor();
+		glColor3ub(color.r, color.g, color.b);
+
+		const DBUxy disp = phPort.getPosition();
+		const Bounds &bounds = phPort.getBounds();
+		glPolygonStipple(STIPPLE_MASKS[graphicsLayer.getStippleMask()]);
+		glBegin(GL_QUADS);
+		glVertex3d(bounds[LOWER][X] + disp[X], bounds[LOWER][Y] + disp[Y], graphicsLayer.getZ());
+		glVertex3d(bounds[UPPER][X] + disp[X], bounds[LOWER][Y] + disp[Y], graphicsLayer.getZ());
+		glVertex3d(bounds[UPPER][X] + disp[X], bounds[UPPER][Y] + disp[Y], graphicsLayer.getZ());
+		glVertex3d(bounds[LOWER][X] + disp[X], bounds[UPPER][Y] + disp[Y], graphicsLayer.getZ());
+		glEnd();
+	} // end for 
+	
+	glDisable(GL_POLYGON_STIPPLE);
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -148,8 +276,10 @@ void LayoutOverlay::renderCells(PhysicalCanvasGL * canvas) {
 	glBegin(GL_QUADS);
 
 	for (Rsyn::Instance instance : module.allInstances()) {
-		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
+		if (instance.getType() != Rsyn::CELL)
+			continue;
 
+		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
 		double layer;
 
 		if (cell.isFixed()) {
@@ -162,55 +292,414 @@ void LayoutOverlay::renderCells(PhysicalCanvasGL * canvas) {
 		float2 disp = canvas->getInterpolatedDisplacement(cell);
 		glColor3ub(rgb.r, rgb.g, rgb.b);
 		Rsyn::PhysicalCell phCell = phDesign.getPhysicalCell(cell);
-		if (cell.isPort()) {
-			if (clsViewInstances_Ports) {
-				glColor3ub(35, 10, 70);
+
+		if (cell.isMacroBlock()) {
+			if (clsViewInstances_Macros) {
+				const Rsyn::PhysicalLibraryCell &phLibCell = phDesign.getPhysicalLibraryCell(cell);
+				if (phLibCell.hasLayerObstacles()) {
+					for (const Bounds & obs : phLibCell.allLayerObstacles()) {
+						Bounds bounds = obs;
+						DBUxy lower = obs.getCoordinate(LOWER);
+						bounds.moveTo(phCell.getPosition() + lower);
+						glVertex3d(bounds[LOWER][X] + disp[X], bounds[LOWER][Y] + disp[Y], layer);
+						glVertex3d(bounds[UPPER][X] + disp[X], bounds[LOWER][Y] + disp[Y], layer);
+						glVertex3d(bounds[UPPER][X] + disp[X], bounds[UPPER][Y] + disp[Y], layer);
+						glVertex3d(bounds[LOWER][X] + disp[X], bounds[UPPER][Y] + disp[Y], layer);
+					} // end for
+				} else {
+					Bounds bounds(DBUxy(), phLibCell.getSize());
+					bounds.moveTo(phCell.getPosition());
+					glVertex3d(bounds[LOWER][X] + disp[X], bounds[LOWER][Y] + disp[Y], layer);
+					glVertex3d(bounds[UPPER][X] + disp[X], bounds[LOWER][Y] + disp[Y], layer);
+					glVertex3d(bounds[UPPER][X] + disp[X], bounds[UPPER][Y] + disp[Y], layer);
+					glVertex3d(bounds[LOWER][X] + disp[X], bounds[UPPER][Y] + disp[Y], layer);
+				} // end else
+			} // end else
+		} else {
+			if (clsViewInstances_Cells) {
 				const Bounds & bounds = phCell.getBounds();
 				glVertex3d(bounds[LOWER][X] + disp[X], bounds[LOWER][Y] + disp[Y], layer);
 				glVertex3d(bounds[UPPER][X] + disp[X], bounds[LOWER][Y] + disp[Y], layer);
 				glVertex3d(bounds[UPPER][X] + disp[X], bounds[UPPER][Y] + disp[Y], layer);
 				glVertex3d(bounds[LOWER][X] + disp[X], bounds[UPPER][Y] + disp[Y], layer);
 			} // end if
-		} else {
-			if (cell.isMacroBlock()) {
-				if (clsViewInstances_Macros) {
-					const Rsyn::PhysicalLibraryCell &phLibCell = phDesign.getPhysicalLibraryCell(cell);
-					if (phLibCell.hasLayerObstacles()) {
-						for (const Bounds & obs : phLibCell.allLayerObstacles()) {
-							Bounds bounds = obs;
-							DBUxy lower = obs.getCoordinate(LOWER);
-							bounds.moveTo(phCell.getPosition() + lower);
-							glVertex3d(bounds[LOWER][X] + disp[X], bounds[LOWER][Y] + disp[Y], layer);
-							glVertex3d(bounds[UPPER][X] + disp[X], bounds[LOWER][Y] + disp[Y], layer);
-							glVertex3d(bounds[UPPER][X] + disp[X], bounds[UPPER][Y] + disp[Y], layer);
-							glVertex3d(bounds[LOWER][X] + disp[X], bounds[UPPER][Y] + disp[Y], layer);
-						} // end for
-					} else {
-						Bounds bounds(DBUxy(), phLibCell.getSize());
-						bounds.moveTo(phCell.getPosition());
-						glVertex3d(bounds[LOWER][X] + disp[X], bounds[LOWER][Y] + disp[Y], layer);
-						glVertex3d(bounds[UPPER][X] + disp[X], bounds[LOWER][Y] + disp[Y], layer);
-						glVertex3d(bounds[UPPER][X] + disp[X], bounds[UPPER][Y] + disp[Y], layer);
-						glVertex3d(bounds[LOWER][X] + disp[X], bounds[UPPER][Y] + disp[Y], layer);
-					} // end else
-				} // end else
-			} else {
-				if (clsViewInstances_Cells) {
-					const Bounds & bounds = phCell.getBounds();
-					glVertex3d(bounds[LOWER][X] + disp[X], bounds[LOWER][Y] + disp[Y], layer);
-					glVertex3d(bounds[UPPER][X] + disp[X], bounds[LOWER][Y] + disp[Y], layer);
-					glVertex3d(bounds[UPPER][X] + disp[X], bounds[UPPER][Y] + disp[Y], layer);
-					glVertex3d(bounds[LOWER][X] + disp[X], bounds[UPPER][Y] + disp[Y], layer);
-				} // end if
-			} // end if-else 
 		} // end if-else 
 	} // end for
 	glEnd();
 } // end method
 
+// -----------------------------------------------------------------------------
+
+void LayoutOverlay::renderPins(PhysicalCanvasGL* canvas) {
+	// Drawing pin shape 
+	if (!clsViewInstances_Pins)
+		return;
+
+	
+	// Drawing rectangle 
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glBegin(GL_QUADS);
+	for (Rsyn::Instance instance : module.allInstances()) {
+		if (instance.getType() != Rsyn::CELL)
+			continue;
+		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
+		Rsyn::PhysicalCell phCell = phDesign.getPhysicalCell(cell);
+		const DBUxy pos = phCell.getPosition();
+		for (Rsyn::Pin pin : instance.allPins()) {
+			if (pin.isPort())
+				continue;
+			Rsyn::PhysicalLibraryPin phLibPin = phDesign.getPhysicalLibraryPin(pin);
+
+			for (Rsyn::PhysicalPinGeometry phPinPort : phLibPin.allPinGeometries()) {
+				Rsyn::PhysicalPinLayer phPinLayer = phPinPort.getPinLayer();
+				Rsyn::PhysicalLayer phLayer = phPinLayer.getLayer();
+				if (!clsViewLayer[phLayer.getIndex()])
+					continue;
+
+				const Layer &graphicsLayer = getLayer(std::min(phLayer.getIndex(), (int) clsLayers.size() - 1));
+				const Color &color = graphicsLayer.getBorderColor();
+				glColor3ub(color.r, color.g, color.b);
+
+				for (Bounds bounds : phPinLayer.allBounds()) {
+					bounds.translate(pos);
+					glVertex3d(bounds[LOWER][X], bounds[LOWER][Y], graphicsLayer.getZ());
+					glVertex3d(bounds[UPPER][X], bounds[LOWER][Y], graphicsLayer.getZ());
+					glVertex3d(bounds[UPPER][X], bounds[UPPER][Y], graphicsLayer.getZ());
+					glVertex3d(bounds[LOWER][X], bounds[UPPER][Y], graphicsLayer.getZ());
+				} // end for 
+			} // end for 
+		} // end for 
+	} // end for 
+	glEnd();
+	
+	
+	glColor3ub(255, 0, 0);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glEnable(GL_POLYGON_STIPPLE);
+	glPolygonStipple(STIPPLE_MASKS[STIPPLE_MASK_HALFTONE]);
+
+	for (Rsyn::Instance instance : module.allInstances()) {
+		if(instance.getType() != Rsyn::CELL)
+			continue;
+		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
+		Rsyn::PhysicalCell phCell = phDesign.getPhysicalCell(cell);
+		const DBUxy pos = phCell.getPosition();
+		const double pinLayer = PhysicalCanvasGL::LAYER_GRID;
+		for (Rsyn::Pin pin : instance.allPins()) {
+			if (pin.isPort())
+				continue;
+			Rsyn::PhysicalLibraryPin phLibPin = phDesign.getPhysicalLibraryPin(pin);
+
+			if(!phLibPin.hasPinGeometries())
+				continue;
+			
+			for (Rsyn::PhysicalPinGeometry phPinPort : phLibPin.allPinGeometries()) {
+				Rsyn::PhysicalPinLayer phPinLayer = phPinPort.getPinLayer();
+				Rsyn::PhysicalLayer phLayer = phPinLayer.getLayer();
+				if (!clsViewLayer[phLayer.getIndex()])
+					continue;
+
+				// Polygons
+				for (const Rsyn::PhysicalPolygon & phPoly : phPinLayer.allPolygons()) {
+
+					// TODO -> DEPRECATED -> TO REMOVE 
+					//std::cout<<"pin: "<<pin.getFullName()<<"\n";
+					//for(const Rsyn::PolygonPoint &polyPoint : phPoly.outer()) {
+					//	 using boost::geometry::get;
+					//	std::cout<<"\tpointX: "<<get<X>(polyPoint)<<" pointY: "<<get<Y>(polyPoint)<<"\n";
+					//}
+					//std::cout<<"\tarea: "<<boost::geometry::area(phPoly)<<"\n";
+					//std::cout<<"\numPoints: "<<boost::geometry::num_points(phPoly)<<"\n";
+					// END TODO 
+
+
+					GLdouble * vertices = new GLdouble[3 * boost::geometry::num_points(phPoly)];
+
+					int index = 0;
+					using boost::geometry::get;
+					for (const Rsyn::PhysicalPolygonPoint &polyPoint : phPoly.outer()) {
+						vertices[index++] = get<X>(polyPoint) + pos[X];
+						vertices[index++] = get<Y>(polyPoint) + pos[Y];
+						vertices[index++] = pinLayer;
+					} // end for
+
+					gluTessBeginPolygon(tess, NULL);
+					gluTessBeginContour(tess);
+					index = 0;
+					for (const Rsyn::PhysicalPolygonPoint &polyPoint : phPoly.outer()) {
+						gluTessVertex(tess, vertices + index, vertices + index);
+						index += 3;
+					} // end for
+					gluTessEndContour(tess);
+					gluTessEndPolygon(tess);
+
+					delete[] vertices;
+				} // end for 
+			} // end for 
+		} // end for 
+	} // end if
+
+	glDisable(GL_POLYGON_STIPPLE);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void LayoutOverlay::renderRows(PhysicalCanvasGL * canvas) {
+	if(!clsViewFloorplan_Rows || !clsViewFloorplan)
+		return;
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glBegin(GL_QUADS);
+	glColor3ub(0, 0, 0);
+	double layer = layer = PhysicalCanvasGL::LAYER_OBSTACLES;
+	for (Rsyn::PhysicalRow phRow : phDesign.allPhysicalRows()) {
+		const Bounds & bounds = phRow.getBounds();
+		glVertex3d(bounds[LOWER][X], bounds[LOWER][Y], layer);
+		glVertex3d(bounds[UPPER][X], bounds[LOWER][Y], layer);
+		glVertex3d(bounds[UPPER][X], bounds[UPPER][Y], layer);
+		glVertex3d(bounds[LOWER][X], bounds[UPPER][Y], layer);
+	}
+	glEnd();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void LayoutOverlay::renderRowSites(PhysicalCanvasGL * canvas) {
+	if(!clsViewFloorplan_Sites || !clsViewFloorplan)
+		return;
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glBegin(GL_QUADS);
+	glColor3ub(0, 0, 255);
+	double layer = layer = PhysicalCanvasGL::LAYER_OBSTACLES;
+	for (Rsyn::PhysicalRow phRow : phDesign.allPhysicalRows()) {
+		int numSites = phRow.getNumSites(X);
+		DBU width = phRow.getSiteWidth();
+		Bounds bounds = phRow.getBounds();
+		for (int i = 0; i < numSites; i++) {
+			bounds[UPPER][X] = bounds[LOWER][X] + width;
+			glVertex3d(bounds[LOWER][X], bounds[LOWER][Y], layer);
+			glVertex3d(bounds[UPPER][X], bounds[LOWER][Y], layer);
+			glVertex3d(bounds[UPPER][X], bounds[UPPER][Y], layer);
+			glVertex3d(bounds[LOWER][X], bounds[UPPER][Y], layer);
+			bounds[LOWER][X] = bounds[UPPER][X];
+		} // end for 
+	} // end for 
+	glEnd();
+} // end method
+
+// -----------------------------------------------------------------------------
+
 ////////////////////////////////////////////////////////////////////////////////
 // Experimental
 ////////////////////////////////////////////////////////////////////////////////
+
+// -----------------------------------------------------------------------------
+
+void LayoutOverlay::renderSpecialNets(PhysicalCanvasGL* canvas) {
+	if(!clsViewFloorplan_SpecialNets || !clsViewFloorplan)
+		return;
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	for(Rsyn::PhysicalSpecialNet phSpecialNet : phDesign.allPhysicalSpecialNets()) {
+		for(Rsyn::PhysicalWire phWire : phSpecialNet.allWires()){
+			for(Rsyn::PhysicalWireSegment phSegment : phWire.allSegments()) {
+				
+				for (Rsyn::PhysicalRoutingPoint phRouting : phSegment.allRoutingPoints()) {
+					if(phRouting.hasVia()){
+						Rsyn::PhysicalVia phVia = phRouting.getVia();
+						drawWireSegmentVia(phVia, phRouting.getPosition());
+					} // end if 
+				} // end for	
+				if(phSegment.getNumRoutingPoints() < 2)
+					continue;
+				
+				Rsyn::PhysicalLayer phLayer = phSegment.getLayer();
+				
+				if (!clsViewLayer[phLayer.getIndex()])
+					continue;
+				
+				const Layer &graphicsLayer = getLayer(std::min(phLayer.getIndex(), (int) clsLayers.size() - 1));
+				const Color &color = graphicsLayer.getBorderColor();
+				glColor3ub(color.r, color.g, color.b);
+
+				DBU width = phSegment.getRoutedWidth();
+				
+				
+				//TEMPORARY 
+				// TODO -> changing drawWireSegmentOutline to receive a vector of PhysicalRoutingPoint
+				std::vector<DBUxy> points;
+				points.reserve(phSegment.getNumRoutingPoints());
+				for (Rsyn::PhysicalRoutingPoint phRouting : phSegment.allRoutingPoints()) {
+					points.push_back(phRouting.getPosition());
+				}
+				// END TEMPORARY 
+				drawWireSegmentOutline(points, width/2, graphicsLayer.getZ());
+			} // end for 
+		} // end for 
+	} // end for 
+	
+	
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glEnable(GL_POLYGON_STIPPLE);
+	for(Rsyn::PhysicalSpecialNet phSpecialNet : phDesign.allPhysicalSpecialNets()) {
+		for(Rsyn::PhysicalWire phWire : phSpecialNet.allWires()){
+			for(Rsyn::PhysicalWireSegment phSegment : phWire.allSegments()) {	
+				if(phSegment.getNumRoutingPoints() < 2)
+					continue;
+				
+				Rsyn::PhysicalLayer phLayer = phSegment.getLayer();
+				
+				if (!clsViewLayer[phLayer.getIndex()])
+					continue;
+				
+				const Layer &graphicsLayer = getLayer(std::min(phLayer.getIndex(), (int) clsLayers.size() - 1));
+				glPolygonStipple(STIPPLE_MASKS[graphicsLayer.getStippleMask()]);
+				const Color &color = graphicsLayer.getBorderColor();
+				glColor3ub(color.r, color.g, color.b);
+
+				DBU width = phSegment.getRoutedWidth();
+				
+				
+				//TEMPORARY 
+				// TODO -> changing drawWireSegmentOutline to receive a vector of PhysicalRoutingPoint
+				std::vector<DBUxy> points;
+				points.reserve(phSegment.getNumRoutingPoints());
+				for (Rsyn::PhysicalRoutingPoint phRouting : phSegment.allRoutingPoints()) {
+					points.push_back(phRouting.getPosition());
+				}
+				// END TEMPORARY 
+				drawWireSegmentFill(points, width/2, graphicsLayer.getZ());
+			} // end for 
+		} // end for 
+	} // end for 
+	glDisable(GL_POLYGON_STIPPLE);
+	glEnd();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void LayoutOverlay::renderTracks(PhysicalCanvasGL * canvas) {
+	if(!clsViewFloorplan_Tracks || !clsViewFloorplan)
+		return;
+	std::size_t lower = 0;
+	std::size_t upper = 1;
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	Rsyn::PhysicalDie phDie = phDesign.getPhysicalDie();
+	const Bounds & module = phDie.getBounds();
+	for(Rsyn::PhysicalTrack phTrack : phDesign.allPhysicalTracks()) {
+		Dimension dir = phTrack.getDirection();
+		Dimension reverse = REVERSE_DIMENSION[dir];
+		const DBU space = phTrack.getSpace();
+		for (Rsyn::PhysicalLayer phLayer : phTrack.allLayers()) {
+			if (!clsViewLayer[phLayer.getIndex()])
+				continue;
+			const Layer &graphicsLayer = getLayer(std::min(phLayer.getIndex(), (int) clsLayers.size() - 1));
+			const Color &color = graphicsLayer.getBorderColor();
+			glColor3ub(color.r, color.g, color.b);
+			std::vector<DBUxy> points = {DBUxy(), DBUxy()};
+			points[lower][dir] = points[upper][dir] = phTrack.getLocation();
+			points[lower][reverse] = module[LOWER][reverse];
+			points[upper][reverse] = module[UPPER][reverse];
+			for (int i = 0; i < phTrack.getNumberOfTracks(); i++) {
+				DBU width = phLayer.getWidth();
+				drawWireSegmentOutline(points, width/2, graphicsLayer.getZ());
+				points[lower][dir] += space;
+				points[upper][dir] += space;
+			} // end for 
+		} // end for 
+	} // end for 
+	
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glEnable(GL_POLYGON_STIPPLE);
+	for(Rsyn::PhysicalTrack phTrack : phDesign.allPhysicalTracks()) {
+		Dimension dir = phTrack.getDirection();
+		Dimension reverse = REVERSE_DIMENSION[dir];
+		const DBU space = phTrack.getSpace();
+		for (Rsyn::PhysicalLayer phLayer : phTrack.allLayers()) {
+			if (!clsViewLayer[phLayer.getIndex()])
+				continue;
+			const Layer &graphicsLayer = getLayer(std::min(phLayer.getIndex(), (int) clsLayers.size() - 1));
+			glPolygonStipple(STIPPLE_MASKS[graphicsLayer.getStippleMask()]);
+			const Color &color = graphicsLayer.getBorderColor();
+			glColor3ub(color.r, color.g, color.b);
+			std::vector<DBUxy> points = {DBUxy(), DBUxy()};
+			points[lower][dir] = points[upper][dir] = phTrack.getLocation();
+			points[lower][reverse] = module[LOWER][reverse];
+			points[upper][reverse] = module[UPPER][reverse];
+			for (int i = 0; i < phTrack.getNumberOfTracks(); i++) {
+				DBU width = phLayer.getWidth();
+				drawWireSegmentFill(points, width/2, graphicsLayer.getZ());
+				points[lower][dir] += space;
+				points[upper][dir] += space;
+			} // end for 
+		} // end for 
+	} // end for 
+	glDisable(GL_POLYGON_STIPPLE);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void LayoutOverlay::renderBlockages(PhysicalCanvasGL * canvas) {
+	if (!clsViewFloorplan_Blockages || !clsViewFloorplan)
+		return;
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glBegin(GL_QUADS);
+	glColor3ub(0, 0, 255);
+	for (Rsyn::Instance instance : module.allInstances()) {
+		if (instance.getType() != Rsyn::CELL)
+			continue;
+
+		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
+		Rsyn::PhysicalCell phCell = phDesign.getPhysicalCell(cell);
+		Rsyn::PhysicalLibraryCell phLibCell = phDesign.getPhysicalLibraryCell(cell);
+		const DBUxy pos = phCell.getPosition();
+		if (!phLibCell.hasObstacles())
+			continue;
+		for (Rsyn::PhysicalObstacle phObs : phLibCell.allObstacles()) {
+			double layer = PhysicalCanvasGL::LAYER_OBSTACLES;
+			if (phObs.hasLayer()) {
+				Rsyn::PhysicalLayer phLayer = phObs.getLayer();
+				if (!clsViewLayer[phLayer.getIndex()])
+					continue;
+
+				const Layer &graphicsLayer = getLayer(std::min(phLayer.getIndex(), (int) clsLayers.size() - 1));
+				const Color &color = graphicsLayer.getBorderColor();
+				glColor3ub(color.r, color.g, color.b);
+				layer = graphicsLayer.getZ();
+			} else {
+				glColor3ub(0, 0, 0);
+			} // end if-else 
+			for (Bounds bounds : phObs.allBounds()) {
+				bounds.translate(pos);
+				glVertex3d(bounds[LOWER][X], bounds[LOWER][Y], layer);
+				glVertex3d(bounds[UPPER][X], bounds[LOWER][Y], layer);
+				glVertex3d(bounds[UPPER][X], bounds[UPPER][Y], layer);
+				glVertex3d(bounds[LOWER][X], bounds[UPPER][Y], layer);
+			} // end for 
+		} // end for  
+	} // end for 
+	glEnd();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void LayoutOverlay::renderRegions(PhysicalCanvasGL* canvas) {
+	if (!clsViewFloorplan_Regions || !clsViewFloorplan)
+		return;
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glBegin(GL_QUADS);
+	glColor3ub(255, 255, 0);
+	double layer = -0.1; // cells are drawing as layer 0 (z=0.0)
+	for (Rsyn::PhysicalRegion region : phDesign.allPhysicalRegions()) {
+		for (const Bounds & bounds : region.allBounds()) {
+			glVertex3d(bounds[LOWER][X], bounds[LOWER][Y], layer);
+			glVertex3d(bounds[UPPER][X], bounds[LOWER][Y], layer);
+			glVertex3d(bounds[UPPER][X], bounds[UPPER][Y], layer);
+			glVertex3d(bounds[LOWER][X], bounds[UPPER][Y], layer);
+		} // end for 		
+	} // end for
+	glEnd();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
@@ -572,17 +1061,19 @@ void LayoutOverlay::setupLayers() {
 //	getLayer(  0 ).configure( "PWEL" ,  0, Color( 255, 128,   0 ), Color( 255, 128,   0 ), STIPPLE_MASK_DIAGONAL_UP   );
 
 	// usp_phy
-	clsLayers.resize(12);
-	getLayer( 11 ).configure( "VIA5" ,  9, DARK_RED, DARK_RED, STIPPLE_MASK_EMPTY         );
-	getLayer( 10 ).configure( "MET5" ,  8, DARK_RED, DARK_RED, STIPPLE_MASK_DIAGONAL_UP         );
-	getLayer(  9 ).configure( "VIA4" ,  9, DARK_RED, DARK_RED, STIPPLE_MASK_EMPTY         );
-	getLayer(  8 ).configure( "MET4" ,  8,   YELLOW,   YELLOW, STIPPLE_MASK_DIAGONAL_DOWN         );
-	getLayer(  7 ).configure( "VIA3" ,  7,   YELLOW,   YELLOW, STIPPLE_MASK_EMPTY         );
-	getLayer(  6 ).configure( "MET3" ,  6,    GREEN,    GREEN, STIPPLE_MASK_DIAGONAL_UP         );
-	getLayer(  5 ).configure( "VIA2" ,  5,    GREEN,    GREEN, STIPPLE_MASK_EMPTY         );
-	getLayer(  4 ).configure( "MET2" ,  4,      RED,      RED, STIPPLE_MASK_DIAGONAL_DOWN );
-	getLayer(  3 ).configure( "VIA1" ,  3,      RED,      RED, STIPPLE_MASK_EMPTY         );
-	getLayer(  2 ).configure( "MET1" ,  2,     BLUE,     BLUE, STIPPLE_MASK_CROSS   );
+	clsLayers.resize(14);
+	getLayer( 13 ).configure( "VIA6" ,  9, DARK_RED, DARK_RED, STIPPLE_MASK_EMPTY           );
+	getLayer( 12 ).configure( "MET6" ,  8, DARK_RED, DARK_RED, STIPPLE_MASK_DIAGONAL_UP_3   );
+	getLayer( 11 ).configure( "VIA5" ,  9, DARK_RED, DARK_RED, STIPPLE_MASK_EMPTY           );
+	getLayer( 10 ).configure( "MET5" ,  8, DARK_RED, DARK_RED, STIPPLE_MASK_DIAGONAL_DOWN_3 );
+	getLayer(  9 ).configure( "VIA4" ,  9, DARK_RED, DARK_RED, STIPPLE_MASK_EMPTY           );
+	getLayer(  8 ).configure( "MET4" ,  8,   YELLOW,   YELLOW, STIPPLE_MASK_DIAGONAL_UP_2   );
+	getLayer(  7 ).configure( "VIA3" ,  7,   YELLOW,   YELLOW, STIPPLE_MASK_EMPTY           );
+	getLayer(  6 ).configure( "MET3" ,  6,    GREEN,    GREEN, STIPPLE_MASK_DIAGONAL_DOWN_2     );
+	getLayer(  5 ).configure( "VIA2" ,  5,    GREEN,    GREEN, STIPPLE_MASK_EMPTY           );
+	getLayer(  4 ).configure( "MET2" ,  4,      RED,      RED, STIPPLE_MASK_DIAGONAL_UP_1   );
+	getLayer(  3 ).configure( "VIA1" ,  3,      RED,      RED, STIPPLE_MASK_EMPTY           );
+	getLayer(  2 ).configure( "MET1" ,  2,     BLUE,     BLUE, STIPPLE_MASK_DIAGONAL_DOWN_1           );
 	getLayer(  1 ).configure( "NWEL" ,  1, Color(   0,   0,   0 ), Color(   0,   0,   0 ), STIPPLE_MASK_EMPTY         );
 	getLayer(  0 ).configure( "PWEL" ,  0, Color(   0,   0,   0 ), Color(   0,   0,   0 ), STIPPLE_MASK_EMPTY         );
 

@@ -54,6 +54,7 @@ public:
 	// Source: The Art of Computer Programming by Knuth
 
 	// [TODO] It seems these functions break down when one operator is zero (0).
+	// [TODO] Those function may not work with infinity!
 
 	template<typename T>
 	static bool approximatelyEqual(const T a, const T b, const T precision = 1e-6f) {

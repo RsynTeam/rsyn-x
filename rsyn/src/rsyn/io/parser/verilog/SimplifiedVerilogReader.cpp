@@ -91,6 +91,13 @@ void SimplifiedVerilogReader::setCurrentIdentifierListType(const IdentifierListT
 
 // -----------------------------------------------------------------------------
 
+void SimplifiedVerilogReader::setBusRange(const int busStartIndex, const int busEndIndex) {
+	this->busStartIndex = busStartIndex;
+	this->busEndIndex = busEndIndex;
+} // end method
+
+// -----------------------------------------------------------------------------
+
 void SimplifiedVerilogReader::readModuleName(const std::string &name) {
 	//std::cout << "module " << name << "\n";
 	clsVerilogDescriptor.name = name;
@@ -101,57 +108,70 @@ void SimplifiedVerilogReader::readModuleName(const std::string &name) {
 void SimplifiedVerilogReader::readIdentifier(const std::string &name) {
 	//std::cout << "identifier " << name << "\n";
 	
+	std::vector<std::string> flattenBus;
+	if (busStartIndex < 0) { // Then it is not a bus
+		flattenBus.push_back(name);
+	} else { // If it is a bus, we expand it in N objects, called n[i], where N is the size of the bus 
+		const int begin = std::min(busStartIndex, busEndIndex);
+		const int end = std::max(busStartIndex, busEndIndex);
+		flattenBus.reserve(end-begin);
+		for (int i = begin; i <= end; i++) {
+			flattenBus.push_back(name + "[" + std::to_string(i) + "]");
+		} // end for
+	} // end if 
+	setBusRange(-1, -1);
+	
 	switch (currentIdentifierListType) {
 		case IDENTIFIER_LIST_INPUT_PORT: {
-			
-			clsVerilogDescriptor.primaryInputs.push_back(name);
-			Legacy::Design::Pin designPin;
-			designPin.name = name;
-			designPin.net = name;
-			designPin.direction = "INPUT";
-			designPin.x = designPin.y = -1;
-			clsVerilogDescriptor.ports.push_back(designPin);
+			for (const std::string name : flattenBus) {
+				clsVerilogDescriptor.primaryInputs.push_back(name);
+				Legacy::Design::Pin designPin;
+				designPin.name = name;
+				designPin.net = name;
+				designPin.direction = "INPUT";
+				designPin.x = designPin.y = -1;
+				clsVerilogDescriptor.ports.push_back(designPin);
 
-			if (ports.count(name)) {
-				std::cout << "[WARNING] Multiple definition of primary input '" << name << "'\n";
-			} else {
-				bool alreadyExisted;
-				createNet(name, alreadyExisted);
-				ports.insert(name);
-			} // end if
-			
+				if (ports.count(name)) {
+					std::cout << "[WARNING] Multiple definition of primary input '" << name << "'\n";
+				} else {
+					bool alreadyExisted;
+					createNet(name, alreadyExisted);
+					ports.insert(name);
+				} // end if
+			} // end for
 			break;
 		} // end case
 		
 		case IDENTIFIER_LIST_OUTPUT_PORTS: {
+			for (const std::string name : flattenBus) {
+				clsVerilogDescriptor.primaryOutputs.push_back(name);
+				Legacy::Design::Pin designPin;
+				designPin.name = name;
+				designPin.net = name;
+				designPin.direction = "OUTPUT";
+				designPin.x = designPin.y = -1;
+				clsVerilogDescriptor.ports.push_back(designPin);
 
-			clsVerilogDescriptor.primaryOutputs.push_back(name);
-			Legacy::Design::Pin designPin;
-			designPin.name = name;
-			designPin.net = name;
-			designPin.direction = "OUTPUT";
-			designPin.x = designPin.y = -1;
-			clsVerilogDescriptor.ports.push_back(designPin);
-
-			if (ports.count(name)) {
-				std::cout << "[WARNING] Multiple definition of primary output '" << name << "'\n";
-			} else {
-				bool alreadyExisted;
-				createNet(name, alreadyExisted);
-				ports.insert(name);
-			} // end if	
-
+				if (ports.count(name)) {
+					std::cout << "[WARNING] Multiple definition of primary output '" << name << "'\n";
+				} else {
+					bool alreadyExisted;
+					createNet(name, alreadyExisted);
+					ports.insert(name);
+				} // end if	
+			} // end for
 			break;			
 		} // end case
 		
 		case IDENTIFIER_LIST_NETS: { 
-			
-			bool alreadyExisted;
-			createNet(name, alreadyExisted);
-			if (alreadyExisted && !ports.count(name)) {
-				std::cout << "WARNING: Multiple definition of net '" << name << "'\n";
-			} // end else	
-			
+			for (const std::string name : flattenBus) {
+				bool alreadyExisted;
+				createNet(name, alreadyExisted);
+				if (alreadyExisted && !ports.count(name)) {
+					std::cout << "WARNING: Multiple definition of net '" << name << "'\n";
+				} // end else	
+			} // end for
 			break;
 		} // end case
 	} // end switch
@@ -197,6 +217,9 @@ void SimplifiedVerilogReader::error(const ErrorCode code) {
 	switch (code) {
 		case ERROR_UNNAMED_PORT_MAPPING_NOT_SUPPORTED:
 			std::cout << "Parsing Error: Unnamed port mapping is not yet supported.\n";
+			break;
+		case ERROR_BUS_NOT_SUPPORTED:
+			std::cout << "Parsing Error: Busses are not yet supported.\n";
 			break;
 		default:
 			std::cout << "Parsing Error: Unknown.\n";

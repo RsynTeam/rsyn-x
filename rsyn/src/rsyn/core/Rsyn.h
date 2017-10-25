@@ -124,28 +124,55 @@ typedef CollectionOfGenericSuccessorPins<Pin, Net, Arc>
 typedef std::uint32_t Index;
 typedef int TopologicalIndex;
 
+enum ObjectType {
+	OBJECT_TYPE_INVALID = -1,
+
+	OBJECT_TYPE_NET,
+	OBJECT_TYPE_PIN,
+	OBJECT_TYPE_ARC,
+
+	OBJECT_TYPE_INSTANCE,
+	OBJECT_TYPE_CELL,
+	OBJECT_TYPE_PORT,
+	OBJECT_TYPE_MODULE,
+
+	OBJECT_TYPE_LIBRARY_PIN,
+	OBJECT_TYPE_LIBRARY_ARC,
+	OBJECT_TYPE_LIBRARY_CELL,
+
+	NUM_OBJECT_TYPES
+}; // end enum
+
 enum InstanceType {
-	UNKNOWN_INSTANCE_TYPE,
+	UNKNOWN_INSTANCE_TYPE = 0,  // used in bit fields (needs to start at zero)
 	
 	CELL,
 	PORT,
-	MODULE
+	MODULE,
+
+	NUM_INSTANCE_TYPES
 }; // end enum
 
 enum ArcType {
-	UNKNOWN_ARC_TYPE = -1,
+	UNKNOWN_ARC_TYPE = 0, // used in bit fields (needs to start at zero)
 	
 	INSTANCE_ARC,
-	NET_ARC
+	NET_ARC,
+
+	NUM_ARC_TYPES
 }; // end enum
 
 enum TraverseType {
+	INVALID_TRAVERSE_TYPE = -1,
+
 	FORWARD,  // from inputs to outputs (topological order)
-	BACKWARD  // from outputs to inputs (reverse topological order)
+	BACKWARD, // from outputs to inputs (reverse topological order)
+
+	NUM_TRAVERSE_TYPES
 }; // end enum
 
-enum Direction {
-	UNKNOWN_DIRECTION  = 0,
+enum Direction { // TODO: Many rename to SignalDirection
+	UNKNOWN_DIRECTION  = 0, // used in bit fields (needs to start at zero)
 
 	IN = 1,
 	SINK = 1,
@@ -153,7 +180,9 @@ enum Direction {
 	OUT = 2,
 	DRIVER = 2,
 
-	BIDIRECTIONAL = 3
+	BIDIRECTIONAL = 3,
+
+	NUM_SIGNAL_DIRECTIONS
 }; // end enum
 
 // =============================================================================
@@ -248,11 +277,6 @@ public:
 
 // Some constants...
 enum {
-	NUM_INSTANCE_TYPES = 4,
-	NUM_PIN_DIRECTIONS = 4, // TODO: Rename to NUM_DIRECTIONS
-	NUM_ARC_TYPES = 2,
-	NUM_TRAVERSE_TYPES = 2,
-	
 	TOPOLOGICAL_SORTING_SMALL_GAP = 10,
 	TOPOLOGICAL_SORTING_LARGE_GAP = 1000
 }; // end enum
@@ -284,7 +308,7 @@ public:
 	static
 	const std::string &
 	getDirectionName(const Direction direction) {
-		static const std::array<std::string, NUM_PIN_DIRECTIONS> NAMES = 
+		static const std::array<std::string, NUM_SIGNAL_DIRECTIONS> NAMES =
 			{ "UNKNOWN", "INPUT", "OUTPUT", "BIDIRECTIONAL" };
 		return NAMES[direction];
 	} // end method
@@ -292,7 +316,7 @@ public:
 	static
 	const std::string &
 	getDirectionShortName(const Direction direction) {
-		static const std::array<std::string, NUM_PIN_DIRECTIONS> NAMES = 
+		static const std::array<std::string, NUM_SIGNAL_DIRECTIONS> NAMES =
 			{ "UNKNOWN", "IN", "OUT", "BIDI" };
 		return NAMES[direction];
 	} // end method
@@ -300,7 +324,7 @@ public:
 	static
 	const std::string &
 	getDirectionSingleCharName(const Direction direction) {
-		static const std::array<std::string, NUM_PIN_DIRECTIONS> NAMES = 
+		static const std::array<std::string, NUM_SIGNAL_DIRECTIONS> NAMES =
 			{ "?", "I", "O", "B" };
 		return NAMES[direction];	
 	} // end method
@@ -308,7 +332,7 @@ public:
 	static
 	const Direction 
 	getReverseDirection(const Direction direction) {
-		static const Direction DIRECTION_REVERSED[NUM_PIN_DIRECTIONS] = {
+		static const Direction DIRECTION_REVERSED[NUM_SIGNAL_DIRECTIONS] = {
 			UNKNOWN_DIRECTION, OUT, IN, BIDIRECTIONAL };
 		return DIRECTION_REVERSED[direction];
 	} // end method	

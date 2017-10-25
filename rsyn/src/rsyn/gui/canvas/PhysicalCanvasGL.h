@@ -20,25 +20,28 @@
 #include <vector>
 
 #include "rsyn/gui/CanvasGL.h"
+#include "rsyn/gui/canvas/GeometryManager.h"
+
 #include "rsyn/engine/Engine.h"
-#include "rsyn/util/Color.h"
 #include "rsyn/3rdparty/json/json.hpp"
 #include "rsyn/phy/PhysicalService.h"
 #include "rsyn/model/timing/Timer.h"
 
+#include "rsyn/util/Color.h"
 #include "rsyn/util/dbu.h"
 #include "rsyn/util/float2.h"
 #include "rsyn/util/FloatRectangle.h"
 
 namespace Rsyn {
 class RoutingEstimator;
+class Graphics;
 }
 
 // -----------------------------------------------------------------------------
 
 BEGIN_DECLARE_EVENT_TYPES()
 DECLARE_EVENT_TYPE(myEVT_CELL_SELECTED, -1)
-DECLARE_EVENT_TYPE(myEVT_BIN_SELECTED, -1)
+DECLARE_EVENT_TYPE(myEVT_HOVER_OVER_OBJECT, -1)
 DECLARE_EVENT_TYPE(myEVT_CELL_DRAGGED, -1)
 BEGIN_DECLARE_EVENT_TYPES()
 
@@ -55,7 +58,7 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class PhysicalCanvasGL : public CanvasGL {
+class PhysicalCanvasGL : public CanvasGL, public Rsyn::PhysicalObserver {
 public:
 	
 	static const float LAYER_BACKGROUND;
@@ -68,19 +71,35 @@ public:
 	static const float LAYER_ROUTING_MAX;
 	static const float LAYER_FOREGROUND;
 	
-//**************TEMP**************
 	float2 clsMousePosition;
-
 	
 private:
-	Rsyn::Engine clsEnginePtr;
 
-	Rsyn::Timer * timer;
-	Rsyn::RoutingEstimator * routingEstimator;
-	Rsyn::PhysicalService *physical = nullptr;
+	enum {
+		POPUP_MENU_INVALID = -1,
+		POPUP_MENU_PROPERTIES,
+		POPUP_MENU_ADD_TO_HIGHLIGHT,
+		POPUP_MENU_CLEAR_HIGHLIGHT,
+		POPUP_MENU_ZOOM_TO_FIT
+	}; // end enum
+
+	// Session
+	Rsyn::Engine clsEngine;
+
+	// Services
+	Rsyn::Timer * timer = nullptr;
+	Rsyn::RoutingEstimator * routingEstimator = nullptr;
+	Rsyn::Graphics * graphics = nullptr;
+	Rsyn::PhysicalService * physical = nullptr;
+
+	// Design
 	Rsyn::Design design;
 	Rsyn::Module module;
 	Rsyn::PhysicalDesign phDesign;
+
+	// Messages
+	Rsyn::Message msgNoGlew;
+	Rsyn::Message msgNoRenderToTexture;
 
 	// Overlays
 	struct CanvasOverlayConfiguration {
@@ -134,9 +153,22 @@ private:
 	unsigned int clsSelectedCellOffset;
 	
 	int clsSelectedBinIndex;
-    
+
+	GeometryManager::LayerId geoCellLayerId;
+	GeometryManager::LayerId geoMacroLayerId;
+	GeometryManager::LayerId geoPortLayerId;
+	GeometryManager::LayerId geoPinsLayerId;
+	std::array<GeometryManager::LayerId, 12> techLayerIds;
+	std::vector<std::string> routingLayerNames;
+
+	GeometryManager::ObjectId clsHoverObjectId;
+	Rsyn::Attribute<Rsyn::Net, GeometryManager::GroupId> clsGeoNets;
+
 	// Path width.
 	float clsCriticalPathWidth;
+
+	// Context menu
+	wxMenu * clsContextMenu;
 
 public:
 	inline bool isOverlay(const std::string name) { 
@@ -187,6 +219,7 @@ private:
 	void renderPaths(Rsyn::TimingMode mode);
 	void renderCriticalNets();
 	void renderSelectedCell();
+	void renderFocusedObject();
 	void renderTree();
 	void renderBlockages();
 	void renderDisplacementLines();
@@ -199,11 +232,15 @@ private:
 				(alpha)*p1.x + (1 - alpha)*p0.x,
 				(alpha)*p1.y + (1 - alpha)*p0.y);
 	} // end method
-	
+
+	void postDoubleClickCallback();
+	void addToHighlight();
+
 public:
 	PhysicalCanvasGL(wxWindow* parent);
 
 	virtual void onRender(wxPaintEvent& evt);
+	virtual void onResized(wxSizeEvent& evt);
 
 	void attachEngine(Rsyn::Engine engine);
 
@@ -214,10 +251,9 @@ public:
 	bool isPhysicalDesignInitialized() const {
 		return physical != nullptr;
 	}
-	
-//**************TEMP**************	
-	float2 getMousePosition();
-//**************TEMP**************
+
+	//! @brief Returns the mouse position in space coordinates.
+	float2 getMousePosition() const { return clsMousePosition; }
 
 	// Selects one of the cells at (x, y) considering the interpolated cells' 
 	// positions. If multiple cells overlap at (x, y), every time a different
@@ -277,7 +313,7 @@ public:
 	} // end method
 	
 	void updateTimingOfPaths(const Rsyn::TimingMode mode) {
-		Rsyn::Timer *timer = clsEnginePtr.getService("rsyn.timer");
+		Rsyn::Timer *timer = clsEngine.getService("rsyn.timer");
 		for (auto &path : clsPaths[mode]) {
 			timer->updatePath(path);
 		} // end for
@@ -293,7 +329,11 @@ public:
 	virtual void onMouseReleased(wxMouseEvent& event);
 	virtual void onMouseMoved(wxMouseEvent& event);
 	virtual void onMouseDown(wxMouseEvent& event);
-	
+	virtual void onRightClick(wxMouseEvent& event);
+	virtual void onLeftDoubleClick(wxMouseEvent& event);
+
+	void onPopupClick(wxCommandEvent &evt);
+
 	// Add an overlay to be rendered.
 	void addOverlay(const std::string &name, CanvasOverlay * overlay, const bool visible) {
 		auto it = clsOverlayMapping.find(name);
@@ -321,12 +361,89 @@ public:
 		} // end else		
 	} // end method
 	
-	Rsyn::Engine getEngine() { return clsEnginePtr; }
+	Rsyn::Engine getEngine() { return clsEngine; }
 	
 	// TODO move to CanvasGL
 	void saveSnapshot(wxImage& image);
+
+	////////////////////////////////////////////////////////////////////////////
+	// Shapes
+	////////////////////////////////////////////////////////////////////////////
+public:
 	
-};
+	class GeoReference {
+	friend class PhysicalCanvasGL;
+	public:
+		Rsyn::ObjectType getObjectType() const { return type; }
+		void * getData() const { return data; }
+
+	private:
+		Rsyn::ObjectType type = Rsyn::OBJECT_TYPE_INVALID;
+		void * data = nullptr;
+	}; // end class
+
+private:
+
+	GeometryManager geoMgr;
+	std::deque<GeoReference> geoReferences;
+
+	GeoReference * createGeoReference(Rsyn::Instance instance);
+	GeoReference * createGeoReference(Rsyn::Net net);
+	GeoReference * createGeoReference(Rsyn::Pin pin);
+
+	void prepareGeometryManager();
+	void prepareRenderingTexture();
+
+	void populateGeometryManager();
+
+	void swapBuffers();
+
+	void saveRendering();
+	void restoreRendering();
+
+	GLuint rboColorId = 0;
+	GLuint rboDepthId = 0;
+	GLuint fboId = 0;
+	bool clsRenderingToTextureEnabled = false;
+	bool clsRepopulateGeometryManager = true;
+public:
+
+	GeometryManager * getGeometryManager() { return &geoMgr; }
+	GeometryManager::ObjectId searchObjectAt(const float x, const float y) const;
+
+	////////////////////////////////////////////////////////////////////////////
+	// Notifications
+	////////////////////////////////////////////////////////////////////////////
+
+	virtual void
+	onPostMovedInstance(Rsyn::PhysicalInstance phInstance) override {
+		clsRepopulateGeometryManager = true;
+	}
+
+	////////////////////////////////////////////////////////////////////////////
+	// Callbacks
+	////////////////////////////////////////////////////////////////////////////
+private:
+	
+	std::function<void(Rsyn::Instance)> clsInstanceDoubleClickCallback;
+	std::function<void(Rsyn::Net)> clsNetDoubleClickCallback;
+	std::function<void(Rsyn::Pin)> clsPinDoubleClickCallback;
+	
+public:
+
+	void setInstanceDoubleClickCallback(const std::function<void(Rsyn::Instance)> &callback) {
+		clsInstanceDoubleClickCallback = callback;
+	} // end method
+
+	void setNetDoubleClickCallback(const std::function<void(Rsyn::Net)> &callback) {
+		clsNetDoubleClickCallback = callback;
+	} // end method
+
+	void setPinDoubleClickCallback(const std::function<void(Rsyn::Pin)> &callback) {
+		clsPinDoubleClickCallback = callback;
+	} // end method
+
+}; // end class
 
 
 #endif

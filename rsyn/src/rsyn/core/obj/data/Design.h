@@ -37,8 +37,8 @@ struct DesignData {
 	std::unordered_map<std::string, Net> netMapping;
 	std::unordered_map<std::string, LibraryCell> libraryCellMapping;
 	
-	std::array<LibraryCell, NUM_PIN_DIRECTIONS> portLibraryCells;
-	std::set<Cell> ports[NUM_PIN_DIRECTIONS];
+	std::array<LibraryCell, NUM_SIGNAL_DIRECTIONS> portLibraryCells;
+	std::set<Cell> ports[NUM_SIGNAL_DIRECTIONS];
 	
 	std::array<int, NUM_INSTANCE_TYPES>  instanceCount;
 	

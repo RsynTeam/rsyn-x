@@ -26,7 +26,7 @@ enum MessageLevel {
 	INFO,
 	WARNING,
 	ERROR,
-	DEBUG,
+	DEBUG_MSG,           // added _MSG to avoid conflict with macro DEBUG
 
 	NUM_MESSAGE_LEVELS
 }; // end enum

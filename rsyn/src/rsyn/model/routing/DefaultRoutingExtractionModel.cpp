@@ -106,10 +106,24 @@ void DefaultRoutingExtractionModel::extract(const Rsyn::RoutingTopologyDescripto
 	} // end for
 
 	for (const RoutingTopologyDescriptor<int>::Node &node : topology.allNodes()) {
-		RCTreeNodeTag &tag = dscp.getNodeTag(node.propIndex);
-		tag.x = node.propPosition.x;
-		tag.y = node.propPosition.y;
-		tag.setPin(node.propPin);
+		RCTreeNodeTag *tag; 
+		try {
+			tag = &dscp.getNodeTag(node.propIndex);
+		} catch (RCTreeNodeNotFoundException e){
+			std::cout << "[BUG] Node of index " << node.propIndex << " and name "
+				<< node.propName << " exists in topology, but not in RCTreeNode... Aborting...\n";\
+			// Uncomment the lines below for debugging
+//			dscp.print();
+//			for (const RoutingTopologyDescriptor<int>::Segment &segment : topology.allSegments()) {
+//				cout << "There is a segment between nodes " << 
+//					segment.propNode0 << " and " << segment.propNode1 << "\n";
+//			} // end for			
+			std::exit(1);
+		} // end try catch
+		
+		tag->x = node.propPosition.x;
+		tag->y = node.propPosition.y;
+		tag->setPin(node.propPin);
 
 		if (node.propPin && node.propPin.isDriver()) {
 			if (driver) {

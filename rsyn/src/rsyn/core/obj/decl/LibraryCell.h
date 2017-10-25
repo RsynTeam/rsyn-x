@@ -19,7 +19,8 @@ namespace Rsyn {
 class LibraryCell : public Proxy<LibraryCellData> {
 
 RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
-	
+
+friend class RawPointer;
 friend class Design;
 friend class Pin;
 friend class Cell;

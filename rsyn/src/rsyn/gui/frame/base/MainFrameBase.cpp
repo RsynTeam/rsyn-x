@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Feb 16 2016)
+// C++ code generated with wxFormBuilder (version Dec 21 2016)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
@@ -208,11 +208,11 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	clsPanelCellTiming->Layout();
 	bSizer7->Fit( clsPanelCellTiming );
 	clsChoicebookProperties->AddPage( clsPanelCellTiming, wxT("Cell (Timing)"), false );
-	m_panel81 = new wxPanel( clsChoicebookProperties, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	clsPanelCellPhysical = new wxPanel( clsChoicebookProperties, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer71;
 	bSizer71 = new wxBoxSizer( wxVERTICAL );
 	
-	clsPropertyGridCellPhysical = new wxPropertyGrid(m_panel81, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_DEFAULT_STYLE|wxPG_SPLITTER_AUTO_CENTER);
+	clsPropertyGridCellPhysical = new wxPropertyGrid(clsPanelCellPhysical, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_DEFAULT_STYLE|wxPG_SPLITTER_AUTO_CENTER);
 	clsPropertyGridItemCellPhysicalName = clsPropertyGridCellPhysical->Append( new wxStringProperty( wxT("Name"), wxT("Name") ) ); 
 	clsPropertyGridItemCellPhysicalLibCell = clsPropertyGridCellPhysical->Append( new wxStringProperty( wxT("LibCell"), wxT("LibCell") ) ); 
 	m_propertyGridItem911 = clsPropertyGridCellPhysical->Append( new wxPropertyCategory( wxT("Placement"), wxT("Placement") ) ); 
@@ -227,10 +227,40 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	bSizer71->Add( clsPropertyGridCellPhysical, 1, wxALL|wxEXPAND, 5 );
 	
 	
-	m_panel81->SetSizer( bSizer71 );
-	m_panel81->Layout();
-	bSizer71->Fit( m_panel81 );
-	clsChoicebookProperties->AddPage( m_panel81, wxT("Cell (Physical)"), true );
+	clsPanelCellPhysical->SetSizer( bSizer71 );
+	clsPanelCellPhysical->Layout();
+	bSizer71->Fit( clsPanelCellPhysical );
+	clsChoicebookProperties->AddPage( clsPanelCellPhysical, wxT("Cell (Physical)"), true );
+	clsPanelNet = new wxPanel( clsChoicebookProperties, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer711;
+	bSizer711 = new wxBoxSizer( wxVERTICAL );
+	
+	clsPropertyGridNet = new wxPropertyGrid(clsPanelNet, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_DEFAULT_STYLE|wxPG_SPLITTER_AUTO_CENTER);
+	clsPropertyGridItemNetName = clsPropertyGridNet->Append( new wxStringProperty( wxT("Name"), wxT("Name") ) ); 
+	clsPropertyGridItemNetDriverCount = clsPropertyGridNet->Append( new wxIntProperty( wxT("Drivers"), wxT("Drivers") ) ); 
+	clsPropertyGridItemNetSinkCount = clsPropertyGridNet->Append( new wxIntProperty( wxT("Sinks"), wxT("Sinks") ) ); 
+	bSizer711->Add( clsPropertyGridNet, 1, wxALL|wxEXPAND, 5 );
+	
+	
+	clsPanelNet->SetSizer( bSizer711 );
+	clsPanelNet->Layout();
+	bSizer711->Fit( clsPanelNet );
+	clsChoicebookProperties->AddPage( clsPanelNet, wxT("Net"), false );
+	clsPanelPin = new wxPanel( clsChoicebookProperties, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer7111;
+	bSizer7111 = new wxBoxSizer( wxVERTICAL );
+	
+	clsPropertyGridPin = new wxPropertyGrid(clsPanelPin, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_DEFAULT_STYLE|wxPG_SPLITTER_AUTO_CENTER);
+	clsPropertyGridItemPinName = clsPropertyGridPin->Append( new wxStringProperty( wxT("Name"), wxT("Name") ) ); 
+	clsPropertyGridItemPinInstance = clsPropertyGridPin->Append( new wxStringProperty( wxT("Cell"), wxT("Cell") ) ); 
+	clsPropertyGridItemPinDirection = clsPropertyGridPin->Append( new wxStringProperty( wxT("Direction"), wxT("Direction") ) ); 
+	bSizer7111->Add( clsPropertyGridPin, 1, wxALL|wxEXPAND, 5 );
+	
+	
+	clsPanelPin->SetSizer( bSizer7111 );
+	clsPanelPin->Layout();
+	bSizer7111->Fit( clsPanelPin );
+	clsChoicebookProperties->AddPage( clsPanelPin, wxT("Pin"), false );
 	sizerControls->Add( clsChoicebookProperties, 1, wxEXPAND | wxALL, 5 );
 	
 	
@@ -279,7 +309,7 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	wxStaticBoxSizer* sbSizer9;
 	sbSizer9 = new wxStaticBoxSizer( new wxStaticBox( clsPanelPhysicalView, wxID_ANY, wxT("Overlays") ), wxVERTICAL );
 	
-	clsOverlayPropertyGrid = new wxPropertyGrid(sbSizer9->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_DEFAULT_STYLE);
+	clsOverlayPropertyGrid = new wxPropertyGrid(sbSizer9->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_DEFAULT_STYLE|wxWANTS_CHARS);
 	sbSizer9->Add( clsOverlayPropertyGrid, 1, wxALL|wxEXPAND, 5 );
 	
 	
@@ -392,7 +422,7 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	
 	m_staticText17 = new wxStaticText( clsPanelSchematicView, wxID_ANY, wxT("Under development..."), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText17->Wrap( -1 );
-	m_staticText17->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), 70, 90, 90, false, wxEmptyString ) );
+	m_staticText17->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
 	m_staticText17->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_HIGHLIGHT ) );
 	
 	bSizer23->Add( m_staticText17, 0, wxALL, 5 );
@@ -583,9 +613,9 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	#endif
 	fgSizer3->Add( clsTxtCommand, 0, wxALL|wxEXPAND, 5 );
 	
-	clsLblQualityScore = new wxStaticText( this, wxID_ANY, wxT("Rsyn"), wxDefaultPosition, wxDefaultSize, 0 );
-	clsLblQualityScore->Wrap( -1 );
-	fgSizer3->Add( clsLblQualityScore, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	clsLblHover = new wxStaticText( this, wxID_ANY, wxT("Rsyn"), wxDefaultPosition, wxDefaultSize, 0 );
+	clsLblHover->Wrap( -1 );
+	fgSizer3->Add( clsLblHover, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 	
 	
 	bSizer37->Add( fgSizer3, 1, wxEXPAND, 5 );

@@ -34,10 +34,11 @@ namespace Rsyn {
 class PhysicalLibraryCellData {
 public:
 	PhysicalMacroClass clsMacroClass = MACRO_INVALID_CLASS;
-	PhysicalSite clsMacroSite ;
+	PhysicalSite clsMacroSite;
 	DBUxy clsSize;
 	int clsLayerBoundIndex = -1; // The cell bound is defined by one of the layers.
 	std::vector< Rsyn::PhysicalObstacle > clsObs;
+	PhysicalPolygon clsPolygonBounds;
 
 	PhysicalLibraryCellData() = default;
 

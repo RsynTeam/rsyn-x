@@ -19,6 +19,8 @@ namespace Rsyn {
 
 //! @brief A proxy class representing the design netlist.
 class Design : public Proxy<DesignData> {
+friend class RawPointer;
+
 friend class Net;
 friend class Cell;
 friend class Pin;

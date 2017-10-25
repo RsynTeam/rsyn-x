@@ -40,6 +40,7 @@
 %define parse.assert
 
 %token               END    0     "end of file"
+%token <int>	     INTEGER
 %token               MODULE
 %token               END_MODULE
 %token               INPUT
@@ -88,12 +89,17 @@ declaration
    ;
 
 port_declaration
-   : INPUT { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_INPUT_PORT); } identifier_list ';'   
-   | OUTPUT { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_OUTPUT_PORTS); } identifier_list ';'  
+   : INPUT { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_INPUT_PORT); } identifier_list ';'
+   | INPUT '[' INTEGER ':' INTEGER ']' { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_INPUT_PORT); reader.setBusRange($3, $5); } identifier_list ';'      
+   | OUTPUT { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_OUTPUT_PORTS); } identifier_list ';'
+   | OUTPUT '[' INTEGER ':' INTEGER ']' { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_OUTPUT_PORTS); reader.setBusRange($3, $5); } identifier_list ';'
    ;
 
 net_declaration
    : WIRE { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_NETS); } identifier_list ';'
+   | WIRE '[' INTEGER ':' INTEGER ']'  { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_NETS); reader.setBusRange($3, $5);} identifier_list ';'
+   ;
+
    
 instance_declaration
    : IDENTIFIER IDENTIFIER { reader.readInstance($1, $2); } '(' port_mapping ')' ';'

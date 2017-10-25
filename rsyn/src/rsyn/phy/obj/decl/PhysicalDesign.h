@@ -29,8 +29,6 @@
 #ifndef PHYSICALDESIGN_PHYSICALDESIGN_H
 #define PHYSICALDESIGN_PHYSICALDESIGN_H
 
-#include <list>
-
 namespace Rsyn {
 
 class PhysicalDesign : public Proxy<PhysicalDesignData> {
@@ -78,6 +76,7 @@ public:
 	//! @param	Json &params may be: 1) "clsEnablePhysicalPins" true enables Rsyn::PhysicalPin, 
 	//! 2) "clsEnableMergeRectangles" true enables merging rectangle bounds to be merged. It does not work to bounds defined as polygon, and 
 	//! 3) "clsEnableNetPinBoundaries" true enables storing the pins (Rsyn::Pin) that defines the Bound box boundaries of the nets.
+	//! 4) "clsContestMode" {NONE, ICCAD15} enables legacy support to the contest benchmark.
 	void initPhysicalDesign(Rsyn::Design dsg, const Json &params = {});
 
 	//! @brief	Setting the net clock. Otherwise, it is defined as nullptr.
@@ -213,6 +212,7 @@ public:
 
 	//! @brief	Returns the total number of layers. It is the summation of routing, overlap, cut, and so forth layers.
 	int getNumLayers(const Rsyn::PhysicalLayerType type) const;
+	int getNumLayers() const;
 	//! @brief	Returns a reference to the vector of PhysicalLayers. 
 	Range<ListCollection<PhysicalLayerData, PhysicalLayer>> allPhysicalLayers();
 
@@ -221,7 +221,9 @@ public:
 	//! @brief	Returns a vector reference to the vector of PhysicalVias. 
 	const std::vector<PhysicalVia> & allPhysicalVias() const;
 
-
+	std::size_t getNumPhysicalTracks()const;
+	const std::vector<PhysicalTrack> & allPhysicalTracks() const;
+	
 	//! @brief	Returns the total number of spacing objects.  
 	std::size_t getNumPhysicalSpacing() const;
 	//! @brief	Returns a reference to the vector of PhysicalSpacing. 
@@ -236,7 +238,9 @@ public:
 	std::size_t getNumPhysicalGroups() const;
 	//! @brief	Returns a reference to the range list of PhysicalGroup. 
 	std::vector<PhysicalGroup> & allPhysicalGroups() const;
-
+	//! @brief Returns a constant reference to a vector of physical special nets.
+	std::vector<PhysicalSpecialNet> & allPhysicalSpecialNets() const;
+	
 	//! @brief Returns the row height. It is assumed all rows have the same height.
 	//! The row height of the first row is returned.
 	//I'm assuming all rows have the same height.
@@ -274,6 +278,15 @@ protected:
 	//! @brief Initializes Rsyn::PhysicalNetObject into Ryn::PhysicalDesign.
 	//! @warning Only initializes routed wires.
 	void addPhysicalNet(const DefNetDscp & netDscp);
+	//! @brief Initializes Rsyn::PhysicalSpecialNet into Ryn::PhysicalDesign.
+	void addPhysicalSpecialNet(const DefSpecialNetDscp & specialNet);
+	//! @brief Initializes Rsyn::PhysicalWire object
+	void addWireNet(const DefWireDscp & wire, PhysicalWire phWire, const bool isSpecialNet = false);
+	//! @brief Initializes Rsyn::PhysicalWireSegment object
+	void addWireSegment(const DefWireSegmentDscp & segmentDscp, PhysicalWireSegment phWireSegment, const bool isSpecialNet = false);
+	//! @brief TODO
+	void addPhysicalTrack(const DefTrackDscp &track);
+	void addPhysicalDesignVia(const DefViaDscp & via);
 	//! @brief initializes the Rsyn::PhysicalSpacing objects into Rsyn::PhysicalDesign.
 	void addPhysicalSpacing(const LefSpacingDscp & spacing);
 	//! @brief initializes the Rsyn::PhysicalPin objects into Rsyn::PhysicalDesign.
@@ -358,6 +371,22 @@ public:
 	void
 	deletePostInstanceMovedCallback(PostInstanceMovedCallbackHandler &handler);
 
+	
+	
+		////////////////////////////////////////////////////////////////////////////
+	// Events
+	////////////////////////////////////////////////////////////////////////////	
+public:
+
+	//! @brief Registers an observer to be notified about changes in the
+	//!        netlist.
+	template<class T>
+	void registerObserver(T *observer);
+
+	//! @brief Unregisters an observer so it will no longer receives
+	//!        notifications about changes in the netlist.
+	void unregisterObserver(PhysicalObserver *observer);
+	
 }; // end class 
 
 } // end namespace 

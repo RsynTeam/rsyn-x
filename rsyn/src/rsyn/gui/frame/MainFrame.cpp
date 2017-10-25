@@ -29,6 +29,7 @@
 #include "rsyn/io/Graphics.h"
 #include "rsyn/gui/canvas/SchematicCanvasGL.h"
 #include "rsyn/gui/canvas/Stipple.h"
+#include "rsyn/core/infra/RawPointer.h"
 
 #include <wx/window.h>
 #include <wx/filename.h>
@@ -66,6 +67,7 @@ MainFrame::MainFrame() : MainFrameBase((wxFrame *) nullptr), clsConfig("UPlace")
 
 	clsPhysicalCanvasGLPtr = new PhysicalCanvasGL(clsPanelMain);
 	clsSchematicCanvasGLPtr = nullptr;
+	clsSchematicCanvas = nullptr;
 	
 	clsCanvasGLPtr = clsPhysicalCanvasGLPtr;
 	clsCanvasGLPtr->Refresh();
@@ -88,10 +90,23 @@ MainFrame::MainFrame() : MainFrameBase((wxFrame *) nullptr), clsConfig("UPlace")
 	// Events
 	clsCanvasGLPtr->Connect(myEVT_CELL_SELECTED, wxCommandEventHandler(MainFrame::OnCellSelected), NULL, this);
 	clsCanvasGLPtr->Connect(myEVT_SCHEMATIC_CELL_SELECTED, wxCommandEventHandler(MainFrame::OnSchematicCellSelected), NULL, this);
-	clsCanvasGLPtr->Connect(myEVT_BIN_SELECTED, wxCommandEventHandler(MainFrame::OnBinSelected), NULL, this);
+	clsCanvasGLPtr->Connect(myEVT_HOVER_OVER_OBJECT, wxCommandEventHandler(MainFrame::OnHoverOverObject), NULL, this);
 	clsTxtSearch->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(MainFrame::OnSearch), NULL, this);
 	clsCanvasGLPtr->Connect(myEVT_CELL_DRAGGED, wxCommandEventHandler(MainFrame::OnSelectedCellDrag), NULL, this);
-	
+
+	// Callbacks
+	clsPhysicalCanvasGLPtr->setInstanceDoubleClickCallback([&](Rsyn::Instance instance) {
+		updateInstanceProperties(instance);
+	});
+
+	clsPhysicalCanvasGLPtr->setNetDoubleClickCallback([&](Rsyn::Net net) {
+		updateNetProperties(net);
+	});
+
+	clsPhysicalCanvasGLPtr->setPinDoubleClickCallback([&](Rsyn::Pin pin) {
+		updatePinProperties(pin);
+	});
+
 	// Restore command history.
 	ScriptParsing::CommandManager &commandManager =
 			clsEngine.getCommandManager();
@@ -334,12 +349,21 @@ void MainFrame::DoChangeView(const View view) {
 			clsChoicebookView->ChangeSelection(0);
 			break;
 		case VIEW_SCHEMATIC: {
-			if (!clsSchematicCanvasGLPtr) {
-				//clsSchematicCanvasGLPtr = new SchematicCanvasGL(clsPanelMain);
-				clsSchematicCanvasGLPtr = new NewSchematicCanvasGL(clsPanelMain);
-				clsSchematicCanvasGLPtr->attachEngine(clsEngine);
+			Rsyn::Design design = clsEngine.getDesign();
+			//workaround to detect if design is not initialized 
+			//Isadora 2017-04-26
+//			if (design.getNumPins() == 0)
+//				break;
+			
+			if (!clsSchematicCanvas) {
+				clsSchematicCanvas = new SchematicCanvasGL(clsPanelMain);
+				//clsSchematicCanvasGLPtr = new NewSchematicCanvasGL(clsPanelMain);
+				clsSchematicCanvas->attachEngine(clsEngine);
 			} // end if
-			canvas = clsSchematicCanvasGLPtr;
+			else if (clsSchematicCanvas && design != nullptr){
+				clsSchematicCanvas->attachEngine(clsEngine);
+			} //end else
+			canvas = clsSchematicCanvas;
 			clsChoicebookView->ChangeSelection(1);
 		} // end case
 	} // end switch
@@ -379,7 +403,6 @@ void MainFrame::OnSavePlFile(wxCommandEvent &WXUNUSED(event)) {
 		clsWriterPtr->writePlacedBookshelf(plFilename.ToStdString());
 	} // end if
 } // end method
-
 
 // -----------------------------------------------------------------------------
 
@@ -610,36 +633,45 @@ void MainFrame::OnSearch(wxCommandEvent &WXUNUSED(event)) {
 // -----------------------------------------------------------------------------
 
 void MainFrame::OnCellSelected(wxCommandEvent &WXUNUSED(event)) {
-	UpdateSelectedCellProperties();
+	updateInstanceProperties(clsPhysicalCanvasGLPtr->getSelectedCell());
 } // end method
 
 // -----------------------------------------------------------------------------
 
-void MainFrame::OnBinSelected(wxCommandEvent &WXUNUSED(event)) {
-	/*Grid grid = clsPlacerPtr->getGrid();
+void MainFrame::OnHoverOverObject(wxCommandEvent &event) {
+	const PhysicalCanvasGL::GeoReference * geoRef =
+			static_cast<PhysicalCanvasGL::GeoReference *>(event.GetClientData());
+	
+	std::string label;
+	
+	if (geoRef) {
+		Rsyn::RawPointer rawPointer(geoRef->getData());
+		switch (geoRef->getObjectType()) {
+			case Rsyn::OBJECT_TYPE_INSTANCE: {
+				label = "Cell: " + rawPointer.asInstance().getName();
+				break;
+			} // end case
+			case Rsyn::OBJECT_TYPE_NET: {
+				label = "Net: " + rawPointer.asNet().getName();
+				break;
+			} // end case
 
-	const int selectedBinIndex = clsCanvasGLPtr->getSelectedBin();
-	const Grid::Bin &selectedBin = grid.getBin(selectedBinIndex);
-
-	//double binArea = selectedBin.computeArea();
-	clsChoicebookProperties->SetSelection(3);
-
-	if (selectedBinIndex != -1) {
-		clsLblBinOccupancyValue->SetLabel(wxString::Format(wxT("%.2f"), selectedBin.occupancyRate));
-		clsLblBinMovableUValue->SetLabel(wxString::Format(wxT("%.2f"), selectedBin.layeredU[Grid::LAYER_MOVABLE]));
-		clsLblBinBaseUValue->SetLabel(wxString::Format(wxT("%.2f"), selectedBin.layeredU[Grid::LAYER_FIXED]));
+			case Rsyn::OBJECT_TYPE_PIN: {
+				label = "Pin: " + rawPointer.asPin().getFullName();
+				break;
+			} // end case
+		} // end switch
 	} else {
-		clsLblBinOccupancyValue->SetLabel(wxString::Format(wxT("-")));
-		clsLblBinMovableUValue->SetLabel(wxString::Format(wxT("-")));
-		clsLblBinBaseUValue->SetLabel(wxString::Format(wxT("-")));
-	} //end else
-	 * */
+		label = "";
+	} // end method
+	
+	clsLblHover->SetLabel(label);
 } // end method
 
 // -----------------------------------------------------------------------------
 
 void MainFrame::OnSelectedCellDrag(wxCommandEvent &WXUNUSED(event)) {
-	UpdateSelectedCellProperties(true);
+	updateInstanceProperties(clsPhysicalCanvasGLPtr->getSelectedCell(), true);
 	// Don't need to redraw here as a draw event was already issued.
 	// Don't update stats to avoid too much overhead.
 } // end method
@@ -879,9 +911,9 @@ void MainFrame::UpdateStats(const bool redraw) {
 //			clsEnginePtr.getQualityScore()), 7);
 		
 	// Update properties of the selected node.	
-	UpdateSelectedCellProperties();
+	//updateInstanceProperties(clsPhysicalCanvasGLPtr->getSelectedCell());
 	
-	if(clsSchematicCanvasGLPtr) {
+	if (clsSchematicCanvasGLPtr) {
 		UpdateSchematicProperties();
 	}
 		
@@ -892,10 +924,10 @@ void MainFrame::UpdateStats(const bool redraw) {
 
 // -----------------------------------------------------------------------------
 
-void MainFrame::UpdateSelectedCellProperties(const bool updateOnlyPropertiesAffectedByPlacementChange) {
-	Rsyn::Cell cell = clsPhysicalCanvasGLPtr->getSelectedCell();
+void MainFrame::updateInstanceProperties(Rsyn::Instance instance, const bool updateOnlyPropertiesAffectedByPlacementChange) {
+	if (instance && instance.getType() == Rsyn::CELL) {
+		Rsyn::Cell cell = instance.asCell();
 
-	if (cell != nullptr) {
 		// Jucemar - 2017/03/25 -> Updating cell information only if the physical design service is running.
 		// This is a protection to crashes when design without physical data are loaded. 
 		if (clsPhysicalPtr) {
@@ -913,7 +945,6 @@ void MainFrame::UpdateSelectedCellProperties(const bool updateOnlyPropertiesAffe
 		} // end if-else
 
 		if (!updateOnlyPropertiesAffectedByPlacementChange) {
-
 			clsPropertyGridItemCellTimingName->SetValue(wxString::FromAscii(cell.getName().c_str()));
 			clsPropertyGridItemCellTimingLibCell->SetValue(wxString::FromAscii(cell.getLibraryCellName().c_str()));
 			
@@ -975,7 +1006,8 @@ void MainFrame::UpdateSelectedCellProperties(const bool updateOnlyPropertiesAffe
 		
 		clsPropertyGridItemCellLegalized->SetValueToUnspecified();
 		
-		clsChoicebookProperties->SetSelection(1);
+		clsChoicebookProperties->SetSelection(2);
+		clsNotebook->SetSelection(0);
 	} else {
 		for (wxPropertyGridIterator it = clsPropertyGridCellPhysical->GetIterator(); !it.AtEnd(); it++) {
 			wxPGProperty *property = *it;
@@ -983,6 +1015,42 @@ void MainFrame::UpdateSelectedCellProperties(const bool updateOnlyPropertiesAffe
 		} // end for
 		
 		for (wxPropertyGridIterator it = clsPropertyGridCellTiming->GetIterator(); !it.AtEnd(); it++) {
+			wxPGProperty *property = *it;
+			property->SetValueToUnspecified();
+		} // end for
+	} // end else
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void MainFrame::updateNetProperties(Rsyn::Net net) {
+	if (net) {
+		clsPropertyGridItemNetName->SetValue(net.getName());
+		clsPropertyGridItemNetDriverCount->SetValue(net.getNumDrivers());
+		clsPropertyGridItemNetSinkCount->SetValue(net.getNumSinks());
+
+		clsChoicebookProperties->SetSelection(3);
+		clsNotebook->SetSelection(0);
+	} else {
+		for (wxPropertyGridIterator it = clsPropertyGridNet->GetIterator(); !it.AtEnd(); it++) {
+			wxPGProperty *property = *it;
+			property->SetValueToUnspecified();
+		} // end for
+	} // end else
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void MainFrame::updatePinProperties(Rsyn::Pin pin) {
+	if (pin) {
+		clsPropertyGridItemPinName->SetValue(pin.getName());
+		clsPropertyGridItemPinInstance->SetValue(pin.getInstanceName());
+		clsPropertyGridItemPinDirection->SetValue(pin.getDirectionName());
+
+		clsChoicebookProperties->SetSelection(4);
+		clsNotebook->SetSelection(0);
+	} else {
+		for (wxPropertyGridIterator it = clsPropertyGridPin->GetIterator(); !it.AtEnd(); it++) {
 			wxPGProperty *property = *it;
 			property->SetValueToUnspecified();
 		} // end for

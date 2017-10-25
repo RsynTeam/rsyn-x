@@ -27,12 +27,14 @@ namespace Rsyn {
 
 class Timer;
 
-class DefaultTimingModel : public TimingModel, public Service {
+class DefaultTimingModel : public TimingModel, public Service, public Rsyn::PhysicalObserver {
 public:
 
 	virtual void start(Engine engine, const Json &params) override;
 	virtual void stop() override;
 	
+	virtual void
+	onPostMovedInstance(Rsyn::PhysicalInstance phInstance) override;
 private:
 	// Design.
 	Rsyn::Design clsDesign;

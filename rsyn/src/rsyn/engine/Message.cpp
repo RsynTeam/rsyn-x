@@ -81,7 +81,7 @@ void MessageDescriptor::print(const Message &message) {
 
 	if (!filtered()) {
 		const std::string msg = compile(message);
-		std::cout << "[" << MESSAGE_LEVEL_TEXT[dscp->getLevel()] << "] " << msg <<
+		std::cout << MESSAGE_LEVEL_TEXT[dscp->getLevel()] << ": " << msg <<
 				" " << getLabel() << "\n";
 	} else if (clsCounter == clsMaxPrintCount) {
 		std::cout << "Message " << getLabel() << " reached its maximum print count and will be suppressed hereafter.\n";

@@ -32,7 +32,7 @@
 #include "rsyn/engine/Engine.h"
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/3rdparty/json/json.hpp"
-#include "x/util/RCTreeExtractor.h"
+#include "rsyn/util/RCTreeExtractor.h"
 
 namespace Rsyn {
 

@@ -2271,6 +2271,7 @@ bool Timer::queryTopCriticalPaths_Internal(CriticalPathQueue &queue,
 		Number arrival = getPinArrivalTime(startpoint.propPin, mode, startpoint.propTransition);
 		Rsyn::Arc arc = nullptr;
 		Rsyn::Pin previousPin = nullptr;
+		Rsyn::TimingTransition previousTransition = Rsyn::TIMING_TRANSITION_INVALID;
 		
 		if (computeSlack(mode, arrival, startpoint.propRequired) >= slackThreshold)
 			break;
@@ -2294,10 +2295,13 @@ bool Timer::queryTopCriticalPaths_Internal(CriticalPathQueue &queue,
 			
 			hop.rsynArcToThisPin = arc;
 			hop.previousPin = previousPin;
+			hop.previousTransition = previousTransition;
 			if (reference.propParentPartialPath != -1) {
 				hop.nextPin = partialPaths[reference.propParentPartialPath].propPin;
+				hop.nextTransition = partialPaths[reference.propParentPartialPath].propTransition;
 			} else {
 				hop.nextPin = nullptr;
+				hop.nextTransition = Rsyn::TIMING_TRANSITION_INVALID;
 			} // end else
 			
 			paths[i].push_back(hop);
@@ -2311,6 +2315,7 @@ bool Timer::queryTopCriticalPaths_Internal(CriticalPathQueue &queue,
 			
 			arc = hop.getArcFromThisPin();
 			previousPin = hop.getPin();
+			previousTransition = hop.getTransition();
 			
 			index = reference.propParentPartialPath;
 		} // end while

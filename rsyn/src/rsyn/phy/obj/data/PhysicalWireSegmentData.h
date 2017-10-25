@@ -36,9 +36,12 @@ public:
 	Rsyn::PhysicalLayer clsPhysicalLayer;
 	Rsyn::PhysicalVia clsPhysicalVia;
 	std::vector<DBUxy> clsPoints;
-	DBU clsWireExtension = 0;
-	Bounds clsRectangle;
+	std::vector<PhysicalRoutingPoint> clsRoutingPoints;
+	DBU clsRoutedWidth = 0;
 	bool clsNew : 1;
+	
+	Bounds clsRectangle;
+	DBU clsWireExtension = 0;
 	bool clsHasRectangle : 1;
 	PhysicalWireSegmentData() {
 		clsNew = false;

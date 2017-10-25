@@ -52,16 +52,16 @@ public:
 	//! The origin to compute pin displacement is the Left-Lower cell point and it is assumed to be (0,0). 
 	//! @warning It was assumed the pin has a fixed position in the cell.
 	DBU getDisplacement(const Dimension dim);
-	//! @brief Returns a vector reference to PhysicalPinPort objects related to PhysicalPin. 
-	std::vector<PhysicalPinPort> & allPinPorts();
-	//! @brief Returns a constant vector reference to PhysicalPinPort objects related to PhysicalPin.
-	const std::vector<PhysicalPinPort> & allPinPorts() const;
-	//! @brief Returns the total number of PhysicalPinPort objects related to PhysicalPin.
-	std::size_t getNumPinPorts() const;
-	//! @brief Returns true if PhysicalPin has PhysicalPinPort objects. Otherwise, returns false.
-	bool hasPinPorts() const;
-	//! @brief Returns true if PhysicalPin has no PhysicalPinPort objects. Otherwise, returns false.
-	bool isPinPortsEmpty() const;
+	//! @brief Returns a vector reference to PhysicalPinGeometry objects related to PhysicalPin. 
+	std::vector<PhysicalPinGeometry> & allPinGeometries();
+	//! @brief Returns a constant vector reference to PhysicalPinGeometry objects related to PhysicalPin.
+	const std::vector<PhysicalPinGeometry> & allPinGeometries() const;
+	//! @brief Returns the total number of PhysicalPinGeometry objects related to PhysicalPin.
+	std::size_t getNumPinGeometries() const;
+	//! @brief Returns true if PhysicalPin has PhysicalPinGeometry objects. Otherwise, returns false.
+	bool hasPinGeometries() const;
+	//! @brief Returns true if PhysicalPin has no PhysicalPinGeometry objects. Otherwise, returns false.
+	bool isEmptyPinGeometries() const;
 	//! @brief Returns an enum of PhysicalPinDirection that gives the PhysicalPin direction.
 	PhysicalPinDirection getDirection () const;
 	//! @brief Returns a constant reference to the Bounds object that defines the PhysicalPin boundaries.

@@ -52,9 +52,12 @@ public:
 	std::vector<PhysicalGroup> clsPhysicalGroups;
 	std::vector<PhysicalSite> clsPhysicalSites;
 	std::vector<PhysicalVia> clsPhysicalVias;
+	std::vector<PhysicalSpecialNet> clsPhysicalSpecialNets;
+	std::vector<PhysicalTrack> clsPhysicalTracks;
 	std::unordered_map<std::string, int> clsMapPhysicalSites;
 	std::unordered_map<std::string, std::size_t> clsMapPhysicalRegions;
 	std::unordered_map<std::string, std::size_t> clsMapPhysicalGroups;
+	std::unordered_map<std::string, std::size_t> clsMapPhysicalSpecialNets;
 
 	//From LEF file
 	std::unordered_map<std::string, std::size_t> clsMapPhysicalLayers;
@@ -77,10 +80,21 @@ public:
 
 	Rsyn::Net clsClkNet;
 
+	
+	// Physical design mode 
+	PhysicalDesignMode clsMode = PhysicalDesignMode::ALL;
+	
 	// Notifications
 	std::list<std::tuple<int, PhysicalDesign::PostInstanceMovedCallback>>
 	callbackPostInstanceMoved;
 	// todo physicalRow notification
+	
+	////////////////////////////////////////////////////////////////////////////
+	// Observerss
+	////////////////////////////////////////////////////////////////////////////
+
+	std::array<std::list<PhysicalObserver *>, NUM_PHYSICAL_EVENTS> clsPhysicalObservers;
+	
 
 	PhysicalDesignData() : clsClkNet(nullptr), clsDesign(nullptr), clsModule(nullptr) {
 

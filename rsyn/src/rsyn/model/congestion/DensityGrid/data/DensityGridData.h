@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -44,23 +44,38 @@ protected:
 	Rsyn::PhysicalDesign clsPhDesign;
 	Rsyn::Module clsModule;
 	Rsyn::PhysicalModule clsPhModule;
-	
+
 	std::vector<DensityGridBin> clsBins;
 
 	std::vector<int> clsMaxAreaBin; // stores the bin index that have the highest area by area type
 	std::vector<int> clsMaxPinBin; // stores the bin index that have the highest number of pins by pin type
-	
+
 	int id;
 	int clsNumCols;
 	int clsNumRows;
 
 	DBU clsBinSize;
+
+	bool clsHasRowBounds : 1;
+	bool clsHasBlockages : 1;
+	
 	double clsTargetDensity;
 	double clsAbu;
 	
-	bool clsHasRowBounds : 1;
-	bool clsHasBlockages : 1;
+	/* density profiling parameters */
+	const double clsBinDimension = 9.0;
+	const double clsAlpha = 1.0;
+	const double clsBinAreaThreshold = 0.2;
+	const double clsFreeSpaceThreshold = 0.2;
+	const double clsAbu2Weight = 10.0;
+	const double clsAbu5Weight = 4.0;
+	const double clsAbu10Weight = 2.0;
+	const double clsAbu20Weight = 1.0;
+	//const int clsNumBinsX = 500;
+	//const int clsNumBinsY = 500;
+
 public:
+
 	DensityGridData() {
 		clsMaxAreaBin.resize(NUM_AREAS, -1);
 		clsMaxPinBin.resize(NUM_PINS, -1);

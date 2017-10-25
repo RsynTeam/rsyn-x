@@ -59,7 +59,6 @@ DEFControlParser::~DEFControlParser() {
 //DEF CALLBACKS
 char* defAddress(const char* in);
 void defCheckType(defrCallbackType_e c);
-int defPin(defrCallbackType_e, defiPin *pin, defiUserData ud);
 int defCompf(defrCallbackType_e c, defiComponent* co, defiUserData ud);
 int defComponentStart(defrCallbackType_e c, int num, defiUserData ud);
 int defDesignName(defrCallbackType_e c, const char* string, defiUserData ud);
@@ -82,6 +81,12 @@ int defGroupStart(defrCallbackType_e c, int num, defiUserData ud);
 int defGroupMember(defrCallbackType_e type, const char* name, defiUserData userData);
 int defGroupName(defrCallbackType_e type, const char* name, defiUserData ud);
 int defGroups(defrCallbackType_e type, defiGroup *group, defiUserData ud);
+
+int defPin(defrCallbackType_e, defiPin *pin, defiUserData ud);
+int defSpecialNetStart(defrCallbackType_e c, int num, defiUserData ud);
+int defSpecialNet(defrCallbackType_e c, defiNet* net, defiUserData ud);
+int defViaStart(defrCallbackType_e, int number, defiUserData);
+int defVia(defrCallbackType_e, defiVia *, defiUserData);
 
 DefDscp &getDesignFromUserData(defiUserData userData) {
 	return *((DefDscp *) userData);
@@ -109,7 +114,10 @@ void DEFControlParser::parseDEF(const std::string &filename, DefDscp &defDscp) {
 	defrSetFreeFunction(freeCB);
 	defrSetNetStartCbk(defNetStart);
 	defrSetNetCbk(defNet);
-	//defrSetSNetWireCbk(defNetWire);
+
+
+	//defrSetSNetWireCbk();
+
 	defrSetGroupsStartCbk(defGroupStart);
 	defrSetGroupNameCbk(defGroupName);
 	defrSetGroupMemberCbk(defGroupMember);
@@ -118,6 +126,17 @@ void DEFControlParser::parseDEF(const std::string &filename, DefDscp &defDscp) {
 	//	defrSetGcellGridCbk(defGCellGrid);
 	defrSetRegionStartCbk(defRegionStart);
 	defrSetRegionCbk(defRegion);
+
+	// register track call back
+	defrSetTrackCbk(defTrack);
+
+	// register special net call backs
+	defrSetSNetStartCbk(defSpecialNetStart);
+	defrSetSNetCbk(defSpecialNet);
+
+	// register via call backs
+	defrSetViaStartCbk(defViaStart);
+	defrSetViaCbk(defVia);
 
 	//defrSetGcellGridWarnings(3);
 
@@ -209,7 +228,7 @@ int defPin(defrCallbackType_e, defiPin *pin, defiUserData userData) {
 	defPin.clsPos[X] = pin->placementX();
 	defPin.clsPos[Y] = pin->placementY();
 	defPin.clsICCADPos = defPin.clsPos;
-	// pin position is correct only for iccad contest
+	defPin.clsOrientation = pin->orientStr();
 	if (pin->hasLayer()) {
 		defPin.clsLayerName = pin->layer(0);
 		int xl, yl, xh, yh;
@@ -218,7 +237,7 @@ int defPin(defrCallbackType_e, defiPin *pin, defiUserData userData) {
 		defPin.clsLayerBounds[LOWER][Y] = yl;
 		defPin.clsLayerBounds[UPPER][X] = xh;
 		defPin.clsLayerBounds[UPPER][Y] = yh;
-		defPin.clsICCADPos += defPin.clsLayerBounds.computeCenter();
+		defPin.clsICCADPos += defPin.clsLayerBounds.computeCenter(); // legacy iccad15 contest pin position
 	} // end if 
 	return 0;
 } // end method
@@ -293,12 +312,16 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 			bool newPath = false;
 			int x, y, extension;
 			bool firstPoint = true;
+			DefRoutingPointDscp * point;
 			while (pathId != DEFIPATH_DONE) {
 				switch (pathId) {
 					case DEFIPATH_LAYER:
 						segmentDscp.clsNew = newPath;
-						newPath = true;
 						segmentDscp.clsLayerName = path->getLayer();
+
+						// TODO -> Deprecated - Remove
+						newPath = true;
+						// END TODO 
 						break;
 					case DEFIPATH_MASK:
 						segmentDscp.clsMask = path->getMask();
@@ -308,66 +331,250 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 						//path->getViaTopMask();
 						//path->getViaCutMask();
 						//path->getViaBottomMask();
-						std::cout<<"TODO DEFIPATH_VIAMASK at "<<__func__<<"\n";
+						std::cout << "TODO DEFIPATH_VIAMASK at " << __func__ << "\n";
 						break;
 					case DEFIPATH_VIA:
+						point->clsViaName = path->getVia();
+						point->clsHasVia = true;
+
+						// TODO -> Deprecated - Remove
 						segmentDscp.clsViaName = path->getVia();
 						segmentDscp.clsHasVia = true;
+						// END TODO 
 						break;
 					case DEFIPATH_VIAROTATION:
 						//TODO
-						std::cout<<"TODO DEFIPATH_VIAROTATION at "<<__func__<<"\n";
+						std::cout << "TODO DEFIPATH_VIAROTATION at " << __func__ << "\n";
 						//orientStr(path->getViaRotation());
 						break;
 					case DEFIPATH_RECT:
 						int deltaxl, deltayl, deltaxu, deltayu;
 						path->getViaRect(&deltaxl, &deltayl, &deltaxu, &deltayu);
-						segmentDscp.clsRect[LOWER][X] = static_cast<DBU>(deltaxl);
-						segmentDscp.clsRect[LOWER][Y] = static_cast<DBU>(deltayl);
-						segmentDscp.clsRect[UPPER][X] = static_cast<DBU>(deltaxu);
-						segmentDscp.clsRect[UPPER][Y] = static_cast<DBU>(deltayu);
+						point->clsHasRectangle = true;
+						point->clsRect[LOWER][X] = static_cast<DBU> (deltaxl);
+						point->clsRect[LOWER][Y] = static_cast<DBU> (deltayl);
+						point->clsRect[UPPER][X] = static_cast<DBU> (deltaxu);
+						point->clsRect[UPPER][Y] = static_cast<DBU> (deltayu);
+
+						// TODO -> Deprecated - Remove
+						segmentDscp.clsRect[LOWER][X] = static_cast<DBU> (deltaxl);
+						segmentDscp.clsRect[LOWER][Y] = static_cast<DBU> (deltayl);
+						segmentDscp.clsRect[UPPER][X] = static_cast<DBU> (deltaxu);
+						segmentDscp.clsRect[UPPER][Y] = static_cast<DBU> (deltayu);
 						segmentDscp.clsHasRectangle = true;
+						// END TODO 
 						break;
 					case DEFIPATH_VIRTUALPOINT:
 						//TODO
-						std::cout<<"TODO DEFIPATH_VIRTUALPOINT at "<<__func__<<"\n";
+						std::cout << "TODO DEFIPATH_VIRTUALPOINT at " << __func__ << "\n";
 						//int x, y;
 						//path->getVirtualPoint(&x, &y);
 						//std::cout<<"virtualPoint: "<<netDscp.clsName<<"\n";
 						break;
 					case DEFIPATH_WIDTH:
+						// only for special nets
 						segmentDscp.clsWidth = path->getWidth();
 						break;
 					case DEFIPATH_POINT:
 						path->getPoint(&x, &y);
+						segmentDscp.clsRoutingPoints.push_back(DefRoutingPointDscp());
+						point = &segmentDscp.clsRoutingPoints.back();
+						point->clsPos = DBUxy(static_cast<DBU> (x), static_cast<DBU> (y));
+						point->clsExtension = -1;
+
+						// TODO -> Deprecated - Remove
 						segmentDscp.clsPoints.push_back(DBUxy(static_cast<DBU> (x), static_cast<DBU> (y)));
 						firstPoint = false;
+						// END TODO 
 						break;
 					case DEFIPATH_FLUSHPOINT:
 						path->getFlushPoint(&x, &y, &extension);
+						segmentDscp.clsRoutingPoints.push_back(DefRoutingPointDscp());
+						point = &segmentDscp.clsRoutingPoints.back();
+						point->clsPos = DBUxy(static_cast<DBU> (x), static_cast<DBU> (y));
+						point->clsExtension = extension;
+
+						// TODO -> Deprecated - Remove
 						segmentDscp.clsPoints.push_back(DBUxy(static_cast<DBU> (x), static_cast<DBU> (y)));
 						if (firstPoint)
 							segmentDscp.clsExtensionBegin = extension;
 						else
 							segmentDscp.clsExtensionEnd = extension;
 						firstPoint = false;
+						// END TODO 
 						break;
 					case DEFIPATH_TAPER:
 						//std::string taper = "TAPER ";
-						std::cout<<"TODO DEFIPATH_TAPER at "<<__func__<<"\n";
+						std::cout << "TODO DEFIPATH_TAPER at " << __func__ << "\n";
 						break;
 					case DEFIPATH_TAPERRULE:
 						//path->getTaperRule();
-						std::cout<<"TODO DEFIPATH_TAPERRULE at "<<__func__<<"\n";
+						std::cout << "TODO DEFIPATH_TAPERRULE at " << __func__ << "\n";
 						break;
 					case DEFIPATH_STYLE:
 						//path->getStyle();
-						std::cout<<"TODO DEFIPATH_STYLE at "<<__func__<<"\n";
+						std::cout << "TODO DEFIPATH_STYLE at " << __func__ << "\n";
 						break;
 				} // end switch
 				pathId = path->next();
 			} // end while 
 		} // end for 
+	} // end for 
+	return 0;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+int defSpecialNetStart(defrCallbackType_e c, int num, void* ud) {
+	DefDscp & defDscp = getDesignFromUserData(ud);
+	defDscp.clsSpecialNets.reserve(num);
+	return 0;
+}// end method
+
+// -----------------------------------------------------------------------------
+
+int defSpecialNet(defrCallbackType_e c, defiNet* net, void* ud) {
+	DefDscp & defDscp = getDesignFromUserData(ud);
+	defDscp.clsSpecialNets.push_back(DefSpecialNetDscp());
+	DefSpecialNetDscp & specialNet = defDscp.clsSpecialNets.back();
+	specialNet.clsName = net->name();
+	specialNet.clsWires.resize(net->numWires());
+	for (int i = 0; i < net->numWires(); i++) {
+		DefWireDscp & specialWire = specialNet.clsWires[i];
+		defiWire * wire = net->wire(i);
+		specialWire.clsWireType = wire->wireType();
+		specialWire.clsWireSegments.resize(wire->numPaths());
+		for (int j = 0; j < wire->numPaths(); j++) {
+			DefWireSegmentDscp & segmentDscp = specialWire.clsWireSegments[j];
+			defiPath * path = wire->path(j);
+			path->initTraverse();
+			int pathId = path->next();
+			bool newPath = false;
+			int x, y, extension;
+			bool firstPoint = true;
+			DefRoutingPointDscp * point;
+			while (pathId != DEFIPATH_DONE) {
+				switch (pathId) {
+					case DEFIPATH_LAYER:
+						segmentDscp.clsLayerName = path->getLayer();
+						break;
+					case DEFIPATH_MASK:
+						//segmentDscp.clsMask = path->getMask();
+						break;
+					case DEFIPATH_VIAMASK:
+						// TODO 
+						//path->getViaTopMask();
+						//path->getViaCutMask();
+						//path->getViaBottomMask();
+						std::cout << "TODO DEFIPATH_VIAMASK at " << __func__ << "\n";
+						break;
+					case DEFIPATH_VIA:
+						point->clsViaName = path->getVia();
+						point->clsHasVia = true;
+						//std::cout<<"via: "<<path->getVia()<<"\n";
+						break;
+					case DEFIPATH_VIAROTATION:
+						//TODO
+						std::cout << "TODO DEFIPATH_VIAROTATION at " << __func__ << "\n";
+						//orientStr(path->getViaRotation());
+						break;
+					case DEFIPATH_RECT:
+						//						int deltaxl, deltayl, deltaxu, deltayu;
+						//						path->getViaRect(&deltaxl, &deltayl, &deltaxu, &deltayu);
+						//						segmentDscp.clsRect[LOWER][X] = static_cast<DBU>(deltaxl);
+						//						segmentDscp.clsRect[LOWER][Y] = static_cast<DBU>(deltayl);
+						//						segmentDscp.clsRect[UPPER][X] = static_cast<DBU>(deltaxu);
+						//						segmentDscp.clsRect[UPPER][Y] = static_cast<DBU>(deltayu);
+						//						segmentDscp.clsHasRectangle = true;
+						break;
+					case DEFIPATH_VIRTUALPOINT:
+						//TODO
+						std::cout << "TODO DEFIPATH_VIRTUALPOINT at " << __func__ << "\n";
+						//int x, y;
+						//path->getVirtualPoint(&x, &y);
+						//std::cout<<"virtualPoint: "<<netDscp.clsName<<"\n";
+						break;
+					case DEFIPATH_WIDTH:
+						segmentDscp.clsRoutedWidth = static_cast<DBU> (path->getWidth());
+						break;
+					case DEFIPATH_POINT:
+						path->getPoint(&x, &y);
+						segmentDscp.clsRoutingPoints.push_back(DefRoutingPointDscp());
+						point = &segmentDscp.clsRoutingPoints.back();
+						point->clsPos = DBUxy(static_cast<DBU> (x), static_cast<DBU> (y));
+						point->clsExtension = -1;
+						firstPoint = false;
+						break;
+					case DEFIPATH_FLUSHPOINT:
+						path->getFlushPoint(&x, &y, &extension);
+						segmentDscp.clsRoutingPoints.push_back(DefRoutingPointDscp());
+						point = &segmentDscp.clsRoutingPoints.back();
+						point->clsPos = DBUxy(static_cast<DBU> (x), static_cast<DBU> (y));
+						point->clsExtension = extension;
+						break;
+					case DEFIPATH_TAPER:
+						//std::string taper = "TAPER ";
+						std::cout << "TODO DEFIPATH_TAPER at " << __func__ << "\n";
+						break;
+					case DEFIPATH_TAPERRULE:
+						//path->getTaperRule();
+						std::cout << "TODO DEFIPATH_TAPERRULE at " << __func__ << "\n";
+						break;
+					case DEFIPATH_STYLE:
+						//path->getStyle();
+						std::cout << "TODO DEFIPATH_STYLE at " << __func__ << "\n";
+						break;
+				} // end switch
+				pathId = path->next();
+			} // end while 
+		} // end for 
+	} // end for 
+	return 0;
+}// end method
+
+// -----------------------------------------------------------------------------
+
+int defTrack(defrCallbackType_e typ, defiTrack * track, defiUserData ud) {
+	DefDscp & defDscp = getDesignFromUserData(ud);
+	defDscp.clsTracks.push_back(DefTrackDscp());
+	DefTrackDscp & trackDscp = defDscp.clsTracks.back();
+	trackDscp.clsDirection = track->macro();
+	trackDscp.clsLocation = static_cast<DBU> (std::round(track->x()));
+	trackDscp.clsNumTracks = static_cast<DBU> (std::round(track->xNum()));
+	trackDscp.clsSpace = static_cast<DBU> (std::round(track->xStep()));
+	trackDscp.clsLayers.reserve(track->numLayers());
+	for (int i = 0; i < track->numLayers(); i++) {
+		trackDscp.clsLayers.push_back(track->layer(i));
+	} // end for 
+	return 0;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+int defViaStart(defrCallbackType_e c, int number, defiUserData ud) {
+	DefDscp & defDscp = getDesignFromUserData(ud);
+	defDscp.clsVias.reserve(number);
+	return 0;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+int defVia(defrCallbackType_e c, defiVia * via, defiUserData ud) {
+	DefDscp & defDscp = getDesignFromUserData(ud);
+	defDscp.clsVias.push_back(DefViaDscp());
+	DefViaDscp & viaDscp = defDscp.clsVias.back();
+	viaDscp.clsName = via->name();
+	viaDscp.clsViaLayers.resize(via->numLayers());
+	int xl, yl, xh, yh;
+	char * layerName;
+	for (int i = 0; i < via->numLayers(); i++) {
+		DefViaLayerDscp & layerDscp = viaDscp.clsViaLayers[i];
+		via->layer(i, &layerName, &xl, &yl, &xh, &yh);
+		layerDscp.clsLayerName = layerName;
+		layerDscp.clsBounds[LOWER][X] = static_cast<DBU> (xl);
+		layerDscp.clsBounds[LOWER][Y] = static_cast<DBU> (yl);
+		layerDscp.clsBounds[UPPER][X] = static_cast<DBU> (xh);
+		layerDscp.clsBounds[UPPER][Y] = static_cast<DBU> (yh);
 	} // end for 
 	return 0;
 } // end method
@@ -434,30 +641,6 @@ int defDieArea(defrCallbackType_e typ, defiBox* box, defiUserData ud) {
 	defDscp.clsDieBounds[UPPER][Y] = box->defiBox::yh();
 	return 0;
 } // end method
-
-// -----------------------------------------------------------------------------
-
-int defTrack(defrCallbackType_e typ, defiTrack * track, defiUserData data) {
-
-
-	//	Design &design = getDesignFromUserData(data);
-	//
-	//	Design::Track designTrack;
-	//	if (!track->firstTrackMask()) {
-	//		designTrack.direction = track->macro();
-	//		designTrack.doStart = track->x();
-	//		designTrack.doCount = track->xNum();
-	//		designTrack.doStep = track->xStep();
-	//	} // end if 
-	//
-	//	for (int i = 0; i < track->numLayers(); i++) {
-	//		designTrack.layers.reserve(track->numLayers());
-	//		designTrack.layers.push_back(track->layer(i));
-	//	} // end for 
-	//	design.tracks.push_back(designTrack);
-
-	return 0;
-} // end method 
 
 // -----------------------------------------------------------------------------
 
@@ -610,7 +793,6 @@ void DEFControlParser::writeDEF(const std::string &filename, const std::string d
 // -----------------------------------------------------------------------------
 
 void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDscp) {
-	cout << "TODO " << __func__ << " in file " << __FILE__ << "\n";
 	//Opening 
 	FILE * defFile;
 	int status;
@@ -623,7 +805,7 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 
 
 	//writing header
-	defwAddComment("ICCAD 2015 contest - CADA085 Team solution");
+	defwAddComment("DEf file generated by Rsyn (http://rsyn.design)");
 
 	status = defwNewLine();
 	CHECK_STATUS(status);
@@ -680,49 +862,52 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 	status = defwNewLine();
 	CHECK_STATUS(status);
 
-	//	int numPins = defDscp.ports.size();
-	//	status = defwStartPins(numPins);
-	//	CHECK_STATUS(status);
-	//	
-	//	for(const DefPortDscp & port : defDscp.ports){
-	//		status =  defwPin(port.portName.c_str(), port.netName.c_str(), port.special, 
-	//			(port.direction.compare("NULL") == 0 ? NULL : port.direction.c_str()), 
-	//			(port.use.compare("NULL") == 0 ? NULL : port.use.c_str()), 
-	//			(port.status.compare("NULL")==0 ? NULL : port.status.c_str()), 
-	//			port.statusX, port.statusY, port.orient,
-	//			(port.clsDefPortLayer.layerName.compare("NULL")==0 ? NULL : port.clsDefPortLayer.layerName.c_str()),
-	//			(int)port.clsDefPortLayer.bounds[LOWER][X],
-	//			(int)port.clsDefPortLayer.bounds[LOWER][Y],
-	//			(int)port.clsDefPortLayer.bounds[UPPER][X],
-	//			(int)port.clsDefPortLayer.bounds[UPPER][Y]);
-	//		CHECK_STATUS(status);
-	//	} // end for 
-	//	
-	//	status = defwEndPins();
-	//	CHECK_STATUS(status);
-	//	
-	//	status = defwNewLine();
-	//	CHECK_STATUS(status);
+	int numPins = defDscp.clsPorts.size();
+	status = defwStartPins(numPins);
+	CHECK_STATUS(status);
+	
+	
+	for (const DefPortDscp & port : defDscp.clsPorts) {
+		status = defwPin(port.clsName.c_str(), 
+			port.clsNetName.c_str(), 
+			(port.clsSpecial ? 1 : 0), // 0 ignores, 1 set net as special
+			(port.clsDirection.compare(INVALID_DEF_NAME) == 0 ? NULL : port.clsDirection.c_str()),
+			(port.clsUse.compare(INVALID_DEF_NAME) == 0 ? NULL : port.clsUse.c_str()),
+			(port.clsLocationType.compare(INVALID_DEF_NAME) == 0 ? NULL : port.clsLocationType.c_str()),
+			(int)port.clsPos[X], 
+			(int)port.clsPos[Y], 
+			defOrient(port.clsOrientation),
+			(port.clsLayerName.compare(INVALID_DEF_NAME) == 0 ? NULL : port.clsLayerName.c_str()),
+			(int) port.clsLayerBounds[LOWER][X],
+			(int) port.clsLayerBounds[LOWER][Y],
+			(int) port.clsLayerBounds[UPPER][X],
+			(int) port.clsLayerBounds[UPPER][Y]);
+		CHECK_STATUS(status);
+	} // end for 
 
-	//	int numNets = defStruct.clsDefConnections.size();
-	//	status = defwStartNets(numNets);
-	//	CHECK_STATUS(status);
-	//
-	//	for (const DefStruct::DefConnection & conn : defStruct.clsDefConnections) {
-	//		//int defwComponent(const char* name, const char* master, const char* eeq, const char* source, const char* status, int statusX, int statusY, int statusOrient, double weight, const char* region);
-	//		status = defwNet(conn.netName.c_str()); 
-	//		CHECK_STATUS(status);
-	//		for(const DefStruct::DefPin & defPin : conn.pins){
-	//			status = defwNetConnection(defPin.cellName.c_str(), defPin.pinName.c_str(), 0);
-	//			CHECK_STATUS(status);
-	//		}
-	//		status = defwNetEndOneNet(); 
-	//		CHECK_STATUS(status);
-	//	}
-	//	
-	//	status =  defwEndNets();
-	//	CHECK_STATUS(status);
+	status = defwEndPins();
+	CHECK_STATUS(status);
 
+	status = defwNewLine();
+	CHECK_STATUS(status);
+
+	int numNets = defDscp.clsNets.size();
+	status = defwStartNets(numNets);
+	CHECK_STATUS(status);
+
+	for(const DefNetDscp & defNet : defDscp.clsNets) {
+		status = defwNet(defNet.clsName.c_str());
+		CHECK_STATUS(status);
+		for(const DefNetConnection & defConn : defNet.clsConnections){
+			status = defwNetConnection(defConn.clsComponentName.c_str(), defConn.clsPinName.c_str(), 0);
+			CHECK_STATUS(status);
+		} // end for 
+		status = defwNetEndOneNet();
+		CHECK_STATUS(status);
+	} // end for 
+
+	status = defwEndNets();
+	CHECK_STATUS(status);
 
 	status = defwEnd();
 	CHECK_STATUS(status);

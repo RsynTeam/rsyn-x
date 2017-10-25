@@ -47,9 +47,11 @@ public:
 	// In the Rsyn the circuit pins (ports) and cells are the same object. Therefore,
 	// in the mapping to physical object they must be the same object.
 	//! @brief Returns the object of the layer associated to the PhysicalPort
-	PhysicalLayer getPortLayer() const;
+	PhysicalLayer getLayer() const;
 	//! @brief Returns true if the PhysicalPort has an associated layer. Otherwise, returns false.
-	bool hasPortLayer() const;
+	bool hasLayer() const;
+	
+	PhysicalOrientation getOrientation() const;
 }; // end class 
 
 } // end namespace 

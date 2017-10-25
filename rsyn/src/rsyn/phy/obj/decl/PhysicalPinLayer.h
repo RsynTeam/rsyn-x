@@ -46,7 +46,7 @@ public:
 	//! @brief Returns the vector reference of rectangular bounds to the Rsyn::PhysicalPinLayer.
 	const std::vector<Bounds> & allBounds() const;
 	//! @brief Returns the vector reference of polygons to the PhysicalPinLayer.
-	const std::vector<Polygon> & allPolygons() const;
+	const std::vector<PhysicalPolygon> & allPolygons() const;
 	//! @brief Returns the Rsyn::PhysicalLayer object related to the  Rsyn::PhysicalPinLayer.
 	Rsyn::PhysicalLayer getLayer() const;
 	//! @brief Returns the total number of rectangular Bounds that defines Rsyn::PhysicalPinLayer
@@ -68,6 +68,7 @@ public:
 	//! @brief Returns true if a Rsyn::PhysicalLayer object is associated to the Rsyn::PhysicalPinLayer.
 	//! Otherwise, returns false.
 	bool hasLayer() const;
+	
 }; // end class 
 
 } // end namespace 

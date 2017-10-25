@@ -20,9 +20,9 @@ namespace Rsyn {
 class LibraryModule : public Proxy<LibraryModuleData> {
 	
 RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
-	
-friend class Design;
 
+friend class RawPointer;
+friend class Design;
 
 private:
 	LibraryModule(LibraryModuleData * data) : Proxy(data) {}

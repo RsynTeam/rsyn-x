@@ -29,6 +29,12 @@
 
 namespace Rsyn {
 
+inline DBU PhysicalWireSegment::getRoutedWidth() const {
+	return data->clsRoutedWidth;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
 inline bool PhysicalWireSegment::hasPoints() const {
 	return data->clsPoints.size() > 0;
 } // end method 
@@ -85,6 +91,18 @@ inline const Bounds & PhysicalWireSegment::getRectangle() const {
 
 inline const bool PhysicalWireSegment::hasRectangle() const {
 	return data->clsHasRectangle;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline const std::size_t PhysicalWireSegment::getNumRoutingPoints() const {
+	return data->clsRoutingPoints.size();
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline const std::vector<PhysicalRoutingPoint> & PhysicalWireSegment::allRoutingPoints() const {
+	return data->clsRoutingPoints;
 } // end method 
 
 // -----------------------------------------------------------------------------

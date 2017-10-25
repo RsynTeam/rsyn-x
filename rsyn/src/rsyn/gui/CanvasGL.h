@@ -77,8 +77,9 @@ public:
 	virtual void onMouseDown(wxMouseEvent& event);
 	virtual void onMouseWheelMoved(wxMouseEvent& event);
 	virtual void onMouseReleased(wxMouseEvent& event);
+	virtual void onLeftDoubleClick(wxMouseEvent& event);
 	virtual void onRightClick(wxMouseEvent& event);
-	virtual void onMouseLeftWindow(wxMouseEvent& event);
+	virtual void onMouseLeaveWindow(wxMouseEvent& event);
 	virtual void onKeyPressed(wxKeyEvent& event);
 	virtual void onKeyReleased(wxKeyEvent& event);
 	virtual void onResized(wxSizeEvent& evt);
@@ -94,7 +95,7 @@ public:
 	void zoom(const float scaling);
 	
 	// Viewport
-	void prepare2DViewport(const int width = 0, const int height = 0);
+	void prepare2DViewport(const int width = 0, const int height = 0, const bool clear = true);
 	void clearViewport();
 	
 	// Configuration

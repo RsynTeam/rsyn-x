@@ -18,6 +18,7 @@
 
 #include <map>
 #include <vector>
+#include <deque>
 
 #include <wx/timer.h>
 
@@ -26,8 +27,8 @@
 #include "rsyn/util/Color.h"
 #include "rsyn/3rdparty/json/json.hpp"
 #include "rsyn/util/float2.h"
-#include "rsyn/util/Color.h"
 #include "rsyn/model/timing/Timer.h"
+
 
 
 BEGIN_DECLARE_EVENT_TYPES()
@@ -62,6 +63,12 @@ private:
 	void drawLines(float x, float y, float w, float h, float t);
 	void drawGraph(float x, float y, float w, float h, float t);
 	void drawNand(float x, float y, float w, float h);
+	void drawNor(float x, float y, float w, float h);
+	void drawAnd(float x, float y, float w, float h);
+	void drawOr(float x, float y, float w, float h);
+	void drawInv(float x, float y, float w, float h);
+	void drawXor(float x, float y, float w, float h);
+	void drawXnor(float x, float y, float w, float h);
 	void drawWindow(const char * title, float x, float y, float w, float h);
 	void renderDemo(float mx, float my, float width, float height, float t, bool blowup);
 
@@ -103,11 +110,21 @@ public:
 }; // end class
 
 // -----------------------------------------------------------------------------
-class PinPosition{
+class VisualInstancePin{
 public:
 	Rsyn::Pin pin;
 	DBUxy pos;
-	PinPosition();
+	//VisualInstancePin();
+};
+
+class VisualNet{
+private:
+	DBUxy pinOut;
+	DBUxy pinIn;
+public:
+	VisualNet(DBUxy pinO, DBUxy pinI){ pinOut = pinO; pinIn = pinI;}
+	DBUxy getPOut(){return pinOut;}
+	DBUxy getPIn(){return pinIn;}
 };
 
 
@@ -115,106 +132,91 @@ class VisualInstance{
 private:
 	Rsyn::Instance inst;
 	Bounds bounds;
-	std::vector<PinPosition> pins;
+	std::vector<VisualInstancePin> pins;
 	Color color;
 	
 public:
-	bool init;
-	
-	VisualInstance(){init = false;}
 	Rsyn::Instance getInst(){return inst;}
-	Bounds getBounds(){return bounds;}
-	std::vector<PinPosition> getPins(){return pins;}
+	const Bounds & getBounds() const {return bounds;}
+	std::vector<VisualInstancePin> getPins(){return pins;}
 	Color getColor(){return color;}
 	void setInst(Rsyn::Instance instance){inst = instance;}
 	void setBounds(DBU posXmin, DBU posYmin, DBU posXmax, DBU posYmax){bounds = Bounds(posXmin, posYmin, posXmax, posYmax);}
 	void setColor (unsigned char r, unsigned char g, unsigned char b){color.setRGB(r, g, b);}
+	void addPin (VisualInstancePin pin) {pins.push_back(pin);}
 
 }; //end class
-
-
-
-
 
 
 class NewSchematicCanvasGL : public CanvasGL {
 private:
 	
-	bool clsDrawCriticalPath : 1;
-	bool clsDrawSelectedCell : 1;
-	bool clsDrawNeighborCells : 1;
-	bool clsDrawLogicCone : 1;
-	
-	int clsNumPathsToDraw = 1;
-	
-	float2 clsMousePosition;
-	bool clsIsSelected;
-	Rsyn::Engine clsEngine;
-	Rsyn::Timer * timer;
-	Rsyn::Design clsDesign;
-	Rsyn::Attribute<Rsyn::Instance, VisualInstance> clsVisualInst;
-	bool clsFirstRendering = true;
-//	std::vector<Shape *> clsShapes;
-	std::vector<VisualInstance> clsInstances;
-	VisualInstance selectedInstance;
-	std::vector<std::vector<Rsyn::Timer::PathHop>> clsPaths;
-	DBUxy finalPos;
-        std::vector<VisualInstance> allSelectedInst;
-	
-
 	static const float LAYER_GRID;
 	static const float LAYER_SHAPE_FILLING;
 	static const float LAYER_SHAPES;
 	static const float LAYER_SELECTED;
+	static const int SAME_LEVEL = 0;
+	static const int NEXT_LEVEL = 1;
+	static const DBU ROW_SIZE;
+	static const DBU LVL_SIZE;
+	static const DBU CELL_SIZE;
+	static const DBU SPACE_SIZE;
+	
+	bool clsDrawCriticalPath : 1;
+	bool clsDrawSelectedCell : 1;
+	bool clsDrawNeighborCells : 1;
+	bool clsDrawLogicCone : 1;
+	bool clsIsSelected : 1;
+	bool clsFirstRendering : 1;
+	bool clsDrawCPChanged : 1;
+	
+	int clsNumPathsToDraw = 1;
+	
+	float2 clsMousePosition;
+	
+	Rsyn::Engine clsEngine;
+	Rsyn::Timer * timer;
+	Rsyn::Design clsDesign;
+	Rsyn::Attribute<Rsyn::Instance, VisualInstance> clsVisualInst;
+	Rsyn::Attribute<Rsyn::Pin, VisualInstancePin> clsVisualInstPin;
+	
+	VisualInstance selectedInstance;
+	std::vector<std::vector<Rsyn::Timer::PathHop>> clsCriticalPaths;
+	DBUxy finalPos;
+	std::deque<Rsyn::Instance> instancesOnScreen;
+	std::deque<VisualNet> netsOnScreen;
+	std::deque<std::vector<VisualInstance*>> overlap;
+	
 
 	void resetClickedView();
+
+	void renderGrid(const int scaleGrid = CELL_SIZE);
+	void defineInstancePos(Rsyn::Instance instance, int row, DBU & lastPos, int level);
+	void insertCell(int index, int row, VisualInstance & cdInstance);
+	void getNeighbours();
+	void definePinPos(VisualInstance & cdInstance);
+	void makeConnectionsCP(VisualInstancePin & pinOut, VisualInstancePin & pinIn);
+	void makeConnectionsNeighbours(VisualInstance & cdInstance);
+	void makeConnectionsLogicCone(VisualInstancePin & pinOut);
+	void drawConnections(DBUxy posOut, DBUxy posIn);
+	void drawConnectionsOnScreen();
 	
-//	class Shape {
-//	protected:
-//		int x = 0;
-//		int y = 0;
-//		int w = 0;
-//		int h = 0;
-//	public:
-//
-//		Shape(const int width, const int height) : w(width), h(height) {}
-//
-//		virtual void render() = 0;		
-//		int getX() const { return x; }
-//		int getY() const { return y; }
-//		int getWidth() const { return w; }
-//		int getHeight() const { return h; }
-//		void move(const int x, const int y) { this->x = x; this->y = y; }
-//	}; // end class
-//
-//	class Box : public Shape {
-//	public:
-//		Box() : Shape(4, 4) {}
-//		virtual void render() override;
-//	}; // end class
-//
-//	class Line : public Shape {
-//	private:
-//
-//	public:
-//		Line() : Shape(0, 0) {}
-//		virtual void render() override;
-//		void set(const int x0, const int y0, const int x1, const int y1) {
-//			this->x = std::min(x0, x1);
-//			this->y = std::min(y0, y1);
-//			this->w = std::abs(x1 - x0);
-//			this->h = std::abs(y1 - y0);
-//		} // end method
-//	}; // end class
-
-
-
-//	void renderShapes();
-	void renderGrid();
-	void defineInstancePos(Rsyn::Instance instance, DBUxy & lastPos, int y);
-	void openNextCells();
-
+	
 	void renderExperimental();
+	
+	
+	virtual void onMouseReleased(wxMouseEvent& event);
+	virtual void onMouseDown(wxMouseEvent& event);
+	virtual void onMouseMoved(wxMouseEvent& event);
+	virtual void selectCellAt();
+	void renderSelectedCell();
+	void getCriticalPath();
+	void defineCriticalPathPos();
+	void drawInstance(Rsyn::Instance instance);
+	void drawPin(VisualInstance & inst);
+	void drawInstancesOnScreen();
+	void defineNeighboursPos(const VisualInstance & selectedInst, Rsyn::Pin selectedPin, std::vector<Rsyn::Pin> & neighbours);
+	void getLogicCone(VisualInstance selectedInst, Rsyn::Pin selectedPin);
 	
 
 
@@ -232,17 +234,8 @@ public:
 	}
 	
 	virtual ~NewSchematicCanvasGL();
-	void drawInstance(Rsyn::Instance instance);
-	virtual void onMouseReleased(wxMouseEvent& event);
-	virtual void onMouseDown(wxMouseEvent& event);
-	virtual void onMouseMoved(wxMouseEvent& event);
-	virtual void selectCellAt();
-	void renderSelectedCell();
 	void init();
-	void criticalPath();
-	void definePathPos();
-	void drawPath();
-	void drawAllSelected();
+	
 	// Events.
 	virtual void onRender(wxPaintEvent& evt);
 

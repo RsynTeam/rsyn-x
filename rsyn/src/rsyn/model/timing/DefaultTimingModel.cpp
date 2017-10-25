@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "DefaultTimingModel.h"
 
 #include "rsyn/engine/Engine.h"
@@ -31,13 +31,11 @@ void DefaultTimingModel::start(Engine engine, const Json &params) {
 	// TODO: Maybe we should not do this here as this create a soft dependency
 	// to physical layer
 	Rsyn::PhysicalService *physical =
-			engine.getService("rsyn.physical", Rsyn::SERVICE_OPTIONAL);
+		engine.getService("rsyn.physical", Rsyn::SERVICE_OPTIONAL);
 	if (physical) {
 		Rsyn::PhysicalDesign phDesign;
 		phDesign = physical->getPhysicalDesign();
-		phDesign.addPostInstanceMovedCallback(0, [&](Rsyn::PhysicalInstance instance) {
-			clsTimer->dirtyInstance(instance.getInstance());
-		});
+		phDesign.registerObserver(this);
 	} // end if
 } // end method
 
@@ -46,5 +44,13 @@ void DefaultTimingModel::start(Engine engine, const Json &params) {
 void DefaultTimingModel::stop() {
 
 } // end method
+
+// -----------------------------------------------------------------------------
+
+void DefaultTimingModel::onPostMovedInstance(Rsyn::PhysicalInstance phInstance) {
+	clsTimer->dirtyInstance(phInstance.getInstance());
+} // end method
+
+// -----------------------------------------------------------------------------
 
 } // end namespace

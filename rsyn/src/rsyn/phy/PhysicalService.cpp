@@ -98,7 +98,7 @@ void PhysicalService::onPostInstanceCreate(Rsyn::Instance instance) {
 	physicalCell.clsHasLayerBounds = false;
 	physicalCell.clsPlaced = true;
 	physicalCell.clsBlock = false;
-	physicalCell.clsPhysicalOrientation = PhysicalOrientation::ORIENTATION_N;
+	physicalCell.clsOrientation = PhysicalOrientation::ORIENTATION_N;
 	
 	const DBUxy dieOrigin = data->clsPhysicalDie.clsBounds[LOWER];
 	physicalCell.clsInitialPos = DBUxy(dieOrigin);

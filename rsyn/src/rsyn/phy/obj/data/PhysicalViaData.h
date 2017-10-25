@@ -31,10 +31,11 @@
 
 namespace Rsyn {
 
-class PhysicalViaData {
+class PhysicalViaData : public PhysicalObject {
 public:
 	std::string clsName;
 	std::vector<Rsyn::PhysicalViaLayer> clsViaLayers;
+	bool clsDesignVia = false;
 	PhysicalViaData() = default;
 }; // end class 
 

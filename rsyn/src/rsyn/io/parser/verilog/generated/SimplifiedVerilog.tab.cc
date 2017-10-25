@@ -190,7 +190,11 @@ namespace Parsing {
   {
       switch (other.type_get ())
     {
-      case 8: // IDENTIFIER
+      case 3: // INTEGER
+        value.copy< int > (other.value);
+        break;
+
+      case 9: // IDENTIFIER
         value.copy< std::string > (other.value);
         break;
 
@@ -211,7 +215,11 @@ namespace Parsing {
     (void) v;
       switch (this->type_get ())
     {
-      case 8: // IDENTIFIER
+      case 3: // INTEGER
+        value.copy< int > (v);
+        break;
+
+      case 9: // IDENTIFIER
         value.copy< std::string > (v);
         break;
 
@@ -227,6 +235,13 @@ namespace Parsing {
   SimplifiedVerilogParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const location_type& l)
     : Base (t)
     , value ()
+    , location (l)
+  {}
+
+  template <typename Base>
+  SimplifiedVerilogParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const int v, const location_type& l)
+    : Base (t)
+    , value (v)
     , location (l)
   {}
 
@@ -263,7 +278,11 @@ namespace Parsing {
     // Type destructor.
     switch (yytype)
     {
-      case 8: // IDENTIFIER
+      case 3: // INTEGER
+        value.template destroy< int > ();
+        break;
+
+      case 9: // IDENTIFIER
         value.template destroy< std::string > ();
         break;
 
@@ -290,7 +309,11 @@ namespace Parsing {
     super_type::move(s);
       switch (this->type_get ())
     {
-      case 8: // IDENTIFIER
+      case 3: // INTEGER
+        value.move< int > (s.value);
+        break;
+
+      case 9: // IDENTIFIER
         value.move< std::string > (s.value);
         break;
 
@@ -343,6 +366,12 @@ namespace Parsing {
   SimplifiedVerilogParser::make_END (const location_type& l)
   {
     return symbol_type (token::END, l);
+  }
+
+  SimplifiedVerilogParser::symbol_type
+  SimplifiedVerilogParser::make_INTEGER (const int& v, const location_type& l)
+  {
+    return symbol_type (token::INTEGER, v, l);
   }
 
   SimplifiedVerilogParser::symbol_type
@@ -441,7 +470,11 @@ namespace Parsing {
   {
       switch (that.type_get ())
     {
-      case 8: // IDENTIFIER
+      case 3: // INTEGER
+        value.move< int > (that.value);
+        break;
+
+      case 9: // IDENTIFIER
         value.move< std::string > (that.value);
         break;
 
@@ -460,7 +493,11 @@ namespace Parsing {
     state = that.state;
       switch (that.type_get ())
     {
-      case 8: // IDENTIFIER
+      case 3: // INTEGER
+        value.copy< int > (that.value);
+        break;
+
+      case 9: // IDENTIFIER
         value.copy< std::string > (that.value);
         break;
 
@@ -691,7 +728,11 @@ namespace Parsing {
          when using variants.  */
         switch (yyr1_[yyn])
     {
-      case 8: // IDENTIFIER
+      case 3: // INTEGER
+        yylhs.value.build< int > ();
+        break;
+
+      case 9: // IDENTIFIER
         yylhs.value.build< std::string > ();
         break;
 
@@ -713,67 +754,85 @@ namespace Parsing {
           switch (yyn)
             {
   case 3:
-#line 62 "SimplifiedVerilog.yy" // lalr1.cc:859
+#line 63 "SimplifiedVerilog.yy" // lalr1.cc:859
     {reader.readModuleName(yystack_[0].value.as< std::string > ());}
-#line 719 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+#line 760 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
     break;
 
   case 7:
-#line 70 "SimplifiedVerilog.yy" // lalr1.cc:859
+#line 71 "SimplifiedVerilog.yy" // lalr1.cc:859
     { reader.readIdentifier(yystack_[0].value.as< std::string > ()); }
-#line 725 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+#line 766 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
     break;
 
   case 8:
-#line 71 "SimplifiedVerilog.yy" // lalr1.cc:859
+#line 72 "SimplifiedVerilog.yy" // lalr1.cc:859
     { reader.readIdentifier(yystack_[0].value.as< std::string > ()); }
-#line 731 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+#line 772 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
     break;
 
   case 16:
-#line 91 "SimplifiedVerilog.yy" // lalr1.cc:859
+#line 92 "SimplifiedVerilog.yy" // lalr1.cc:859
     { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_INPUT_PORT); }
-#line 737 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+#line 778 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
     break;
 
   case 18:
-#line 92 "SimplifiedVerilog.yy" // lalr1.cc:859
-    { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_OUTPUT_PORTS); }
-#line 743 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+#line 93 "SimplifiedVerilog.yy" // lalr1.cc:859
+    { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_INPUT_PORT); reader.setBusRange(yystack_[3].value.as< int > (), yystack_[1].value.as< int > ()); }
+#line 784 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
     break;
 
   case 20:
-#line 96 "SimplifiedVerilog.yy" // lalr1.cc:859
-    { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_NETS); }
-#line 749 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+#line 94 "SimplifiedVerilog.yy" // lalr1.cc:859
+    { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_OUTPUT_PORTS); }
+#line 790 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
     break;
 
   case 22:
+#line 95 "SimplifiedVerilog.yy" // lalr1.cc:859
+    { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_OUTPUT_PORTS); reader.setBusRange(yystack_[3].value.as< int > (), yystack_[1].value.as< int > ()); }
+#line 796 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+    break;
+
+  case 24:
 #line 99 "SimplifiedVerilog.yy" // lalr1.cc:859
+    { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_NETS); }
+#line 802 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+    break;
+
+  case 26:
+#line 100 "SimplifiedVerilog.yy" // lalr1.cc:859
+    { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_NETS); reader.setBusRange(yystack_[3].value.as< int > (), yystack_[1].value.as< int > ());}
+#line 808 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+    break;
+
+  case 28:
+#line 105 "SimplifiedVerilog.yy" // lalr1.cc:859
     { reader.readInstance(yystack_[1].value.as< std::string > (), yystack_[0].value.as< std::string > ()); }
-#line 755 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
-    break;
-
-  case 25:
-#line 104 "SimplifiedVerilog.yy" // lalr1.cc:859
-    { reader.error(ERROR_UNNAMED_PORT_MAPPING_NOT_SUPPORTED); }
-#line 761 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
-    break;
-
-  case 30:
-#line 118 "SimplifiedVerilog.yy" // lalr1.cc:859
-    { reader.readConnection(yystack_[2].value.as< std::string > (), ""); }
-#line 767 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+#line 814 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
     break;
 
   case 31:
-#line 119 "SimplifiedVerilog.yy" // lalr1.cc:859
+#line 110 "SimplifiedVerilog.yy" // lalr1.cc:859
+    { reader.error(ERROR_UNNAMED_PORT_MAPPING_NOT_SUPPORTED); }
+#line 820 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+    break;
+
+  case 36:
+#line 124 "SimplifiedVerilog.yy" // lalr1.cc:859
+    { reader.readConnection(yystack_[2].value.as< std::string > (), ""); }
+#line 826 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+    break;
+
+  case 37:
+#line 125 "SimplifiedVerilog.yy" // lalr1.cc:859
     { reader.readConnection(yystack_[3].value.as< std::string > (), yystack_[1].value.as< std::string > ()); }
-#line 773 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+#line 832 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
     break;
 
 
-#line 777 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+#line 836 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
             default:
               break;
             }
@@ -939,93 +998,105 @@ namespace Parsing {
   }
 
 
-  const signed char SimplifiedVerilogParser::yypact_ninf_ = -27;
+  const signed char SimplifiedVerilogParser::yypact_ninf_ = -28;
 
   const signed char SimplifiedVerilogParser::yytable_ninf_ = -1;
 
   const signed char
   SimplifiedVerilogParser::yypact_[] =
   {
-      16,     3,    12,    22,   -27,   -27,   -27,    13,    17,    18,
-     -27,    -7,     9,   -27,    19,   -27,   -27,   -27,    21,    26,
-       9,   -27,   -27,   -27,   -27,   -27,    17,    17,    17,   -27,
-     -27,   -27,    -3,     8,    10,    15,   -27,   -27,   -27,    -5,
-      23,    20,    24,   -27,    25,   -27,    28,    27,    29,    -4,
-     -27,   -27,    30,   -27,   -27
+       1,    -1,    16,    25,   -28,   -28,   -28,    18,    22,    21,
+     -28,    15,     5,   -28,    24,    19,    20,    26,    27,    35,
+       5,   -28,   -28,   -28,   -28,   -28,    39,    22,    40,    22,
+      41,    22,   -28,   -28,   -28,    29,    -5,    30,     4,    31,
+       6,    36,    46,   -28,    47,   -28,    48,   -28,    -8,    37,
+      38,    42,    43,    44,    49,   -28,    50,   -28,   -28,   -28,
+     -28,    45,    52,    51,    22,    22,    22,    -6,   -28,   -28,
+       8,    12,    13,    53,   -28,   -28,   -28,   -28,   -28
   };
 
   const unsigned char
   SimplifiedVerilogParser::yydefact_[] =
   {
        0,     0,     0,     0,     3,     1,     2,     5,     0,     0,
-       7,     0,     9,     6,     0,    16,    18,    20,     0,     0,
-      10,    11,    13,    14,    15,     8,     0,     0,     0,    22,
-       4,    12,     0,     0,     0,     0,    17,    19,    21,    24,
-       0,    27,     0,    25,    26,    28,     0,     0,     0,     0,
-      23,    29,     0,    30,    31
+       7,     0,     9,     6,     0,    16,    20,    24,     0,     0,
+      10,    11,    13,    14,    15,     8,     0,     0,     0,     0,
+       0,     0,    28,     4,    12,     0,     0,     0,     0,     0,
+       0,     0,     0,    17,     0,    21,     0,    25,    30,     0,
+       0,     0,     0,    33,     0,    31,    32,    34,    18,    22,
+      26,     0,     0,     0,     0,     0,     0,     0,    29,    35,
+       0,     0,     0,     0,    36,    19,    23,    27,    37
   };
 
   const signed char
   SimplifiedVerilogParser::yypgoto_[] =
   {
-     -27,   -27,   -27,   -27,   -27,   -26,   -27,   -27,    14,   -27,
-     -27,   -27,   -27,   -27,   -27,   -27,   -27,   -27,   -27,   -16
+     -28,   -28,   -28,   -28,   -28,   -27,   -28,   -28,    33,   -28,
+     -28,   -28,   -28,   -28,   -28,   -28,   -28,   -28,   -28,   -28,
+     -28,   -28,    -7
   };
 
   const signed char
   SimplifiedVerilogParser::yydefgoto_[] =
   {
       -1,     2,     3,     7,     9,    11,    19,    20,    21,    22,
-      26,    27,    23,    28,    24,    35,    42,    43,    44,    45
+      27,    64,    29,    65,    23,    31,    66,    24,    41,    54,
+      55,    56,    57
   };
 
   const unsigned char
   SimplifiedVerilogParser::yytable_[] =
   {
-      32,    33,    34,    10,    52,    13,    14,    36,    53,    40,
-      14,     4,     5,    41,    15,    16,    17,    18,    37,     1,
-      38,    14,     6,    14,     8,    10,    39,    25,    12,    29,
-      30,    46,    51,    14,    31,     0,    47,    50,    48,    49,
-       0,     0,    54,    40
+      36,    10,    38,    73,    40,     1,    43,    74,     4,    14,
+      52,    15,    16,    17,    18,    45,     5,    47,    14,    75,
+      14,    53,    14,    76,    77,     6,    14,    14,    13,    14,
+       8,    10,    12,    25,    26,    28,    32,    70,    71,    72,
+      33,    30,    35,    37,    39,    42,    44,    46,    48,    49,
+      50,    51,    61,    34,    58,    59,    69,    67,    14,    60,
+       0,     0,    62,    68,    63,     0,    78,     0,     0,    52
   };
 
   const signed char
   SimplifiedVerilogParser::yycheck_[] =
   {
-      26,    27,    28,     8,     8,    12,    13,    10,    12,    14,
-      13,     8,     0,    39,     5,     6,     7,     8,    10,     3,
-      10,    13,     0,    13,    11,     8,    11,     8,    10,     8,
-       4,     8,    48,    13,    20,    -1,    12,    10,    13,    11,
-      -1,    -1,    12,    14
+      27,     9,    29,     9,    31,     4,    11,    13,     9,    14,
+      18,     6,     7,     8,     9,    11,     0,    11,    14,    11,
+      14,    48,    14,    11,    11,     0,    14,    14,    13,    14,
+      12,     9,    11,     9,    15,    15,     9,    64,    65,    66,
+       5,    15,     3,     3,     3,    16,    16,    16,    12,     3,
+       3,     3,     9,    20,    17,    17,    63,    12,    14,    17,
+      -1,    -1,    13,    11,    14,    -1,    13,    -1,    -1,    18
   };
 
   const unsigned char
   SimplifiedVerilogParser::yystos_[] =
   {
-       0,     3,    16,    17,     8,     0,     0,    18,    11,    19,
-       8,    20,    10,    12,    13,     5,     6,     7,     8,    21,
-      22,    23,    24,    27,    29,     8,    25,    26,    28,     8,
-       4,    23,    20,    20,    20,    30,    10,    10,    10,    11,
-      14,    20,    31,    32,    33,    34,     8,    12,    13,    11,
-      10,    34,     8,    12,    12
+       0,     4,    20,    21,     9,     0,     0,    22,    12,    23,
+       9,    24,    11,    13,    14,     6,     7,     8,     9,    25,
+      26,    27,    28,    33,    36,     9,    15,    29,    15,    31,
+      15,    34,     9,     5,    27,     3,    24,     3,    24,     3,
+      24,    37,    16,    11,    16,    11,    16,    11,    12,     3,
+       3,     3,    18,    24,    38,    39,    40,    41,    17,    17,
+      17,     9,    13,    14,    30,    32,    35,    12,    11,    41,
+      24,    24,    24,     9,    13,    11,    11,    11,    13
   };
 
   const unsigned char
   SimplifiedVerilogParser::yyr1_[] =
   {
-       0,    15,    16,    18,    17,    19,    19,    20,    20,    21,
-      21,    22,    22,    23,    23,    23,    25,    24,    26,    24,
-      28,    27,    30,    29,    31,    31,    31,    32,    33,    33,
-      34,    34
+       0,    19,    20,    22,    21,    23,    23,    24,    24,    25,
+      25,    26,    26,    27,    27,    27,    29,    28,    30,    28,
+      31,    28,    32,    28,    34,    33,    35,    33,    37,    36,
+      38,    38,    38,    39,    40,    40,    41,    41
   };
 
   const unsigned char
   SimplifiedVerilogParser::yyr2_[] =
   {
        0,     2,     2,     0,     7,     0,     3,     1,     3,     0,
-       1,     1,     2,     1,     1,     1,     0,     4,     0,     4,
-       0,     4,     0,     7,     0,     1,     1,     1,     1,     3,
-       4,     5
+       1,     1,     2,     1,     1,     1,     0,     4,     0,     9,
+       0,     4,     0,     9,     0,     4,     0,     9,     0,     7,
+       0,     1,     1,     1,     1,     3,     4,     5
   };
 
 
@@ -1035,23 +1106,24 @@ namespace Parsing {
   const char*
   const SimplifiedVerilogParser::yytname_[] =
   {
-  "\"end of file\"", "error", "$undefined", "MODULE", "END_MODULE",
-  "INPUT", "OUTPUT", "WIRE", "IDENTIFIER", "CHAR", "';'", "'('", "')'",
-  "','", "'.'", "$accept", "start", "module_declaration", "$@1", "io",
-  "identifier_list", "implementation", "declaration_list", "declaration",
-  "port_declaration", "$@2", "$@3", "net_declaration", "$@4",
-  "instance_declaration", "$@5", "port_mapping", "ordered_port_mapping",
-  "named_port_mapping", "connection", YY_NULLPTR
+  "\"end of file\"", "error", "$undefined", "INTEGER", "MODULE",
+  "END_MODULE", "INPUT", "OUTPUT", "WIRE", "IDENTIFIER", "CHAR", "';'",
+  "'('", "')'", "','", "'['", "':'", "']'", "'.'", "$accept", "start",
+  "module_declaration", "$@1", "io", "identifier_list", "implementation",
+  "declaration_list", "declaration", "port_declaration", "$@2", "$@3",
+  "$@4", "$@5", "net_declaration", "$@6", "$@7", "instance_declaration",
+  "$@8", "port_mapping", "ordered_port_mapping", "named_port_mapping",
+  "connection", YY_NULLPTR
   };
 
 
   const unsigned char
   SimplifiedVerilogParser::yyrline_[] =
   {
-       0,    58,    58,    62,    62,    65,    67,    70,    71,    74,
-      76,    80,    81,    85,    86,    87,    91,    91,    92,    92,
-      96,    96,    99,    99,   102,   104,   105,   109,   113,   114,
-     118,   119
+       0,    59,    59,    63,    63,    66,    68,    71,    72,    75,
+      77,    81,    82,    86,    87,    88,    92,    92,    93,    93,
+      94,    94,    95,    95,    99,    99,   100,   100,   105,   105,
+     108,   110,   111,   115,   119,   120,   124,   125
   };
 
   // Print the state stack on the debug stream.
@@ -1096,12 +1168,12 @@ namespace Parsing {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      11,    12,     2,     2,    13,     2,    14,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,    10,
+      12,    13,     2,     2,    14,     2,    18,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,    16,    11,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,    15,     2,    17,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -1118,9 +1190,9 @@ namespace Parsing {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9
+       5,     6,     7,     8,     9,    10
     };
-    const unsigned int user_token_number_max_ = 264;
+    const unsigned int user_token_number_max_ = 265;
     const token_number_type undef_token_ = 2;
 
     if (static_cast<int>(t) <= yyeof_)
@@ -1133,8 +1205,8 @@ namespace Parsing {
 
 #line 4 "SimplifiedVerilog.yy" // lalr1.cc:1167
 } // Parsing
-#line 1137 "SimplifiedVerilog.tab.cc" // lalr1.cc:1167
-#line 122 "SimplifiedVerilog.yy" // lalr1.cc:1168
+#line 1209 "SimplifiedVerilog.tab.cc" // lalr1.cc:1167
+#line 128 "SimplifiedVerilog.yy" // lalr1.cc:1168
 
 
 void 
