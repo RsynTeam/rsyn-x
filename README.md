@@ -78,6 +78,7 @@ G. Flach, M. Fogaça, J. Monteiro, M. Johann and R. Reis, ["Rsyn: An Extensible 
 #### Contributors
 - [Henrique Placido](mailto:hplacido@inf.ufrgs.br)
 - [Isadora Oliveira](mailto:isoliveira@inf.ufrgs.br)
+- [Eder Monteiro](mailto:emrmonteiro@inf.ufrgs.br)
 
 #### Former Contributors
  Tiago Reimann, Julia Puget, André Oliveira, Carolina Lima, Felipe Pinto, and Lucas Cavalheiro
