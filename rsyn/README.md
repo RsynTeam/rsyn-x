@@ -1,2 +1,2 @@
 
-#### Please go to the [rsyn-x](https://github.com/rsyn/rsyn-x) repository for more information.
+#### This is a subrepository. Please go to the [rsyn-x](https://github.com/rsyn/rsyn-x) for the main repository.

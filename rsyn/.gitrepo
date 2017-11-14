@@ -4,8 +4,8 @@
 ; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
 ;
 [subrepo]
-	remote = none
+	remote = https://github.com/rsyn/rsyn.git
 	branch = master
-	commit = 642b40b17a8f5ec9d288f43bfd714e7cbc0070f0
-	parent = 6152297df403b7bdf39f32c4d27ccf2450f82416
+	commit = ac50dea117330c44b7e74211aca75e1f1f5d8d4b
+	parent = d4d83c8d527d1d0265c9e90a52cef4a3e4a80a7c
 	cmdver = 0.3.1

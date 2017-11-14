@@ -49,6 +49,7 @@
 namespace Rsyn {
 
 void ICCAD15Reader::load(const Json &options) {
+	this->session = session;
 	const bool globalPlacementOnly = options.value("globalPlacementOnly", false);
 
 	std::string path = options.value("path", "");
