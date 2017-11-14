@@ -17,13 +17,13 @@
 #define RSYN_SHELL_H
 
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 namespace Rsyn {
 
 class Shell {
 private:
-	Rsyn::Engine clsEngine;
+	Rsyn::Session clsSession;
 public:
 	void run(const std::string &script, const bool interative);
 }; // end class

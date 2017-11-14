@@ -42,12 +42,12 @@
 
 namespace  Rsyn {
 
-void BookshelfReader::load(Engine engine, const Json &params) {
+void BookshelfReader::load(const Json &params) {
 	path = params.value("path", "");
 	optionTargetUtilization = params.value("targetUtilization", 0.9);
 	optionBenchmark = params.value("config", "");
 	
-	this->engine = engine;
+	this->session = session;
 	BookshelfDscp dscp;
 	BookshelfParser parser;
 	LefDscp lefDscp;
@@ -78,7 +78,7 @@ void BookshelfReader::load(Engine engine, const Json &params) {
 	} // end catch
 	
 	mapper.mapLefDef(dscp, lefDscp, defDscp);
-	clsDesign = engine.getDesign();
+	clsDesign = session.getDesign();
 	watchParsing.finish();
 	clsModule = clsDesign.getTopModule();
 
@@ -90,19 +90,19 @@ void BookshelfReader::load(Engine engine, const Json &params) {
 	Json phDesignJason;
 	phDesignJason["clsEnableNetPinBoundaries"] = true;
 	phDesignJason["clsEnableRowSegments"] = true;
-	engine.startService("rsyn.physical", phDesignJason);		
-	Rsyn::PhysicalService * phService = engine.getService("rsyn.physical");
+	session.startService("rsyn.physical", phDesignJason);		
+	Rsyn::PhysicalService * phService = session.getService("rsyn.physical");
 	Rsyn::PhysicalDesign clsPhysicalDesign = phService->getPhysicalDesign();
 	clsPhysicalDesign.loadLibrary(lefDscp);
 	clsPhysicalDesign.loadDesign(defDscp);
 	clsPhysicalDesign.updateAllNetBounds(false);
 	watchPopulateLayers.finish();
 
-	engine.startService("rsyn.graphics", {});
-	Graphics * graphics = engine.getService("rsyn.graphics");
+	session.startService("rsyn.graphics", {});
+	Graphics * graphics = session.getService("rsyn.graphics");
 	graphics->coloringByCellType();
 
-	engine.startService("rsyn.writer", {});
+	session.startService("rsyn.writer", {});
 } // end method 
 
 } // end namespace 

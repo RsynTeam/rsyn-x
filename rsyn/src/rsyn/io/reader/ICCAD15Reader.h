@@ -31,7 +31,7 @@
 #ifndef RSYN_ICCAD15READER_H
 #define RSYN_ICCAD15READER_H
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 #include "rsyn/core/Rsyn.h"
 
@@ -47,7 +47,7 @@ namespace Rsyn {
 ////////////////////////////////////////////////////////////////////////////////
 class ICCAD15Reader : public Reader {
 protected:
-	Rsyn::Engine engine;
+	Rsyn::Session session;
 	Timer *clsTimer;
 	Scenario *clsScenario;
 	Rsyn::Design clsDesign;
@@ -82,7 +82,7 @@ public:
 	ICCAD15Reader()=default;
 	ICCAD15Reader(const ICCAD15Reader& orig)=delete;
 	virtual ~ICCAD15Reader()=default;
-	void load(Engine engine, const Json &params);
+	void load(const Json &params);
 
 protected:
 	void parseConfigFileICCAD15(boost::filesystem::path & path);

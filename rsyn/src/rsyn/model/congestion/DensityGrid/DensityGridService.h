@@ -29,7 +29,7 @@
 #ifndef DENSITYGRIDSERVICE_H
 #define DENSITYGRIDSERVICE_H
 
-#include "rsyn/engine/Service.h"
+#include "rsyn/session/Service.h"
 #include "rsyn/model/congestion/DensityGrid/DensityGrid.h"
 #include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/phy/PhysicalService.h"
@@ -42,7 +42,7 @@ private:
 public:
 
 	DensityGridService () {}
-	virtual void start(Rsyn::Engine engine, const Rsyn::Json &params) override;
+	virtual void start(const Json &params) override;
 	virtual void stop() override;
 
 	Rsyn::DensityGrid getDensityGrid() { return clsDensityGrid; }

@@ -31,7 +31,7 @@
 #ifndef ICCAD15_READER_H
 #define ICCAD15_READER_H
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/io/reader/ICCAD15Reader.h"
@@ -53,7 +53,7 @@ public:
 	ICCAD15Reader() {}
 	ICCAD15Reader(const ICCAD15Reader& orig) {}
 	virtual ~ICCAD15Reader() {}
-	void load(Rsyn::Engine engine, const Rsyn::Json &params);
+	void load(const Rsyn::Json &params);
 
 protected:
 

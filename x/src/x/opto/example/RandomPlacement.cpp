@@ -22,13 +22,13 @@
 
 namespace ICCAD15 {
 
-bool RandomPlacementExample::run(Rsyn::Engine engine, const Rsyn::Json &params) {
-	this->engine = engine;
+bool RandomPlacementExample::run(const Rsyn::Json &params) {
+	this->session = session;
 	
-	this->timer = engine.getService("rsyn.timer");
-	this->physical = engine.getService("rsyn.physical");
+	this->timer = session.getService("rsyn.timer");
+	this->physical = session.getService("rsyn.physical");
 	
-	this->design = engine.getDesign();
+	this->design = session.getDesign();
 	this->module = design.getTopModule();
 	this->phDesign = physical->getPhysicalDesign();
 	

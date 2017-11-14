@@ -21,9 +21,9 @@
 
 namespace Testing {
 
-bool SandboxTest::run(Rsyn::Engine engine, const Rsyn::Json &params) {
-	this->engine = engine;
-	this->design = engine.getDesign();
+bool SandboxTest::run(const Rsyn::Json &params) {
+	this->session = session;
+	this->design = session.getDesign();
 	this->module = design.getTopModule();
 
 	test();
@@ -83,7 +83,7 @@ void SandboxTest::test() {
 	} // end for
 
 	Rsyn::SandboxTimer timer;
-	timer.init(engine, sandbox);
+	timer.init(session, sandbox);
 	timer.setOutputRequiredTime(op1, Rsyn::LATE, Rsyn::EdgeArray<Number>(0, 0));
 	timer.updateTimingFull();
 	

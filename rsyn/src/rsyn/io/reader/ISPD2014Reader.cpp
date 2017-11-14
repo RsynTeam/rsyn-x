@@ -39,10 +39,10 @@
 
 namespace Rsyn {
 
-void ISPD2014Reader::load(Rsyn::Engine engine, const Json & config) {
+void ISPD2014Reader::load(const Json & config) {
 	Stepwatch openIspd14("Opening benchmark of ISPD 2014");
 	
-	this->engine =  engine;
+	this->session =  session;
 	std::string path = config.value("path", "");
 	const char separator = boost::filesystem::path::preferred_separator;
 	
@@ -85,7 +85,7 @@ void ISPD2014Reader::load(Rsyn::Engine engine, const Json & config) {
 	watchParsing.finish();
 	
 	Stepwatch watchRsyn("Populating Rsyn");
-	clsDesign = engine.getDesign();
+	clsDesign = session.getDesign();
 	Reader::populateRsyn(
 		lefDscp,
 		defDscp,
@@ -100,16 +100,16 @@ void ISPD2014Reader::load(Rsyn::Engine engine, const Json & config) {
 	phDesignJason["clsEnableMergeRectangles"] = true;
 	phDesignJason["clsEnableNetPinBoundaries"] = true;
 	phDesignJason["clsEnableRowSegments"] = true;
-	engine.startService("rsyn.physical", phDesignJason);		
-	Rsyn::PhysicalService * phService = engine.getService("rsyn.physical");
+	session.startService("rsyn.physical", phDesignJason);		
+	Rsyn::PhysicalService * phService = session.getService("rsyn.physical");
 	Rsyn::PhysicalDesign clsPhysicalDesign = phService->getPhysicalDesign();
 	clsPhysicalDesign.loadLibrary(lefDscp);
 	clsPhysicalDesign.loadDesign(defDscp);
 	clsPhysicalDesign.updateAllNetBounds(false);
 	watchPopulateLayers.finish();
 
-	engine.startService("rsyn.graphics", {});
-	Graphics * graphics = engine.getService("rsyn.graphics");
+	session.startService("rsyn.graphics", {});
+	Graphics * graphics = session.getService("rsyn.graphics");
 	graphics->coloringByCellType();
 	openIspd14.finish();
 } // end method 

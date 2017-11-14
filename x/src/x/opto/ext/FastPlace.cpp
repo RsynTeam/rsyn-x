@@ -28,20 +28,20 @@
 
 namespace ICCAD15 {
 
-bool FastPlace::run(Rsyn::Engine engine, const Rsyn::Json &params) {
-	this->engine = engine;
-	this->design = engine.getDesign();
-	this->timer = engine.getService("rsyn.timer");
-	this->writer = engine.getService("rsyn.writer");
+bool FastPlace::run(const Rsyn::Json &params) {
+	this->session = session;
+	this->design = session.getDesign();
+	this->timer = session.getService("rsyn.timer");
+	this->writer = session.getService("rsyn.writer");
 	this->module = design.getTopModule();
 	
-	const std::string &designName = engine.getDesign().getName();
+	const std::string &designName = session.getDesign().getName();
 	const std::string tmp = createTemporaryDirectory();
 	
 	writer->writeBookshelf2(tmp);
 	
 	std::string cmd;
-	cmd += engine.getInstallationPath() + "/bin/FastPlace3.0_Linux32_GP ";
+	cmd += session.getInstallationPath() + "/bin/FastPlace3.0_Linux32_GP ";
 	cmd += tmp + " ";
 	cmd += designName + ".aux ";
 	cmd += tmp;
@@ -52,7 +52,7 @@ bool FastPlace::run(Rsyn::Engine engine, const Rsyn::Json &params) {
 	
 	Rsyn::Json config;
 	config["path"] = tmp + "/" + designName + "_FP_gp.pl";
-	engine.runReader("loadDesignPosition", config);
+	session.runReader("loadDesignPosition", config);
 			
 	return true;
 } // end method

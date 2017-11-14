@@ -18,7 +18,7 @@
 #include <iostream>
 #include <string>
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/io/legacy/Legacy.h"
 
 // Services
@@ -29,14 +29,14 @@
 #include "rsyn/io/parser/lef_def/DEFControlParser.h"
 namespace Rsyn {
 
-void Writer::start(Engine engine, const Json &params) {
-	clsEngine = engine;
+void Writer::start(const Json &params) {
+	Rsyn::Session session;
 
-	clsPhysical = engine.getService("rsyn.physical");
-	clsTimer = engine.getService("rsyn.timer", Rsyn::SERVICE_OPTIONAL);
-	clsRoutingEstimator = engine.getService("rsyn.routingEstimator", Rsyn::SERVICE_OPTIONAL);
+	clsPhysical = session.getService("rsyn.physical");
+	clsTimer = session.getService("rsyn.timer", Rsyn::SERVICE_OPTIONAL);
+	clsRoutingEstimator = session.getService("rsyn.routingEstimator", Rsyn::SERVICE_OPTIONAL);
 
-	clsDesign = engine.getDesign();
+	clsDesign = session.getDesign();
 	clsModule = clsDesign.getTopModule();
 	clsPhysicalDesign = clsPhysical->getPhysicalDesign();
 
@@ -57,7 +57,7 @@ void Writer::start(Engine engine, const Json &params) {
 			"Write full def file. An 2015 ICCAD contest format is wrote if false.",
 			"false");
 
-		engine.registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command & command) {
+		session.registerCommand(dscp, [&](const ScriptParsing::Command & command) {
 			const std::string fileName = command.getParam("fileName");
 			const bool full = command.getParam("full");
 			writeDEF(fileName, full);
@@ -75,7 +75,7 @@ void Writer::start(Engine engine, const Json &params) {
 			"Verilog file name.",
 			"");
 
-		engine.registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command & command) {
+		session.registerCommand(dscp, [&](const ScriptParsing::Command & command) {
 			const std::string fileName = command.getParam("fileName");
 
 			if (fileName != "")
@@ -95,12 +95,12 @@ void Writer::start(Engine engine, const Json &params) {
 			"SPEF file name.",
 			"");
 
-		engine.registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command & command) {
+		session.registerCommand(dscp, [&](const ScriptParsing::Command & command) {
 			const std::string fileName = command.getParam("fileName");
 
 			if (!clsRoutingEstimator) {
 				clsRoutingEstimator =
-					engine.getService("rsyn.routingEstimator",
+					session.getService("rsyn.routingEstimator",
 					Rsyn::SERVICE_MANDATORY);
 			} // end if
 
@@ -127,7 +127,7 @@ void Writer::start(Engine engine, const Json &params) {
 		//				"Enable pin displacement in .nets file",
 		//				"true");
 
-		engine.registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command & command) {
+		session.registerCommand(dscp, [&](const ScriptParsing::Command & command) {
 			const std::string path = command.getParam("path");
 			//			const bool enablePinDisplacement = command.getParam("enablePinDisplacement");
 			writeBookshelf2(path);
@@ -170,25 +170,19 @@ void Writer::writeFullDEF(string filename) {
 	int numCells = clsDesign.getNumInstances(Rsyn::CELL);
 	def.clsComps.reserve(numCells);
 	for (Rsyn::Instance instance : clsModule.allInstances()) {
-		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
-
-		if (cell.isPort())
+		if(instance.getType() != Rsyn::CELL)
 			continue;
 
-		const PhysicalCell &ph = clsPhysicalDesign.getPhysicalCell(cell);
-
+		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
+		PhysicalCell ph = clsPhysicalDesign.getPhysicalCell(cell);
 		def.clsComps.push_back(DefComponentDscp());
 		DefComponentDscp &defComp = def.clsComps.back();
 		defComp.clsName = cell.getName();
 		defComp.clsMacroName = cell.getLibraryCellName();
 		defComp.clsPos = ph.getPosition();
-		if (instance.isMacroBlock())
-			defComp.clsIsFixed = true;
-		else
-			defComp.clsIsPlaced = false;
-		//defComp.clsIsFixed = instance.isFixed();
+		defComp.clsIsFixed = instance.isFixed();
 		defComp.clsOrientation = Rsyn::getPhysicalOrientation(ph.getOrientation());
-		//defComp.clsIsPlaced = true;
+		defComp.clsIsPlaced = ph.isPlaced();
 	} // end for 
 
 
@@ -231,7 +225,6 @@ void Writer::writeFullDEF(string filename) {
 		else if (port.getDirection() == Rsyn::OUT)
 			defPort.clsDirection = "OUTPUT";
 
-
 		defPort.clsLocationType = "FIXED";
 		defPort.clsOrientation = Rsyn::getPhysicalOrientation(phPort.getOrientation());
 		defPort.clsLayerName = phPort.getLayer().getName();
@@ -239,7 +232,7 @@ void Writer::writeFullDEF(string filename) {
 		defPort.clsPos = phPort.getPosition();
 
 	} // end for 
-
+ 
 	int numRows = clsPhysicalDesign.getNumRows();
 	def.clsRows.reserve(numRows);
 	for (Rsyn::PhysicalRow phRow : clsPhysicalDesign.allPhysicalRows()) {
@@ -254,6 +247,23 @@ void Writer::writeFullDEF(string filename) {
 		defRow.clsNumY = phRow.getNumSites(Y);
 		defRow.clsOrientation = Rsyn::getPhysicalOrientation(phRow.getSiteOrientation());
 	} // end for 
+	
+	// write def tracks 
+	int numTracks = clsPhysicalDesign.getNumPhysicalTracks();
+	def.clsTracks.reserve(numTracks);
+	for(Rsyn::PhysicalTrack phTrack : clsPhysicalDesign.allPhysicalTracks()){
+		def.clsTracks.push_back(DefTrackDscp());
+		DefTrackDscp & defTrack = def.clsTracks.back();
+		defTrack.clsDirection = getDimension(phTrack.getDirection());
+		defTrack.clsLocation = phTrack.getLocation();
+		defTrack.clsSpace = phTrack.getSpace();
+		int numLayers = phTrack.getNumberOfLayers();
+		defTrack.clsLayers.reserve(numLayers);
+		for(Rsyn::PhysicalLayer phLayer : phTrack.allLayers())
+			defTrack.clsLayers.push_back(phLayer.getName());
+		defTrack.clsNumTracks = phTrack.getNumberOfTracks();
+	} // end for 
+	
 	defParser.writeFullDEF(filename, def);
 } // end method
 

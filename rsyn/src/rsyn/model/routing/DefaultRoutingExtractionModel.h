@@ -18,8 +18,8 @@
 
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/phy/PhysicalDesign.h"
-#include "rsyn/engine/Service.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Service.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/model/scenario/Scenario.h"
 #include "rsyn/model/routing/RoutingExtractionModel.h"
 
@@ -32,7 +32,7 @@ namespace Rsyn {
 class DefaultRoutingExtractionModel : public RoutingExtractionModel, public Service {
 public:
 
-	virtual void start(Engine engine, const Json &params) override;
+	virtual void start(const Json &params) override;
 	virtual void stop() override;
 
 	void initialize(
@@ -41,9 +41,6 @@ public:
 			const DBU maxWireSegmentLength);
 	
 private:
-
-	// Engine.
-	Engine clsEngine;
 
 	// Design.
 	Rsyn::Design design;
@@ -90,6 +87,7 @@ public:
 	DefaultRoutingExtractionModel() {}
 
 	virtual void extract(const RoutingTopologyDescriptor<int> &topology, RCTree &tree) override;
+	virtual void updateDownstreamCap(Rsyn::RCTree &tree) override;
 
 	virtual Number getLocalWireResPerUnitLength() const override { return LOCAL_WIRE_RES_PER_UNIT_LENGTH; }
 	virtual Number getLocalWireCapPerUnitLength() const override { return LOCAL_WIRE_CAP_PER_UNIT_LENGTH; }

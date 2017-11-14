@@ -4,7 +4,7 @@
 #include "rsyn/gui/canvas/PhysicalCanvasGL.h"
 
 namespace Rsyn {
-class Engine;
+class Session;
 } // end namespace
 
 namespace ICCAD15 {
@@ -14,7 +14,7 @@ class Infrastructure;
 class AbuOverlay : public CanvasOverlay {
 private:
 	
-	Rsyn::Engine clsEnginePtr;
+	Rsyn::Session clsSessionPtr;
 	ICCAD15::Infrastructure * infra;
 	
 	bool clsViewUtilization;

@@ -16,18 +16,20 @@
 #include "rsyn/model/routing/RoutingEstimator.h"
 #include "rsyn/model/routing/DefaultRoutingEstimationModel.h"
 #include "rsyn/model/routing/DefaultRoutingExtractionModel.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/phy/PhysicalService.h"
 
 namespace Rsyn {
 
 // -----------------------------------------------------------------------------
 
-void RoutingEstimator::start(Engine engine, const Json &params) {
-	design = engine.getDesign();
+void RoutingEstimator::start(const Json &params) {
+	Rsyn::Session session;
+
+	design = session.getDesign();
 	module = design.getTopModule();
 
-	clsScenario = engine.getService("rsyn.scenario");;
+	clsScenario = session.getService("rsyn.scenario");;
 
 	clsTotalWirelength = 0.0;
 	clsRoutingNets = design.createAttribute();
@@ -37,7 +39,7 @@ void RoutingEstimator::start(Engine engine, const Json &params) {
 	// TODO: Maybe we should not do this here as this create a soft dependency
 	// to physical layer
 	Rsyn::PhysicalService *physical =
-			engine.getService("rsyn.physical", Rsyn::SERVICE_OPTIONAL);
+			session.getService("rsyn.physical", Rsyn::SERVICE_OPTIONAL);
 	
 	if (physical) {
 		Rsyn::PhysicalDesign phDesign;
@@ -68,7 +70,7 @@ void RoutingEstimator::start(Engine engine, const Json &params) {
 			"Name o of the target net.",
 			"");
 		
-		engine.registerCommand(dscp, [&](Rsyn::Engine engine, const ScriptParsing::Command &command) {
+		session.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const bool full = command.getParam("full");
 			const std::string netName = command.getParam("net");
 			
@@ -80,7 +82,7 @@ void RoutingEstimator::start(Engine engine, const Json &params) {
 					std::cout << "[ERROR] Net \"" << netName << "\" not found.\n";
 					return;
 				} // end if
-				updateRoutingOfNet(net);
+				updateRoutingOfNet(net, NET_UPDATE_TYPE_FULL);
 			} else {
 				updateRouting();
 			} // end if
@@ -97,7 +99,7 @@ void RoutingEstimator::stop() {
 
 void RoutingEstimator::onPostNetCreate(Rsyn::Net net) {
 	std::cout << "INFO: RoutingEstimator was notified about a new net.\n";
-	clsDirtyNets.insert(net);
+	clsDirtyNets[net] = NET_UPDATE_TYPE_FULL;
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -110,18 +112,18 @@ void RoutingEstimator::onPreNetRemove(Rsyn::Net net) {
 // -----------------------------------------------------------------------------
 
 void RoutingEstimator::onPostCellRemap(Rsyn::Cell cell, Rsyn::LibraryCell oldLibraryCell) {
-	dirtyInstance(cell);
+	dirtyInstance(cell, NET_UPDATE_TYPE_DOWNSTREAM_CAP);
 } // end method
 
 // -----------------------------------------------------------------------------
 
 void RoutingEstimator::onPostMovedInstance(Rsyn::PhysicalInstance phInstance) {
-	dirtyInstance(phInstance.getInstance());
+	dirtyInstance(phInstance.getInstance(), NET_UPDATE_TYPE_FULL);
 } // end method
 
 // -----------------------------------------------------------------------------
 
-void RoutingEstimator::updateRoutingOfNet(Rsyn::Net net) {
+void RoutingEstimator::updateRoutingOfNet(Rsyn::Net net, const NetUpdateTypeEnum updateType) {
 	if (net.getNumPins() < 2 || net == clsScenario->getClockNet())
 		return;
 
@@ -132,11 +134,22 @@ void RoutingEstimator::updateRoutingOfNet(Rsyn::Net net) {
 
 	DBU netSteinerWirelength = 0;
 	if (routingEstimationModel) {
-		Rsyn::RoutingTopologyDescriptor<int> topology;
-		routingEstimationModel->updateRoutingEstimation(net, topology, netSteinerWirelength);
-		if (routingExtractionModel) {
-			routingExtractionModel->extract(topology, timingNet.rctree);
-		} // end if
+
+		switch (updateType) {
+			case NET_UPDATE_TYPE_FULL: {
+				Rsyn::RoutingTopologyDescriptor<int> topology;
+				routingEstimationModel->updateRoutingEstimation(net, topology, netSteinerWirelength);
+				if (routingExtractionModel) {
+					routingExtractionModel->extract(topology, timingNet.rctree);
+				} // end if
+				break;
+			} // end case
+
+			case NET_UPDATE_TYPE_DOWNSTREAM_CAP: {
+				routingExtractionModel->updateDownstreamCap(timingNet.rctree);
+				break;
+			} // end case
+		} // end switch
 	} // end if
 
 	// Incrementally update the Steiner wirelength;
@@ -153,7 +166,7 @@ void RoutingEstimator::updateRoutingFull() {
 #if !MULTI_THREADED_STEINER_TREE_UPDATE
 	// Single-Thread
 	for (Rsyn::Net net : module.allNets()) {
-		updateRoutingOfNet(net);
+		updateRoutingOfNet(net, NET_UPDATE_TYPE_FULL);
 	} // end for
 #else
 	// Multi-Thread
@@ -188,7 +201,7 @@ void RoutingEstimator::updateRoutingFull() {
 		n1 = min(clsNumNets, n0 + numWorkPerThread);
 		threads.push_back(std::thread([this, n0, n1]() { // don't use &, we need a copy here!
 			for (int n = n0; n < n1; n++)
-				updateRoutingOfNet(n);
+				updateRoutingOfNet(n, NET_UPDATE_TYPE_FULL);
 		}));
 		cout << "\tthread: " << n0 << " " << n1 << "\n";
 		n0 = n1;
@@ -220,8 +233,11 @@ void RoutingEstimator::updateRouting() {
 		updateRoutingFull();
 	} else {
 		clsStopwatchUpdateSteinerTrees.start();
-		for (auto& net : clsDirtyNets)
-			updateRoutingOfNet(net);
+		for (auto& t : clsDirtyNets) {
+			Rsyn::Net net = std::get<0>(t);
+			NetUpdateType updateType = std::get<1>(t);
+			updateRoutingOfNet(net, updateType.getType());
+		} // end for
 		clsStopwatchUpdateSteinerTrees.stop();
 
 		// Clear dirty routing cells.

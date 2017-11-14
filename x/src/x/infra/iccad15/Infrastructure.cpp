@@ -1,5 +1,5 @@
 /*
- * Engine.cpp
+ * Session.cpp
  *
  *  Created on: May 8, 2015
  *      Author: jucemar
@@ -10,7 +10,7 @@
 #include <mutex>
 
 #include "x/infra/iccad15/Infrastructure.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/model/library/LibraryCharacterizer.h"
 #include "rsyn/model/routing/RoutingEstimator.h"
 
@@ -53,13 +53,15 @@ Infrastructure::~Infrastructure() {
 
 // -----------------------------------------------------------------------------
 
-void Infrastructure::start(Rsyn::Engine engine, const Rsyn::Json &params) {
+void Infrastructure::start(const Rsyn::Json &params) {
+	Rsyn::Session session;
+	
 	{ // reportDigest
 		ScriptParsing::CommandDescriptor dscp;
 		dscp.setName("reportDigest");
 		dscp.setDescription("Reports the QoR of the current solution.");
 		
-		engine.registerCommand(dscp, [&](Rsyn::Engine engine, const ScriptParsing::Command &command) {
+		session.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			reportDigest();
 		});
 	} // end block
@@ -90,7 +92,7 @@ void Infrastructure::start(Rsyn::Engine engine, const Rsyn::Json &params) {
 			"If enabled, calls legalization after the movement.",
 			"false");
 		
-		engine.registerCommand(dscp, [&](Rsyn::Engine engine, const ScriptParsing::Command &command) {
+		session.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string cellName = command.getParam("cell");
 			const Rsyn::Cell cell = clsDesign.findCellByName(cellName);
 			const DBU x = (int) command.getParam("x");
@@ -114,21 +116,21 @@ void Infrastructure::stop() {
 
 // -----------------------------------------------------------------------------
 
-void Infrastructure::init(Rsyn::Engine engine) {
-	clsEngine = engine;
+void Infrastructure::init() {
+	Rsyn::Session session;
 
 	// Services.
-	clsPhysical = engine.getService("rsyn.physical");
-	clsTimer = engine.getService("rsyn.timer");
-	clsLibraryCharacterizer = engine.getService("rsyn.libraryCharacterizer");
-	clsRoutingEstimator = engine.getService("rsyn.routingEstimator");
-	clsJezz = engine.getService("rsyn.jezz");
-	clsWebLogger = engine.getService("rsyn.webLogger");
+	clsPhysical = session.getService("rsyn.physical");
+	clsTimer = session.getService("rsyn.timer");
+	clsLibraryCharacterizer = session.getService("rsyn.libraryCharacterizer");
+	clsRoutingEstimator = session.getService("rsyn.routingEstimator");
+	clsJezz = session.getService("rsyn.jezz");
+	clsWebLogger = session.getService("rsyn.webLogger");
 	clsBlockageControl = nullptr;
 
 	// Circuitry.
 	clsPhysicalDesign = clsPhysical->getPhysicalDesign();
-	clsDesign = engine.getDesign();
+	clsDesign = session.getDesign();
 	clsModule = clsDesign.getTopModule();
 	
 	// Initial values.
@@ -555,7 +557,7 @@ bool Infrastructure::findNearestValidWhitespaceToPlaceCellAroundBlock(
 	DBU& resultX,
 	DBU& resultY) {
 	
-	clsBlockageControl = clsEngine.getService(
+	clsBlockageControl = clsSession.getService(
 		"ufrgs.blockageControl", 
 		Rsyn::SERVICE_OPTIONAL);
 		
@@ -1543,15 +1545,15 @@ void Infrastructure::run(const std::string &flow) {
 	Stopwatch stopwatchFlow;
 	stopwatchFlow.start();
 	if (flow == "ispd16") {
-		clsEngine.runProcess("ufrgs.ISPD16Flow");
+		clsSession.runProcess("ufrgs.ISPD16Flow");
 	} else if (flow == "jucemar") {
-		clsEngine.runProcess("gp.simpl");
+		clsSession.runProcess("gp.simpl");
 	} else if (flow == "qp") {
-		clsEngine.runProcess( "ufrgs.TDQuadraticFlow" );
+		clsSession.runProcess( "ufrgs.TDQuadraticFlow" );
 	} else if (flow == "default" || flow == "iccad15" || flow == "") {
-		clsEngine.runProcess("ufrgs.ISPD16Flow");
+		clsSession.runProcess("ufrgs.ISPD16Flow");
 	} else {
-		clsEngine.runProcess( flow, {} );
+		clsSession.runProcess( flow, {} );
 	} // end else
 	stopwatchFlow.stop();
 

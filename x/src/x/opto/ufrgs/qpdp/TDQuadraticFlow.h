@@ -30,7 +30,7 @@
 #define TD_QUADRATIC_FLOW_H
 
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "x/jezz/Jezz.h"
 
 namespace Rsyn {
@@ -42,7 +42,7 @@ namespace ICCAD15 {
 class Infrastructure;
 	
 class TDQuadraticFlow : public Rsyn::Process {
-	Rsyn::Engine clsEngine;
+	Rsyn::Session clsSession;
 	Rsyn::Timer *clsTimer;
 	Infrastructure* clsInfra;
 	Jezz* clsJezz;
@@ -50,7 +50,7 @@ class TDQuadraticFlow : public Rsyn::Process {
 public:
     TDQuadraticFlow(){};
     
-    bool run(Rsyn::Engine engine, const Rsyn::Json& params);
+    bool run(const Rsyn::Json& params);
 	void defaultFlow();
 	void overlapFlow();
 	void overlapFlowMIP();

@@ -24,12 +24,13 @@ const bool DefaultRoutingExtractionModel::ENABLE_LONG_WIRE_SLICING = true;
 // -----------------------------------------------------------------------------
 
 void
-DefaultRoutingExtractionModel::start(Engine engine, const Json &params) {
-	clsEngine = engine;
-	design = engine.getDesign();
+DefaultRoutingExtractionModel::start(const Json &params) {
+	Rsyn::Session session;
+	
+	design = session.getDesign();
 	module = design.getTopModule();
 
-	clsScenario = engine.getService("rsyn.scenario");
+	clsScenario = session.getService("rsyn.scenario");
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -185,7 +186,6 @@ void DefaultRoutingExtractionModel::extract(const Rsyn::RoutingTopologyDescripto
 	tree.updateDownstreamCap();
 } // end method
 
-
 // -----------------------------------------------------------------------------
 
 // Slicing
@@ -335,6 +335,25 @@ int DefaultRoutingExtractionModel::generateSteinerTree_SliceLongWire(
 	// Return the number of slices generated. Since the last slice is always
 	// handled separated, we always have at least that slice (that's why + 1).
 	return numSlicingPoints + 1;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void DefaultRoutingExtractionModel::updateDownstreamCap(Rsyn::RCTree &tree) {
+    const int numRCTreeNodes = tree.getNumNodes();
+
+	for (int i = 1; i < numRCTreeNodes; i++) {
+		Rsyn::Pin pin = tree.getNodeTag(i).getPin();
+
+		if (!pin || !pin.isSink())
+			continue;
+
+		Rsyn::EdgeArray<Number> load;
+		load.setBoth(clsScenario->getTimingLibraryPin(pin.getLibraryPin()).getCapacitance());
+		tree.setNodeLoadCap(i, load);
+	} // end for
+	
+	tree.updateDownstreamCap();
 } // end method
 
 } // end namespace

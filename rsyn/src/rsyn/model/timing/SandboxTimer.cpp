@@ -18,7 +18,7 @@
 #include <limits>
 #include <iomanip>
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/sandbox/Sandbox.h"
 
 #include "rsyn/model/timing/SandboxTimer.h"
@@ -188,13 +188,13 @@ void SandboxTimer::uninitializeTimingCell(Rsyn::SandboxCell rsynCell) {
 
 // -----------------------------------------------------------------------------
 
-void SandboxTimer::init(Rsyn::Engine rsynEngine, Rsyn::Sandbox rsynSandbox) {
-	engine = rsynEngine;
+void SandboxTimer::init(Rsyn::Session rsynSession, Rsyn::Sandbox rsynSandbox) {
+	session = rsynSession;
 	design = rsynSandbox.getDesign();
 	sandbox = rsynSandbox;
 
-	clsScenario = rsynEngine.getService("rsyn.scenario");
-	clsTimer = rsynEngine.getService("rsyn.timer");
+	clsScenario = rsynSession.getService("rsyn.scenario");
+	clsTimer = rsynSession.getService("rsyn.timer");
 
 	timingModel = clsTimer->getTimingModel();
 

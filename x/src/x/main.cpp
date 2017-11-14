@@ -46,6 +46,8 @@ int main(int argc, char *argv[]) {
 	// Rsyn
 	//
 
+	Rsyn::Session::init();
+
 	// Source: http://patorjk.com/software/taag/#p=display&f=Big&t=Rsyn
 	std::cout << "\n"; // skipping the terminal line
 	std::cout << std::string(28, ' ') << R"( _____                  )" << "\n";

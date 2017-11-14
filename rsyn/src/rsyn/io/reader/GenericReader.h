@@ -14,13 +14,13 @@
 #ifndef GENERICREADER_H
 #define GENERICREADER_H
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/model/timing/types.h"
 
 namespace Rsyn {
 
 class GenericReader : public Reader {
-	Engine engine;	
+	Session session;	
 	
 	std::vector<std::string> lefFiles;
 	std::vector<std::string> defFiles;
@@ -39,7 +39,7 @@ class GenericReader : public Reader {
 public:
 	GenericReader() = default;
 	
-	void load(Engine engine, const Json& params) override;
+	void load(const Json& params) override;
 
 private:
 	LefDscp lefDescriptor;

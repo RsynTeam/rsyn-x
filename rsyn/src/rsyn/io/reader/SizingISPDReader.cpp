@@ -41,7 +41,7 @@
 
 namespace Rsyn {
 
-void SizingISPDReader::load(Rsyn::Engine engine, const Json & config ) {
+void SizingISPDReader::load(const Json & config ) {
 	std::string path = config.value("path", "");
 	std::string optionBenchmark = config.value("name", "");
 	std::string optionLibrary = config.value("library", "");
@@ -78,7 +78,7 @@ void SizingISPDReader::load(Rsyn::Engine engine, const Json & config ) {
 	const std::string fileNameLiberty = path + separator +
 			optionLibrary;
 
-	clsDesign = engine.getDesign();
+	clsDesign = session.getDesign();
 	{ // Liberty
 		Stepwatch watchParsingLiberty("Parsing Liberty");
 		LibertyControlParser libParser;
@@ -110,15 +110,15 @@ void SizingISPDReader::load(Rsyn::Engine engine, const Json & config ) {
 	} // end block
 
 	// Services
-	engine.startService("rsyn.scenario", {});
-	engine.startService("rsyn.routingEstimator", {});
-	engine.startService("rsyn.timer", {});
-	engine.startService("rsyn.defaultTimingModel", {});
+	session.startService("rsyn.scenario", {});
+	session.startService("rsyn.routingEstimator", {});
+	session.startService("rsyn.timer", {});
+	session.startService("rsyn.defaultTimingModel", {});
 
-	Timer *timer = engine.getService("rsyn.timer");
-	RoutingEstimator *routingEstimator = engine.getService("rsyn.routingEstimator");
-	DefaultTimingModel* timingModel = engine.getService("rsyn.defaultTimingModel");
-	Scenario *scenario = engine.getService("rsyn.scenario");
+	Timer *timer = session.getService("rsyn.timer");
+	RoutingEstimator *routingEstimator = session.getService("rsyn.routingEstimator");
+	DefaultTimingModel* timingModel = session.getService("rsyn.defaultTimingModel");
+	Scenario *scenario = session.getService("rsyn.scenario");
 
 	{ // Scenario
 		Stepwatch watchScenario("Initializing scenario manager");
@@ -138,7 +138,7 @@ void SizingISPDReader::load(Rsyn::Engine engine, const Json & config ) {
 		Stepwatch watchInit("Initializing timer");
 		timer->init(
 				clsDesign,
-				engine,
+				session,
 				scenario,
 				libInfo,
 				libInfo);
@@ -151,9 +151,9 @@ void SizingISPDReader::load(Rsyn::Engine engine, const Json & config ) {
             
             Stepwatch watchRCTreeInit("Building RC Tree");
             
-                RCTreeExtractor rcTreeExtractor(engine, &spefInfo);
+                RCTreeExtractor rcTreeExtractor(&spefInfo);
             
-		Rsyn::Design design = engine.getDesign();
+		Rsyn::Design design = session.getDesign();
 		const int numSpefNets = spefInfo.getSize();
 		for (int i = 0; i < numSpefNets; i++) {
 			const ISPD13::SpefNet &info = spefInfo.getNet(i);
@@ -166,7 +166,7 @@ void SizingISPDReader::load(Rsyn::Engine engine, const Json & config ) {
                 
 	} // end block
 
-	engine.startService("rsyn.graphics", {});
+	session.startService("rsyn.graphics", {});
 
 	timer->updateTimingFull();
 	timer->dumpTiming("dump-rsyn.txt");

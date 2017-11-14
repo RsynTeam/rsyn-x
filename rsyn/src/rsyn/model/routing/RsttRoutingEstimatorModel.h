@@ -16,8 +16,8 @@
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/phy/PhysicalService.h"
 #include "rsyn/phy/PhysicalDesign.h"
-#include "rsyn/engine/Service.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Service.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/model/scenario/Scenario.h"
 #include "rsyn/model/routing/RoutingEstimationModel.h"
 #include <boost/geometry.hpp>
@@ -39,80 +39,79 @@
 
 namespace Rsyn {
 
-class RsttRoutingEstimatorModel : public RoutingEstimationModel, public Service {
-protected:
-    Rsyn::Attribute<Rsyn::Net, Rsyn::RoutingTopologyDescriptor<int>> clsNetsTopologys;  
-    
-public:
-    typedef boost::geometry::model::d2::point_xy<DBU> Point;
-    typedef boost::geometry::model::segment<Point> Segment; 
-    
-    void start(Engine engine, const Json &params);
+    class RsttRoutingEstimatorModel : public RoutingEstimationModel, public Service {
+    protected:
+        Rsyn::Attribute<Rsyn::Net, Rsyn::RoutingTopologyDescriptor<int>> clsNetsTopologys;
 
-    void stop() {
-    }
-    RsttRoutingEstimatorModel();
-    void generateRsttTopologyForAllNets();
-    void updateRoutingEstimation(Net net, RoutingTopologyDescriptor<int>& topology, DBU &wirelength) override;
-    DBU generateSteinerTree(Net net, RoutingTopologyDescriptor<int> &topology);
-    double distance();
-    DBU returnNetWirelength(Net net);
-    const Rsyn::RoutingTopologyDescriptor<int> &getTree(Net net) const;
+    public:
+        typedef boost::geometry::model::d2::point_xy<DBU> Point;
+        typedef boost::geometry::model::segment<Point> Segment;
 
-private: 
-    const bool X = 0;
-    const bool Y = 1;
+        void start(const Json &params);
 
-    // Engine.
-    Engine clsEngine;
+        void stop() {
+        }
+        RsttRoutingEstimatorModel();
+        void generateRsttTopologyForAllNets();
+        void updateRoutingEstimation(Net net, RoutingTopologyDescriptor<int>& topology, DBU &wirelength) override;
+        DBU generateSteinerTree(Net net, RoutingTopologyDescriptor<int> &topology);
+        double distance();
+        DBU returnNetWirelength(Net net);
+        const Rsyn::RoutingTopologyDescriptor<int> &getTree(Net net) const;
 
-    // Design.
-    Design design;
-    Module module; // top module
-    PhysicalDesign clsPhysicalDesign;
+    private:
+        const bool X = 0;
+        const bool Y = 1;
 
-    // Services
-    Scenario * clsScenario = nullptr;
-    PhysicalService * clsPhysical = nullptr;
+        // Design.
+        Design design;
+        Module module; // top module
+        PhysicalDesign clsPhysicalDesign;
 
-    void reportWirelengthNets();
+        // Services
+        Scenario * clsScenario = nullptr;
+        PhysicalService * clsPhysical = nullptr;
 
-    void reportNumNets();
+        void reportWirelengthNets();
 
-    Point returnMidPoint(std::vector<Point> P, bool XorY); // ---check--- //
+        void reportNumNets();
 
-    Point returnMinPoint(std::vector<Point> const &P); // ---check--- //
+        Point returnMidPoint(std::vector<Point> P, bool XorY); // ---check--- //
 
-    Point returnMaxPoint(std::vector<Point> const &P); // ---check--- //
+        Point returnMinPoint(std::vector<Point> const &P); // ---check--- //
 
-    void orderPoints(std::vector<Point> &myvector, bool AscOrDesc, bool XorY); // ---check--- //
+        Point returnMaxPoint(std::vector<Point> const &P); // ---check--- //
 
-    std::vector<Point> returnUpperOrLower(std::vector<Point> const &P, int Ymid, bool UorL); // ---check--- //
+        void orderPoints(std::vector<Point> &myvector, bool AscOrDesc, bool XorY); // ---check--- //
 
-    std::vector<Point> returnLeftOrRight(std::vector<Point> const &P, int Xmid, bool LorR); // ---check--- //
+        std::vector<Point> returnUpperOrLower(std::vector<Point> const &P, int Ymid, bool UorL); // ---check--- //
 
-    void connectPinV(Point Pin, std::vector<Segment> &trunk, std::vector<Segment> &stems, std::vector<Segment> &SegIni, int firstCon, bool UorL);
+        std::vector<Point> returnLeftOrRight(std::vector<Point> const &P, int Xmid, bool LorR); // ---check--- //
 
-    void connectPinH(Point Pin, std::vector<Segment> &trunk, std::vector<Segment> &stems, std::vector<Segment> &SegIni, int firstCon, bool LorR);
+        void connectPinV(Point Pin, std::vector<Segment> &trunk, std::vector<Segment> &stems, std::vector<Segment> &SegIni, int firstCon, bool UorL);
 
-    DBU returnWireLength(std::vector<Segment> const &stems);
+        void connectPinH(Point Pin, std::vector<Segment> &trunk, std::vector<Segment> &stems, std::vector<Segment> &SegIni, int firstCon, bool LorR);
 
-    std::vector<Segment> returnHorizontalSteinerTree(std::vector<Point> Pins, std::vector<Segment> &Trunk);
+        DBU returnWireLength(std::vector<Segment> const &stems);
 
-    std::vector<Segment> returnVerticalSteinerTree(std::vector<Point> Pins, std::vector<Segment> &Trunk);
+        std::vector<Segment> returnHorizontalSteinerTree(std::vector<Point> Pins, std::vector<Segment> &Trunk);
 
-    void orderSegments(std::vector<Segment> &stems, bool XorY);
+        std::vector<Segment> returnVerticalSteinerTree(std::vector<Point> Pins, std::vector<Segment> &Trunk);
 
-    void correctTrunk(std::vector<Segment> &trunk, std::vector<Segment> &stems, std::vector<Point> &Pins, Point med, bool HorV);
+        void orderSegments(std::vector<Segment> &stems, bool XorY);
 
-    void createNetsFile();
+        void correctTrunk(std::vector<Segment> &trunk, std::vector<Segment> &stems, std::vector<Point> &Pins, Point med, bool HorV);
 
-    int findPoint(std::vector<Point> const &points, Point const &point);
+        void createNetsFile();
 
-    int findSegment(const std::vector<Segment> &segments, const Segment &segment);
+        int findPoint(std::vector<Point> const &points, Point const &point);
 
-    void createTopology(std::vector<Segment> const &tree, std::vector<Point> const &Pins, std::vector<Pin> const &RsynPins, RoutingTopologyDescriptor<int>& topology);
-};
+        int findSegment(const std::vector<Segment> &segments, const Segment &segment);
+        
+        void removeLoopSegments(std::vector<Segment> &tree);
+
+        void createTopology(std::vector<Segment> const &tree, std::vector<Point> const &Pins, std::vector<Pin> const &RsynPins, RoutingTopologyDescriptor<int>& topology);
+    };
 
 }
 

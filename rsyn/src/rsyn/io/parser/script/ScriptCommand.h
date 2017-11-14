@@ -25,7 +25,7 @@
 #include "rsyn/3rdparty/json/json.hpp"
 
 namespace Rsyn {
-class Engine;
+class Session;
 }
 
 namespace ScriptParsing {

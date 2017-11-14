@@ -14,7 +14,7 @@
 #ifndef OVERLAPREMOVEROVERLAY_H
 #define OVERLAPREMOVEROVERLAY_H
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/gui/canvas/PhysicalCanvasGL.h"
 #include "rsyn/util/Matrix.h"
 #include "x/infra/iccad15/Infrastructure.h"
@@ -22,7 +22,6 @@
 
 class OverlapRemoverOverlay : public CanvasOverlay {	
 private:
-	Rsyn::Engine clsEngine;
 	Rsyn::Module clsModule;
 	Rsyn::PhysicalDesign clsPhysicalDesign;
 

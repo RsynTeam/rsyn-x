@@ -18,9 +18,9 @@
 
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/phy/PhysicalDesign.h"
-#include "rsyn/engine/Service.h"
+#include "rsyn/session/Service.h"
 #include "rsyn/model/timing/types.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 namespace Rsyn {
 class PhysicalService;
@@ -35,8 +35,8 @@ class RoutingEstimator;
 class Report : public Service {
 private:
 	
-	// Engine
-	Engine clsEngine;
+	// Session
+	Session clsSession;
 	
 	// Circuitry
 	Rsyn::Design clsDesign;
@@ -64,7 +64,7 @@ private:
 
 public:
 
-	virtual void start(Engine engine, const Json &params);
+	virtual void start(const Json &params);
 	virtual void stop();	
 	
 	// Objects

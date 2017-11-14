@@ -32,10 +32,11 @@
 
 namespace ICCAD15 {
 
-void BlockageControl::start(Rsyn::Engine engine, const Rsyn::Json& params) {
-	clsEngine = engine;
-	clsModule = clsEngine.getDesign().getTopModule();
-	Rsyn::PhysicalService* service = clsEngine.getService("rsyn.physical");
+void BlockageControl::start(const Rsyn::Json& params) {
+	Rsyn::Session session;
+
+	clsModule = session.getDesign().getTopModule();
+	Rsyn::PhysicalService* service = session.getService("rsyn.physical");
 	clsPhysicalDesign = service->getPhysicalDesign();
 	clsPhysicalModule = clsPhysicalDesign.getPhysicalModule(clsModule);
 	

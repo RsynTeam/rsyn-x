@@ -31,7 +31,7 @@
 #ifndef RSYN_ICCAD17READER_H
 #define RSYN_ICCAD17READER_H
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 
 namespace Rsyn {
@@ -42,7 +42,7 @@ namespace Rsyn {
 
 class ICCAD17Reader : public Reader {
 protected:
-	Rsyn::Engine engine;
+	Rsyn::Session session;
 	Rsyn::Design clsDesign;
 	Rsyn::Module clsModule;
 	float clsMaxUtilization = 1.0; //Default value is 100%. The script provides max utilization in percentage. we convert to dimensionless value.
@@ -50,7 +50,7 @@ public:
 	ICCAD17Reader() = default;
 	ICCAD17Reader(const ICCAD17Reader& orig) = delete;
 	virtual ~ICCAD17Reader() = default;
-	void load(Engine engine, const Json &params);
+	void load(const Json &params);
 protected:
 	void parseConstraints(const std::string & filename);
 }; // end class 

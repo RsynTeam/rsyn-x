@@ -27,8 +27,8 @@
 #include <ctime>
 
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/engine/Service.h"
-#include "rsyn/engine/Message.h"
+#include "rsyn/session/Service.h"
+#include "rsyn/session/Message.h"
 #include "rsyn/model/timing/EdgeArray.h"
 
 #include "rsyn/util/Stepwatch.h"
@@ -50,7 +50,7 @@
 
 namespace Rsyn {
 	
-class Engine;
+class Session;
 class Scenario;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ private:
 	
 public:
 	
-	virtual void start(Rsyn::Engine engine, const Json &params) override;
+	virtual void start(const Json &params) override;
 	virtual void stop() override;
 
 	virtual void
@@ -333,7 +333,7 @@ public:
 	//! @brief Initialize the timer.
 	void init(
 			Rsyn::Design rsynDesign,
-			Rsyn::Engine engine,
+			Rsyn::Session session,
 			Rsyn::Scenario * scenario,
 			const ISPD13::LIBInfo &libEarly,
 			const ISPD13::LIBInfo &libLate);

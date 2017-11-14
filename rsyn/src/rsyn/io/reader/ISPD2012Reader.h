@@ -29,7 +29,7 @@
 #ifndef RSYN_ISPD2012READER_H
 #define RSYN_ISPD2012READER_H
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/3rdparty/json/json.hpp"
 
@@ -37,7 +37,7 @@ namespace Rsyn {
 
 class ISPD2012Reader : public Reader {
 protected:
-	Rsyn::Engine engine;
+	Rsyn::Session clsSession;
 	Rsyn::Design clsDesign;
 	Rsyn::Module clsModule;
 
@@ -45,7 +45,7 @@ public:
 	ISPD2012Reader() {}
 	ISPD2012Reader(const ISPD2012Reader& orig) {}
 	virtual ~ISPD2012Reader() {}
-	void load(Engine engine, const Json &params);
+	void load(const Json &params);
 
 }; // end class 
 

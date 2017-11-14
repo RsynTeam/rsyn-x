@@ -14,12 +14,13 @@
  */
  
 #include "Scenario.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 namespace Rsyn {
 
-void Scenario::start(Engine engine, const Json& params) {
-	Rsyn::Design design = engine.getDesign();
+void Scenario::start(const Json &params) {
+	Rsyn::Session session;
+	Rsyn::Design design = session.getDesign();
 
 	// Observe changes in the netlist.
 	design.registerObserver(this);

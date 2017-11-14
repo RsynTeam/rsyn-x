@@ -19,11 +19,11 @@
 
 #include "LibraryCharacterizer.h"
 #include "rsyn/util/FloatingPoint.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 namespace Rsyn {
 
-void LibraryCharacterizer::start(Rsyn::Engine engine, const Rsyn::Json &params) {
+void LibraryCharacterizer::start(const Rsyn::Json &params) {
 } // end method
 
 // -----------------------------------------------------------------------------

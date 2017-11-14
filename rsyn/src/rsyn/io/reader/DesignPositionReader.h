@@ -29,7 +29,7 @@
 #ifndef RSYN_DESIGNPOSITIONREADER_H
 #define RSYN_DESIGNPOSITIONREADER_H
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/phy/PhysicalDesign.h"
 
@@ -37,7 +37,7 @@ namespace Rsyn {
 
 class DesignPositionReader : public Reader {
 protected:
-	Rsyn::Engine engine;
+	Rsyn::Session session;
 	Rsyn::Design clsDesign;
 	Rsyn::Module clsModule;
 	Rsyn::PhysicalDesign clsPhysicalDesign;
@@ -46,7 +46,7 @@ public:
 	DesignPositionReader() {}
 	DesignPositionReader(const DesignPositionReader& orig) {}
 	virtual ~DesignPositionReader() {}
-	void load(Engine engine, const Json &params);
+	void load(const Json &params);
 protected:
 	void openDef(std::string & path);
 	void openBookshelf(std::string & path);

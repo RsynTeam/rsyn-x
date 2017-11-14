@@ -124,24 +124,26 @@ void PhysicalCanvasGL::reset() {
 
 // -----------------------------------------------------------------------------
 
-void PhysicalCanvasGL::attachEngine(Rsyn::Engine engine) {
+void PhysicalCanvasGL::init() {
+	if (clsInitialized)
+		return;
+	
 	reset();
 
-	clsEngine = engine;
-	msgNoGlew = clsEngine.getMessage("GRAPHICS-001");
-	msgNoRenderToTexture = clsEngine.getMessage("GRAPHICS-002");
+	msgNoGlew = clsSession.getMessage("GRAPHICS-001");
+	msgNoRenderToTexture = clsSession.getMessage("GRAPHICS-002");
 	
-	timer = clsEngine.getService("rsyn.timer", Rsyn::SERVICE_OPTIONAL);
-	routingEstimator = clsEngine.getService("rsyn.routingEstimator", Rsyn::SERVICE_OPTIONAL);
-	graphics = clsEngine.getService("rsyn.graphics");
-	design = clsEngine.getDesign();
+	timer = clsSession.getService("rsyn.timer", Rsyn::SERVICE_OPTIONAL);
+	routingEstimator = clsSession.getService("rsyn.routingEstimator", Rsyn::SERVICE_OPTIONAL);
+	graphics = clsSession.getService("rsyn.graphics");
+	design = clsSession.getDesign();
 	module = design.getTopModule();
 	clsCheckpoint = design.createAttribute();
 	
 	// Jucemar - 2017/03/25 -> Initializing and rendering only if physical service is initialized.
 	// This approach avoids crash caused by loading design without physical data.
-	if (clsEngine.isServiceRunning("rsyn.physical")) {
-		physical = clsEngine.getService("rsyn.physical");
+	if (clsSession.isServiceRunning("rsyn.physical")) {
+		physical = clsSession.getService("rsyn.physical");
 		phDesign = physical->getPhysicalDesign();
 
 		storeCheckpoint();
@@ -160,6 +162,8 @@ void PhysicalCanvasGL::attachEngine(Rsyn::Engine engine) {
 
 		phDesign.registerObserver(this);
 	} // end if
+
+	clsInitialized = true;
 	Refresh();
 } // end method
 
@@ -198,10 +202,10 @@ void PhysicalCanvasGL::SelectBin(const int binIndex) {
 // -----------------------------------------------------------------------------
 
 void PhysicalCanvasGL::storeCheckpoint() {
-	if (!clsEngine)
+	if (!clsInitialized)
 		return;
 	
-	Rsyn::Design design = clsEngine.getDesign();
+	Rsyn::Design design = clsSession.getDesign();
 	for (Rsyn::Instance instance : module.allInstances()) {
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
 		Rsyn::PhysicalCell phCell = phDesign.getPhysicalCell(cell);
@@ -292,7 +296,7 @@ Rsyn::Cell PhysicalCanvasGL::selectCellAt(const float x, const float y, const bo
 // -----------------------------------------------------------------------------
 
 void PhysicalCanvasGL::onMouseDown(wxMouseEvent& event) {
-	if (!clsEngine)
+	if (!clsInitialized)
 		return;
 
 	clsSelectedCellDragging = false;
@@ -314,7 +318,7 @@ void PhysicalCanvasGL::onMouseDown(wxMouseEvent& event) {
 // -----------------------------------------------------------------------------
 
 void PhysicalCanvasGL::onMouseReleased(wxMouseEvent& event) {
-	if (!clsEngine)
+	if (!clsInitialized)
 		return;
 	
 	if (clsSelectedCellDirty) {
@@ -330,7 +334,7 @@ void PhysicalCanvasGL::onMouseReleased(wxMouseEvent& event) {
 // -----------------------------------------------------------------------------
 
 void PhysicalCanvasGL::onMouseMoved(wxMouseEvent& event) {
-	if (!clsEngine)
+	if (!clsInitialized)
 		return;
 
 	const float x1 = translateFromViewportToUserX(event.m_x);
@@ -526,7 +530,7 @@ void PhysicalCanvasGL::drawArrow(const float x0, const float y0, const float x1,
 
 void PhysicalCanvasGL::drawPin(Rsyn::Pin pin) {
 	const float alpha = 0.7f;
-	Rsyn::Design design = clsEngine.getDesign();
+	Rsyn::Design design = clsSession.getDesign();
 	
 	FloatRectangle bounds = getGraphicalPinBoundingBox(pin);
 	bounds.translate(getInterpolatedDisplacement(pin.getInstance()));
@@ -620,7 +624,7 @@ void PhysicalCanvasGL::drawPin(Rsyn::Pin pin) {
 
 void PhysicalCanvasGL::renderCoreBounds() {
 
-	if (!clsEngine)
+	if (!clsInitialized)
 		return;
 	Rsyn::PhysicalDie phDie = phDesign.getPhysicalDie();
 	const FloatRectangle &bounds = phDie.getBounds();
@@ -644,7 +648,7 @@ void PhysicalCanvasGL::renderCoreBounds() {
 // -----------------------------------------------------------------------------
 
 void PhysicalCanvasGL::renderRows() {
-	if(!clsEngine)
+	if(!clsInitialized)
 		return;
 	
 	//float lowerX, upperX, lowerY, upperY;
@@ -674,7 +678,7 @@ void PhysicalCanvasGL::renderCriticalPath_Mode(
 		const GLubyte b
 		) {
 
-	Rsyn::Design design = clsEngine.getDesign();
+	Rsyn::Design design = clsSession.getDesign();
 	
 	std::vector<Rsyn::Timer::PathHop> criticalPath;
 	timer->queryTopCriticalPath(mode, criticalPath);
@@ -714,7 +718,7 @@ void PhysicalCanvasGL::renderCriticalPath_Mode(
 // -----------------------------------------------------------------------------
 
 void PhysicalCanvasGL::renderCriticalPath() {
-	if (clsEngine == nullptr)
+	if (clsSession == nullptr)
 		return;
 
 	if (clsViewLateCriticalPath)
@@ -766,7 +770,7 @@ void PhysicalCanvasGL::renderPath(const std::vector<Rsyn::Timer::PathHop> &path)
 	glLineWidth(2.5);
 	glBegin(GL_LINE_STRIP);
 
-	Rsyn::Design design = clsEngine.getDesign();
+	Rsyn::Design design = clsSession.getDesign();
 	Rsyn::Net clockNet = timer->getClockNet();
 	
 	for (auto & hop : path) {
@@ -805,7 +809,7 @@ void PhysicalCanvasGL::renderCriticalNets() {
 	
 	const float circuitWNS = timer->getWns( Rsyn::TimingMode::LATE );
 
-	Rsyn::Design design = clsEngine.getDesign();
+	Rsyn::Design design = clsSession.getDesign();
 	for(  auto net: module.allNets()  ) {
 		auto driver = net.getAnyDriver();
 		float wns = timer->getPinWorstNegativeSlack( driver, Rsyn::TimingMode::LATE );
@@ -838,7 +842,7 @@ void PhysicalCanvasGL::renderCriticalNets() {
 // -----------------------------------------------------------------------------
 
 void PhysicalCanvasGL::renderSelectedCell() {
-	if (!clsEngine || !clsSelectedCell)
+	if (!clsInitialized || !clsSelectedCell)
 		return;
 
 	////////////////////////////////////////////////////////////////////////////
@@ -894,7 +898,7 @@ void PhysicalCanvasGL::renderSelectedCell() {
 	// Draw neighbors pins.
 	////////////////////////////////////////////////////////////////////////////
 	if (clsViewSelectedNodeNeighbours && clsSelectedCell) {
-		Rsyn::Design design = clsEngine.getDesign();
+		Rsyn::Design design = clsSession.getDesign();
 		
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);		
 		glColor3ub(0, 0, 0);
@@ -986,7 +990,7 @@ void PhysicalCanvasGL::renderSelectedCell() {
 // -----------------------------------------------------------------------------
 
 void PhysicalCanvasGL::renderFocusedObject() {
-	if (!clsEngine || (!geoMgr.isObjectIdValid(clsHoverObjectId)))
+	if (!clsInitialized || (!geoMgr.isObjectIdValid(clsHoverObjectId)))
 		return;
 	geoMgr.renderFocusedObject(clsHoverObjectId);
 } // end method
@@ -1073,7 +1077,11 @@ void PhysicalCanvasGL::render(const int width, const int height) {
 		
 	for (CanvasOverlayConfiguration &config : clsOverlays) {
 		if (config.visible) {
-			config.overlay->render(this);
+			if (getInterpolationValue() > 0) {
+				config.overlay->renderInterpolated(this);
+			} else {
+				config.overlay->render(this);
+			} // end else
 		} // end if
 	} // end for	
 	
@@ -1090,9 +1098,6 @@ void PhysicalCanvasGL::render(const int width, const int height) {
 	
 	if( clsViewDisplacement )
 		renderDisplacementLines();
-
-	geoMgr.render();
-	geoMgr.renderHighlightedObjects();
 
 	swapBuffers();
 
@@ -1164,8 +1169,8 @@ void PhysicalCanvasGL::renderDisplacementLines() {
 ////////////////////////////////////////////////////////////////////////////////
 
 void PhysicalCanvasGL::onRender(wxPaintEvent& evt) {
-	if (!IsShown()) return;
-	if (!clsEngine) {
+	if (!IsShownOnScreen()) return;
+	if (!clsInitialized) {
 		clearViewport();
 	} else {
 		render();
@@ -1177,7 +1182,7 @@ void PhysicalCanvasGL::onRender(wxPaintEvent& evt) {
 void PhysicalCanvasGL::onResized(wxSizeEvent& evt) {
 	CanvasGL::onResized(evt);
 
-	if (IsShown() && clsEngine) {
+	if (IsShownOnScreen() && clsInitialized) {
 		prepareRenderingTexture();
 	} // end if
 } // end method
@@ -1567,19 +1572,21 @@ void PhysicalCanvasGL::prepareRenderingTexture() {
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+		// If not render buffer is available use old inverted colors as a
+		// workaround.
+		if (clsRenderingToTextureEnabled) {
+		//glLogicOp(GL_INVERT);
+		//glEnable(GL_COLOR_LOGIC_OP);
+		}
+
+		// Make back buffer the current buffer.
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	} else {
 		msgNoGlew.print();
+		//std::exit(1);
 	} // end else
 
-	// If not render buffer is available use old inverted colors as a
-	// workaround.
-	if (clsRenderingToTextureEnabled) {
-	//glLogicOp(GL_INVERT);
-	//glEnable(GL_COLOR_LOGIC_OP);
-	}
-
-	// Make back buffer the current buffer.
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 } // end method
 
 // -----------------------------------------------------------------------------

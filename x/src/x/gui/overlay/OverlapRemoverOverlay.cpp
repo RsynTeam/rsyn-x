@@ -19,26 +19,26 @@ OverlapRemoverOverlay::OverlapRemoverOverlay() {
 //------------------------------------------------------------------------------
 
 bool OverlapRemoverOverlay::init(PhysicalCanvasGL* canvas, nlohmann::json& properties) {
-	Rsyn::Engine clsEngine = canvas->getEngine();
+	Rsyn::Session session;
 
 	// Jucemar - 03/26/17 -> Initializes overlay only if physical design is running. 
-	if(!clsEngine.isServiceRunning("rsyn.physical")) 
+	if(!session.isServiceRunning("rsyn.physical"))
 		return false;
 	
-	ICCAD15::Infrastructure* clsInfrastructure = clsEngine.getService("ufrgs.ispd16.infra", Rsyn::SERVICE_OPTIONAL);
+	ICCAD15::Infrastructure* clsInfrastructure = session.getService("ufrgs.ispd16.infra", Rsyn::SERVICE_OPTIONAL);
 	if(!clsInfrastructure)
 		return false;
 	
-	Rsyn::PhysicalService* physical = clsEngine.getService("rsyn.physical", Rsyn::SERVICE_OPTIONAL);
+	Rsyn::PhysicalService* physical = session.getService("rsyn.physical", Rsyn::SERVICE_OPTIONAL);
 	if(!physical)
 		return false;
 	
-	clsBlockageControl = clsEngine.getService("ufrgs.blockageControl", Rsyn::SERVICE_OPTIONAL);
+	clsBlockageControl = session.getService("ufrgs.blockageControl", Rsyn::SERVICE_OPTIONAL);
 	if(!clsBlockageControl)
 		return false;
 	
 	clsPhysicalDesign = physical->getPhysicalDesign();	
-	clsModule = clsEngine.getDesign().getTopModule();
+	clsModule = session.getDesign().getTopModule();
 	
 	return true;
 } // end method
@@ -51,9 +51,6 @@ void OverlapRemoverOverlay::config(const nlohmann::json& params) {
 //------------------------------------------------------------------------------
 
 void OverlapRemoverOverlay::render(PhysicalCanvasGL* canvas) {
-	if (!canvas->getEngine())
-		return;
-	
 	renderOverlaps();
 } // end method
 

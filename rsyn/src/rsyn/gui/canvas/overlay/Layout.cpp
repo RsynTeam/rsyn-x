@@ -69,13 +69,15 @@ bool LayoutOverlay::init(PhysicalCanvasGL* canvas, nlohmann::json& properties) {
 	// It avoids crash when loading design without physical data (layout). 
 	if (!canvas->isPhysicalDesignInitialized())
 		return false;
-	clsEnginePtr = canvas->getEngine();
-	design = clsEnginePtr.getDesign();
+	
+	Rsyn::Session session;
+
+	design = session.getDesign();
 	module = design.getTopModule();
 
-	clsGraphics = clsEnginePtr.getService("rsyn.graphics");
+	clsGraphics = session.getService("rsyn.graphics");
 
-	Rsyn::PhysicalService *physical = clsEnginePtr.getService("rsyn.physical");
+	Rsyn::PhysicalService *physical = session.getService("rsyn.physical");
 	if (!physical)
 		return false;
 	phDesign = physical->getPhysicalDesign();
@@ -167,6 +169,15 @@ void LayoutOverlay::render(PhysicalCanvasGL * canvas) {
 	renderTracks(canvas);
 	renderBlockages(canvas);
 	renderRegions(canvas);
+
+	geoMgr->render();
+	geoMgr->renderHighlightedObjects();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void LayoutOverlay::renderInterpolated(PhysicalCanvasGL * canvas) {
+	renderCells(canvas);
 } // end method
 
 // -----------------------------------------------------------------------------

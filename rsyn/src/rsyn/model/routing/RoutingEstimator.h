@@ -19,7 +19,7 @@
 #include <iostream>
 
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/engine/Service.h"
+#include "rsyn/session/Service.h"
 #include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/model/routing/RCTree.h"
 #include "rsyn/model/routing/RoutingEstimationModel.h"
@@ -29,10 +29,42 @@
 
 namespace Rsyn {
 
-class Engine;
+class Session;
 
 class RoutingEstimator : public Service, public Rsyn::Observer, public Rsyn::PhysicalObserver {
 private:
+
+	// Indicates what type of update is required for a net. Add in order of 
+	// lowest priority meaning that a type with lower priority won't replace
+	// one with a higher priority. For instance, the type "full" should always
+	// be the one with the highest priority.
+	enum NetUpdateTypeEnum {
+		NET_UPDATE_TYPE_INVALID = -1,
+
+		NET_UPDATE_TYPE_DOWNSTREAM_CAP,
+		NET_UPDATE_TYPE_FULL,
+
+		NUM_NET_UPDATE_TYPES
+	};
+
+	// This nets automatically handles priorities among different types of
+	// update. If one assign a lower priority update type than the current one,
+	// the new one is ignored. If the priority of the new update is greater,
+	// the old one is replaced.
+	class NetUpdateType {
+	public:
+		NetUpdateType() : type(NET_UPDATE_TYPE_INVALID) {}
+		NetUpdateTypeEnum getType() const {return type;}
+
+		void operator=(NetUpdateTypeEnum newType) {
+			if (newType > type) {
+				type = newType;
+			} // end if
+		} // end method
+		
+	private:
+		NetUpdateTypeEnum type;
+	}; // end class
 
 	Rsyn::Design design;
 	Rsyn::Module module; // top module
@@ -43,7 +75,7 @@ private:
 	RoutingExtractionModel *routingExtractionModel = nullptr;
 
 	bool clsFullUpdateAlreadyPerformed = false;
-	std::set<Rsyn::Net> clsDirtyNets;
+	std::map<Rsyn::Net, NetUpdateType> clsDirtyNets;
 	Stopwatch clsStopwatchUpdateSteinerTrees;
 
 	struct RoutingNet {
@@ -57,7 +89,7 @@ private:
 	
 public:
 	
-	virtual void start(Engine engine, const Json &params);
+	virtual void start(const Json &params);
 	virtual void stop();
 
 	void setRoutingEstimationModel(RoutingEstimationModel *model) { routingEstimationModel = model; }
@@ -87,20 +119,21 @@ public:
 		return clsRoutingNets[net].rctree;
 	} // end method
 	
-	void updateRoutingOfNet(Rsyn::Net net);
+	void updateRoutingOfNet(Rsyn::Net net, const NetUpdateTypeEnum updateType);
 	void updateRoutingFull();
 	void updateRouting();
 	
-	void dirtyInstance(Rsyn::Instance instance) {
+	void dirtyInstance(Rsyn::Instance instance, const NetUpdateTypeEnum updateType) {
 		for (Rsyn::Pin pin : instance.allPins()) {
 			Rsyn::Net net = pin.getNet();
-			if (net)
-				clsDirtyNets.insert(net);
+			if (net) {
+				clsDirtyNets[net] = updateType;
+			} // end if
 		} // end for
 	} // end method
 
-	void dirtyNet(Rsyn::Net net) {
-		clsDirtyNets.insert(net);
+	void dirtyNet(Rsyn::Net net, const NetUpdateTypeEnum updateType) {
+		clsDirtyNets[net] = updateType;
 	} // end method
 		
 	DBU getTotalWirelength() const {

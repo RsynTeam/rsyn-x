@@ -16,7 +16,7 @@
 #include <vector>
 
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/engine/Service.h"
+#include "rsyn/session/Service.h"
 #include "rsyn/model/timing/TimingModel.h"
 
 namespace Rsyn {
@@ -156,7 +156,7 @@ private:
 	
 public:
 
-	virtual void start(Rsyn::Engine engine, const Rsyn::Json &params);
+	virtual void start(const Json &params);
 	virtual void stop();
 
 	void runLibraryAnalysis(Rsyn::Design design, TimingModel * timingModel);

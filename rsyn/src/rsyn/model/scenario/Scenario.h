@@ -17,7 +17,7 @@
 #define RSYN_SCENARIO
 
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/engine/Service.h"
+#include "rsyn/session/Service.h"
 #include "rsyn/model/timing/types.h"
 #include "rsyn/model/timing/EdgeArray.h"
 #include "rsyn/io/legacy/ispd13/global.h"
@@ -29,7 +29,7 @@ class Scenario : public Service, public Observer {
 public:
 	Scenario();
 
-	virtual void start(Engine engine, const Json &params);
+	virtual void start(const Json &params);
 
 	virtual void stop() override {
 	} // end method

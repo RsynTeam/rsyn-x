@@ -32,10 +32,11 @@
 
 namespace ICCAD15{
 
-bool TDQuadraticFlow::run(Rsyn::Engine engine, const Rsyn::Json& params) {
-	clsEngine = engine;
-	clsTimer = engine.getService("rsyn.timer");
-	clsInfra = engine.getService("ufrgs.ispd16.infra");
+bool TDQuadraticFlow::run(const Rsyn::Json& params) {
+	Rsyn::Session session;
+	
+	clsTimer = session.getService("rsyn.timer");
+	clsInfra = session.getService("ufrgs.ispd16.infra");
 	clsJezz = clsInfra->getJezz();
 	
 	if (params.count("overlapFlow")) {
@@ -65,7 +66,7 @@ void TDQuadraticFlow::defaultFlow() {
 	const double initAlpha = clsTimer->getSmoothedCriticality( ep.back(), Rsyn::LATE );
 	
 	while( true ) {
-		clsEngine.runProcess( "ufrgs.incrementalTimingDrivenQP",
+		clsSession.runProcess( "ufrgs.incrementalTimingDrivenQP",
             { {"alpha", initAlpha}, {"beta", 1.0}, {"flow", "netWeighting"} } );
             
         clsInfra->reportSummary( "QP-NetWeighting-Step1" );
@@ -73,11 +74,11 @@ void TDQuadraticFlow::defaultFlow() {
 		if( !clsInfra->updateTDPSolution(false, 1e-5) )
 			break;
 		
-		clsEngine.runProcess("ufrgs.balancing", {{"type", "cell-driver-sink"}});
+		clsSession.runProcess("ufrgs.balancing", {{"type", "cell-driver-sink"}});
 	}; // end while
 	clsInfra->statePush("qp-net-weighting");
 	
-	clsEngine.runProcess("ufrgs.ISPD16Flow");
+	clsSession.runProcess("ufrgs.ISPD16Flow");
 } // end method
 
 //------------------------------------------------------------------------------
@@ -90,7 +91,7 @@ void TDQuadraticFlow::overlapFlow() {
 	clsInfra->updateTDPSolution( true );
 	
 	while( true ) {
-		clsEngine.runProcess( "ufrgs.incrementalTimingDrivenQP",
+		clsSession.runProcess( "ufrgs.incrementalTimingDrivenQP",
             { {"alpha", 0.9}, {"beta", 1.0}, {"flow", "netWeighting"} } );
             
         clsInfra->reportSummary( "QP-NetWeighting-Step1" );
@@ -110,10 +111,10 @@ void TDQuadraticFlow::overlapFlowMIP() {
 	clsInfra->updateTDPSolution( true );
 	
 	while( true ) {
-		clsEngine.runProcess( "ufrgs.incrementalTimingDrivenQP",
+		clsSession.runProcess( "ufrgs.incrementalTimingDrivenQP",
 			{ {"alpha", 0.9}, {"beta", 1.0}, {"flow", "elmore"}, {"legMode","NONE"}});
 			
-		clsEngine.runProcess("ufrgs.overlapRemover", {});
+		clsSession.runProcess("ufrgs.overlapRemover", {});
 			
 		clsTimer->updateTimingIncremental();
 			

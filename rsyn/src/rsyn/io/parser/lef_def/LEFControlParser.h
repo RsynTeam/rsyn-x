@@ -27,7 +27,6 @@ class LEFControlParser {
 public:
 
 	LEFControlParser() {
-		std::setlocale(LC_ALL, "en_US.UTF-8");
 	}
 
 	virtual ~LEFControlParser() = default;

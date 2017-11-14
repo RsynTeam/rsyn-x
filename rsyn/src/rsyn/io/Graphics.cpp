@@ -15,7 +15,7 @@
  
 #include "Graphics.h"
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 // Services
 #include "rsyn/phy/PhysicalService.h"
@@ -25,25 +25,23 @@
 
 namespace Rsyn {
 
-void Graphics::start(Engine engine, const Json &params) {
-	clsEngine = engine;
-
+void Graphics::start(const Json &params) {
+	Rsyn::Session session;
+	
 	// Jucemar - 2017/03/25 -> Physical variable are initialized only when physical service was started.
 	// It avoids crashes when a design without physical data is loaded. 
-	if (clsEngine.isServiceRunning("rsyn.physical")) {
-		clsPhysical = engine.getService("rsyn.physical");
+	if (session.isServiceRunning("rsyn.physical")) {
+		clsPhysical = session.getService("rsyn.physical");
 		clsPhysicalDesign = clsPhysical->getPhysicalDesign();
 	} // end if 
 	
-	clsTimer = engine.getService("rsyn.timer", Rsyn::SERVICE_OPTIONAL);
-	clsDesign = engine.getDesign();
+	clsTimer = session.getService("rsyn.timer", Rsyn::SERVICE_OPTIONAL);
+	clsDesign = session.getDesign();
 	clsModule = clsDesign.getTopModule();	
 	
-
 	clsColorCells = clsDesign.createAttribute();
 	
 	clsDesign.registerObserver(this);
-	
 	
 	{ // colorInstances
 		ScriptParsing::CommandDescriptor dscp;
@@ -56,7 +54,7 @@ void Graphics::start(Engine engine, const Json &params) {
 			"Name of the timing mode (Currently supported: \"early\", \"late\")"
 		);
 		
-		clsEngine.registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command &command) {
+		session.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string timingMode = command.getParam("timingMode");
 			
 			if (timingMode == "early")
@@ -97,7 +95,7 @@ void Graphics::start(Engine engine, const Json &params) {
 			"Blue component of the color [0,255]."
 		);
 		
-		clsEngine.registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command &command) {
+		session.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string instanceName = command.getParam("instance");
 			const int red = command.getParam("red");
 			const int green = command.getParam("green");
@@ -213,8 +211,9 @@ void Graphics::coloringRandomGray() {
 
 // -----------------------------------------------------------------------------
 
-void Graphics::coloringByCellType() {	
-	const bool isScenarioRunning = clsEngine.isServiceRunning("rsyn.scenario");
+void Graphics::coloringByCellType() {
+	Rsyn::Session session;
+	const bool isScenarioRunning = session.isServiceRunning("rsyn.scenario");
 	
 	for (Rsyn::Instance instance : clsModule.allInstances()) {
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
@@ -251,7 +250,8 @@ void Graphics::coloringColorful() {
 		{255, 255, 0} // yellow
 	};
 
-	const bool isScenarioRunning = clsEngine.isServiceRunning("rsyn.scenario");
+	Rsyn::Session session;
+	const bool isScenarioRunning = session.isServiceRunning("rsyn.scenario");
 
 	for (Rsyn::Instance instance : clsModule.allInstances()) {
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell

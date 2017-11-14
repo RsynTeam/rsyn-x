@@ -49,7 +49,7 @@
 
 namespace ICCAD15 {
 	
-bool LemonLP::run(Rsyn::Engine engine, const Rsyn::Json& params) {
+bool LemonLP::run(const Rsyn::Json& params) {
 	using namespace lemon;
 	
 	// Create an instance of the default LP solver class

@@ -16,7 +16,7 @@
 #include <limits>
 #include <thread>
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/model/library/LibraryCharacterizer.h"
 #include "rsyn/model/routing/RoutingEstimator.h"
 #include "x/infra/iccad15/Infrastructure.h"
@@ -28,17 +28,17 @@
 
 namespace ICCAD15 {
 
-void IncrementalTimingDrivenQP::setEngine(Rsyn::Engine ptr) { 
-	engine = ptr;
-	infra = engine.getService("ufrgs.ispd16.infra");
-	timer = engine.getService("rsyn.timer");
-	routingEstimator = engine.getService("rsyn.routingEstimator");
-	libc = engine.getService("rsyn.libraryCharacterizer");
-	design = engine.getDesign();
+void IncrementalTimingDrivenQP::setSession(Rsyn::Session ptr) { 
+	session = ptr;
+	infra = session.getService("ufrgs.ispd16.infra");
+	timer = session.getService("rsyn.timer");
+	routingEstimator = session.getService("rsyn.routingEstimator");
+	libc = session.getService("rsyn.libraryCharacterizer");
+	design = session.getDesign();
 	module = design.getTopModule();
 	mapCellToIndex = design.createAttribute();
 	delayRatio = design.createAttribute();
-	physical = engine.getService("rsyn.physical");
+	physical = session.getService("rsyn.physical");
 	phDesign = physical->getPhysicalDesign();
 	
 	for (Rsyn::Instance instance : module.allInstances()) {
@@ -76,7 +76,7 @@ void IncrementalTimingDrivenQP::buildMapping() {
 
 // -----------------------------------------------------------------------------
 
-void IncrementalTimingDrivenQP::copyCellsLocationFromEngineToLinearSystem() {
+void IncrementalTimingDrivenQP::copyCellsLocationFromSessionToLinearSystem() {
 	Stepwatch watch( "[Quadratic Placement] Copying positions to Linear System." );
 	const int numMovableElements = movable.size();
 	
@@ -100,7 +100,7 @@ void IncrementalTimingDrivenQP::copyCellsLocationFromEngineToLinearSystem() {
 
 // -----------------------------------------------------------------------------
 
-void IncrementalTimingDrivenQP::copyCellsLocationFromLinearSystemToEngine() {
+void IncrementalTimingDrivenQP::copyCellsLocationFromLinearSystemToSession() {
 	Stepwatch watch( "[Quadratic Placement] Copying positions to design." );
 	
 	std::vector<Rsyn::Timer::PathHop> path;
@@ -112,7 +112,7 @@ void IncrementalTimingDrivenQP::copyCellsLocationFromLinearSystemToEngine() {
 		
 	const bool moveTentatively = false;
 	
-	//double minDisplacement = 4 * engine.getRows()[0].height();
+	//double minDisplacement = 4 * session.getRows()[0].height();
 	double minDisplacement = 4 * phDesign.getRowHeight();
 	std::cout << "[Quadratic Placement] minDisplacement = " << minDisplacement << "\n";
 	
@@ -189,7 +189,7 @@ void IncrementalTimingDrivenQP::copyCellsLocationFromLinearSystemToEngine() {
 	} // end for  
 	
 	averageDisplacement /= numMoved;
-	//averageDisplacement /= engine.getRows()[0].height();
+	//averageDisplacement /= session.getRows()[0].height();
 	averageDisplacement /= (double)phDesign.getRowHeight();	
 	
 	cout << 
@@ -216,7 +216,7 @@ void IncrementalTimingDrivenQP::copyCellsLocationFromLinearSystemToEngine() {
 
 // -----------------------------------------------------------------------------
 
-void IncrementalTimingDrivenQP::copyCellsLocationFromLinearSystemToEngineOptimized() {
+void IncrementalTimingDrivenQP::copyCellsLocationFromLinearSystemToSessionOptimized() {
 	Stepwatch watch( "[Quadratic Placement] Copying positions to design." );
 	
 	AsciiProgressBar progressBar( mapIndexToCell.size() );	
@@ -767,7 +767,7 @@ void IncrementalTimingDrivenQP::generateLoadAnchors() {
 //				continue;
 //		
 //		DBUxy target = 
-//			engine.getCellBounds( cell ).lower();
+//			session.getCellBounds( cell ).lower();
 //		
 //		addAnchor( cell, target, 0.5 );
 //	}
@@ -821,10 +821,10 @@ double IncrementalTimingDrivenQP::estimatePathSize(std::vector<Rsyn::Timer::Path
 		const Rsyn::Pin nextPin = pathHops[i + 1].getPin();
 		const Rsyn::Cell nextCell  = nextPin.getInstance().asCell();
 				
-		//PhysicalPin pCurrPin = engine.getPhysicalPin( currPin );
-		//PhysicalCell pCurrCell = engine.getPhysicalCell( currCell );
-		//PhysicalPin pNextPin = engine.getPhysicalPin( nextPin );
-		//PhysicalCell pNextCell = engine.getPhysicalCell( nextCell );
+		//PhysicalPin pCurrPin = session.getPhysicalPin( currPin );
+		//PhysicalCell pCurrCell = session.getPhysicalCell( currCell );
+		//PhysicalPin pNextPin = session.getPhysicalPin( nextPin );
+		//PhysicalCell pNextCell = session.getPhysicalCell( nextCell );
 		
 		//DBUxy currPinPosition = pCurrCell.lower() + pCurrPin.displacement;
 		//DBUxy nextPinPosition = pNextCell.lower() + pNextPin.displacement;
@@ -848,8 +848,8 @@ double IncrementalTimingDrivenQP::pathAvailableArea(std::vector<Rsyn::Timer::Pat
 	DBU maxY = - std::numeric_limits<DBU>::max();
 	
 	for ( int i = 0; i < pathHops.size(); i++) {
-		//const PhysicalPin pin = engine.getPhysicalPin( pathHops[i].getPin() );
-		//const PhysicalCell cell = engine.getPhysicalCell( pathHops[i].getPin() );
+		//const PhysicalPin pin = session.getPhysicalPin( pathHops[i].getPin() );
+		//const PhysicalCell cell = session.getPhysicalCell( pathHops[i].getPin() );
 		
 		//const double2 pinPos = cell.lower() + pin.displacement;
 		const DBUxy pinPos = phDesign.getPinPosition(pathHops[i].getPin());
@@ -935,8 +935,8 @@ void IncrementalTimingDrivenQP::generateStraighteningForces_DEPRECATED(	const bo
 			if( !currIsMovable && nextIsMovable  ) {
 				/*...*/
 				const int index = mapCellToIndex[ nextCell ];
-				//const PhysicalCell pCell = engine.getPhysicalCell( currCell );
-				//const PhysicalPin pPin = engine.getPhysicalPin( hop.getPin() );
+				//const PhysicalCell pCell = session.getPhysicalCell( currCell );
+				//const PhysicalPin pPin = session.getPhysicalPin( hop.getPin() );
 				const DBUxy pinPos = phDesign.getPinPosition( hop.getPin() );
 				a.AddDiagonalElement( index, RC * 5 );
 				//bx[ index ] += RC * 5 * (pCell.lower().x + pPin.dx);
@@ -947,8 +947,8 @@ void IncrementalTimingDrivenQP::generateStraighteningForces_DEPRECATED(	const bo
 				continue;
 			} else if( currIsMovable && !nextIsMovable ) {
 				const int index = mapCellToIndex[ currCell ];
-				//const PhysicalCell pCell = engine.getPhysicalCell( nextCell );
-				//const PhysicalPin pPin = engine.getPhysicalPin( hop.getNextPin() );
+				//const PhysicalCell pCell = session.getPhysicalCell( nextCell );
+				//const PhysicalPin pPin = session.getPhysicalPin( hop.getNextPin() );
 				
 				const DBUxy pinPos = phDesign.getPinPosition( hop.getNextPin());
 				
@@ -1149,8 +1149,8 @@ void IncrementalTimingDrivenQP::generateStraighteningForces( const bool stress )
 			
 			if ( driverIsMovable && !cellIsMovable  ) {
 				const int index = mapCellToIndex[ driverCell ];
-				//const PhysicalCell pCell = engine.getPhysicalCell( cell );
-				//const PhysicalPin pPin = engine.getPhysicalPin( pin );
+				//const PhysicalCell pCell = session.getPhysicalCell( cell );
+				//const PhysicalPin pPin = session.getPhysicalPin( pin );
 				const DBUxy pinPos = phDesign.getPinPosition(pin);
 				
 				fw[ index ] += weight;
@@ -1163,8 +1163,8 @@ void IncrementalTimingDrivenQP::generateStraighteningForces( const bool stress )
 				
 			} else if ( !driverIsMovable && cellIsMovable ) {
 				const int index = mapCellToIndex[ cell ];
-				//const PhysicalCell pCell = engine.getPhysicalCell( driverCell );
-				//const PhysicalPin pPin = engine.getPhysicalPin( design.getDriver( net ) );
+				//const PhysicalCell pCell = session.getPhysicalCell( driverCell );
+				//const PhysicalPin pPin = session.getPhysicalPin( design.getDriver( net ) );
 				const DBUxy pinPos = phDesign.getPinPosition(net.getAnyDriver());
 				 
 				fw[ index ] += weight;
@@ -1269,8 +1269,8 @@ void IncrementalTimingDrivenQP::generateStraighteningForces_ELMORE() {
 			
 			if ( driverIsMovable && !cellIsMovable  ) {
 				const int index = mapCellToIndex[ driverCell ];
-				//const PhysicalCell pCell = engine.getPhysicalCell( cell );
-				//const PhysicalPin pPin = engine.getPhysicalPin( pin );
+				//const PhysicalCell pCell = session.getPhysicalCell( cell );
+				//const PhysicalPin pPin = session.getPhysicalPin( pin );
 				const DBUxy pinPos = phDesign.getPinPosition(pin);
 				
 				fw[ index ] += weight;
@@ -1283,8 +1283,8 @@ void IncrementalTimingDrivenQP::generateStraighteningForces_ELMORE() {
 				
 			} else if ( !driverIsMovable && cellIsMovable ) {
 				const int index = mapCellToIndex[ cell ];
-				//const PhysicalCell pCell = engine.getPhysicalCell( driverCell );
-				//const PhysicalPin pPin = engine.getPhysicalPin( net.getDriver() );
+				//const PhysicalCell pCell = session.getPhysicalCell( driverCell );
+				//const PhysicalPin pPin = session.getPhysicalPin( net.getDriver() );
 				const DBUxy pinPos = phDesign.getPinPosition(net.getAnyDriver());
 				 
 				fw[ index ] += weight;
@@ -1325,7 +1325,7 @@ void IncrementalTimingDrivenQP::runNetLoadReduction( bool withAnchors ) {
 	
 	buildMapping();
 	
-	copyCellsLocationFromEngineToLinearSystem();
+	copyCellsLocationFromSessionToLinearSystem();
 	
 	buildLinearSystem( false );
 	
@@ -1338,7 +1338,7 @@ void IncrementalTimingDrivenQP::runNetLoadReduction( bool withAnchors ) {
 	
 	solveLinearSystem();
 	
-	copyCellsLocationFromLinearSystemToEngine();
+	copyCellsLocationFromLinearSystemToSession();
 	
 	timer->updateTimingIncremental();
 } // end method
@@ -1352,7 +1352,7 @@ void IncrementalTimingDrivenQP::runNetLoadReductionIteration() {
 	
 	solveLinearSystem();
 	
-	copyCellsLocationFromLinearSystemToEngine();
+	copyCellsLocationFromLinearSystemToSession();
 	
 	timer->updateTimingIncremental();
 }
@@ -1364,7 +1364,7 @@ void IncrementalTimingDrivenQP::runNeutralizeSystemWithSpreadingForces() {
 	
 	buildMapping();
 	
-	copyCellsLocationFromEngineToLinearSystem();
+	copyCellsLocationFromSessionToLinearSystem();
 	
 	buildLinearSystem( false );
 	
@@ -1372,7 +1372,7 @@ void IncrementalTimingDrivenQP::runNeutralizeSystemWithSpreadingForces() {
 		
 	solveLinearSystem();
 	
-	copyCellsLocationFromLinearSystemToEngine();
+	copyCellsLocationFromLinearSystemToSession();
 	
 	timer->updateTimingIncremental();
 }
@@ -1382,7 +1382,7 @@ void IncrementalTimingDrivenQP::runNeutralizeSystemWithSpreadingForces() {
 void IncrementalTimingDrivenQP::computeAnchorPositions(std::vector<double> &x, std::vector<double> &y) {
 	markAsMovableAllNonFixedCells(false);
 	buildMapping();
-	copyCellsLocationFromEngineToLinearSystem();
+	copyCellsLocationFromSessionToLinearSystem();
 	buildLinearSystem( false );
 	
 	const double anchorWeight = 1;
@@ -1467,11 +1467,11 @@ void IncrementalTimingDrivenQP::runPathStraighteningFlow( const bool stress ) {
 	
 	buildMapping();
 	
-	copyCellsLocationFromEngineToLinearSystem();
+	copyCellsLocationFromSessionToLinearSystem();
 	
 	buildLinearSystem( false );
 	
-//	copyCellsLocationFromEngineToLinearSystem();
+//	copyCellsLocationFromSessionToLinearSystem();
 	
 	neutralizeSystemWithSpreadingForces();
 		
@@ -1485,7 +1485,7 @@ void IncrementalTimingDrivenQP::runPathStraighteningFlow( const bool stress ) {
 	
 //	solveLinearSystem();
 	
-	copyCellsLocationFromLinearSystemToEngine();
+	copyCellsLocationFromLinearSystemToSession();
 	qp.finish();
 	
 	Stepwatch watchTimer( "timer" );
@@ -1501,11 +1501,11 @@ void IncrementalTimingDrivenQP::runPathStraighteningFlow_UNDER_TEST() {
 	
 	buildMapping();
 	
-	copyCellsLocationFromEngineToLinearSystem();
+	copyCellsLocationFromSessionToLinearSystem();
 	
 	buildLinearSystem( false );
 	
-//	copyCellsLocationFromEngineToLinearSystem();
+//	copyCellsLocationFromSessionToLinearSystem();
 	
 	neutralizeSystemWithSpreadingForces();
 	
@@ -1518,7 +1518,7 @@ void IncrementalTimingDrivenQP::runPathStraighteningFlow_UNDER_TEST() {
 	
 //	solveLinearSystem();
 	
-	copyCellsLocationFromLinearSystemToEngine();
+	copyCellsLocationFromLinearSystemToSession();
 	qp.finish();
 	
 	Stepwatch watchTimer( "timer" );
@@ -1534,11 +1534,11 @@ void IncrementalTimingDrivenQP::runPathStraighteningFlow_ELMORE() {
 	
 	buildMapping();
 	
-	copyCellsLocationFromEngineToLinearSystem();
+	copyCellsLocationFromSessionToLinearSystem();
 	
 	buildLinearSystem( false );
 	
-//	copyCellsLocationFromEngineToLinearSystem();
+//	copyCellsLocationFromSessionToLinearSystem();
 	
 	neutralizeSystemWithSpreadingForces();
 	
@@ -1551,7 +1551,7 @@ void IncrementalTimingDrivenQP::runPathStraighteningFlow_ELMORE() {
 	
 //	solveLinearSystem();
 	
-	copyCellsLocationFromLinearSystemToEngineOptimized();
+	copyCellsLocationFromLinearSystemToSessionOptimized();
 	qp.finish();
 	Stepwatch watchTimer( "timer" );
 	timer->updateTimingIncremental();
@@ -1566,7 +1566,7 @@ void IncrementalTimingDrivenQP::runNetWeighteningFlow() {
 	
 	buildMapping();
 	
-	copyCellsLocationFromEngineToLinearSystem();
+	copyCellsLocationFromSessionToLinearSystem();
 	
 	buildLinearSystem( false );
 	
@@ -1577,7 +1577,7 @@ void IncrementalTimingDrivenQP::runNetWeighteningFlow() {
 	
 	solveLinearSystem();
 	
-	copyCellsLocationFromLinearSystemToEngine();
+	copyCellsLocationFromLinearSystemToSession();
 	qp.finish();
 	
 	refreshCellsDelayRatio();
@@ -1679,9 +1679,9 @@ void IncrementalTimingDrivenQP::generateNetWeights() {
 //		if( initialSlack > currentSlack ) {
 //			for( auto pin : net.allPins(Rsyn::IN) ) {
 ////				auto cell = pin.getCell();
-//				engine.moveCell( pin.getInstance().asCell(), 
-//					//engine.getPhysicalCell( pin.getCell() ).initialPos,
-//					engine.getInitialCellPosition( pin.getInstance() ),
+//				session.moveCell( pin.getInstance().asCell(), 
+//					//session.getPhysicalCell( pin.getCell() ).initialPos,
+//					session.getInitialCellPosition( pin.getInstance() ),
 //					LegalizationMethod::LEG_NONE);
 //			}
 //		}	
@@ -1690,17 +1690,17 @@ void IncrementalTimingDrivenQP::generateNetWeights() {
 
 // -----------------------------------------------------------------------------
 
-bool IncrementalTimingDrivenQP::run(Rsyn::Engine engine, const Rsyn::Json& params) {
-    this->engine = engine;
-	libc = engine.getService("rsyn.libraryCharacterizer");
-	timer = engine.getService("rsyn.timer");
-	design = engine.getDesign();
+bool IncrementalTimingDrivenQP::run(const Rsyn::Json& params) {
+    this->session = session;
+	libc = session.getService("rsyn.libraryCharacterizer");
+	timer = session.getService("rsyn.timer");
+	design = session.getDesign();
 	module = design.getTopModule();
-	routingEstimator = engine.getService("rsyn.routingEstimator");
+	routingEstimator = session.getService("rsyn.routingEstimator");
 	mapCellToIndex = design.createAttribute();
 	delayRatio = design.createAttribute();
-	infra = engine.getService("ufrgs.ispd16.infra");
-	physical = engine.getService("rsyn.physical");
+	infra = session.getService("ufrgs.ispd16.infra");
+	physical = session.getService("rsyn.physical");
 	phDesign = physical->getPhysicalDesign();
 	
 	for (Rsyn::Instance instance : module.allInstances()) {

@@ -13,13 +13,15 @@
  * limitations under the License.
  */
  
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/phy/PhysicalService.h"
 
 namespace Rsyn {
 
-void PhysicalService::start(Rsyn::Engine engine, const Rsyn::Json &params) {
-	clsDesign = engine.getDesign();
+void PhysicalService::start(const Rsyn::Json &params) {
+	Rsyn::Session session;
+	
+	clsDesign = session.getDesign();
 	clsPhysicalDesign.initPhysicalDesign(clsDesign, params);
 	// Observe changes in the design.
 	clsDesign.registerObserver(this);

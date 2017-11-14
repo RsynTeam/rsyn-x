@@ -16,7 +16,7 @@
 #ifndef ISPD16_FLOW_OPTO_H
 #define ISPD16_FLOW_OPTO_H
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 namespace Rsyn {
 class Timer;
@@ -29,7 +29,7 @@ class Infrastructure;
 
 class ISPD16Flow : public Rsyn::Process {
 private:
-	Rsyn::Engine engine;
+	Rsyn::Session session;
 	Infrastructure * infra;
 	Rsyn::Design design;
 	Rsyn::Module module;
@@ -40,7 +40,7 @@ private:
 	
 public:
 	
-	virtual bool run(Rsyn::Engine engine, const Rsyn::Json &params);
+	virtual bool run(const Rsyn::Json &params);
 	
 }; // end class
 

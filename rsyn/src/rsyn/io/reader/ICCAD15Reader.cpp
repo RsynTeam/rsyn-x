@@ -48,8 +48,7 @@
 
 namespace Rsyn {
 
-void ICCAD15Reader::load(Engine engine, const Json &options) {
-	this->engine = engine;
+void ICCAD15Reader::load(const Json &options) {
 	const bool globalPlacementOnly = options.value("globalPlacementOnly", false);
 
 	std::string path = options.value("path", "");
@@ -111,7 +110,6 @@ void ICCAD15Reader::openBenchmarkFromICCAD15()  {
 
 	Stepwatch watchParsing("Parsing Design");
 
-	std::setlocale(LC_ALL, "en_US.UTF-8");
 	parseConfigFileICCAD15(path);
 	parseParams(optionSetting);
 
@@ -143,7 +141,7 @@ void ICCAD15Reader::openBenchmarkFromICCAD15()  {
 	watchParsing.finish();
 	
 	// Create the design.
-	clsDesign = engine.getDesign();
+	clsDesign = session.getDesign();
 	
 	clsModule = clsDesign.getTopModule();
 	
@@ -161,11 +159,11 @@ void ICCAD15Reader::openBenchmarkFromICCAD15()  {
 		clsDesign);
 	watchRsyn.finish();	
 
-	engine.startService("rsyn.webLogger", {});
+	session.startService("rsyn.webLogger", {});
 	
 	Stepwatch watchScenario("Loading scenario");
-	engine.startService("rsyn.scenario", {});
-	clsScenario = engine.getService("rsyn.scenario");
+	session.startService("rsyn.scenario", {});
+	clsScenario = session.getService("rsyn.scenario");
 	clsScenario->init(clsDesign, libInfosEarly, libInfosLate, sdcInfos);
 	watchScenario.finish();
 
@@ -175,8 +173,8 @@ void ICCAD15Reader::openBenchmarkFromICCAD15()  {
 		phDesignJason["clsEnableMergeRectangles"] = true;
 	}// end if 
 	phDesignJason["clsContestMode"] = "ICCAD15";
-	engine.startService("rsyn.physical", phDesignJason);	
-	Rsyn::PhysicalService * phService = engine.getService("rsyn.physical");
+	session.startService("rsyn.physical", phDesignJason);	
+	Rsyn::PhysicalService * phService = session.getService("rsyn.physical");
 	Rsyn::PhysicalDesign clsPhysicalDesign = phService->getPhysicalDesign();
 	clsPhysicalDesign.loadLibrary(lefDscp);
 	clsPhysicalDesign.loadDesign(defDscp);
@@ -184,11 +182,11 @@ void ICCAD15Reader::openBenchmarkFromICCAD15()  {
 	clsPhysicalDesign.setClockNet(clsScenario->getClockNet());
 	watchPopulateLayers.finish();
 
-	engine.startService("rsyn.defaultRoutingEstimationModel", {});
-	DefaultRoutingEstimationModel* routingEstimationModel = engine.getService("rsyn.defaultRoutingEstimationModel");
+	session.startService("rsyn.defaultRoutingEstimationModel", {});
+	DefaultRoutingEstimationModel* routingEstimationModel = session.getService("rsyn.defaultRoutingEstimationModel");
 
-	engine.startService("rsyn.defaultRoutingExtractionModel", {});
-	DefaultRoutingExtractionModel* routingExtractionModel = engine.getService("rsyn.defaultRoutingExtractionModel");
+	session.startService("rsyn.defaultRoutingExtractionModel", {});
+	DefaultRoutingExtractionModel* routingExtractionModel = session.getService("rsyn.defaultRoutingExtractionModel");
 	
 	const Number resPerMicron = (Number) Rsyn::Units::convertToInternalUnits(
 			Rsyn::MEASURE_RESISTANCE, LOCAL_WIRE_RES_PER_MICRON, Rsyn::NO_UNIT_PREFIX);
@@ -201,8 +199,8 @@ void ICCAD15Reader::openBenchmarkFromICCAD15()  {
 			capPerMicron / clsDesignDistanceUnit,
 			(DBU) (MAX_WIRE_SEGMENT_IN_MICRON * clsDesignDistanceUnit));
 
-	engine.startService("rsyn.routingEstimator", {});
-	clsRoutingEstimator = engine.getService("rsyn.routingEstimator");
+	session.startService("rsyn.routingEstimator", {});
+	clsRoutingEstimator = session.getService("rsyn.routingEstimator");
 	Stepwatch updateSteiner("Updating Steiner trees");
 	clsRoutingEstimator->setRoutingEstimationModel(routingEstimationModel);
 	clsRoutingEstimator->setRoutingExtractionModel(routingExtractionModel);
@@ -210,31 +208,31 @@ void ICCAD15Reader::openBenchmarkFromICCAD15()  {
 	updateSteiner.finish();	
 
 	Stepwatch watchBlockageControl("Starting blockage control");
-	engine.startService("ufrgs.blockageControl", {});
+	session.startService("ufrgs.blockageControl", {});
 	watchBlockageControl.finish();
 	
-	engine.startService("rsyn.timer", {});		
-	clsTimer = engine.getService("rsyn.timer");
+	session.startService("rsyn.timer", {});		
+	clsTimer = session.getService("rsyn.timer");
 
 	Stepwatch watchInit("Initializing timer");
 	clsTimer->init(
 			clsDesign,
-			engine,
+			session,
 			clsScenario,
 			libInfosEarly,
 			libInfosLate);
 	watchInit.finish();
 		
 	Stepwatch watchInitModel("Initializing default timing model");
-	engine.startService("rsyn.defaultTimingModel", {});
-	DefaultTimingModel* timingModel = engine.getService("rsyn.defaultTimingModel");
+	session.startService("rsyn.defaultTimingModel", {});
+	DefaultTimingModel* timingModel = session.getService("rsyn.defaultTimingModel");
 	clsTimingModel = timingModel;
 	clsTimer->setTimingModel(clsTimingModel);
 	watchInitModel.finish();
 		
 	Stepwatch watchInitLogicalEffort("Library characterization");
-	engine.startService("rsyn.libraryCharacterizer", {});
-	LibraryCharacterizer *libc = engine.getService("rsyn.libraryCharacterizer");
+	session.startService("rsyn.libraryCharacterizer", {});
+	LibraryCharacterizer *libc = session.getService("rsyn.libraryCharacterizer");
 	libc->runLibraryAnalysis(clsDesign, clsTimingModel);
 	watchInitLogicalEffort.finish();
 	
@@ -242,11 +240,11 @@ void ICCAD15Reader::openBenchmarkFromICCAD15()  {
 	clsTimer->updateTimingFull();
 	updateTiming.finish();
 
-	engine.startService("rsyn.report", {});	
-	engine.startService("rsyn.writer", {});
+	session.startService("rsyn.report", {});	
+	session.startService("rsyn.writer", {});
 
-	engine.startService("rsyn.graphics", {});
-	Rsyn::Graphics * graphics = engine.getService("rsyn.graphics");
+	session.startService("rsyn.graphics", {});
+	Rsyn::Graphics * graphics = session.getService("rsyn.graphics");
 	graphics->coloringByCellType();
 } // end method 
 
@@ -263,7 +261,6 @@ void ICCAD15Reader::openBenchmarkFromICCAD15ForGlobalPlacementOnly() {
 
 	Stepwatch watchParsing("Parsing Design");
 
-	std::setlocale(LC_ALL, "en_US.UTF-8");
 	boost::filesystem::path path(optionBenchmark);
 	parseConfigFileICCAD15(path);
 	lefParser.parseLEF(clsFilenameLEF, lefDscp);
@@ -273,7 +270,7 @@ void ICCAD15Reader::openBenchmarkFromICCAD15ForGlobalPlacementOnly() {
 	watchParsing.finish();
 	
 	Stepwatch watchRsyn("Populating Rsyn");
-	clsDesign = engine.getDesign();
+	clsDesign = session.getDesign();
 	Reader::populateRsyn(
 		lefDscp,
 		defDscp,
@@ -288,19 +285,19 @@ void ICCAD15Reader::openBenchmarkFromICCAD15ForGlobalPlacementOnly() {
 	phDesignJason["clsEnableMergeRectangles"] = true;
 	phDesignJason["clsEnableNetPinBoundaries"] = true;
 	phDesignJason["clsEnableRowSegments"] = true;
-	engine.startService("rsyn.physical", phDesignJason);		
-	Rsyn::PhysicalService * phService = engine.getService("rsyn.physical");
+	session.startService("rsyn.physical", phDesignJason);		
+	Rsyn::PhysicalService * phService = session.getService("rsyn.physical");
 	Rsyn::PhysicalDesign clsPhysicalDesign = phService->getPhysicalDesign();
 	clsPhysicalDesign.loadLibrary(lefDscp);
 	clsPhysicalDesign.loadDesign(defDscp);
 	clsPhysicalDesign.updateAllNetBounds(false);
 	watchPopulateLayers.finish();
 
-	engine.startService("rsyn.graphics", {});
-	Graphics * graphics = engine.getService("rsyn.graphics");
+	session.startService("rsyn.graphics", {});
+	Graphics * graphics = session.getService("rsyn.graphics");
 	graphics->coloringByCellType();
 
-	engine.startService("rsyn.writer", {});
+	session.startService("rsyn.writer", {});
 } // end method 
 
 ////////////////////////////////////////////////////////////////////////////////

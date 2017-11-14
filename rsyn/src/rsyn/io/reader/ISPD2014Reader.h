@@ -29,14 +29,14 @@
 #ifndef RSYN_ISPD2014READER_H
 #define RSYN_ISPD2014READER_H
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/core/Rsyn.h"
 
 namespace Rsyn {
 
 class ISPD2014Reader : public Reader {
 protected:
-	Rsyn::Engine engine;
+	Rsyn::Session session;
 	Rsyn::Design clsDesign;
 	Rsyn::Module clsModule;
 
@@ -44,7 +44,7 @@ public:
 	ISPD2014Reader() {}
 	ISPD2014Reader(const ISPD2014Reader& orig) {}
 	virtual ~ISPD2014Reader() {}
-	void load(Engine engine, const Json &params);
+	void load(const Json &params);
 
 }; // end class 
 

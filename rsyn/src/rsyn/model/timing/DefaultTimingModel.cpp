@@ -15,23 +15,25 @@
 
 #include "DefaultTimingModel.h"
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/phy/PhysicalService.h"
 #include "rsyn/model/timing/Timer.h"
 
 namespace Rsyn {
 
-void DefaultTimingModel::start(Engine engine, const Json &params) {
-	clsDesign = engine.getDesign();
+void DefaultTimingModel::start(const Json &params) {
+	Rsyn::Session session;
+	
+	clsDesign = session.getDesign();
 
-	clsScenario = engine.getService("rsyn.scenario");
-	clsRoutingEstimator = engine.getService("rsyn.routingEstimator");
-	clsTimer = engine.getService("rsyn.timer");
+	clsScenario = session.getService("rsyn.scenario");
+	clsRoutingEstimator = session.getService("rsyn.routingEstimator");
+	clsTimer = session.getService("rsyn.timer");
 
 	// TODO: Maybe we should not do this here as this create a soft dependency
 	// to physical layer
 	Rsyn::PhysicalService *physical =
-		engine.getService("rsyn.physical", Rsyn::SERVICE_OPTIONAL);
+		session.getService("rsyn.physical", Rsyn::SERVICE_OPTIONAL);
 	if (physical) {
 		Rsyn::PhysicalDesign phDesign;
 		phDesign = physical->getPhysicalDesign();

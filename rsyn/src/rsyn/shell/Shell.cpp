@@ -23,10 +23,8 @@ void Shell::run(const std::string &startupScript, const bool interactive) {
 		return;
 	} // end if
 
-
-	clsEngine.create();
 	if (!startupScript.empty()) {
-		clsEngine.evaluateFile(startupScript);
+		clsSession.evaluateFile(startupScript);
 	} // end if
 
 	if (interactive) {
@@ -34,7 +32,7 @@ void Shell::run(const std::string &startupScript, const bool interactive) {
 			std::string cmd;
 			std::cout << "> ";
 			std::getline(std::cin, cmd);
-			clsEngine.evaluateString(cmd);
+			clsSession.evaluateString(cmd);
 		} // end while
 	} // end while
 } // end method

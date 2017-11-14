@@ -20,10 +20,10 @@
 
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/phy/PhysicalDesign.h"
-#include "rsyn/engine/Service.h"
+#include "rsyn/session/Service.h"
 #include "rsyn/model/timing/types.h"
 #include "rsyn/util/Color.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 namespace Rsyn {
 class PhysicalService;
@@ -35,9 +35,6 @@ class Timer;
 
 class Graphics : public Service, public Rsyn::Observer {
 private:
-	// Engine
-	Engine clsEngine;
-	
 	// Circuitry
 	Rsyn::Design clsDesign;
 	Rsyn::Module clsModule;	
@@ -54,7 +51,7 @@ private:
 
 public:
 
-	virtual void start(Engine engine, const Json &params);
+	virtual void start(const Json &params);
 	virtual void stop();
 	
 	virtual void onPostInstanceCreate(Rsyn::Instance instance) override;

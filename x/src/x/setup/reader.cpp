@@ -19,7 +19,7 @@
  * and open the template in the editor.
  */
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 
 #include "rsyn/io/reader/BookshelfReader.h"
@@ -35,7 +35,7 @@
 // Registration
 namespace Rsyn {
 
-void Engine::registerReaders() {
+void Session::registerReaders() {
 	//ICCAD 2015 contest 
 	registerReader<Rsyn::ICCAD15Reader>("rsyn.iccad2015");
 	registerReader<Rsyn::ICCAD17Reader>("rsyn.iccad2017");

@@ -11,7 +11,7 @@
  * Created on 29 de Junho de 2017, 16:44
  */
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/phy/PhysicalService.h"
 #include "rsyn/3rdparty/flute/flute.h"
 #include "rsyn/util/Stopwatch.h"
@@ -24,13 +24,14 @@ namespace Rsyn {
 RsttRoutingEstimatorModel::RsttRoutingEstimatorModel() {
 }
 
-void RsttRoutingEstimatorModel::start(Engine engine, const Json &params) {
-	clsEngine = engine;
-	design = engine.getDesign();
+void RsttRoutingEstimatorModel::start(const Json &params) {
+	Rsyn::Session session;
+
+	design = session.getDesign();
 	module = design.getTopModule();
 
-	clsPhysical = engine.getService("rsyn.physical");
-	clsScenario = engine.getService("rsyn.scenario");
+	clsPhysical = session.getService("rsyn.physical");
+	clsScenario = session.getService("rsyn.scenario");
 
 	clsPhysicalDesign = clsPhysical->getPhysicalDesign();
 	clsNetsTopologys = design.createAttribute(Rsyn::RoutingTopologyDescriptor<int>());
@@ -85,6 +86,7 @@ DBU RsttRoutingEstimatorModel::generateSteinerTree(Net net, RoutingTopologyDescr
 	orderPoints(Pins, ASC, Y);
 	med = returnMidPoint(Pins, X);
 	correctTrunk(TrunkH, horizontalTree, Pins, med, HORIZONTAL);
+	removeLoopSegments(horizontalTree);
 	wireLengthH = returnWireLength(horizontalTree);
 	//----------------------------------------------------------------------
 
@@ -93,6 +95,7 @@ DBU RsttRoutingEstimatorModel::generateSteinerTree(Net net, RoutingTopologyDescr
 	orderPoints(Pins, ASC, X);
 	med = returnMidPoint(Pins, Y);
 	correctTrunk(TrunkV, verticalTree, Pins, med, VERTICAL);
+	removeLoopSegments(verticalTree);
 	wireLengthV = returnWireLength(verticalTree);
 	//----------------------------------------------------------------------
 
@@ -110,37 +113,6 @@ const Rsyn::RoutingTopologyDescriptor<int> & RsttRoutingEstimatorModel::getTree(
 	return clsNetsTopologys[net];
 }
 
-
-//------------------------------------------------------------------------------
-/*
-bool orderSegmentX(RsttRoutingEstimatorModel::Segment a, RsttRoutingEstimatorModel::Segment b) {
-	if (a.first.x() != b.first.x())
-		return a.first.x() < b.first.x();
-	else if (a.second.x() != b.second.x())
-		return a.first.x() < b.first.x();
-	else if (a.first.y() != b.first.y())
-		return a.first.y() < b.first.y();
-	else if (a.second.y() != b.second.y())
-		return a.second.y() < b.second.y();
-
-	return false;
-} // end method
-
-//------------------------------------------------------------------------------
-
-bool orderSegmentY(RsttRoutingEstimatorModel::Segment a, RsttRoutingEstimatorModel::Segment b) {
-	if (a.first.y() != b.first.y())
-		return a.first.y() < b.first.y();
-	else if (a.second.y() != b.second.y())
-		return a.second.y() < b.second.y();
-	else if (a.first.x() != b.first.x())
-		return a.first.x() < b.first.x();
-	else if (a.second.x() != b.second.x())
-		return a.first.x() < b.first.x();
-
-	return false;
-} // end method
- */
 //------------------------------------------------------------------------------
 
 RsttRoutingEstimatorModel::Point RsttRoutingEstimatorModel::returnMidPoint(std::vector<RsttRoutingEstimatorModel::Point> P, bool XorY) {
@@ -499,9 +471,9 @@ void RsttRoutingEstimatorModel::connectPinV(RsttRoutingEstimatorModel::Point Pin
 					RsttRoutingEstimatorModel::Segment newStem1(stemB, Pin);
 					RsttRoutingEstimatorModel::Segment newStem2(Pin, stemE);
 					if (firstCon == 0 || stems.size() == 0) {
-						stemIni.erase(stemIni.begin() + stemIndex);
-						stemIni.push_back(newStem1);
-						stemIni.push_back(newStem2);
+						SegIni.erase(SegIni.begin() + stemIndex);
+						SegIni.push_back(newStem1);
+						SegIni.push_back(newStem2);
 					} else {
 						stems.erase(stems.begin() + findSegment(stems, stem));
 						stems.push_back(newStem1);
@@ -512,9 +484,9 @@ void RsttRoutingEstimatorModel::connectPinV(RsttRoutingEstimatorModel::Point Pin
 					RsttRoutingEstimatorModel::Segment newStem1(stemB, stemConnection);
 					RsttRoutingEstimatorModel::Segment newStem2(stemConnection, stemE);
 					if (firstCon == 0 || stems.size() == 0) {
-						stemIni.erase(stemIni.begin() + stemIndex);
-						stemIni.push_back(newStem1);
-						stemIni.push_back(newStem2);
+						SegIni.erase(SegIni.begin() + stemIndex);
+						SegIni.push_back(newStem1);
+						SegIni.push_back(newStem2);
 					} else {
 						stems.erase(stems.begin() + findSegment(stems, stem));
 						stems.push_back(newStem1);
@@ -663,9 +635,9 @@ void RsttRoutingEstimatorModel::connectPinH(RsttRoutingEstimatorModel::Point Pin
 					RsttRoutingEstimatorModel::Segment newStem1(stemB, Pin);
 					RsttRoutingEstimatorModel::Segment newStem2(Pin, stemE);
 					if (firstCon == 0 || stems.size() == 0) {
-						stemIni.erase(stemIni.begin() + stemIndex);
-						stemIni.push_back(newStem1);
-						stemIni.push_back(newStem2);
+						SegIni.erase(SegIni.begin() + stemIndex);
+						SegIni.push_back(newStem1);
+						SegIni.push_back(newStem2);
 					} else {
 						stems.erase(stems.begin() + findSegment(stems, stem));
 						stems.push_back(newStem1);
@@ -676,9 +648,9 @@ void RsttRoutingEstimatorModel::connectPinH(RsttRoutingEstimatorModel::Point Pin
 					RsttRoutingEstimatorModel::Segment newStem1(stemB, stemConnection);
 					RsttRoutingEstimatorModel::Segment newStem2(stemConnection, stemE);
 					if (firstCon == 0 || stems.size() == 0) {
-						stemIni.erase(stemIni.begin() + stemIndex);
-						stemIni.push_back(newStem1);
-						stemIni.push_back(newStem2);
+						SegIni.erase(SegIni.begin() + stemIndex);
+						SegIni.push_back(newStem1);
+						SegIni.push_back(newStem2);
 					} else {
 						int stemI = findSegment(stems, stem);
 						stems.erase(stems.begin() + stemI);
@@ -722,7 +694,7 @@ DBU RsttRoutingEstimatorModel::returnWireLength(std::vector<RsttRoutingEstimator
 //------------------------------------------------------------------------------
 
 std::vector<RsttRoutingEstimatorModel::Segment> RsttRoutingEstimatorModel::returnHorizontalSteinerTree(std::vector<RsttRoutingEstimatorModel::Point> Pins, std::vector<RsttRoutingEstimatorModel::Segment> &Trunk) {
-	int i, size, j;
+	int i, j, size;
 	int Ymed, Xmin, Xmax; //Used into part A of algorithm   
 	RsttRoutingEstimatorModel::Point Pini;
 	std::vector<RsttRoutingEstimatorModel::Segment> stems;
@@ -776,7 +748,8 @@ std::vector<RsttRoutingEstimatorModel::Segment> RsttRoutingEstimatorModel::retur
 
 		// Connection of the pins that are in U and to the left of Pini
 		size = U.size();
-		j = 0;
+		
+		j = 0; // j indicates the first connection of the pins in the vectors U, L
 		for (i = 0; i < size; i++) {
 			if (U[i].x() <= Pini.x() && (U[i].x() != Pini.x() || U[i].y() != Pini.y())) {
 				connectPinV(U[i], Trunk, stems, stemIniU, j, UP);
@@ -906,7 +879,8 @@ std::vector<RsttRoutingEstimatorModel::Segment> RsttRoutingEstimatorModel::retur
 		stemIniL.push_back(conL);
 		//Connection of the pins that are in L and above of Pini
 		size = L.size();
-		j = 0;
+		
+		j = 0; // j indicates the first connection of the pins in L, R
 		for (i = 0; i < size; i++) {
 			if (L[i].y() <= Pini.y() && (L[i].x() != Pini.x() || L[i].y() != Pini.y())) {
 				connectPinH(L[i], Trunk, stems, stemIniL, j, LEFT);
@@ -941,6 +915,7 @@ std::vector<RsttRoutingEstimatorModel::Segment> RsttRoutingEstimatorModel::retur
 		//Connection of the pins that are in R and above of Pini
 
 		size = R.size();
+		
 		j = 0;
 		for (i = 0; i < size; i++) {
 			if (R[i].y() <= Pini.y() && (R[i].x() != Pini.x() || R[i].y() != Pini.y())) {
@@ -999,7 +974,7 @@ void RsttRoutingEstimatorModel::correctTrunk(std::vector<RsttRoutingEstimatorMod
 
 	std::vector<RsttRoutingEstimatorModel::Point> points;
 	std::set < RsttRoutingEstimatorModel::Point, decltype(compare) > Nodes(compare);
-	std::set<RsttRoutingEstimatorModel::Point>::iterator it;
+	//std::set<RsttRoutingEstimatorModel::Point>::iterator it;
 
 	if (HorV == HORIZONTAL) {
 		for (i = 0; i < Pins.size(); i++) {
@@ -1056,7 +1031,7 @@ void RsttRoutingEstimatorModel::correctTrunk(std::vector<RsttRoutingEstimatorMod
 	} // end if
 
 	trunk.clear();
-	it = Nodes.begin();
+	//it = Nodes.begin();
 
 	for (i = 0; i < (points.size() - 1); i++) {
 		RsttRoutingEstimatorModel::Point p1 = points[i];
@@ -1097,6 +1072,21 @@ int RsttRoutingEstimatorModel::findSegment(const std::vector<RsttRoutingEstimato
 	return -1;
 }
 
+void RsttRoutingEstimatorModel::removeLoopSegments(std::vector<Segment>& tree) {
+	std::vector<Segment> vecAux;
+	
+	for (int i = 0; i < tree.size(); i++) {
+		if (tree[i].first.x() == tree[i].second.x() && tree[i].first.y() == tree[i].second.y()) {
+			continue;
+		}
+		else {
+			vecAux.push_back(tree[i]);
+		}
+	}
+	
+	tree.swap(vecAux);
+}
+
 //------------------------------------------------------------------------------
 
 void RsttRoutingEstimatorModel::createTopology(std::vector<RsttRoutingEstimatorModel::Segment> const &tree, std::vector<RsttRoutingEstimatorModel::Point> const &Pins, std::vector<Pin> const &RsynPins, RoutingTopologyDescriptor<int>& topology) {
@@ -1112,7 +1102,7 @@ void RsttRoutingEstimatorModel::createTopology(std::vector<RsttRoutingEstimatorM
 		int segmentStartNode; // Index of the first node of the segment
 		int segmentFinalNode; // Index of the final node of the segment
 		int nodeIndex;
-
+		
 		nodeIndex = findPoint(nodes, tree[i].first); // The function findPoint returns the index of the point stored if it is stored in "nodes". Else, returns -1
 		// Create the initial and final nodes of the segment
 		if (nodeIndex != -1) { // If already exists a node in this position

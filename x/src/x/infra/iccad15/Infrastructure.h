@@ -30,7 +30,7 @@ using std::string;
 
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/phy/PhysicalService.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/model/timing/Timer.h"
 #include "x/opto/ufrgs/ispd16/ABU.h"
 #include "x/jezz/Jezz.h"
@@ -45,24 +45,24 @@ class WebLogger;
 namespace ICCAD15 {
 
 ////////////////////////////////////////////////////////////////////////////////
-// Engine (ICCAD15 Framework)
+// Session (ICCAD15 Framework)
 ////////////////////////////////////////////////////////////////////////////////
 	
 class BlockageControl;
 
 class Infrastructure : public Rsyn::Service {
-friend class Engine; // temporary
+friend class Session; // temporary
 public:
 	Infrastructure();
 	~Infrastructure();
 	
-	virtual void start(Rsyn::Engine engine, const Rsyn::Json &params);
+	virtual void start(const Rsyn::Json &params);
 	virtual void stop();		
 
 private:
 	
-	// Engine
-	Rsyn::Engine clsEngine;
+	// Session
+	Rsyn::Session clsSession;
 	
 	// Physical layer
 	Rsyn::PhysicalDesign clsPhysicalDesign;
@@ -648,7 +648,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////
 	
 public:
-	void init(Rsyn::Engine engine);
+	void init();
 	
 }; // end class
 

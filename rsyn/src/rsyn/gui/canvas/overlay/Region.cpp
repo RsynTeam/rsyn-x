@@ -27,11 +27,12 @@ bool RegionOverlay::init(PhysicalCanvasGL* canvas, nlohmann::json& properties) {
 	// It avoids crashes when a design without physical data is loaded. 
 	if(!canvas->isPhysicalDesignInitialized())
 		return false;
-	clsEngine = canvas->getEngine();
-	design = clsEngine.getDesign();
+	
+	Rsyn::Session session;
+	design = session.getDesign();
 	module = design.getTopModule(); 
 
-	Rsyn::PhysicalService *physical = clsEngine.getService("rsyn.physical");
+	Rsyn::PhysicalService *physical = session.getService("rsyn.physical");
 	if (!physical)
 		return false;
 	phDesign = physical->getPhysicalDesign();

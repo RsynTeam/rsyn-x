@@ -103,15 +103,6 @@
         </logicalFolder>
         <itemPath>../../../rsyn/src/rsyn/core/Rsyn.h</itemPath>
       </logicalFolder>
-      <logicalFolder name="engine" displayName="engine" projectFiles="true">
-        <itemPath>../../../rsyn/src/rsyn/engine/Engine.cpp</itemPath>
-        <itemPath>../../../rsyn/src/rsyn/engine/Engine.h</itemPath>
-        <itemPath>../../../rsyn/src/rsyn/engine/Message.cpp</itemPath>
-        <itemPath>../../../rsyn/src/rsyn/engine/Message.h</itemPath>
-        <itemPath>../../../rsyn/src/rsyn/engine/Process.h</itemPath>
-        <itemPath>../../../rsyn/src/rsyn/engine/Reader.h</itemPath>
-        <itemPath>../../../rsyn/src/rsyn/engine/Service.h</itemPath>
-      </logicalFolder>
       <logicalFolder name="gui" displayName="gui" projectFiles="true">
         <logicalFolder name="3rdparty" displayName="3rdparty" projectFiles="true">
           <logicalFolder name="nanovg" displayName="nanovg" projectFiles="true">
@@ -468,6 +459,15 @@
         </logicalFolder>
         <itemPath>../../../rsyn/src/rsyn/sandbox/Sandbox.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="session" displayName="session" projectFiles="true">
+        <itemPath>../../../rsyn/src/rsyn/session/Message.cpp</itemPath>
+        <itemPath>../../../rsyn/src/rsyn/session/Message.h</itemPath>
+        <itemPath>../../../rsyn/src/rsyn/session/Process.h</itemPath>
+        <itemPath>../../../rsyn/src/rsyn/session/Reader.h</itemPath>
+        <itemPath>../../../rsyn/src/rsyn/session/Service.h</itemPath>
+        <itemPath>../../../rsyn/src/rsyn/session/Session.cpp</itemPath>
+        <itemPath>../../../rsyn/src/rsyn/session/Session.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="setup" displayName="setup" projectFiles="true">
         <itemPath>../../../rsyn/src/rsyn/setup/message.cpp</itemPath>
       </logicalFolder>
@@ -629,6 +629,7 @@
     <Elem>../../../rsyn/src/rsyn/3rdparty/parser</Elem>
     <Elem>../../../rsyn/src/rsyn/setup</Elem>
     <Elem>../../../rsyn/src/rsyn/phy</Elem>
+    <Elem>../../../rsyn/src/rsyn/session</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -1055,41 +1056,6 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/core/obj/impl/Port.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../rsyn/src/rsyn/engine/Engine.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../../rsyn/src/rsyn/engine/Engine.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../rsyn/src/rsyn/engine/Message.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../../rsyn/src/rsyn/engine/Message.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../rsyn/src/rsyn/engine/Process.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../rsyn/src/rsyn/engine/Reader.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../rsyn/src/rsyn/engine/Service.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -2393,6 +2359,41 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/sandbox/obj/impl/Sandbox.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/session/Message.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/session/Message.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/session/Process.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/session/Reader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/session/Service.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/session/Session.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/session/Session.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -3247,41 +3248,6 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../rsyn/src/rsyn/engine/Engine.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../../rsyn/src/rsyn/engine/Engine.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../rsyn/src/rsyn/engine/Message.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../../rsyn/src/rsyn/engine/Message.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../rsyn/src/rsyn/engine/Process.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../rsyn/src/rsyn/engine/Reader.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../rsyn/src/rsyn/engine/Service.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="../../../rsyn/src/rsyn/gui/3rdparty/nanovg/fontstash.h"
             ex="false"
             tool="3"
@@ -4581,6 +4547,41 @@
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/sandbox/obj/impl/Sandbox.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/session/Message.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/session/Message.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/session/Process.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/session/Reader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/session/Service.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/session/Session.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/session/Session.h"
             ex="false"
             tool="3"
             flavor2="0">

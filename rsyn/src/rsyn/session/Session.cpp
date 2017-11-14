@@ -14,7 +14,7 @@
  */
  
 /*
- * Engine.cpp
+ * Session.cpp
  *
  *  Created on: May 8, 2015
  *      Author: jucemar
@@ -25,21 +25,30 @@
 #include <mutex>
 #include <boost/filesystem.hpp>
 
-#include "Engine.h"
+#include "Session.h"
 
 #include "rsyn/3rdparty/json/json.hpp"
 #include "rsyn/util/Environment.h"
 
 namespace Rsyn {
 
-void Engine::create() {
-	data = new EngineData();
-	
+SessionData * Session::sessionData = nullptr;
+
+// -----------------------------------------------------------------------------
+
+void Session::init() {
+	if (sessionData)
+		return;
+
+	std::setlocale(LC_ALL, "en_US.UTF-8");
+
+	sessionData = new SessionData();
+
 	// TODO: hard coded
-	data->clsInstallationPath = "../../rsyn/install";
+	sessionData->clsInstallationPath = "../../rsyn/install";
 
 	// Register messages.
-	registerInternalMessages(); // engine
+	registerInternalMessages(); // session
 	registerDefaultMessages();  // default services/processes
 	registerMessages();         // user services/processes
 
@@ -52,102 +61,77 @@ void Engine::create() {
 	// Register readers.
 	registerReaders();
 	
-	// Initialize logger
-	const bool enableLog = Environment::getBoolean( "ENABLE_LOG", false );
-	data->logger = ( enableLog ) ? ( new Logger() ) : ( nullptr );
-
 	// Register some commands.
 	registerDefaultCommands();
-	
+
 	// Create design.
-	data->clsDesign.create("__Root_Design__");
+	sessionData->clsDesign.create("__Root_Design__");
 
 	// Cache messages.
-	data->msgMessageRegistrationFail = getMessage("ENGINE-001");
+	sessionData->msgMessageRegistrationFail = getMessage("SESSION-001");
 
-	// Mark as initialized
-	data->clsInitialized = true;
+	// Initialize logger
+	const bool enableLog = Environment::getBoolean( "ENABLE_LOG", false );
+	sessionData->logger = ( enableLog ) ? ( new Logger() ) : ( nullptr );
 } // end constructor 
-
-// -----------------------------------------------------------------------------
-
-void Engine::destroy() {
-	// Stop all services.
-	for (auto it : data->clsRunningServices) {
-		it.second->stop();
-	} // end for
-
-//	// Delete all services.
-//	for (auto it : clsRunningServices) {
-//		delete it.second;
-//	} // end for
-
-	// Delete logger.
-	delete data->logger;
-} // end destructor
 
 ////////////////////////////////////////////////////////////////////////////////
 // Message
 ////////////////////////////////////////////////////////////////////////////////
 
-void Engine::registerInternalMessages() {
-	registerMessage("ENGINE-001", WARNING,
+void Session::registerInternalMessages() {
+	registerMessage("SESSION-001", WARNING,
 			"Message registration failed.",
 			"Cannot register message <message> after initialization.");
 } // end method
 
 // -----------------------------------------------------------------------------
 
-void Engine::registerMessage(const std::string& label, const MessageLevel& level, const std::string& title, const std::string& msg) {
-	if (data->clsInitialized) {
-		data->msgMessageRegistrationFail.replace("message", label);
-		data->msgMessageRegistrationFail.print();
-	} else {
-		data->clsMessageManager.registerMessage(label, level, title, msg);
-	} // end else
+void Session::registerMessage(const std::string& label, const MessageLevel& level, const std::string& title, const std::string& msg) {
+	sessionData->clsMessageManager.registerMessage(label, level, title, msg);
 } // end method
 
 // -----------------------------------------------------------------------------
 
-Message Engine::getMessage(const std::string &label) {
-	return data->clsMessageManager.getMessage(label);
+Message Session::getMessage(const std::string &label) {
+	return sessionData->clsMessageManager.getMessage(label);
 } // end method
 
 ////////////////////////////////////////////////////////////////////////////////
 // Script
 ////////////////////////////////////////////////////////////////////////////////
 		
-void Engine::registerCommand(const ScriptParsing::CommandDescriptor &dscp, const CommandHandler handler) {
+void Session::registerCommand(const ScriptParsing::CommandDescriptor &dscp, const CommandHandler handler) {
 	dscp.check();
 
-	data->clsCommandManager.addCommand(dscp, [=](const ScriptParsing::Command &command) {
-		handler(*this, command);
+	sessionData->clsCommandManager.addCommand(dscp, [=](const ScriptParsing::Command &command) {
+		handler(command);
 	});
 } // end method
 
 // -----------------------------------------------------------------------------
 
-void Engine::evaluateString(const std::string &str) {
-	data->clsCommandManager.evaluateString(str);
+void Session::evaluateString(const std::string &str) {
+	sessionData->clsCommandManager.evaluateString(str);
 } // end method
 
 // -----------------------------------------------------------------------------
 
-void Engine::evaluateFile(const std::string &filename) {
-	data->clsCommandManager.evaluateFile(filename);
+void Session::evaluateFile(const std::string &filename) {
+	sessionData->clsCommandManager.evaluateFile(filename);
 } // end method
 
 // -----------------------------------------------------------------------------
 
-void Engine::registerDefaultCommands() {
+void Session::registerDefaultCommands() {
 
 	{ // help
 		ScriptParsing::CommandDescriptor dscp;
 		dscp.setName("help");
 		dscp.setDescription("Shed some light in the world.");
 
-		registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command &command) {
-			data->clsCommandManager.printCommandList(std::cout);
+		registerCommand(dscp, [&](const ScriptParsing::Command &command) {
+			sessionData->clsCommandManager.printCommandList(std::cout);
 		});
 	} // end block
 
@@ -156,8 +140,8 @@ void Engine::registerDefaultCommands() {
 		dscp.setName("exit");
 		dscp.setDescription("Quit execution.");
 
-		registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command &command) {
-			data->clsCommandManager.exitRsyn(std::cout);
+		registerCommand(dscp, [&](const ScriptParsing::Command &command) {
+			sessionData->clsCommandManager.exitRsyn(std::cout);
 		});
 	} // end block
 	
@@ -166,8 +150,8 @@ void Engine::registerDefaultCommands() {
 		dscp.setName("history");
 		dscp.setDescription("Output command history.");
 
-		registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command &command) {
-			data->clsCommandManager.printHistory(std::cout);
+		registerCommand(dscp, [&](const ScriptParsing::Command &command) {
+			sessionData->clsCommandManager.printHistory(std::cout);
 		});
 	} // end block
 
@@ -188,7 +172,7 @@ void Engine::registerDefaultCommands() {
 				"Parameters to be passed to the process."
 		);
 
-		registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command &command) {
+		registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string name = command.getParam("name");
 			const Json params = command.getParam("params");
 			runProcess(name, params);			
@@ -212,7 +196,7 @@ void Engine::registerDefaultCommands() {
 				"Value of the session variable."
 		);
 
-		registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command &command) {
+		registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string name = command.getParam("name");
 			const Json value = command.getParam("value");
 			setSessionVariable(name, value);
@@ -235,7 +219,7 @@ void Engine::registerDefaultCommands() {
 				ScriptParsing::PARAM_SPEC_MANDATORY,
 				"Benchmark format."
 		);
-		registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command &command) {
+		registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string format = command.getParam("format");
 			Json options = command.getParam("options");
 			options["globalPlacementOnly"] = getSessionVariableAsBool("globalPlacementOnly", false);
@@ -256,7 +240,7 @@ void Engine::registerDefaultCommands() {
 				"The name of the script file."
 		);
 		
-		registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command &command) {
+		registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string fileName = command.getParam( "fileName" );
 			evaluateFile(fileName);
 		});
@@ -279,7 +263,7 @@ void Engine::registerDefaultCommands() {
 				"Parameters to be passed to the process."
 		);
 
-		registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command &command) {
+		registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string name = command.getParam("name");
 			const Json params = command.getParam("params");
 			startService(name, params);
@@ -295,7 +279,7 @@ void Engine::registerDefaultCommands() {
 				ScriptParsing::PARAM_SPEC_MANDATORY,
 				"Parameter should be: \"process\", \"service\" or \"reader\"."
 		);
-		registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command &command) {
+		registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string name = command.getParam("name");
 			if(name.compare("process") == 0) {
 				listProcess();

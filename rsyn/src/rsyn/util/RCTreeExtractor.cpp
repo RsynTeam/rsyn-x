@@ -2,9 +2,9 @@
 
 namespace Rsyn {
     
-RCTreeExtractor::RCTreeExtractor(Engine engine, ISPD13::SPEFInfo* info) {
-    clsEngine = engine;
-    clsScenario = engine.getService("rsyn.scenario");
+RCTreeExtractor::RCTreeExtractor(ISPD13::SPEFInfo* info) {
+    Rsyn::Session session;
+    clsScenario = session.getService("rsyn.scenario");
     spefInfo = info;
 } // end method 
 

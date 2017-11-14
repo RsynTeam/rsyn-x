@@ -29,7 +29,7 @@
 #ifndef BLOCKAGECONTROL_H
 #define BLOCKAGECONTROL_H
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/util/Matrix.h"
 #include "rsyn/phy/PhysicalDesign.h"
 using Rsyn::PhysicalCell;
@@ -39,7 +39,6 @@ class BlockageControl : public Rsyn::Service {
 	
 protected:
 	/* General data */
-	Rsyn::Engine clsEngine;
 	Rsyn::Module clsModule;
 	Rsyn::PhysicalDesign clsPhysicalDesign;
 	Rsyn::PhysicalModule clsPhysicalModule;
@@ -71,7 +70,7 @@ public:
 			const std::vector<Rsyn::Cell>& cells,
 			std::vector<Rsyn::Cell>& overlaps) const;
 	
-	virtual void start(Rsyn::Engine engine, const Rsyn::Json& params);
+	virtual void start(const Rsyn::Json& params);
 	virtual void stop() {};
 };
 

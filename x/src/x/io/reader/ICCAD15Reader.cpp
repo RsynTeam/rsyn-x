@@ -40,8 +40,8 @@
 
 namespace ICCAD15 {
 
-void ICCAD15Reader::load(Rsyn::Engine engine, const Rsyn::Json &params) {
-	Rsyn::ICCAD15Reader::load(engine, params);
+void ICCAD15Reader::load(const Rsyn::Json &params) {
+	Rsyn::ICCAD15Reader::load(params);
 
 	const bool globalPlacementOnly = params.value("globalPlacementOnly", false);
 	if (globalPlacementOnly) {
@@ -54,25 +54,25 @@ void ICCAD15Reader::load(Rsyn::Engine engine, const Rsyn::Json &params) {
 // -----------------------------------------------------------------------------
 
 void ICCAD15Reader::openBenchmarkFromICCAD15()  {
-	Rsyn::PhysicalService *physicalService = engine.getService("rsyn.physical");
+	Rsyn::PhysicalService *physicalService = session.getService("rsyn.physical");
 	Rsyn::PhysicalDesign physicalDesign = physicalService->getPhysicalDesign();
 
 	Stepwatch watchJezz("Starting Jezz");
-	engine.startService("rsyn.jezz", {});
+	session.startService("rsyn.jezz", {});
 	watchJezz.finish();
 
 	Stepwatch watchBlockageControl("Starting blockage control");
-	engine.startService("ufrgs.blockageControl", {});
+	session.startService("ufrgs.blockageControl", {});
 	watchBlockageControl.finish();
 		
 	Stepwatch watchInfrastructure("Initializing contest infrastructure");
-	engine.startService("ufrgs.ispd16.infra", {});	
-	ICCAD15::Infrastructure *infra = engine.getService("ufrgs.ispd16.infra");
+	session.startService("ufrgs.ispd16.infra", {});	
+	ICCAD15::Infrastructure *infra = session.getService("ufrgs.ispd16.infra");
 	infra->setTargetUtilization(optionTargetUtilization);
 	infra->setMaxDisplacement((DBU) optionMaxDisplacement);
 	infra->initAbu(physicalDesign, clsDesign.getTopModule(), optionTargetUtilization);
 	infra->updateAbu(true);
-	infra->init(engine);
+	infra->init();
 	watchInfrastructure.finish();
 
 	infra->reportDigest();

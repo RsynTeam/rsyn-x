@@ -45,7 +45,6 @@ extern void* reallocCB(void* name, size_t size);
 // -----------------------------------------------------------------------------
 
 DEFControlParser::DEFControlParser() {
-	std::setlocale(LC_ALL, "en_US.UTF-8");
 } // end constructor
 
 // -----------------------------------------------------------------------------
@@ -844,6 +843,21 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 		CHECK_STATUS(status);
 	} // end for 
 
+	// Write tracks
+	const char** layers;
+	for (const DefTrackDscp & track : defDscp.clsTracks) {
+		int numLayers = track.clsLayers.size();
+		layers = (const char**) malloc(sizeof (char*)*numLayers);
+		for (int i = 0; i < numLayers; i++) {
+			layers[i] = track.clsLayers[i].c_str();
+		} // end for 
+		status = defwTracks(track.clsDirection.c_str(), track.clsLocation, track.clsNumTracks, track.clsSpace, numLayers, layers);
+		CHECK_STATUS(status);
+		free((char*) layers);
+	} // end for 
+	status = defwNewLine();
+	CHECK_STATUS(status);
+	
 	int numComponents = defDscp.clsComps.size();
 	status = defwStartComponents(numComponents);
 	CHECK_STATUS(status);

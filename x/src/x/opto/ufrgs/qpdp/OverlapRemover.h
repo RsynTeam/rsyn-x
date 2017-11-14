@@ -29,7 +29,7 @@
 #ifndef OVERLAPREMOVER_H
 #define OVERLAPREMOVER_H
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/phy/PhysicalService.h"
 #include "rsyn/util/Stepwatch.h"
@@ -50,7 +50,6 @@ using namespace lemon;
 	
 class OverlapRemover : public Rsyn::Process {
 private:
-	Rsyn::Engine clsEngine;
 	Rsyn::Design clsDesign;
 	Rsyn::Module clsModule;
 	Rsyn::Timer *clsTimer;
@@ -98,7 +97,7 @@ private:
 public:
 	OverlapRemover() : legMode(LegalizationMethod::LEG_NEAREST_WHITESPACE) {}
     
-	bool run(Rsyn::Engine engine, const Rsyn::Json& params) override;	
+	bool run(const Rsyn::Json& params) override;	
 }; // end class
 
 } // end namespace

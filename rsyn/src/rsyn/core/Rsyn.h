@@ -17,6 +17,7 @@
 #define RSYN_H
 
 #include <cstdint>
+#include <array>
 #include <set>
 #include <map>
 #include <list>

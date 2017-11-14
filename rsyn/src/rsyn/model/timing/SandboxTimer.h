@@ -27,9 +27,9 @@
 #include <ctime>
 
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/sandbox/Sandbox.h"
-#include "rsyn/engine/Service.h"
+#include "rsyn/session/Service.h"
 #include "rsyn/model/timing/Timer.h"
 
 #include "rsyn/util/Stepwatch.h"
@@ -51,7 +51,7 @@
 
 namespace Rsyn {
 
-class Engine;
+class Session;
 class Scenario;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ private:
 		EdgeArray<Number> inputSlew;
 	};	// end struct
 
-	Rsyn::Engine engine;
+	Rsyn::Session session;
 	Rsyn::Design design;
 	Rsyn::Sandbox sandbox;
 
@@ -263,7 +263,7 @@ private:
 
 public:
 
-	void init(Rsyn::Engine rsynEngine, Rsyn::Sandbox rsynSandbox);
+	void init(Rsyn::Session rsynSession, Rsyn::Sandbox rsynSandbox);
 
 	void setInputDriver(Rsyn::SandboxInstance port, InputDriver driver);
 	void setInputDelay(Rsyn::SandboxInstance port, const TimingMode &mode, const EdgeArray<Number> &value);

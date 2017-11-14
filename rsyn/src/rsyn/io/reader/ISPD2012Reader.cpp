@@ -41,7 +41,7 @@
 
 namespace Rsyn {
 
-void ISPD2012Reader::load(Rsyn::Engine engine, const Json & config ) {
+void ISPD2012Reader::load(const Json & config ) {
 	std::string path = config.value("path", "");
 	std::string optionBenchmark = config.value("name", "");
 	std::string optionLibrary = config.value("library", "");
@@ -65,7 +65,7 @@ void ISPD2012Reader::load(Rsyn::Engine engine, const Json & config ) {
 	const std::string fileNameLiberty = path + separator +
 			optionLibrary;
 
-	clsDesign = engine.getDesign();
+	clsDesign = clsSession.getDesign();
 	{ // Liberty
 		Stepwatch watchParsingLiberty("Parsing Liberty");
 		LibertyControlParser libParser;
@@ -97,15 +97,15 @@ void ISPD2012Reader::load(Rsyn::Engine engine, const Json & config ) {
 	} // end block
 
 	// Services
-	engine.startService("rsyn.scenario", {});
-	engine.startService("rsyn.routingEstimator", {});
-	engine.startService("rsyn.timer", {});
-	engine.startService("rsyn.defaultTimingModel", {});
+	clsSession.startService("rsyn.scenario", {});
+	clsSession.startService("rsyn.routingEstimator", {});
+	clsSession.startService("rsyn.timer", {});
+	clsSession.startService("rsyn.defaultTimingModel", {});
 
-	Timer *timer = engine.getService("rsyn.timer");
-	RoutingEstimator *routingEstimator = engine.getService("rsyn.routingEstimator");
-	DefaultTimingModel* timingModel = engine.getService("rsyn.defaultTimingModel");
-	Scenario *scenario = engine.getService("rsyn.scenario");
+	Timer *timer = clsSession.getService("rsyn.timer");
+	RoutingEstimator *routingEstimator = clsSession.getService("rsyn.routingEstimator");
+	DefaultTimingModel* timingModel = clsSession.getService("rsyn.defaultTimingModel");
+	Scenario *scenario = clsSession.getService("rsyn.scenario");
 
 	{ // Scenario
 		Stepwatch watchScenario("Initializing scenario manager");
@@ -125,7 +125,7 @@ void ISPD2012Reader::load(Rsyn::Engine engine, const Json & config ) {
 		Stepwatch watchInit("Initializing timer");
 		timer->init(
 				clsDesign,
-				engine,
+				clsSession,
 				scenario,
 				libInfo,
 				libInfo);
@@ -135,7 +135,7 @@ void ISPD2012Reader::load(Rsyn::Engine engine, const Json & config ) {
 	} // end block
 
 	{ // Setup user-specified interconnection
-		Rsyn::Design design = engine.getDesign();
+		Rsyn::Design design = clsSession.getDesign();
 		const int numSpefNets = spefInfo.getSize();
 		for (int i = 0; i < numSpefNets; i++) {
 			const ISPD13::SpefNet &info = spefInfo.getNet(i);
@@ -145,7 +145,7 @@ void ISPD2012Reader::load(Rsyn::Engine engine, const Json & config ) {
 		} // end for
 	} // end block
 
-	engine.startService("rsyn.graphics", {});
+	clsSession.startService("rsyn.graphics", {});
 
 	timer->updateTimingFull();
 	timer->dumpTiming("dump-rsyn.txt");

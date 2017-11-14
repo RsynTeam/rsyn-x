@@ -22,13 +22,13 @@
 
 namespace ICCAD15 {
 
-bool ClusteredMove::run(Rsyn::Engine engine, const Rsyn::Json &params) {
-	this->engine = engine;
-	this->infra = engine.getService("ufrgs.ispd16.infra");
-	this->design = engine.getDesign();
-	this->timer = engine.getService("rsyn.timer");
+bool ClusteredMove::run(const Rsyn::Json &params) {
+	this->session = session;
+	this->infra = session.getService("ufrgs.ispd16.infra");
+	this->design = session.getDesign();
+	this->timer = session.getService("rsyn.timer");
 	this->module = design.getTopModule();
-	this->physical = engine.getService("rsyn.physical");
+	this->physical = session.getService("rsyn.physical");
 	this->phDesign = physical->getPhysicalDesign();
 	
 	moved = design.createAttribute();
@@ -98,7 +98,7 @@ void ClusteredMove::clusterNeighborCriticalNets( Rsyn::Pin criticalPin, const bo
 	auto pOrigin = phDesign.getPhysicalCell(criticalCell);
 	
 //	double initSlack = - timer->getPinWorstNegativeSlack( criticalPin, Rsyn::LATE );
-	//const double maxDist =  10 * engine->getRows()[0].propHeight;
+	//const double maxDist =  10 * session->getRows()[0].propHeight;
 	const double maxDist =  10 * phDesign.getRowHeight();
 //	std::cout << "Max dist = " << maxDist << std::endl;
 	
@@ -228,7 +228,7 @@ void ClusteredMove::clusterNeighborCriticalNets( Rsyn::Pin criticalPin, const bo
 		//DBUxy newPos = pCell.lower() + diff;
 		Rsyn::PhysicalCell phCell = phDesign.getPhysicalCell(*it);
 		DBUxy newPos = phCell.getPosition() + diff;
-		//		engine->moveCell( *cell, newPos, LegalizationMethod::LEG_NEAREST_WHITESPACE );
+		//		session->moveCell( *cell, newPos, LegalizationMethod::LEG_NEAREST_WHITESPACE );
 		double oldCost, newCost;
 
 		Rsyn::Instance instance = *it;

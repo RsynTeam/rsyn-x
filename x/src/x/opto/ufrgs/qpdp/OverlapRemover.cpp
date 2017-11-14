@@ -34,16 +34,17 @@
 
 namespace ICCAD15 {
 
-bool OverlapRemover::run(Rsyn::Engine engine, const Rsyn::Json& params) {
-	clsEngine = engine;
-	clsDesign = engine.getDesign();
-	clsModule = engine.getDesign().getTopModule();
-	clsTimer = engine.getService("rsyn.timer");
-	clsPhysical = engine.getService("rsyn.physical");
+bool OverlapRemover::run(const Rsyn::Json& params) {
+	Rsyn::Session session;
+	
+	clsDesign = session.getDesign();
+	clsModule = session.getDesign().getTopModule();
+	clsTimer = session.getService("rsyn.timer");
+	clsPhysical = session.getService("rsyn.physical");
 	clsPhysicalDesign = clsPhysical->getPhysicalDesign();
-	clsInfrastructure = engine.getService("ufrgs.ispd16.infra");
-	clsLibCharacterizer = engine.getService("rsyn.libraryCharacterizer");
-	clsBlockageControl = clsEngine.getService("ufrgs.blockageControl");
+	clsInfrastructure = session.getService("ufrgs.ispd16.infra");
+	clsLibCharacterizer = session.getService("rsyn.libraryCharacterizer");
+	clsBlockageControl = session.getService("ufrgs.blockageControl");
 	
 	M = clsPhysicalDesign.getPhysicalModule(clsModule).getLength(X);
 	minBlockArea = 5000.0 * clsPhysicalDesign.getRowHeight() * 

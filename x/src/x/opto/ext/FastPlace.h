@@ -16,7 +16,7 @@
 #ifndef FASTPLACE_EXT_OPTO_H
 #define FASTPLACE_EXT_OPTO_H
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 namespace Rsyn {
 class Timer;
@@ -27,7 +27,7 @@ namespace ICCAD15 {
 
 class FastPlace : public Rsyn::Process {
 private:
-	Rsyn::Engine engine;
+	Rsyn::Session session;
 	Rsyn::Design design;
 	Rsyn::Module module;
 	
@@ -39,7 +39,7 @@ private:
 	
 public:
 	
-	virtual bool run(Rsyn::Engine engine, const Rsyn::Json &params);
+	virtual bool run(const Rsyn::Json &params);
 	
 }; // end class
 

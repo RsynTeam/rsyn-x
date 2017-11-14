@@ -20,7 +20,7 @@
 #include <vector>
 
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/phy/PhysicalService.h"
 
 #include "rsyn/model/routing/RCTree.h"
@@ -42,7 +42,7 @@ class Infrastructure;
 
 class QpdpB2B {
 private:
-	Rsyn::Engine engine;
+	Rsyn::Session session;
 	Infrastructure * infra;
 	Rsyn::Design design;
 	Rsyn::Module module;
@@ -65,13 +65,13 @@ private:
 			Rsyn::Attribute<Rsyn::Instance, int> mapCellToIndex,
 			std::vector<Rsyn::Cell> &mapIndexToCell);
 	
-	void copyCellsLocationFromEngineToLinearSystem(
+	void copyCellsLocationFromSessionToLinearSystem(
 		const std::set<Rsyn::Cell> &movable,
 		const Rsyn::Attribute<Rsyn::Instance, int> mapCellToIndex,
 		std::vector<double> &px,
 		std::vector<double> &py);	
 	
-	void copyCellsLocationFromLinearSystemToEngine( 
+	void copyCellsLocationFromLinearSystemToSession( 
 			const Rsyn::Attribute<Rsyn::Instance, int> mapCellToIndex,	
 			const std::vector<Rsyn::Cell> &mapIndexToCell,
 			const std::vector<double> &px,
@@ -206,13 +206,13 @@ private:
 public:
 	
 	QpdpB2B() : 
-			engine(nullptr), 
+			session(nullptr), 
 			design(nullptr),
 			timer(nullptr),
 			verySmallResistance(0.01),
 			verySmallNetWeight(0.01) {}
 
-	void init(Rsyn::Engine ptr);
+	void init(Rsyn::Session ptr);
 
 	void runPathStraightening();
 	void runPathStraighteningUsingCliqueModel();

@@ -29,14 +29,14 @@
 #ifndef RSYN_BOOKSHELFREADER_H
 #define RSYN_BOOKSHELFREADER_H
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/core/Rsyn.h"
 
 namespace Rsyn {
 
 class BookshelfReader : public Reader {
 protected:
-	Rsyn::Engine engine;
+	Rsyn::Session session;
 	Rsyn::Design clsDesign;
 	Rsyn::Module clsModule;
 
@@ -47,7 +47,7 @@ public:
 	BookshelfReader() {}
 	BookshelfReader(const BookshelfReader& orig) {}
 	virtual ~BookshelfReader() {}
-	void load(Rsyn::Engine engine, const Json &params);
+	void load(const Json &params);
 }; // end class 
 
 } // end namespace 

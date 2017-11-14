@@ -17,7 +17,7 @@
 #define DEFAULT_TIMING_MODEL_H
 
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/engine/Service.h"
+#include "rsyn/session/Service.h"
 
 #include "rsyn/model/scenario/Scenario.h"
 #include "rsyn/model/routing/RoutingEstimator.h"
@@ -30,7 +30,7 @@ class Timer;
 class DefaultTimingModel : public TimingModel, public Service, public Rsyn::PhysicalObserver {
 public:
 
-	virtual void start(Engine engine, const Json &params) override;
+	virtual void start(const Json &params) override;
 	virtual void stop() override;
 	
 	virtual void

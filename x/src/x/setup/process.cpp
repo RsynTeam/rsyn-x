@@ -13,7 +13,7 @@
  * limitations under the License.
  */
  
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 // HOW-TO
 // To register process (e.g. optimization step), just include its .h below and 
@@ -38,7 +38,7 @@
 
 // Registration
 namespace Rsyn {
-void Engine::registerProcesses() {
+void Session::registerProcesses() {
 	// ISPD16
 	registerProcess<ICCAD15::Balancing>("ufrgs.balancing");
 	registerProcess<ICCAD15::LoadOptimization>("ufrgs.loadOpto");

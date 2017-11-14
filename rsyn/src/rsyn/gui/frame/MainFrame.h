@@ -23,7 +23,7 @@
 #include "rsyn/3rdparty/json/json.hpp"
 #include "rsyn/io/parser/script/ScriptReader.h"
 #include "rsyn/io/parser/bookshelf/BookshelfParser.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/gui/canvas/Stipple.h"
 
 #include <wx/config.h>
@@ -71,7 +71,7 @@ private:
 		VIEW_SCHEMATIC
 	};
 
-	Rsyn::Engine clsEngine = nullptr;
+	Rsyn::Session clsSession;
 
 	// Physical Design
 	Rsyn::PhysicalDesign clsPhysicalDesign;
@@ -118,7 +118,7 @@ private:
 	// Update schematic properties.
 	void UpdateSchematicProperties();
 	
-	// When window is closed, call engine Engine destructor.
+	// When window is closed, call session Session destructor.
 	void OnCloseWindow(wxCloseEvent& event) {
 		Destroy();
 	} // end method
@@ -231,7 +231,7 @@ private:
 		} // end else		
 	} // end method
 
-	// Engine events.
+	// Session events.
 	void processGraphicsEventDesignLoaded();
 	void processGraphicsEventRefresh();
 	void processGraphicsEventUpdateOverlayList();

@@ -13,19 +13,25 @@
  * limitations under the License.
  */
  
-#ifndef RSYN_PROCESS_H
-#define RSYN_PROCESS_H
+#ifndef RSYN_SERVICE_H
+#define RSYN_SERVICE_H
 
 #include "rsyn/3rdparty/json/json.hpp"
 
 namespace Rsyn {
 
-class Engine;
+class Session;
 typedef nlohmann::json Json;
 
-class Process {
+enum ServiceRequestType {
+	SERVICE_OPTIONAL,
+	SERVICE_MANDATORY
+}; // end enum
+
+class Service {
 public:
-	virtual bool run(Engine engine, const Json &params) = 0;
+	virtual void start(const Json &params) = 0;
+	virtual void stop() = 0;
 }; // end class
 
 } // end namespace

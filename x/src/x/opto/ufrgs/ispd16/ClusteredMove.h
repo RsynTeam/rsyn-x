@@ -16,7 +16,7 @@
 #ifndef CLUSTERED_MOVE_OPTO_H
 #define CLUSTERED_MOVE_OPTO_H
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/phy/PhysicalService.h"
 #include "rsyn/model/timing/types.h"
 
@@ -30,7 +30,7 @@ class Infrastructure;
 
 class ClusteredMove : public Rsyn::Process {
 private:
-	Rsyn::Engine engine;
+	Rsyn::Session session;
 	Infrastructure * infra;
 	Rsyn::Design design;
 	Rsyn::Module module;
@@ -47,7 +47,7 @@ private:
 	
 public:
 	
-	virtual bool run(Rsyn::Engine engine, const Rsyn::Json &params);
+	virtual bool run(const Rsyn::Json &params);
 	
 }; // end class
 

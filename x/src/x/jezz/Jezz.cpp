@@ -17,7 +17,7 @@
 #include <algorithm>
 #include <limits>
 #include "Jezz.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/phy/PhysicalService.h"
 #include "rsyn/util/Bounds.h"
 #include "rsyn/util/StreamStateSaver.h"
@@ -43,12 +43,12 @@ Jezz::Jezz() {
 
 // -----------------------------------------------------------------------------
 
-void Jezz::start(Rsyn::Engine engine, const Rsyn::Json &params) {
-	clsEngine = engine;
+void Jezz::start(const Rsyn::Json &params) {
+	Rsyn::Session session;
 
-	clsPhysical = engine.getService("rsyn.physical");
+	clsPhysical = session.getService("rsyn.physical");
 
-	clsDesign = engine.getDesign();
+	clsDesign = session.getDesign();
 	clsModule = clsDesign.getTopModule();
 	clsPhysicalDesign = clsPhysical->getPhysicalDesign();
 
@@ -82,7 +82,7 @@ void Jezz::start(Rsyn::Engine engine, const Rsyn::Json &params) {
 				"Identifier of the solution."
 		);
 
-		engine.registerCommand(dscp, [&](Rsyn::Engine engine, const ScriptParsing::Command &command) {
+		session.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string id = command.getParam("id");
 			jezz_storeSolution(id);			
 		});
@@ -107,7 +107,7 @@ void Jezz::start(Rsyn::Engine engine, const Rsyn::Json &params) {
 		);
 		
 
-		engine.registerCommand(dscp, [&](Rsyn::Engine engine, const ScriptParsing::Command &command) {
+		session.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string id = command.getParam("id");
 			const bool full = command.getParam("full");
 			
@@ -122,7 +122,7 @@ void Jezz::start(Rsyn::Engine engine, const Rsyn::Json &params) {
 		dscp.setName("legalize");
 		dscp.setDescription("Legalizes the current placement solution.");
 		
-		engine.registerCommand(dscp, [&](Rsyn::Engine engine, const ScriptParsing::Command &command) {
+		session.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			Stepwatch leg("Legalizing circuit", false);
 			jezz_Legalize();
 			leg.finish();
@@ -140,7 +140,7 @@ void Jezz::start(Rsyn::Engine engine, const Rsyn::Json &params) {
 				ScriptParsing::PARAM_SPEC_MANDATORY,
 				"Name of the target cell.");
 				
-		engine.registerCommand(dscp, [&](Rsyn::Engine engine, const ScriptParsing::Command &command) {
+		session.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string cellName = command.getParam("cellName");
 			const Rsyn::Instance cell = clsDesign.findCellByName(cellName);
 			
@@ -158,7 +158,7 @@ void Jezz::start(Rsyn::Engine engine, const Rsyn::Json &params) {
 		dscp.setName("jezzReport");
 		dscp.setDescription("Reports the final results solution.");
 		
-		engine.registerCommand(dscp, [&](Rsyn::Engine engine, const ScriptParsing::Command &command) {
+		session.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			reportFinalResults();
 		});
 	} // end block
@@ -262,7 +262,7 @@ void Jezz::initJezz() {
 		[&](Rsyn::Cell cell, const DBU x, const DBU y) {
 			Rsyn::PhysicalCell physicalCell = clsPhysicalDesign.getPhysicalCell(cell);
 
-			// Update engine.
+			// Update session.
 			if (x != physicalCell.getCoordinate(LOWER, X) || y != physicalCell.getCoordinate(LOWER, Y)) {
 				clsPhysicalDesign.placeCell(physicalCell, x, y, true);
 				clsPhysicalDesign.notifyObservers(physicalCell, clsPostInstanceMovedCallbackHandler);

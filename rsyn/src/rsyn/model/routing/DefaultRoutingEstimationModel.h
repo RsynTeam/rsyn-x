@@ -18,8 +18,8 @@
 
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/phy/PhysicalDesign.h"
-#include "rsyn/engine/Service.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Service.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/model/scenario/Scenario.h"
 #include "rsyn/model/routing/RoutingEstimationModel.h"
 
@@ -33,13 +33,10 @@ namespace Rsyn {
 class DefaultRoutingEstimationModel : public RoutingEstimationModel, public Service {
 public:
 
-	virtual void start(Engine engine, const Json &params) override;
+	virtual void start(const Json &params) override;
 	virtual void stop() override;
 	
 private:
-
-	// Engine.
-	Engine clsEngine;
 
 	// Design.
 	Rsyn::Design design;

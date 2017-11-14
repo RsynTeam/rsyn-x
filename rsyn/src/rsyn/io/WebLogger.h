@@ -17,7 +17,7 @@
 #define RSYN_WEB_LOGGER_H
 
 #include <fstream>
-#include "rsyn/engine/Service.h"
+#include "rsyn/session/Service.h"
 
 namespace Rsyn {
 
@@ -26,7 +26,7 @@ private:
 	std::ofstream clsContent;
 public:
 
-	virtual void start(Engine engine, const Json &params);
+	virtual void start(const Json &params);
 	virtual void stop();
 
 	// Render a pure html string. No escaping is performed.

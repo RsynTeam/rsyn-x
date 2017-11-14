@@ -17,7 +17,7 @@
 
 #include "Report.h"
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 // Services
 #include "rsyn/phy/PhysicalService.h"
@@ -28,15 +28,15 @@
 
 namespace Rsyn {
 
-void Report::start(Engine engine, const Json &params) {
-	clsEngine = engine;
+void Report::start(const Json &params) {
+	Rsyn::Session session;
 	
-	clsPhysical = engine.getService("rsyn.physical");
-	clsTimer = engine.getService("rsyn.timer");
-	clsLibraryCharacterizer = engine.getService("rsyn.libraryCharacterizer");
-	clsRoutingEstimator = engine.getService("rsyn.routingEstimator");
+	clsPhysical = session.getService("rsyn.physical");
+	clsTimer = session.getService("rsyn.timer");
+	clsLibraryCharacterizer = session.getService("rsyn.libraryCharacterizer");
+	clsRoutingEstimator = session.getService("rsyn.routingEstimator");
 	
-	clsDesign = engine.getDesign();
+	clsDesign = session.getDesign();
 	clsModule = clsDesign.getTopModule();	
 	clsPhysicalDesign = clsPhysical->getPhysicalDesign();
 	
@@ -69,7 +69,7 @@ void Report::start(Engine engine, const Json &params) {
 			"false"
 		);
 
-		clsEngine.registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command &command) {
+		clsSession.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string cellName = command.getParam("cellName");
 			const bool early = command.getParam("early");
 			const bool late = command.getParam("late");
@@ -110,7 +110,7 @@ void Report::start(Engine engine, const Json &params) {
 			"false"
 		);
 
-		clsEngine.registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command &command) {
+		clsSession.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string netName = command.getParam("netName");
 			const bool early = command.getParam("early");
 			const bool late = command.getParam("late");
@@ -158,7 +158,7 @@ void Report::start(Engine engine, const Json &params) {
 			"false"
 		);
 
-		clsEngine.registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command &command) {
+		clsSession.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string pinName = command.getParam("pinName");
 			const std::string separator = command.getParam("separator");
 			const bool early = command.getParam("early");
@@ -186,7 +186,7 @@ void Report::start(Engine engine, const Json &params) {
 			"Name of the target net"
 		);
 
-		clsEngine.registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command &command) {
+		clsSession.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string netName = command.getParam("netName");
 						
 			Rsyn::Net net = clsDesign.findNetByName(netName);
@@ -205,7 +205,7 @@ void Report::start(Engine engine, const Json &params) {
 		dscp.setName("reportCriticalPath");
 		dscp.setDescription("Report critical path.");
 
-		clsEngine.registerCommand(dscp, [&](Engine engine, const ScriptParsing::Command &command) {
+		clsSession.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			if (clsTimer) {
 				clsTimer->reportCriticalPath(Rsyn::LATE, std::cout);
 			} // end if

@@ -47,8 +47,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/2e9f8231/syntax_checks.o \
 	${OBJECTDIR}/_ext/2e9f8231/syntax_decls.o \
 	${OBJECTDIR}/_ext/2e9f8231/token.o \
-	${OBJECTDIR}/_ext/ab946606/Engine.o \
-	${OBJECTDIR}/_ext/ab946606/Message.o \
 	${OBJECTDIR}/_ext/2ef74bbb/nanovg.o \
 	${OBJECTDIR}/_ext/b3ae5bf7/App.o \
 	${OBJECTDIR}/_ext/b3ae5bf7/CanvasGL.o \
@@ -104,6 +102,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/935be1ca/PhysicalDesign.o \
 	${OBJECTDIR}/_ext/6ce3e294/BookshelfMapper.o \
 	${OBJECTDIR}/_ext/6ce3e294/PhysicalLayerUtil.o \
+	${OBJECTDIR}/_ext/9ce18f52/Message.o \
+	${OBJECTDIR}/_ext/9ce18f52/Session.o \
 	${OBJECTDIR}/_ext/82294639/message.o \
 	${OBJECTDIR}/_ext/822a69ec/Shell.o \
 	${OBJECTDIR}/_ext/c2237cc6/Logger.o \
@@ -227,16 +227,6 @@ ${OBJECTDIR}/_ext/2e9f8231/token.o: ../../../rsyn/src/rsyn/3rdparty/parser/liber
 	${MKDIR} -p ${OBJECTDIR}/_ext/2e9f8231
 	${RM} "$@.d"
 	$(COMPILE.c) -O3 -std=c11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2e9f8231/token.o ../../../rsyn/src/rsyn/3rdparty/parser/liberty/token.c
-
-${OBJECTDIR}/_ext/ab946606/Engine.o: ../../../rsyn/src/rsyn/engine/Engine.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/ab946606
-	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/ab946606/Engine.o ../../../rsyn/src/rsyn/engine/Engine.cpp
-
-${OBJECTDIR}/_ext/ab946606/Message.o: ../../../rsyn/src/rsyn/engine/Message.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/ab946606
-	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/ab946606/Message.o ../../../rsyn/src/rsyn/engine/Message.cpp
 
 ${OBJECTDIR}/_ext/2ef74bbb/nanovg.o: ../../../rsyn/src/rsyn/gui/3rdparty/nanovg/nanovg.c
 	${MKDIR} -p ${OBJECTDIR}/_ext/2ef74bbb
@@ -512,6 +502,16 @@ ${OBJECTDIR}/_ext/6ce3e294/PhysicalLayerUtil.o: ../../../rsyn/src/rsyn/phy/util/
 	${MKDIR} -p ${OBJECTDIR}/_ext/6ce3e294
 	${RM} "$@.d"
 	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/6ce3e294/PhysicalLayerUtil.o ../../../rsyn/src/rsyn/phy/util/PhysicalLayerUtil.cpp
+
+${OBJECTDIR}/_ext/9ce18f52/Message.o: ../../../rsyn/src/rsyn/session/Message.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/9ce18f52
+	${RM} "$@.d"
+	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/9ce18f52/Message.o ../../../rsyn/src/rsyn/session/Message.cpp
+
+${OBJECTDIR}/_ext/9ce18f52/Session.o: ../../../rsyn/src/rsyn/session/Session.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/9ce18f52
+	${RM} "$@.d"
+	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/9ce18f52/Session.o ../../../rsyn/src/rsyn/session/Session.cpp
 
 ${OBJECTDIR}/_ext/82294639/message.o: ../../../rsyn/src/rsyn/setup/message.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/82294639

@@ -26,14 +26,14 @@
 
 namespace ICCAD15 {
 
-class Engine;
+class Session;
 class Timer;
 class Infrastructure;
 class LibraryCharacterizer;
 
 class IncrementalTimingDrivenQP : public Rsyn::Process {
 private:
-	Rsyn::Engine engine;
+	Rsyn::Session session;
 	Infrastructure *infra;
 	Rsyn::Design design;
 	Rsyn::Module module;
@@ -101,9 +101,9 @@ private:
 	
 	void refreshCellsDelayRatio();
 	void buildMapping();
-	void copyCellsLocationFromEngineToLinearSystem();
-	void copyCellsLocationFromLinearSystemToEngine();
-	void copyCellsLocationFromLinearSystemToEngineOptimized();
+	void copyCellsLocationFromSessionToLinearSystem();
+	void copyCellsLocationFromLinearSystemToSession();
+	void copyCellsLocationFromLinearSystemToSessionOptimized();
 	void neutralizeSystem();
 	void neutralizeSystemWithSpreadingForces();
 	void generateRetentionForces( std::vector<double>& fx, 
@@ -147,7 +147,7 @@ private:
 	void doNoHarm();
 public:
 	
-	IncrementalTimingDrivenQP() : engine(nullptr), infra(nullptr), design(nullptr),
+	IncrementalTimingDrivenQP() : session(nullptr), infra(nullptr), design(nullptr),
 			 timer(nullptr), libc(nullptr), debugMode(false),
 			 enableRC( false ), alpha( 0 ),
 			 maxNumPaths( 5000 ),
@@ -157,7 +157,7 @@ public:
 	
 	void initIncrementalTimingDrivenQP();
 	
-	void setEngine(Rsyn::Engine ptr);
+	void setSession(Rsyn::Session ptr);
 	Rsyn::Cell getCellByIndex(const int index) const { 
 		return mapIndexToCell[index]; }
 
@@ -175,7 +175,7 @@ public:
 	bool canBeSetAsMovable(Rsyn::Cell cell, const bool considerCriticalCellsAsFixed);
 	double estimatePathSize( std::vector<Rsyn::Timer::PathHop>& pathHops );
     
-    bool run(Rsyn::Engine engine, const Rsyn::Json& params) override;
+    bool run(const Rsyn::Json& params) override;
 }; // end class
 
 } // end namespace

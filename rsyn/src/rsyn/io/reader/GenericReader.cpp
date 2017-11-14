@@ -32,7 +32,7 @@
 
 namespace Rsyn {
 
-void GenericReader::load(Engine engine, const Json& params) {
+void GenericReader::load(const Json& params) {
 	std::string path = params.value("path", "");
 		
 	if (path.back() != '/')
@@ -78,12 +78,12 @@ void GenericReader::load(Engine engine, const Json& params) {
 		enableTiming = true;
 
 		localWireResistancePerMicron =
-			engine.getSessionVariableAsFloat("localWireCapacitancePerMicron", 2.535f);
+			session.getSessionVariableAsFloat("localWireCapacitancePerMicron", 2.535f);
 		localWireCapacitancePerMicron = (Number)
-			std::atof(engine.getSessionVariableAsString("localWireResistancePerMicron", "0.16E-15f").c_str());
+			std::atof(session.getSessionVariableAsString("localWireResistancePerMicron", "0.16E-15f").c_str());
 		maxWireSegmentInMicron =
-			engine.getSessionVariableAsInteger("maxWireSegmentInMicron", 100);
-		enableRSTT = engine.getSessionVariableAsBool("enableRSTT");
+			session.getSessionVariableAsInteger("maxWireSegmentInMicron", 100);
+		enableRSTT = session.getSessionVariableAsBool("enableRSTT");
 
 		std::cout << "\n";
 		std::cout << std::left << std::setw(40) << "Technology parameter";
@@ -101,7 +101,7 @@ void GenericReader::load(Engine engine, const Json& params) {
 		enableTiming = true;
 	} // end if 
 
-	this->engine = engine;
+	this->session = session;
 
 	parsingFlow();
 
@@ -182,7 +182,7 @@ void GenericReader::parseVerilogFile() {
 void GenericReader::populateDesign() {
 	Stepwatch watch("Populating the design");
 
-	Rsyn::Design design = engine.getDesign();
+	Rsyn::Design design = session.getDesign();
 
 	if (enableTiming)
 		Reader::populateRsynLibraryFromLiberty(libInfo, design);
@@ -195,8 +195,8 @@ void GenericReader::populateDesign() {
 	physicalDesignConfiguration["clsEnableMergeRectangles"] = true;
 	physicalDesignConfiguration["clsEnableNetPinBoundaries"] = true;
 	physicalDesignConfiguration["clsEnableRowSegments"] = true;
-	engine.startService("rsyn.physical", physicalDesignConfiguration);
-	Rsyn::PhysicalService* phService = engine.getService("rsyn.physical");
+	session.startService("rsyn.physical", physicalDesignConfiguration);
+	Rsyn::PhysicalService* phService = session.getService("rsyn.physical");
 	Rsyn::PhysicalDesign physicalDesign = phService->getPhysicalDesign();
 	physicalDesign.loadLibrary(lefDescriptor);
 	physicalDesign.loadDesign(defDescriptor);
@@ -208,7 +208,7 @@ void GenericReader::populateDesign() {
 void GenericReader::parseLibertyFile() {
 	Stepwatch parsingLibertyWatch("Parsing Liberty file");
 
-	Rsyn::Design design = engine.getDesign();
+	Rsyn::Design design = session.getDesign();
 
 	if (!boost::filesystem::exists(libertyFile)) {
 		std::cout << "[WARNING] Failed to open file " << libertyFile << "\n";
@@ -237,12 +237,12 @@ void GenericReader::parseSDCFile() {
 // -----------------------------------------------------------------------------
 
 void GenericReader::initializeAuxiliarInfrastructure() {
-	Rsyn::Design design = engine.getDesign();
+	Rsyn::Design design = session.getDesign();
 
 	if (enableTiming) {
 		Stepwatch watchScenario("Loading scenario");
-		engine.startService("rsyn.scenario",{});
-		Rsyn::Scenario* scenario = engine.getService("rsyn.scenario");
+		session.startService("rsyn.scenario",{});
+		Rsyn::Scenario* scenario = session.getService("rsyn.scenario");
 		scenario->init(design, libInfo, libInfo, sdcInfo);
 		watchScenario.finish();
 
@@ -250,20 +250,20 @@ void GenericReader::initializeAuxiliarInfrastructure() {
 		RoutingEstimationModel* routingEstimationModel;
 		
 		if (!enableRSTT) {
-			engine.startService("rsyn.defaultRoutingEstimationModel",{});
+			session.startService("rsyn.defaultRoutingEstimationModel",{});
 			DefaultRoutingEstimationModel* defaultRoutingEstimationModel =
-				engine.getService("rsyn.defaultRoutingEstimationModel");
+				session.getService("rsyn.defaultRoutingEstimationModel");
 			routingEstimationModel = defaultRoutingEstimationModel;
 		} else {
-			engine.startService("rsyn.RSTTroutingEstimationModel");
+			session.startService("rsyn.RSTTroutingEstimationModel");
 			RsttRoutingEstimatorModel* rsstRoutingEstimationModel = 
-				engine.getService("rsyn.RSTTroutingEstimationModel");
+				session.getService("rsyn.RSTTroutingEstimationModel");
 			routingEstimationModel = rsstRoutingEstimationModel;
 		} // end if
 
-		engine.startService("rsyn.defaultRoutingExtractionModel",{});
+		session.startService("rsyn.defaultRoutingExtractionModel",{});
 		DefaultRoutingExtractionModel* routingExtractionModel =
-			engine.getService("rsyn.defaultRoutingExtractionModel");
+			session.getService("rsyn.defaultRoutingExtractionModel");
 
 		const Number resPerMicron = (Number) Rsyn::Units::convertToInternalUnits(
 			Rsyn::MEASURE_RESISTANCE, localWireResistancePerMicron, Rsyn::NO_UNIT_PREFIX);
@@ -278,35 +278,35 @@ void GenericReader::initializeAuxiliarInfrastructure() {
 			capPerMicron / clsDesignDistanceUnit,
 			maxWireSegmentInMicron * clsDesignDistanceUnit);
 
-		engine.startService("rsyn.routingEstimator",{});
-		RoutingEstimator *routingEstimator = engine.getService("rsyn.routingEstimator");
+		session.startService("rsyn.routingEstimator",{});
+		RoutingEstimator *routingEstimator = session.getService("rsyn.routingEstimator");
 		Stepwatch updateSteiner("Updating Steiner trees");
 		routingEstimator->setRoutingEstimationModel(routingEstimationModel);
 		routingEstimator->setRoutingExtractionModel(routingExtractionModel);
 		routingEstimator->updateRoutingFull();
 		updateSteiner.finish();
 
-		engine.startService("rsyn.timer",{});
-		Rsyn::Timer* timer = engine.getService("rsyn.timer");
+		session.startService("rsyn.timer",{});
+		Rsyn::Timer* timer = session.getService("rsyn.timer");
 
 		Stepwatch watchInit("Initializing timer");
 		timer->init(
 			design,
-			engine,
+			session,
 			scenario,
 			libInfo,
 			libInfo);
 		watchInit.finish();
 
 		Stepwatch watchInitModel("Initializing default timing model");
-		engine.startService("rsyn.defaultTimingModel",{});
-		DefaultTimingModel* timingModel = engine.getService("rsyn.defaultTimingModel");
+		session.startService("rsyn.defaultTimingModel",{});
+		DefaultTimingModel* timingModel = session.getService("rsyn.defaultTimingModel");
 		timer->setTimingModel(timingModel);
 		watchInitModel.finish();
 
 		Stepwatch watchInitLogicalEffort("Library characterization");
-		engine.startService("rsyn.libraryCharacterizer",{});
-		LibraryCharacterizer *libc = engine.getService("rsyn.libraryCharacterizer");
+		session.startService("rsyn.libraryCharacterizer",{});
+		LibraryCharacterizer *libc = session.getService("rsyn.libraryCharacterizer");
 		libc->runLibraryAnalysis(design, timingModel);
 		watchInitLogicalEffort.finish();
 
@@ -314,20 +314,20 @@ void GenericReader::initializeAuxiliarInfrastructure() {
 		timer->updateTimingFull();
 		updateTiming.finish();
 
-		engine.startService("rsyn.report",{});
+		session.startService("rsyn.report",{});
 	} // end if
 
 	// Start graphics service...
-	engine.startService("rsyn.graphics",{});
-	Graphics *graphics = engine.getService("rsyn.graphics");
+	session.startService("rsyn.graphics",{});
+	Graphics *graphics = session.getService("rsyn.graphics");
 	graphics->coloringByCellType();
 	//graphics->coloringRandomGray();
 
 	// Start writer service...
-	engine.startService("rsyn.writer",{});
+	session.startService("rsyn.writer",{});
 
 	// Start jezz service..
-	engine.startService("rsyn.jezz",{});
+	session.startService("rsyn.jezz",{});
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -343,7 +343,6 @@ void GenericReader::initializeAuxiliarInfrastructure() {
 //	// Start parsing...
 //	Stepwatch watchParsing("Parsing Design");
 //
-//	std::setlocale(LC_ALL, "en_US.UTF-8");
 //	lefParser.parseLEF(lefFiles[0], lefDscp);
 //	defParser.parseDEF(defFiles, defDscp);
 //	
@@ -354,7 +353,7 @@ void GenericReader::initializeAuxiliarInfrastructure() {
 //	// Parsing complete...
 //  	
 //	Stepwatch watchRsyn("Populating Rsyn");
-//	Rsyn::Design design = engine.getDesign();
+//	Rsyn::Design design = session.getDesign();
 //
 //	ISPD13::LIBInfo libInfo;
 //	if (enableTiming) {
@@ -382,8 +381,8 @@ void GenericReader::initializeAuxiliarInfrastructure() {
 //	physicalDesignConfiguratioon["clsEnableMergeRectangles"] = true;
 //	physicalDesignConfiguratioon["clsEnableNetPinBoundaries"] = true;
 //	physicalDesignConfiguratioon["clsEnableRowSegments"] = true;
-//	engine.startService("rsyn.physical", physicalDesignConfiguratioon);		
-//	Rsyn::PhysicalService* phService = engine.getService("rsyn.physical");
+//	session.startService("rsyn.physical", physicalDesignConfiguratioon);		
+//	Rsyn::PhysicalService* phService = session.getService("rsyn.physical");
 //	Rsyn::PhysicalDesign physicalDesign = phService->getPhysicalDesign();
 //	physicalDesign.loadLibrary(lefDscp);
 //	physicalDesign.loadDesign(defDscp);
@@ -400,18 +399,18 @@ void GenericReader::initializeAuxiliarInfrastructure() {
 //		watchParsingSdc.finish();
 //		
 //		Stepwatch watchScenario("Loading scenario");
-//		engine.startService("rsyn.scenario", {});
-//		Rsyn::Scenario* scenario = engine.getService("rsyn.scenario");
+//		session.startService("rsyn.scenario", {});
+//		Rsyn::Scenario* scenario = session.getService("rsyn.scenario");
 //		scenario->init(design, libInfo, libInfo, sdcInfo);
 //		watchScenario.finish();
 //		
-//		engine.startService("rsyn.defaultRoutingEstimationModel", {});
+//		session.startService("rsyn.defaultRoutingEstimationModel", {});
 //		DefaultRoutingEstimationModel* routingEstimationModel =
-//			engine.getService("rsyn.defaultRoutingEstimationModel");
+//			session.getService("rsyn.defaultRoutingEstimationModel");
 //
-//		engine.startService("rsyn.defaultRoutingExtractionModel", {});
+//		session.startService("rsyn.defaultRoutingExtractionModel", {});
 //		DefaultRoutingExtractionModel* routingExtractionModel = 
-//			engine.getService("rsyn.defaultRoutingExtractionModel");
+//			session.getService("rsyn.defaultRoutingExtractionModel");
 //	
 //		const Number resPerMicron = (Number) Rsyn::Units::convertToInternalUnits(
 //				Rsyn::MEASURE_RESISTANCE, localWireResistancePerMicron, Rsyn::NO_UNIT_PREFIX);
@@ -426,35 +425,35 @@ void GenericReader::initializeAuxiliarInfrastructure() {
 //				capPerMicron / clsDesignDistanceUnit,
 //				maxWireSegmentInMicron * clsDesignDistanceUnit);
 //
-//		engine.startService("rsyn.routingEstimator", {});
-//		RoutingEstimator *routingEstimator = engine.getService("rsyn.routingEstimator");
+//		session.startService("rsyn.routingEstimator", {});
+//		RoutingEstimator *routingEstimator = session.getService("rsyn.routingEstimator");
 //		Stepwatch updateSteiner("Updating Steiner trees");
 //		routingEstimator->setRoutingEstimationModel(routingEstimationModel);
 //		routingEstimator->setRoutingExtractionModel(routingExtractionModel);
 //		routingEstimator->updateRoutingFull();
 //		updateSteiner.finish();	
 //		
-//		engine.startService("rsyn.timer", {});		
-//		Rsyn::Timer* timer = engine.getService("rsyn.timer");
+//		session.startService("rsyn.timer", {});		
+//		Rsyn::Timer* timer = session.getService("rsyn.timer");
 //
 //		Stepwatch watchInit("Initializing timer");
 //		timer->init(
 //				design,
-//				engine,
+//				session,
 //				scenario,
 //				libInfo,
 //				libInfo);
 //		watchInit.finish();
 //
 //		Stepwatch watchInitModel("Initializing default timing model");
-//		engine.startService("rsyn.defaultTimingModel", {});
-//		DefaultTimingModel* timingModel = engine.getService("rsyn.defaultTimingModel");
+//		session.startService("rsyn.defaultTimingModel", {});
+//		DefaultTimingModel* timingModel = session.getService("rsyn.defaultTimingModel");
 //		timer->setTimingModel(timingModel);
 //		watchInitModel.finish();
 //
 //		Stepwatch watchInitLogicalEffort("Library characterization");
-//		engine.startService("rsyn.libraryCharacterizer", {});
-//		LibraryCharacterizer *libc = engine.getService("rsyn.libraryCharacterizer");
+//		session.startService("rsyn.libraryCharacterizer", {});
+//		LibraryCharacterizer *libc = session.getService("rsyn.libraryCharacterizer");
 //		libc->runLibraryAnalysis(design, timingModel);
 //		watchInitLogicalEffort.finish();
 //
@@ -462,21 +461,21 @@ void GenericReader::initializeAuxiliarInfrastructure() {
 //		timer->updateTimingFull();
 //		updateTiming.finish();
 //
-//		engine.startService("rsyn.report", {});	
+//		session.startService("rsyn.report", {});	
 //	} // end if
 //	
 //	// Start graphics service...
-//	engine.startService("rsyn.graphics", {});
-//	Graphics *graphics = engine.getService("rsyn.graphics");
+//	session.startService("rsyn.graphics", {});
+//	Graphics *graphics = session.getService("rsyn.graphics");
 //	graphics->coloringByCellType();
 //	// Graphics service complete...
 //
 //	// Start writer service...
-//	engine.startService("rsyn.writer", {});	
+//	session.startService("rsyn.writer", {});	
 //	// Writer service complete...
 //	
 //	// Start jezz service..
-//	engine.startService("rsyn.jezz", {});
+//	session.startService("rsyn.jezz", {});
 //	// Jezz complete
 //} // end method
 

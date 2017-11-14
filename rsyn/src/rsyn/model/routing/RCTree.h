@@ -886,7 +886,7 @@ void RCTreeBaseTemplate<NameType, TagType>::buildTopology(
 		Node &node = clsNodes[counter];
 		node.propWireCap = nodeDescriptor.totalCap;
 		node.propDrivingResistance = resistorDescriptor.propValue;
-		node.propParent = reverseTopology[resistorDescriptor.getOtherNode(n)];
+		node.propParent = reverseTopology[resistorDescriptor.getOtherNode(n)];		
 		clsNodeNames[counter] = nodeDescriptor.propName;
 		clsNodeTags[counter] = nodeDescriptor.propTag;
 
@@ -1106,6 +1106,20 @@ void RCTreeBaseTemplate<NameType, TagType>::updateDownstreamCap() {
 
 	for (int n = numNodes - 1; n > 0; n--) { // n > 0 skips root node
 		const Node &node = clsNodes[n];
+		
+		// Temporary debug. This should never happen, but it was leading
+		// RC-tree extractor to cause memory corruption
+		if (node.propParent < 0 || node.propParent >= clsNodes.size()) {
+			std::cout << "[ERROR] Invalid parent index (" << node.propParent << 
+					") of node (" << clsNodeNames[n] << ") the tree is..\n";
+			// Printing all nodes of the tree and its parents...
+			for (int i = 0; i < numNodes; i++) {
+				std::cout << "\t[" << i << "] Node: " << clsNodeNames[i] <<
+					" parent: " << clsNodes[i].propParent << "\n";
+			}
+			std::exit(1);
+		}
+		
 		clsNodes[node.propParent].propDownstreamCap += node.propDownstreamCap;
 	} // end for
 

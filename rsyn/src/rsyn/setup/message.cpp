@@ -1,8 +1,8 @@
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 // Registration
 namespace Rsyn {
-void Engine::registerDefaultMessages() {
+void Session::registerDefaultMessages() {
 	registerMessage("TIMER-001", WARNING,
 			"Unusual timing arc sense.",
 			"Timing arc <arc> has the unusual (for academic tools) sense <sense>.");

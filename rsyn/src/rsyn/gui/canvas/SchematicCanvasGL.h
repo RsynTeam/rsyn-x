@@ -23,7 +23,7 @@
 #include <wx/timer.h>
 
 #include "rsyn/gui/CanvasGL.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/util/Color.h"
 #include "rsyn/3rdparty/json/json.hpp"
 #include "rsyn/util/float2.h"
@@ -42,7 +42,7 @@ class NVGcontext;
 class SchematicCanvasGL : public CanvasGL {
 private:
 
-	Rsyn::Engine clsEngine;
+	Rsyn::Session clsSession;
 
 	// NanoVG
 	NVGcontext* vg = nullptr;
@@ -105,8 +105,8 @@ public:
 		CanvasGL::resetCamera(minx, miny, maxx, maxy);
 	} // end method
 
-	// Attach the engine.
-	void attachEngine(Rsyn::Engine engine);
+	// Attach the session.
+	void attachSession(Rsyn::Session session);
 }; // end class
 
 // -----------------------------------------------------------------------------
@@ -174,7 +174,7 @@ private:
 	
 	float2 clsMousePosition;
 	
-	Rsyn::Engine clsEngine;
+	Rsyn::Session clsSession;
 	Rsyn::Timer * timer;
 	Rsyn::Design clsDesign;
 	Rsyn::Attribute<Rsyn::Instance, VisualInstance> clsVisualInst;
@@ -239,8 +239,8 @@ public:
 	// Events.
 	virtual void onRender(wxPaintEvent& evt);
 
-	// Attach the engine.
-	void attachEngine(Rsyn::Engine engine);
+	// Attach the session.
+	void attachSession(Rsyn::Session session);
 }; // end class
 
 

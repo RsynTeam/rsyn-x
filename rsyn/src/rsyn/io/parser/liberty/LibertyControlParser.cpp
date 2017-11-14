@@ -27,7 +27,6 @@
 
 LibertyControlParser::LibertyControlParser() {
 	print = false;
-	std::setlocale(LC_ALL, "en_US.UTF-8");
 }
 
 LibertyControlParser::~LibertyControlParser() {

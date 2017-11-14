@@ -1,8 +1,8 @@
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 // Registration
 namespace Rsyn {
-void Engine::registerMessages() {
+void Session::registerMessages() {
 
 } // end method
 } // end namespace

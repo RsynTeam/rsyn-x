@@ -38,17 +38,19 @@ namespace ICCAD15 {
 class DefaultTimingModelWithIdealClock : public Rsyn::TimingModel, public Rsyn::Service {
 private:
 	Rsyn::DefaultTimingModel* clsDefaultTimingModel;
-	Rsyn::Engine clsEngine;
+	Rsyn::Session clsSession;
 	Rsyn::PhysicalDesign clsPhysicalDesign;
 	
 public:	
-	void start(Rsyn::Engine engine, const Rsyn::Json& params) {
-		Rsyn::PhysicalService *physical = engine.getService("rsyn.physical");
+	void start(const Rsyn::Json& params) {
+		Rsyn::Session session;
+
+		Rsyn::PhysicalService *physical = session.getService("rsyn.physical");
 		clsPhysicalDesign = physical->getPhysicalDesign();
-		engine.startService("rsyn.defaultTimingModel", {});
-		Rsyn::DefaultTimingModel* timingModel = engine.getService("rsyn.defaultTimingModel");
+		session.startService("rsyn.defaultTimingModel", {});
+		Rsyn::DefaultTimingModel* timingModel = session.getService("rsyn.defaultTimingModel");
 		clsDefaultTimingModel = timingModel;
-		clsEngine = engine;
+		clsSession = session;
 	}
 	
 	void stop() {}

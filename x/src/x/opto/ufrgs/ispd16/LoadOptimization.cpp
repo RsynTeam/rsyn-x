@@ -23,14 +23,14 @@
 
 namespace ICCAD15 {
 
-bool LoadOptimization::run(Rsyn::Engine engine, const Rsyn::Json &params) {
-	this->engine = engine;
-	this->infra = engine.getService("ufrgs.ispd16.infra");
-	this->design = engine.getDesign();
-	this->timer = engine.getService("rsyn.timer");
-	this->routingEstimator = engine.getService("rsyn.routingEstimator");
+bool LoadOptimization::run(const Rsyn::Json &params) {
+	this->session = session;
+	this->infra = session.getService("ufrgs.ispd16.infra");
+	this->design = session.getDesign();
+	this->timer = session.getService("rsyn.timer");
+	this->routingEstimator = session.getService("rsyn.routingEstimator");
 	this->module = design.getTopModule();
-	this->physical = engine.getService("rsyn.physical");
+	this->physical = session.getService("rsyn.physical");
 	this->phDesign = physical->getPhysicalDesign();
 	
 	const std::string optType = params.count("dontMoveRegistersAndLCBs")?

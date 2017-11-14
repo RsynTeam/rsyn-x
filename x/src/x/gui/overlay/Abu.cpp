@@ -11,11 +11,11 @@ AbuOverlay::AbuOverlay() {
 // -----------------------------------------------------------------------------
 
 bool AbuOverlay::init(PhysicalCanvasGL* canvas, nlohmann::json& properties) {
-	clsEnginePtr = canvas->getEngine();
+	clsSessionPtr;
 	// Jucemar - 03/26/17 -> Initializes overlay only if physical design is running. 
-	if(!clsEnginePtr.isServiceRunning("rsyn.physical")) 
+	if(!clsSessionPtr.isServiceRunning("rsyn.physical")) 
 		return false;
-	infra = clsEnginePtr.getService("ufrgs.ispd16.infra", Rsyn::SERVICE_OPTIONAL);
+	infra = clsSessionPtr.getService("ufrgs.ispd16.infra", Rsyn::SERVICE_OPTIONAL);
 	if ( !infra )
 		return false;
 	

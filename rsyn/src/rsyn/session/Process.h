@@ -13,37 +13,23 @@
  * limitations under the License.
  */
  
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   Reader.h
- * Author: jucemar
- *
- * Created on 18 de Fevereiro de 2017, 08:20
- */
-
-#ifndef RSYN_READER_H
-#define RSYN_READER_H
+#ifndef RSYN_PROCESS_H
+#define RSYN_PROCESS_H
 
 #include "rsyn/3rdparty/json/json.hpp"
-#include "rsyn/io/reader/PopulateRsyn.h"
 
 namespace Rsyn {
 
-class Engine;
+class Session;
 typedef nlohmann::json Json;
 
-class Reader : public PopulateRsyn {
+class Process {
 public:
-	virtual void load(Engine engine, const Json &params) = 0;
+	virtual bool run(const Json &params) = 0;
 }; // end class
 
 } // end namespace
 
 
-#endif /* RSYN_READER_H */
+#endif
 

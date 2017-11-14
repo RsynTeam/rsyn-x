@@ -29,7 +29,7 @@
 #ifndef LEMONLP_H
 #define LEMONLP_H
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 namespace ICCAD15 {
 
@@ -37,7 +37,7 @@ class LemonLP : public Rsyn::Process {
 public:
     LemonLP() {};
 private:
-    bool run(Rsyn::Engine engine, const Rsyn::Json& params) override;
+    bool run(const Rsyn::Json& params) override;
 };
 
 }

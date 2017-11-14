@@ -23,8 +23,6 @@
 #include "SDCControlParser.h"
 
 SDCControlParser::SDCControlParser() {
-	std::setlocale(LC_ALL, "en_US.UTF-8");
-
 } // end method
 
 // -----------------------------------------------------------------------------

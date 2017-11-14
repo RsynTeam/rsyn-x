@@ -19,6 +19,7 @@
                 <sourceRootElem>../../../rsyn/src/rsyn/3rdparty/parser</sourceRootElem>
                 <sourceRootElem>../../../rsyn/src/rsyn/setup</sourceRootElem>
                 <sourceRootElem>../../../rsyn/src/rsyn/phy</sourceRootElem>
+                <sourceRootElem>../../../rsyn/src/rsyn/session</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

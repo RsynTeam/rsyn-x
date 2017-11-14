@@ -16,17 +16,17 @@
 #include "rsyn/util/Colorize.h"
 
 bool RoutingEstimatorOverlay::init(PhysicalCanvasGL* canvas, nlohmann::json& properties) {
-	Rsyn::Engine engine = canvas->getEngine();
+	Rsyn::Session session;
 	// Jucemar - 03/26/17 -> Initializes overlay only if physical design is running. 
-	if(!engine.isServiceRunning("rsyn.physical")) 
+	if(!session.isServiceRunning("rsyn.physical")) 
 		return false;
-	clsDesign = engine.getDesign();
+	clsDesign = session.getDesign();
 	clsTopModule = clsDesign.getTopModule();
 		
-	if (!engine.isServiceRunning("rsyn.routingEstimator"))
+	if (!session.isServiceRunning("rsyn.routingEstimator"))
 		return false;
 	
-	clsRoutingEstimator = engine.getService("rsyn.routingEstimator");
+	clsRoutingEstimator = session.getService("rsyn.routingEstimator");
 	
 	clsMaxDegree = 0;
 	for (Rsyn::Net net: clsTopModule.allNets()) {

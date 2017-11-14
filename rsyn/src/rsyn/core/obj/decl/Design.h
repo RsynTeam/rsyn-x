@@ -21,6 +21,7 @@ namespace Rsyn {
 class Design : public Proxy<DesignData> {
 friend class RawPointer;
 
+friend class Session;
 friend class Net;
 friend class Cell;
 friend class Pin;
@@ -37,6 +38,9 @@ template<typename _Object, typename _ObjectExtension> friend class AttributeImpl
 private:
 
 	Design(DesignData * data) : Proxy(data) {}
+
+	//! @brief Create a new empty design.
+	void create(const std::string &name);
 
 public:
 
@@ -56,9 +60,6 @@ public:
 		data = other.data;
 		return *this;
 	} // end method	
-
-	//! @brief Create a new empty design.
-	void create(const std::string &name);
 
 	//! @brief Returns the top module of the design.
 	Module getTopModule();

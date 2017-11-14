@@ -39,7 +39,7 @@
 
 // Registration
 namespace Rsyn {
-void Engine::registerServices() {
+void Session::registerServices() {
 	registerService<Rsyn::PhysicalService>("rsyn.physical");
 	registerService<Rsyn::Scenario>("rsyn.scenario");
 	registerService<Rsyn::Timer>("rsyn.timer");

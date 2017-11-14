@@ -23,20 +23,20 @@
 #include "rsyn/model/timing/Timer.h"
 #include "rsyn/model/routing/RoutingEstimator.h"
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/util/FloatingPoint.h"
 #include "rsyn/util/AsciiProgressBar.h"
 #include "rsyn/util/StreamStateSaver.h"
 
 namespace ICCAD15 {
 	
-void QpdpB2B::init(Rsyn::Engine ptr) { 
-	engine = ptr;
-	infra = engine.getService("ufrgs.ispd16.infra");
-	timer = engine.getService("rsyn.timer");
-	physical = engine.getService("rsyn.physical");
-	routingEstimator = engine.getService("rsyn.routingEstimator");
-	design = engine.getDesign();
+void QpdpB2B::init(Rsyn::Session ptr) { 
+	session = ptr;
+	infra = session.getService("ufrgs.ispd16.infra");
+	timer = session.getService("rsyn.timer");
+	physical = session.getService("rsyn.physical");
+	routingEstimator = session.getService("rsyn.routingEstimator");
+	design = session.getDesign();
 	module = design.getTopModule();
 	phDesign = physical->getPhysicalDesign();
 	
@@ -50,7 +50,7 @@ void QpdpB2B::init(Rsyn::Engine ptr) {
 
 double QpdpB2B::getNetWeight(Rsyn::Net net) const {
 	// Guilherme Flach - 2016/09/08 -  The method 
-	// engine.getNetHistoricCriticality(net) is not supported anymore... 
+	// session.getNetHistoricCriticality(net) is not supported anymore... 
 	// Returning driver's importance.
 	return infra->getPinImportance(net.getAnyDriver(), Rsyn::LATE);
 } // end method
@@ -81,7 +81,7 @@ void QpdpB2B::buildMapping(
 
 // -----------------------------------------------------------------------------
 
-void QpdpB2B::copyCellsLocationFromEngineToLinearSystem(
+void QpdpB2B::copyCellsLocationFromSessionToLinearSystem(
 		const std::set<Rsyn::Cell> &movable,
 		const Rsyn::Attribute<Rsyn::Instance, int> mapCellToIndex,
 		std::vector<double> &px,
@@ -107,7 +107,7 @@ void QpdpB2B::copyCellsLocationFromEngineToLinearSystem(
 
 // -----------------------------------------------------------------------------
 
-void QpdpB2B::copyCellsLocationFromLinearSystemToEngine( 
+void QpdpB2B::copyCellsLocationFromLinearSystemToSession( 
 		const Rsyn::Attribute<Rsyn::Instance, int> mapCellToIndex,
 		const std::vector<Rsyn::Cell> &mapIndexToCell,
 		const std::vector<double> &px,
@@ -192,7 +192,7 @@ void QpdpB2B::copyCellsLocationFromLinearSystemToEngine(
 
 double
 QpdpB2B::getDriverResistance(Rsyn::Net net) {
-	const Rsyn::LibraryCharacterizer * libc = engine.getService("rsyn.libraryCharacterizer");
+	const Rsyn::LibraryCharacterizer * libc = session.getService("rsyn.libraryCharacterizer");
 
 	Rsyn::Pin driver = net.getAnyDriver();
 	double rDriver = verySmallResistance;
@@ -1007,7 +1007,7 @@ void QpdpB2B::runPathStraightening() {
 	buildMapping(movable, mapCellToIndex, mapIndexToCell);
 
 	// Copy current cell positions.
-	copyCellsLocationFromEngineToLinearSystem(movable, mapCellToIndex, px, py);
+	copyCellsLocationFromSessionToLinearSystem(movable, mapCellToIndex, px, py);
 	
 	// Build plain linear system.
 	buildLinearSystemUsingBound2BoundModel(movable, mapCellToIndex, false, mapIndexToCell, Ax, Ay, bx, by, px, py);
@@ -1044,8 +1044,8 @@ void QpdpB2B::runPathStraightening() {
 	tx.join();
 	ty.join();
 	
-	// Update cell position in the engine.
-	copyCellsLocationFromLinearSystemToEngine(mapCellToIndex, mapIndexToCell, px, py, legalizationMethod);
+	// Update cell position in the session.
+	copyCellsLocationFromLinearSystemToSession(mapCellToIndex, mapIndexToCell, px, py, legalizationMethod);
 	
 	// Update timing.
 	timer->updateTimingIncremental();
@@ -1129,7 +1129,7 @@ void QpdpB2B::runPathStraighteningUsingCliqueModel() {
 	buildMapping(movable, mapCellToIndex, mapIndexToCell);
 
 	// Copy current cell positions.
-	copyCellsLocationFromEngineToLinearSystem(movable, mapCellToIndex, px, py);
+	copyCellsLocationFromSessionToLinearSystem(movable, mapCellToIndex, px, py);
 	
 	// Build the optimization linear system.
 	buildLinearSystem(mapCellToIndex, mapIndexToCell, A, bx, by, weightening);
@@ -1161,8 +1161,8 @@ void QpdpB2B::runPathStraighteningUsingCliqueModel() {
 	tx.join();
 	ty.join();
 
-	// Update cell position in the engine.
-	copyCellsLocationFromLinearSystemToEngine(mapCellToIndex, mapIndexToCell, px, py, legalizationMethod);
+	// Update cell position in the session.
+	copyCellsLocationFromLinearSystemToSession(mapCellToIndex, mapIndexToCell, px, py, legalizationMethod);
 	
 	// Update timing.
 	timer->updateTimingIncremental();

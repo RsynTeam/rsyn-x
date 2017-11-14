@@ -23,13 +23,13 @@
 
 namespace ICCAD15 {
 
-bool QuadraticPlacementExample::run(Rsyn::Engine engine, const Rsyn::Json &params) {
-	this->engine = engine;
-	this->infra = engine.getService("ufrgs.ispd16.infra");
-	this->design = engine.getDesign();
-	this->timer = engine.getService("rsyn.timer");
+bool QuadraticPlacementExample::run(const Rsyn::Json &params) {
+	this->session = session;
+	this->infra = session.getService("ufrgs.ispd16.infra");
+	this->design = session.getDesign();
+	this->timer = session.getService("rsyn.timer");
 	this->module = design.getTopModule();
-	this->physical = engine.getService("rsyn.ohysical");
+	this->physical = session.getService("rsyn.ohysical");
 	this->phDesign = physical->getPhysicalDesign();
 	
 	//Jucemar Monteiro 2017/02/24
@@ -55,7 +55,7 @@ bool QuadraticPlacementExample::run(Rsyn::Engine engine, const Rsyn::Json &param
 void QuadraticPlacementExample::runQuadraticPlacementUsingHybridNetModel() {
 	std::cout << "*** Quadratic Placement (Hybrid Net Model) ***\n";
 	
-	// Engine configuration
+	// Session configuration
 	infra->configureMaxDisplacementConstraint(false); // TODO: remove this dependency
 	
 	// Store cells that should be considered as movable.
@@ -112,7 +112,7 @@ void QuadraticPlacementExample::runQuadraticPlacementUsingHybridNetModel() {
 		infra->moveCell(cell, pos, LEG_NONE, false);
 	} // end for 
 	
-	// Engine configuration.
+	// Session configuration.
 	infra->configureMaxDisplacementConstraint(true); // TODO: remove this dependency
 } // end method	
 
@@ -135,7 +135,7 @@ void QuadraticPlacementExample::runQuadraticPlacementUsinbBound2BoundNetModel() 
 	
 	const double epsilon = phDesign.getRowHeight();
 	
-	// Engine configuration
+	// Session configuration
 	infra->configureMaxDisplacementConstraint(false); // TODO: remove this dependency
 	
 	// Store cells that should be considered as movable.
@@ -218,7 +218,7 @@ void QuadraticPlacementExample::runQuadraticPlacementUsinbBound2BoundNetModel() 
 		infra->moveCell(cell, pos, LEG_NONE, false);
 	} // end for 
 	
-	// Engine configuration.
+	// Session configuration.
 	infra->configureMaxDisplacementConstraint(true); // TODO: remove this dependency
 } // end method	
 

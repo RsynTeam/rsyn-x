@@ -19,7 +19,7 @@
 #include <iostream>
 
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/engine/Service.h"
+#include "rsyn/session/Service.h"
 #include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/model/routing/RCTree.h"
 #include "rsyn/model/routing/RoutingTopology.h"
@@ -40,6 +40,7 @@ private:
 public:
 
 	virtual void extract(const Rsyn::RoutingTopologyDescriptor<int> &topology, Rsyn::RCTree &tree) = 0;
+	virtual void updateDownstreamCap(Rsyn::RCTree &tree) = 0;
 
 	// TODO: Remove these.
 	virtual Number getLocalWireResPerUnitLength() const = 0;

@@ -29,7 +29,7 @@
 #ifndef RSYN_ISPD2012READER_H
 #define RSYN_ISPD2012READER_H
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/3rdparty/json/json.hpp"
 #include "rsyn/util/RCTreeExtractor.h"
@@ -38,7 +38,7 @@ namespace Rsyn {
 
 class SizingISPDReader : public Reader {
 protected:
-	Rsyn::Engine engine;
+	Rsyn::Session session;
 	Rsyn::Design clsDesign;
 	Rsyn::Module clsModule;
 
@@ -46,7 +46,7 @@ public:
 	SizingISPDReader() {}
 	SizingISPDReader(const SizingISPDReader& orig) {}
 	virtual ~SizingISPDReader() {}
-	void load(Engine engine, const Json &params);
+	void load(const Json &params);
 
 }; // end class 
 

@@ -15,7 +15,7 @@
 #define RCTREEEXTRACTOR_H
 
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/model/scenario/Scenario.h"
 #include "rsyn/model/routing/RCTree.h"
 #include "rsyn/model/routing/RoutingTopology.h"
@@ -28,7 +28,6 @@ class RCTreeExtractor {
     
 private:
     
-    Rsyn::Engine clsEngine;
     Rsyn::Scenario * clsScenario;
     ISPD13::SPEFInfo *spefInfo;
     
@@ -53,7 +52,7 @@ public:
     };
     
     RCTreeExtractor() = default;
-    RCTreeExtractor(Engine engine, ISPD13::SPEFInfo *info);
+    RCTreeExtractor(ISPD13::SPEFInfo *info);
     ~RCTreeExtractor() = default;
     void extractRCTreeFromSPEF(SPEFNetModel netModel, Rsyn::Net net, Rsyn::RCTree &tree);
     

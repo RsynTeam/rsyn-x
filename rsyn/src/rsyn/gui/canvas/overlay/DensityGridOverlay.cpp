@@ -42,8 +42,8 @@ bool DensityGridOverlay::init(PhysicalCanvasGL* canvas, nlohmann::json& properti
 	// It avoids crashes when a design without physical data is loaded. 
 	if(!canvas->isPhysicalDesignInitialized())
 		return false;
-	Rsyn::Engine clsEnginePtr = canvas->getEngine();
-	if(!clsEnginePtr.isServiceRunning("rsyn.densityGrid"))
+	Rsyn::Session clsSessionPtr;
+	if(!clsSessionPtr.isServiceRunning("rsyn.densityGrid"))
 		return false;
 	return true;
 } // end method
@@ -59,11 +59,11 @@ void DensityGridOverlay::config(const nlohmann::json &params) {
 // -----------------------------------------------------------------------------
 
 void DensityGridOverlay::render(PhysicalCanvasGL * canvas) {
-	Rsyn::Engine clsEnginePtr = canvas->getEngine();
-	if(!clsEnginePtr.isServiceRunning("rsyn.densityGrid"))
+	Rsyn::Session clsSessionPtr;
+	if(!clsSessionPtr.isServiceRunning("rsyn.densityGrid"))
 		return;
 	
-	Rsyn::DensityGridService * server = clsEnginePtr.getService("rsyn.densityGrid");
+	Rsyn::DensityGridService * server = clsSessionPtr.getService("rsyn.densityGrid");
 	Rsyn::DensityGrid grid = server->getDensityGrid();
 	if (grid.isInitialized()) {
 		renderGrid(canvas);
@@ -79,11 +79,11 @@ void DensityGridOverlay::render(PhysicalCanvasGL * canvas) {
 // -----------------------------------------------------------------------------
 
 void DensityGridOverlay::renderPinUtilization(PhysicalCanvasGL * canvas) {
-	Rsyn::Engine engine = canvas->getEngine();
-	if(!engine.isServiceRunning("rsyn.densityGrid"))
+	Rsyn::Session session;
+	if(!session.isServiceRunning("rsyn.densityGrid"))
 		return;
 	
-	Rsyn::DensityGridService * server = engine.getService("rsyn.densityGrid");
+	Rsyn::DensityGridService * server = session.getService("rsyn.densityGrid");
 	Rsyn::DensityGrid grid = server->getDensityGrid();
 	grid.updateMaxPins();
 	const int maxPins = grid.getMaxPins(Rsyn::CONNECTED_PIN);
@@ -114,11 +114,11 @@ void DensityGridOverlay::renderPinUtilization(PhysicalCanvasGL * canvas) {
 // -----------------------------------------------------------------------------
 
 void DensityGridOverlay::renderAreaUtilization(PhysicalCanvasGL * canvas) {
-	Rsyn::Engine engine = canvas->getEngine();
-	if(!engine.isServiceRunning("rsyn.densityGrid"))
+	Rsyn::Session session;
+	if(!session.isServiceRunning("rsyn.densityGrid"))
 		return;
 	
-	Rsyn::DensityGridService * server = engine.getService("rsyn.densityGrid");
+	Rsyn::DensityGridService * server = session.getService("rsyn.densityGrid");
 	Rsyn::DensityGrid grid = server->getDensityGrid();
 	grid.updateMaxAreas();
 	double maxArea = grid.getMaxArea(Rsyn::MOVABLE_AREA) + grid.getMaxArea(Rsyn::FIXED_AREA);
@@ -154,11 +154,11 @@ void DensityGridOverlay::renderAbuViolations(PhysicalCanvasGL * canvas) {
 // -----------------------------------------------------------------------------
 
 void DensityGridOverlay::renderGrid(PhysicalCanvasGL * canvas) {
-	Rsyn::Engine clsEnginePtr = canvas->getEngine();
-	if(!clsEnginePtr.isServiceRunning("rsyn.densityGrid"))
+	Rsyn::Session clsSessionPtr;
+	if(!clsSessionPtr.isServiceRunning("rsyn.densityGrid"))
 		return;
 	
-	Rsyn::DensityGridService * server = clsEnginePtr.getService("rsyn.densityGrid");
+	Rsyn::DensityGridService * server = clsSessionPtr.getService("rsyn.densityGrid");
 	Rsyn::DensityGrid grid = server->getDensityGrid();
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(1);
@@ -186,11 +186,11 @@ void DensityGridOverlay::renderGrid(PhysicalCanvasGL * canvas) {
 // -----------------------------------------------------------------------------
 
 void DensityGridOverlay::renderRows(PhysicalCanvasGL * canvas) {
-	Rsyn::Engine engine = canvas->getEngine();
-	if(!engine.isServiceRunning("rsyn.densityGrid"))
+	Rsyn::Session session;
+	if(!session.isServiceRunning("rsyn.densityGrid"))
 		return;
 	
-	Rsyn::DensityGridService * server = engine.getService("rsyn.densityGrid");
+	Rsyn::DensityGridService * server = session.getService("rsyn.densityGrid");
 	Rsyn::DensityGrid grid = server->getDensityGrid();
 	
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

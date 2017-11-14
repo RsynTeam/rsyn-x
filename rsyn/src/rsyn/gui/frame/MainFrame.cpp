@@ -48,8 +48,7 @@ const std::string MainFrame::DEFAULT_STORED_SOLUTION_NAME = "_gui";
 // -----------------------------------------------------------------------------
 
 MainFrame::MainFrame() : MainFrameBase((wxFrame *) nullptr), clsConfig("UPlace") {
-	clsEngine.create();
-	clsEngine.registerGraphicsCallback([&](const Rsyn::GraphicsEvent event){
+	clsSession.registerGraphicsCallback([&](const Rsyn::GraphicsEvent event){
 		switch (event) {
 			case Rsyn::GRAPHICS_EVENT_DESIGN_LOADED:
 				processGraphicsEventDesignLoaded();
@@ -109,7 +108,7 @@ MainFrame::MainFrame() : MainFrameBase((wxFrame *) nullptr), clsConfig("UPlace")
 
 	// Restore command history.
 	ScriptParsing::CommandManager &commandManager =
-			clsEngine.getCommandManager();
+			clsSession.getCommandManager();
 	int counter = 0;
 	while (true) {
 		std::ostringstream oss;
@@ -134,8 +133,6 @@ MainFrame::~MainFrame() {
 	delete clsSaveSnapshot;
 	delete clsAboutDialog;
 	
-	clsEngine.destroy();
-	
 	unregisterAllOverlays();
 } // end destructor 
 
@@ -155,12 +152,12 @@ void MainFrame::OnExecuteCommand(wxCommandEvent& event) {
 		return;
 	
 	try {
-		clsEngine.evaluateString(cmd);
+		clsSession.evaluateString(cmd);
 		UpdateStats(true); // FIXME: Don't need to redraw for some commands.
 
 		//  Store command in the history.
 		const ScriptParsing::CommandManager &commandManager =
-			clsEngine.getCommandManager();
+			clsSession.getCommandManager();
 
 		const int index = commandManager.currentHistoryCommandIndex();
 		if (index >= 0) {
@@ -186,7 +183,7 @@ void MainFrame::OnExecuteCommand(wxCommandEvent& event) {
 
 void MainFrame::OnExecuteCommandChar(wxKeyEvent& event) {
 	ScriptParsing::CommandManager &commandManager =
-		clsEngine.getCommandManager();
+		clsSession.getCommandManager();
 
 	switch (event.GetKeyCode()) {
 		case WXK_TAB: {
@@ -308,9 +305,9 @@ void MainFrame::updateCircuitInfo(){
 		clsPropertyGridItemDesignNumFixedCells->SetValueToUnspecified();
 		clsPropertyGridItemDesignNumMovableCells->SetValueToUnspecified();
 	}// end if-else  
-	clsPropertyGridItemDesignName->SetValue(clsEngine.getDesign().getName());
-	clsPropertyGridItemDesignNumCells->SetValue(clsEngine.getDesign().getNumInstances(Rsyn::CELL));
-	clsPropertyGridItemDesignNumNets->SetValue(clsEngine.getDesign().getNumNets());
+	clsPropertyGridItemDesignName->SetValue(clsSession.getDesign().getName());
+	clsPropertyGridItemDesignNumCells->SetValue(clsSession.getDesign().getNumInstances(Rsyn::CELL));
+	clsPropertyGridItemDesignNumNets->SetValue(clsSession.getDesign().getNumNets());
 	clsPropertyGridItemDesignNumInputPins->SetValue(-1);
 	clsPropertyGridItemDesignNumOutputPins->SetValue(-1);
 
@@ -322,7 +319,7 @@ void MainFrame::updateCircuitInfo(){
 
 void MainFrame::DoRunScript(const string &filename) {
 	try {
-		clsEngine.evaluateFile(filename);
+		clsSession.evaluateFile(filename);
 	} catch (Exception &e) {
 		std::cout << "EXCEPTION: " << e << "\n";
 	} // end catch
@@ -349,7 +346,7 @@ void MainFrame::DoChangeView(const View view) {
 			clsChoicebookView->ChangeSelection(0);
 			break;
 		case VIEW_SCHEMATIC: {
-			Rsyn::Design design = clsEngine.getDesign();
+			Rsyn::Design design = clsSession.getDesign();
 			//workaround to detect if design is not initialized 
 			//Isadora 2017-04-26
 //			if (design.getNumPins() == 0)
@@ -358,10 +355,10 @@ void MainFrame::DoChangeView(const View view) {
 			if (!clsSchematicCanvas) {
 				clsSchematicCanvas = new SchematicCanvasGL(clsPanelMain);
 				//clsSchematicCanvasGLPtr = new NewSchematicCanvasGL(clsPanelMain);
-				clsSchematicCanvas->attachEngine(clsEngine);
+				clsSchematicCanvas->attachSession(clsSession);
 			} // end if
 			else if (clsSchematicCanvas && design != nullptr){
-				clsSchematicCanvas->attachEngine(clsEngine);
+				clsSchematicCanvas->attachSession(clsSession);
 			} //end else
 			canvas = clsSchematicCanvas;
 			clsChoicebookView->ChangeSelection(1);
@@ -472,7 +469,7 @@ void MainFrame::OnLoadPlFile(wxCommandEvent &WXUNUSED(event)) {
 	if (!plFilename.empty()) {
 		Rsyn::Json config;
 		config["path"] = plFilename.ToStdString();
-		clsEngine.runReader("loadDesignPosition", config);
+		clsSession.runReader("loadDesignPosition", config);
 		// Update stats
 		UpdateStats(true);
 	} // end if
@@ -528,7 +525,7 @@ void MainFrame::OnLoadLogicalCoreFile(wxCommandEvent &WXUNUSED(event)) {
 // -----------------------------------------------------------------------------
 
 void MainFrame::OnColoringColorful(wxCommandEvent &WXUNUSED(event)) {
-	if (!clsEngine)
+	if (!clsSession)
 		return;
 	clsGraphicsPtr->coloringColorful();
 	UpdateStats(true);
@@ -537,7 +534,7 @@ void MainFrame::OnColoringColorful(wxCommandEvent &WXUNUSED(event)) {
 // -----------------------------------------------------------------------------
 
 void MainFrame::OnColoringRandomBlue(wxCommandEvent &WXUNUSED(event)) {
-	if (!clsEngine)
+	if (!clsSession)
 		return;
 	clsGraphicsPtr->coloringRandomBlue();
 	UpdateStats(true);
@@ -546,7 +543,7 @@ void MainFrame::OnColoringRandomBlue(wxCommandEvent &WXUNUSED(event)) {
 // -----------------------------------------------------------------------------
 
 void MainFrame::OnColoringGray(wxCommandEvent &WXUNUSED(event)) {
-	if (!clsEngine)
+	if (!clsSession)
 		return;
 	clsGraphicsPtr->coloringGray();
 	UpdateStats(true);
@@ -555,7 +552,7 @@ void MainFrame::OnColoringGray(wxCommandEvent &WXUNUSED(event)) {
 // -----------------------------------------------------------------------------
 
 void MainFrame::OnColoringLateSlack(wxCommandEvent& event) {
-	if (!clsEngine)
+	if (!clsSession)
 		return;
 	clsGraphicsPtr->coloringSlack(Rsyn::LATE);
 	UpdateStats(true);
@@ -564,7 +561,7 @@ void MainFrame::OnColoringLateSlack(wxCommandEvent& event) {
 // -----------------------------------------------------------------------------
 
 void MainFrame::OnColoringEarlySlack(wxCommandEvent& event) {
-	if (!clsEngine)
+	if (!clsSession)
 		return;
 	clsGraphicsPtr->coloringSlack(Rsyn::EARLY);
 	UpdateStats(true);
@@ -573,7 +570,7 @@ void MainFrame::OnColoringEarlySlack(wxCommandEvent& event) {
 // -----------------------------------------------------------------------------
 
 void MainFrame::OnColoringCriticality( wxCommandEvent& event ){
-	if (!clsEngine)
+	if (!clsSession)
 		return;
 
 	const Rsyn::TimingMode mode =
@@ -586,7 +583,7 @@ void MainFrame::OnColoringCriticality( wxCommandEvent& event ){
 // -----------------------------------------------------------------------------
 
 void MainFrame::OnColoringRelativity( wxCommandEvent& event ){
-	if (!clsEngine)
+	if (!clsSession)
 		return;
 
 	const Rsyn::TimingMode mode =
@@ -600,7 +597,7 @@ void MainFrame::OnColoringRelativity( wxCommandEvent& event ){
 // -----------------------------------------------------------------------------
 
 void MainFrame::OnColoringCentrality( wxCommandEvent& event ){
-	if (!clsEngine)
+	if (!clsSession)
 		return;
 
 	const Rsyn::TimingMode mode =
@@ -619,10 +616,10 @@ void MainFrame::OnGenerateColorsFile(wxCommandEvent &event) {
 // -----------------------------------------------------------------------------
 
 void MainFrame::OnSearch(wxCommandEvent &WXUNUSED(event)) {
-	if (!clsEngine) return;
+	if (!clsSession) return;
 
 	const string nodeName = clsTxtSearch->GetValue().To8BitData().data();
-	Rsyn::Cell cell = clsEngine.getDesign().findCellByName(nodeName);
+	Rsyn::Cell cell = clsSession.getDesign().findCellByName(nodeName);
 	if (cell == nullptr)
 		return;
 
@@ -698,7 +695,7 @@ void MainFrame::OnUpdateTiming(wxCommandEvent &WXUNUSED(event)) {
 	} // end else
 	
 	try {
-		clsEngine.evaluateString("reportDigest");
+		clsSession.evaluateString("reportDigest");
 	} catch (...) {}
 	UpdateStats(true);
 } // end event
@@ -707,7 +704,7 @@ void MainFrame::OnUpdateTiming(wxCommandEvent &WXUNUSED(event)) {
 
 void MainFrame::OnLegalize(wxCommandEvent &WXUNUSED(event)) {
 	try {
-		clsEngine.evaluateString("legalize");
+		clsSession.evaluateString("legalize");
 	} catch (...) {}
 	UpdateStats(true);
 } // end event 
@@ -875,23 +872,23 @@ void MainFrame::OnLeftDown(wxMouseEvent& WXUNUSED(event)) {
 // -----------------------------------------------------------------------------
 
 void MainFrame::UpdateStats(const bool redraw) {
-//	Rsyn::Timer *timer = clsEnginePtr.getService("rsyn.timer");
+//	Rsyn::Timer *timer = clsSessionPtr.getService("rsyn.timer");
 //	
-//	const double initialSteinerWirelength = clsEnginePtr.getInitialSteinterWirelength();
-//	const double initialAbu = clsEnginePtr.getInitialAbu();
-//	const double initialEarlyWns = clsEnginePtr.getInitialWns(Rsyn::EARLY);
-//	const double initialEarlyTns = clsEnginePtr.getInitialTns(Rsyn::EARLY);
-//	const double initialLateWns = clsEnginePtr.getInitialWns(Rsyn::LATE);
-//	const double initialLateTns = clsEnginePtr.getInitialTns(Rsyn::LATE);
+//	const double initialSteinerWirelength = clsSessionPtr.getInitialSteinterWirelength();
+//	const double initialAbu = clsSessionPtr.getInitialAbu();
+//	const double initialEarlyWns = clsSessionPtr.getInitialWns(Rsyn::EARLY);
+//	const double initialEarlyTns = clsSessionPtr.getInitialTns(Rsyn::EARLY);
+//	const double initialLateWns = clsSessionPtr.getInitialWns(Rsyn::LATE);
+//	const double initialLateTns = clsSessionPtr.getInitialTns(Rsyn::LATE);
 //	
-//	const double currentSteinerWirelength = clsEnginePtr.getTotalSteinerTreeWirelength();
-//	const double currentAbu = clsEnginePtr.getAbu();
+//	const double currentSteinerWirelength = clsSessionPtr.getTotalSteinerTreeWirelength();
+//	const double currentAbu = clsSessionPtr.getAbu();
 //	const double currentEarlyWns = timer->getWns(Rsyn::EARLY);
 //	const double currentEarlyTns = timer->getTns(Rsyn::EARLY);
 //	const double currentLateWns = timer->getWns(Rsyn::LATE);
 //	const double currentLateTns = timer->getTns(Rsyn::LATE);
 //	
-//	const std::string circuitName = "Circuit: "+clsEnginePtr.getName();
+//	const std::string circuitName = "Circuit: "+clsSessionPtr.getName();
 //	const double changeSteinerWirelength = 100*((currentSteinerWirelength/initialSteinerWirelength) - 1);
 //	const double changeAbu = 100*((currentAbu/initialAbu) - 1);
 //	const double changeEarlyWns = 100*((currentEarlyWns/initialEarlyWns) - 1);
@@ -908,7 +905,7 @@ void MainFrame::UpdateStats(const bool redraw) {
 //	SetStatusText(wxString::Format(wxT("lTNS: %.2e (%+.1f%%)"), currentLateTns, changeLateTns), 6);
 //	
 //	SetStatusText(wxString::Format(wxT("QoR: %.2f"),
-//			clsEnginePtr.getQualityScore()), 7);
+//			clsSessionPtr.getQualityScore()), 7);
 		
 	// Update properties of the selected node.	
 	//updateInstanceProperties(clsPhysicalCanvasGLPtr->getSelectedCell());
@@ -953,7 +950,7 @@ void MainFrame::updateInstanceProperties(Rsyn::Instance instance, const bool upd
 
 			clsPropertyGridItemCellFixedCurrent->SetValue(cell.isFixed());
 			if (clsTimerPtr) {
-				Rsyn::Timer *timer = clsEngine.getService("rsyn.timer");
+				Rsyn::Timer *timer = clsSession.getService("rsyn.timer");
 
 				const Rsyn::TimingMode mode =
 					clsOptCellTimingModeEarly->GetValue() ? Rsyn::EARLY : Rsyn::LATE;
@@ -972,7 +969,7 @@ void MainFrame::updateInstanceProperties(Rsyn::Instance instance, const bool upd
 					Rsyn::Pin to = arc.getToPin();
 
 					Rsyn::LibraryCharacterizer *libc = 
-							clsEngine.getService("rsyn.libraryCharacterizer", Rsyn::SERVICE_OPTIONAL);
+							clsSession.getService("rsyn.libraryCharacterizer", Rsyn::SERVICE_OPTIONAL);
 					
 					clsPropertyGridItemCellDelay->SetValue(timer->getArcDelay(arc, mode, oedge));
 					clsPropertyGridItemCellInputWireDelay->SetValue(timer->getArcInputWireDelay(arc, mode, iedge));
@@ -1073,45 +1070,45 @@ void MainFrame::UpdateSchematicProperties() {
 }
 
 void MainFrame::OnRun(wxCommandEvent& event) {
-	if (!clsEngine)
+	if (!clsSession)
 		return;
 
-	clsEngine.runProcess("ufrgs.ISPD16Flow");
+	clsSession.runProcess("ufrgs.ISPD16Flow");
 	
 	UpdateStats(true);
 } // end event 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Engine Graphics Events
+// Session Graphics Events
 ////////////////////////////////////////////////////////////////////////////////
 
 void MainFrame::processGraphicsEventDesignLoaded() {
-	if (!clsEngine.getDesign() || clsGraphicsPtr)
+	if (!clsSession.getDesign() || clsGraphicsPtr)
 		return;
 
 	// Mandatory services.
 	// Jucemar - 2017/03/25 -> Physical variable are initialized only when physical service was started.
 	// It avoids crashes when a design without physical data is loaded. 
-	if (clsEngine.isServiceRunning("rsyn.physical")) {
-		clsPhysicalPtr = clsEngine.getService("rsyn.physical");
+	if (clsSession.isServiceRunning("rsyn.physical")) {
+		clsPhysicalPtr = clsSession.getService("rsyn.physical");
 		// Physical design.
 		clsPhysicalDesign = clsPhysicalPtr->getPhysicalDesign();
 	} // end if
 
-	clsGraphicsPtr = clsEngine.getService("rsyn.graphics");
+	clsGraphicsPtr = clsSession.getService("rsyn.graphics");
 
 	// Optional services.
-	clsTimerPtr = clsEngine.getService("rsyn.timer", Rsyn::SERVICE_OPTIONAL);
-	clsRoutingEstimatorPtr = clsEngine.getService("rsyn.routingEstimator", Rsyn::SERVICE_OPTIONAL);
-	clsReportPtr = clsEngine.getService("rsyn.report", Rsyn::SERVICE_OPTIONAL);
-	clsWriterPtr = clsEngine.getService("rsyn.writer", Rsyn::SERVICE_OPTIONAL);
+	clsTimerPtr = clsSession.getService("rsyn.timer", Rsyn::SERVICE_OPTIONAL);
+	clsRoutingEstimatorPtr = clsSession.getService("rsyn.routingEstimator", Rsyn::SERVICE_OPTIONAL);
+	clsReportPtr = clsSession.getService("rsyn.report", Rsyn::SERVICE_OPTIONAL);
+	clsWriterPtr = clsSession.getService("rsyn.writer", Rsyn::SERVICE_OPTIONAL);
 
 	
 	if (clsPhysicalCanvasGLPtr)
-		clsPhysicalCanvasGLPtr->attachEngine(clsEngine);
+		clsPhysicalCanvasGLPtr->init();
 
 	//if (clsSchematicCanvasGLPtr)
-	//	clsSchematicCanvasGLPtr->attachEngine(clsEngine);
+	//	clsSchematicCanvasGLPtr->attachSession(clsSession);
 		
 	registerAllOverlays();
 
@@ -1159,7 +1156,7 @@ void MainFrame::OnAbout(wxCommandEvent& event) {
 // -----------------------------------------------------------------------------
 
 void MainFrame::processGraphicsEventRefresh() {
-	if (!clsEngine.getDesign() || clsGraphicsPtr)
+	if (!clsSession.getDesign() || clsGraphicsPtr)
 		return;
 
 	UpdateStats(true);

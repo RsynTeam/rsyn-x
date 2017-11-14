@@ -16,7 +16,7 @@
 #ifndef ICCAD15_EARLY_OPTO_H
 #define ICCAD15_EARLY_OPTO_H
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/phy/PhysicalService.h"
 
 namespace Rsyn {
@@ -31,7 +31,7 @@ class Infrastructure;
 
 class EarlyOpto : public Rsyn::Process {
 private:
-	Rsyn::Engine engine;
+	Rsyn::Session session;
 	Infrastructure *infra;
 	Rsyn::Design design;
 	Rsyn::Module module;
@@ -57,7 +57,7 @@ private:
 	
 public:
 	
-	virtual bool run(Rsyn::Engine engine, const Rsyn::Json &params);
+	virtual bool run(const Rsyn::Json &params);
 	
 }; // end class
 

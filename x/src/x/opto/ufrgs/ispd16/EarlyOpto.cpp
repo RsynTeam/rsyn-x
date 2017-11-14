@@ -11,15 +11,15 @@
 
 namespace ICCAD15 {
 
-bool EarlyOpto::run(Rsyn::Engine engine, const Rsyn::Json &params) {
-	this->engine = engine;
-	this->infra = engine.getService("ufrgs.ispd16.infra");
-	this->design = engine.getDesign();
-	this->timer = engine.getService("rsyn.timer");
-	this->routingEstimator = engine.getService("rsyn.routingEstimator");
-	this->libc = engine.getService("rsyn.libraryCharacterizer");
+bool EarlyOpto::run(const Rsyn::Json &params) {
+	this->session = session;
+	this->infra = session.getService("ufrgs.ispd16.infra");
+	this->design = session.getDesign();
+	this->timer = session.getService("rsyn.timer");
+	this->routingEstimator = session.getService("rsyn.routingEstimator");
+	this->libc = session.getService("rsyn.libraryCharacterizer");
 	this->module = design.getTopModule();
-	this->physical = engine.getService("rsyn.physical");
+	this->physical = session.getService("rsyn.physical");
 	this->phDesign = physical->getPhysicalDesign();
 
 	// Define a small clock uncertainty to account for the small mismatches
@@ -449,7 +449,7 @@ void EarlyOpto::runEarlySpreadingIterative(const bool dontMoveLcbs) {
 		return;
 		
 	// For early optimization let's allow the QoR to degraded in other to 
-	// provide some hill climbing. Don't worry, the engine keep track of the 
+	// provide some hill climbing. Don't worry, the session keep track of the 
 	// best solution found.
 	int fails = 0;
 	int failsInSequence = 0;

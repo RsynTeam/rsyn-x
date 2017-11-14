@@ -21,14 +21,12 @@
 #include "rsyn/gui/canvas/PhysicalCanvasGL.h"
 
 namespace Rsyn {
-class Engine;
+class Session;
 class Graphics;
 } // end namespace
 
 class RegionOverlay : public CanvasOverlay {
 private:
-
-	Rsyn::Engine clsEngine;
 	Rsyn::Design design;
 	Rsyn::Module module;
 	Rsyn::PhysicalDesign phDesign;

@@ -22,7 +22,7 @@
 #include "x/math/lnalg/lnalg.h"
 #include "x/math/lnalg/scrm.h"
 #include "x/infra/iccad15/Infrastructure.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/phy/PhysicalService.h"
 #include "x/opto/ufrgs/qpdp/RelaxedPinPosition.h"
 
@@ -31,7 +31,7 @@ namespace ICCAD15 {
 
 class QuadraticPlacementExample : public Rsyn::Process {
 private:
-	Rsyn::Engine engine;
+	Rsyn::Session session;
 	Infrastructure* infra;
 	Rsyn::Design design;
 	Rsyn::Module module;
@@ -41,7 +41,7 @@ private:
 	ICCAD15::RelaxedPinPosition * clsRelaxedPinPos;
 	
 	// These methods are intended as examples of how to build the quadratic
-	// placement linear system using the engine. They are not necessarily 
+	// placement linear system using the session. They are not necessarily 
 	// optimized.
 	
 	void runQuadraticPlacementUsingHybridNetModel();
@@ -132,7 +132,7 @@ private:
 	
 public:
 	
-	virtual bool run(Rsyn::Engine engine, const Rsyn::Json &params);
+	virtual bool run(const Rsyn::Json &params);
 	
 }; // end class
 

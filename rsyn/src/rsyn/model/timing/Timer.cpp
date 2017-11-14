@@ -18,7 +18,7 @@
 #include <limits> 
 #include <iomanip> 
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/model/scenario/Scenario.h"
 
 #include "rsyn/model/timing/Timer.h"
@@ -102,7 +102,9 @@ Timer::TM_MODE_WORST_REQUIRED[NUM_TIMING_MODES] = {
 
 // -----------------------------------------------------------------------------
 
-void Timer::start(Engine engine, const Json &params) {
+void Timer::start(const Json &params) {
+	Rsyn::Session session;
+
 	{ // updateTiming
 		ScriptParsing::CommandDescriptor dscp;
 		dscp.setName("updateTiming");
@@ -114,15 +116,15 @@ void Timer::start(Engine engine, const Json &params) {
 			"Determines whether a full timing update is performed.",
 			"false");
 		
-		engine.registerCommand(dscp, [&](Rsyn::Engine engine, const ScriptParsing::Command &command) {
+		session.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const bool full = command.getParam("full");
 
 			if (full) updateTimingFull();
 			else updateTimingIncremental();
 		});
 
-		msgUnusualArcSense = engine.getMessage("TIMER-001");
-		msgUnusualArcType = engine.getMessage("TIMER-002");
+		msgUnusualArcSense = session.getMessage("TIMER-001");
+		msgUnusualArcType = session.getMessage("TIMER-002");
 	} // end block
 } // end method
 
@@ -335,7 +337,7 @@ void Timer::setClockUncertainty(const TimingMode mode, const Number uncertainty)
 
 void Timer::init(
 		Rsyn::Design rsynDesign,
-		Rsyn::Engine engine,
+		Rsyn::Session session,
 		Rsyn::Scenario * scenario,
 		const ISPD13::LIBInfo &libEarly,
 		const ISPD13::LIBInfo &libLate

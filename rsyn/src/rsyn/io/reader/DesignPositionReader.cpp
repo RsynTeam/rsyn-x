@@ -42,14 +42,14 @@
 
 namespace Rsyn {
 
-void DesignPositionReader::load(Rsyn::Engine engine, const Json & config ) {
+void DesignPositionReader::load(const Json & config ) {
 	
-	this->engine = engine;
+	this->session = session;
 	std::string path = config.value("path", "");
-	clsDesign = engine.getDesign();
+	clsDesign = session.getDesign();
 	clsModule = clsDesign.getTopModule();
 	
-	Rsyn::PhysicalService * phService = engine.getService("rsyn.physical");
+	Rsyn::PhysicalService * phService = session.getService("rsyn.physical");
 	clsPhysicalDesign = phService->getPhysicalDesign();
 	
 	std::string ext = boost::filesystem::extension(path);
@@ -70,7 +70,7 @@ void DesignPositionReader::openDef(std::string & path) {
 	DEFControlParser defParser;
 	DefDscp defDscp;
 	defParser.parseDEF(path, defDscp);
-	Rsyn::PhysicalService * phService = engine.getService("rsyn.physical");
+	Rsyn::PhysicalService * phService = session.getService("rsyn.physical");
 	Rsyn::PhysicalDesign clsPhysicalDesign = phService->getPhysicalDesign();
 
 	for (const DefComponentDscp &component : defDscp.clsComps) {

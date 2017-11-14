@@ -22,22 +22,24 @@
 
 
 #include "DensityGridService.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/phy/PhysicalService.h"
 
 namespace Rsyn {
 
 
-void DensityGridService::start(Rsyn::Engine engine, const Rsyn::Json& params) {
-	if (!engine.isServiceRunning("rsyn.physical")) {
+void DensityGridService::start(const Rsyn::Json &params) {
+	Rsyn::Session session;
+
+	if (!session.isServiceRunning("rsyn.physical")) {
 		std::cout << "Warning: rsyn.physical service must be running before start DensityGrid service.\n"
 			<< "DensityGrid was not initialized.\n";
 		return;
 	} // end if 
 
-	Rsyn::PhysicalService * ph = engine.getService("rsyn.physical");
+	Rsyn::PhysicalService * ph = session.getService("rsyn.physical");
 	Rsyn::PhysicalDesign phDsg = ph->getPhysicalDesign();
-	Rsyn::Design dsg = engine.getDesign();
+	Rsyn::Design dsg = session.getDesign();
 	Rsyn::Module module = dsg.getTopModule();
 	double targetUtil = 0.0;
 	int numRows = 9; 

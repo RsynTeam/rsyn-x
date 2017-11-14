@@ -14,7 +14,7 @@
  */
  
 #include "WebLogger.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
@@ -27,9 +27,11 @@
 namespace Rsyn {
 
 void
-WebLogger::start(Engine engine, const Json &params) {
+WebLogger::start(const Json &params) {
+	Rsyn::Session session;
+
 	try {
-		const std::string from = engine.getInstallationPath() + "/html/Chart.bundle.min.js";
+		const std::string from = session.getInstallationPath() + "/html/Chart.bundle.min.js";
 		const std::string to = "./Chart.bundle.min.js";
 
 		boost::filesystem::copy_file(from, to,

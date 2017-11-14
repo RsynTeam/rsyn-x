@@ -10,15 +10,14 @@ JezzOverlay::JezzOverlay() : jezz(nullptr) {
 // -----------------------------------------------------------------------------
 
 bool JezzOverlay::init(PhysicalCanvasGL* canvas, nlohmann::json& properties) {
-	if (!canvas->getEngine())
-		return false;
+	Rsyn::Session session;
 	// Jucemar - 03/26/17 -> Initializes overlay only if physical design is running. 
-	if(!canvas->getEngine().isServiceRunning("rsyn.physical")) 
+	if(!session.isServiceRunning("rsyn.physical"))
 		return false;
 	
 	// Try to get ISPD16 infrastructure.
 	ICCAD15::Infrastructure *infra =
-			canvas->getEngine().getService("ufrgs.ispd16.infra", Rsyn::SERVICE_OPTIONAL);
+			session.getService("ufrgs.ispd16.infra", Rsyn::SERVICE_OPTIONAL);
 	if (!infra)
 		return false;
 	
@@ -50,7 +49,7 @@ void JezzOverlay::config(const nlohmann::json &params) {
 // -----------------------------------------------------------------------------
 
 void JezzOverlay::renderNodes(PhysicalCanvasGL * canvas) {
-	Rsyn::Engine engine = canvas->getEngine();
+	Rsyn::Session session;
 	
 	// Draw outlines.
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -114,7 +113,7 @@ void JezzOverlay::renderNodes(PhysicalCanvasGL * canvas) {
 // -----------------------------------------------------------------------------
 
 void JezzOverlay::renderRows(PhysicalCanvasGL * canvas){
-	Rsyn::Engine engine = canvas->getEngine();
+	Rsyn::Session session;
 	
 	const vector<Jezz::JezzRow> &jezzRows = jezz->getRows();
 	

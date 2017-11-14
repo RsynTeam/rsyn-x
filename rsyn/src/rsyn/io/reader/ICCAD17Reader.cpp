@@ -37,9 +37,9 @@
 
 namespace Rsyn {
 
-void ICCAD17Reader::load(Engine engine, const Json &options) {
-	this->engine = engine;
-	clsDesign = engine.getDesign();
+void ICCAD17Reader::load(const Json &options) {
+	this->session = session;
+	clsDesign = session.getDesign();
 	clsModule = clsDesign.getTopModule();
 
 	std::string path = options.value("path", "");
@@ -87,19 +87,19 @@ void ICCAD17Reader::load(Engine engine, const Json &options) {
 	watchPopulate.finish();
 
 	Stepwatch watchPhysical("Initializing Physical Layer");
-	engine.startService("rsyn.physical");	
-	Rsyn::PhysicalService * phService = engine.getService("rsyn.physical");
+	session.startService("rsyn.physical");	
+	Rsyn::PhysicalService * phService = session.getService("rsyn.physical");
 	Rsyn::PhysicalDesign clsPhysicalDesign = phService->getPhysicalDesign();
 	clsPhysicalDesign.loadLibrary(lefDscp);
 	clsPhysicalDesign.loadDesign(defDscp);
 	clsPhysicalDesign.updateAllNetBounds(false);	
 	watchPhysical.finish();
 	
-	//engine.startService("rsyn.report", {});	
-	engine.startService("rsyn.writer", {});
+	//session.startService("rsyn.report", {});	
+	session.startService("rsyn.writer", {});
 
-	engine.startService("rsyn.graphics", {});
-	Rsyn::Graphics * graphics = engine.getService("rsyn.graphics");
+	session.startService("rsyn.graphics", {});
+	Rsyn::Graphics * graphics = session.getService("rsyn.graphics");
 	graphics->coloringByCellType();
 } // end method 
 

@@ -55,10 +55,10 @@ void SchematicCanvasGL::reset() {
 
 //// -----------------------------------------------------------------------------
 //
-void SchematicCanvasGL::attachEngine(Rsyn::Engine engine) {
+void SchematicCanvasGL::attachSession(Rsyn::Session session) {
 	reset();
 
-	clsEngine = engine;
+	clsSession = session;
 
 	Refresh();
 } // end method
@@ -890,10 +890,10 @@ void NewSchematicCanvasGL::renderGrid(const int scaleGrid) {
 
 // -----------------------------------------------------------------------------
 
-void NewSchematicCanvasGL::attachEngine(Rsyn::Engine engine) {
-	clsEngine = engine;
-	timer = clsEngine.getService("rsyn.timer", Rsyn::SERVICE_OPTIONAL);
-	clsDesign = clsEngine.getDesign();
+void NewSchematicCanvasGL::attachSession(Rsyn::Session session) {
+	clsSession = session;
+	timer = clsSession.getService("rsyn.timer", Rsyn::SERVICE_OPTIONAL);
+	clsDesign = clsSession.getDesign();
 	if (timer)
 		init();
 } // end method 

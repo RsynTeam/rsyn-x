@@ -22,7 +22,7 @@
 #include "rsyn/gui/CanvasGL.h"
 #include "rsyn/gui/canvas/GeometryManager.h"
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/3rdparty/json/json.hpp"
 #include "rsyn/phy/PhysicalService.h"
 #include "rsyn/model/timing/Timer.h"
@@ -53,6 +53,7 @@ class CanvasOverlay {
 public:
 	virtual bool init(PhysicalCanvasGL * canvas, nlohmann::json& properties) = 0;
 	virtual void render(PhysicalCanvasGL * canvas) = 0;
+	virtual void renderInterpolated(PhysicalCanvasGL * canvas) {};
 	virtual void config(const nlohmann::json &params) = 0;
 }; // end class
 
@@ -84,7 +85,7 @@ private:
 	}; // end enum
 
 	// Session
-	Rsyn::Engine clsEngine;
+	Rsyn::Session clsSession;
 
 	// Services
 	Rsyn::Timer * timer = nullptr;
@@ -115,7 +116,7 @@ private:
 	std::map<std::string, int> clsOverlayMapping;
 	
 	// Enable info canvas. TODO: Remove these variable as this should be guessed
-	// by accessing some engine method.
+	// by accessing some session method.
 	bool clsEnableLegalizerInfo;
 	
 	// Show/Hide.
@@ -153,6 +154,8 @@ private:
 	unsigned int clsSelectedCellOffset;
 	
 	int clsSelectedBinIndex;
+
+	bool clsInitialized = false;
 
 	GeometryManager::LayerId geoCellLayerId;
 	GeometryManager::LayerId geoMacroLayerId;
@@ -242,7 +245,7 @@ public:
 	virtual void onRender(wxPaintEvent& evt);
 	virtual void onResized(wxSizeEvent& evt);
 
-	void attachEngine(Rsyn::Engine engine);
+	void init();
 
 	void SelectCell(Rsyn::Cell cellIndex );
 
@@ -274,6 +277,7 @@ public:
 	void CentralizeAtSelectedCell();
 	
 	// Interpolated view mode
+	float getInterpolationValue() const { return clsInterpolationValue; }
 	void setInterpolationValue( const float value ) { clsInterpolationValue = value; Refresh(); }
 	void storeCheckpoint();
 	
@@ -313,7 +317,7 @@ public:
 	} // end method
 	
 	void updateTimingOfPaths(const Rsyn::TimingMode mode) {
-		Rsyn::Timer *timer = clsEngine.getService("rsyn.timer");
+		Rsyn::Timer *timer = clsSession.getService("rsyn.timer");
 		for (auto &path : clsPaths[mode]) {
 			timer->updatePath(path);
 		} // end for
@@ -360,8 +364,6 @@ public:
 			config.visible = visible;
 		} // end else		
 	} // end method
-	
-	Rsyn::Engine getEngine() { return clsEngine; }
 	
 	// TODO move to CanvasGL
 	void saveSnapshot(wxImage& image);

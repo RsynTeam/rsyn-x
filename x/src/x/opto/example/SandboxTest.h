@@ -19,13 +19,13 @@
 #include <iostream>
 #include <vector>
 
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Session.h"
 
 namespace Testing {
 
 class SandboxTest : public Rsyn::Process {
 private:
-	Rsyn::Engine engine;
+	Rsyn::Session session;
 	Rsyn::Design design;
 	Rsyn::Module module;
 
@@ -33,7 +33,7 @@ private:
 
 public:
 
-	virtual bool run(Rsyn::Engine engine, const Rsyn::Json &params);
+	virtual bool run(const Rsyn::Json &params);
 }; // end class
 
 } // end namespace

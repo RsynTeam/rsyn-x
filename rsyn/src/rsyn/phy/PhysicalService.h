@@ -16,7 +16,7 @@
 #ifndef RSYN_PHYSICAL_SERVICE_H
 #define RSYN_PHYSICAL_SERVICE_H
 
-#include "rsyn/engine/Service.h"
+#include "rsyn/session/Service.h"
 #include "rsyn/phy/PhysicalDesign.h"
 
 namespace Rsyn {
@@ -30,11 +30,11 @@ private:
 public:
 	/*!
 	  start method to the Rsyn::PhysicalDesign service
-	  \param  Rsyn::Engine engine
+	  \param  Rsyn::Session session
 	  \param  const Rsyn::Json &params
 	  \return void 
 	 */
-	virtual void start(Rsyn::Engine engine, const Rsyn::Json &params);
+	virtual void start(const Json &params);
 	
 	/*!
 	  stop method to the Rsyn::PhysicalDesign service

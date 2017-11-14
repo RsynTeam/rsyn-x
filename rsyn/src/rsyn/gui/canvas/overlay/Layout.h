@@ -28,14 +28,13 @@
 #include "rsyn/gui/canvas/Stipple.h"
 
 namespace Rsyn {
-class Engine;
+class Session;
 class Graphics;
 } // end namespace
 
 class LayoutOverlay : public CanvasOverlay {
 private:
 
-	Rsyn::Engine clsEnginePtr;
 	Rsyn::Design design;
 	Rsyn::Module module;
 	Rsyn::PhysicalDesign phDesign;
@@ -139,6 +138,7 @@ public:
 	LayoutOverlay();
 	virtual bool init(PhysicalCanvasGL* canvas, nlohmann::json& properties);
 	virtual void render(PhysicalCanvasGL * canvas);
+	virtual void renderInterpolated(PhysicalCanvasGL * canvas);
 	virtual void config(const nlohmann::json &params);
 
 }; // end class

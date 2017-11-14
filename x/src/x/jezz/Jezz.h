@@ -18,8 +18,8 @@
 
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/phy/PhysicalDesign.h"
-#include "rsyn/engine/Service.h"
-#include "rsyn/engine/Engine.h"
+#include "rsyn/session/Service.h"
+#include "rsyn/session/Session.h"
 #include "rsyn/util/dbu.h"
 #include "rsyn/util/RangeBasedLoop.h"
 
@@ -33,7 +33,7 @@
 #include <cassert>
 
 namespace Rsyn {
-class Engine;
+class Session;
 }
 
 namespace Rsyn {
@@ -59,7 +59,7 @@ public:
 		TOP
 	};
 
-	virtual void start(Rsyn::Engine engine, const Rsyn::Json &params);
+	virtual void start(const Rsyn::Json &params);
 	virtual void stop();
 
 	// Events
@@ -74,8 +74,8 @@ public:
 
 private:
 
-	// Engine
-	Rsyn::Engine clsEngine;
+	// Session
+	Rsyn::Session clsSession;
 
 	// Physical layer
 	Rsyn::PhysicalDesign clsPhysicalDesign;

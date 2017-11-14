@@ -14,21 +14,21 @@
  */
  
 /*
- * Engine.h
+ * Session.h
  *
  *  Created on: May 8, 2015
  *      Author: jucemar
  */
 
-#ifndef RSYN_ENGINE_H
-#define RSYN_ENGINE_H
+#ifndef RSYN_SESSION_H
+#define RSYN_SESSION_H
 
 #include <string>
 
-#include "rsyn/engine/Service.h"
-#include "rsyn/engine/Process.h"
-#include "rsyn/engine/Reader.h"
-#include "rsyn/engine/Message.h"
+#include "rsyn/session/Service.h"
+#include "rsyn/session/Process.h"
+#include "rsyn/session/Reader.h"
+#include "rsyn/session/Message.h"
 
 #include "rsyn/3rdparty/json/json.hpp"
 
@@ -61,9 +61,9 @@ typedef std::function<Reader *()> ReaderInstantiatonFunction;
 // startup. Declare a startup object in a cpp file:
 //
 // Rsyn::Startup startup([]{
-//     Rsyn::Engine::registerService(...);
-//     Rsyn::Engine::registerProcess(...);
-//     Rsyn::Engine::registerMessage(...);
+//     Rsyn::Session::registerService(...);
+//     Rsyn::Session::registerProcess(...);
+//     Rsyn::Session::registerMessage(...);
 // }); // end startup
 //
 // This will construct a global object that will be called during the
@@ -77,11 +77,10 @@ public:
 }; // end class
 
 ////////////////////////////////////////////////////////////////////////////////
-// Engine Data
+// Session Data
 ////////////////////////////////////////////////////////////////////////////////
 
-struct EngineData {
-	bool clsInitialized = false;
+struct SessionData {
 	Message msgMessageRegistrationFail;
 
 	////////////////////////////////////////////////////////////////////////////
@@ -145,24 +144,31 @@ struct EngineData {
 }; // end struct
 
 ////////////////////////////////////////////////////////////////////////////////
-// Engine Proxy
+// Session Proxy
 ////////////////////////////////////////////////////////////////////////////////
-	
-class Engine : public Rsyn::Proxy<EngineData> {
+
+class Session : public Rsyn::Proxy<SessionData> {
 public:
-	Engine() {};	
+	Session() {
+		data = sessionData;
+	};
 	
-	Engine(std::nullptr_t) { data = nullptr; }
+	Session(std::nullptr_t) { 
+		data = nullptr;
+	}
 	
-	Engine &operator=(const Engine &other) {
+	Session &operator=(const Session &other) {
 		data = other.data;
 		return *this;
 	}	
 	
-	//~Engine();
+	//~Session();
 	
-	void create();
-	void destroy();
+	static void init();
+
+private:
+
+	static SessionData * sessionData;
 
 	////////////////////////////////////////////////////////////////////////////
 	// Session Variables
@@ -170,37 +176,37 @@ public:
 
 public:
 
-	void setSessionVariable(const std::string &name, const Json &value) {
-		data->clsSessionVariables[name] = value;
+	static void setSessionVariable(const std::string &name, const Json &value) {
+		sessionData->clsSessionVariables[name] = value;
 	} // end method
 
-	void unsetSessionVariable(const std::string &name) {
-		data->clsSessionVariables.erase(name);
+	static void unsetSessionVariable(const std::string &name) {
+		sessionData->clsSessionVariables.erase(name);
 	} // end method
 
-	const bool getSessionVariableAsBool(const std::string &name, const bool defaultValue = false) const {
-		auto it = data->clsSessionVariables.find(name);
-		return (it != data->clsSessionVariables.end())? it->second.get<bool>() : defaultValue;
+	static const bool getSessionVariableAsBool(const std::string &name, const bool defaultValue = false) {
+		auto it = sessionData->clsSessionVariables.find(name);
+		return (it != sessionData->clsSessionVariables.end())? it->second.get<bool>() : defaultValue;
 	} // end method
 
-	const int getSessionVariableAsInteger(const std::string &name, const int defaultValue = 0) const {
-		auto it = data->clsSessionVariables.find(name);
-		return (it != data->clsSessionVariables.end())? it->second.get<int>() : defaultValue;
+	static const int getSessionVariableAsInteger(const std::string &name, const int defaultValue = 0) {
+		auto it = sessionData->clsSessionVariables.find(name);
+		return (it != sessionData->clsSessionVariables.end())? it->second.get<int>() : defaultValue;
 	} // end method
 
-	const float getSessionVariableAsFloat(const std::string &name, const float defaultValue = 0.0f) const {
-		auto it = data->clsSessionVariables.find(name);
-		return (it != data->clsSessionVariables.end())? it->second.get<float>() : defaultValue;
+	static const float getSessionVariableAsFloat(const std::string &name, const float defaultValue = 0.0f) {
+		auto it = sessionData->clsSessionVariables.find(name);
+		return (it != sessionData->clsSessionVariables.end())? it->second.get<float>() : defaultValue;
 	} // end method
 
-	const std::string getSessionVariableAsString(const std::string &name, const std::string &defaultValue = "") const {
-		auto it = data->clsSessionVariables.find(name);
-		return (it != data->clsSessionVariables.end())? it->second.get<std::string>() : defaultValue;
+	static const std::string getSessionVariableAsString(const std::string &name, const std::string &defaultValue = "") {
+		auto it = sessionData->clsSessionVariables.find(name);
+		return (it != sessionData->clsSessionVariables.end())? it->second.get<std::string>() : defaultValue;
 	} // end method
 
-	const Json getSessionVariableAsJson(const std::string &name, const Json &defaultValue = {}) const {
-		auto it = data->clsSessionVariables.find(name);
-		return (it != data->clsSessionVariables.end())? it->second : defaultValue;
+	static const Json getSessionVariableAsJson(const std::string &name, const Json &defaultValue = {}) {
+		auto it = sessionData->clsSessionVariables.find(name);
+		return (it != sessionData->clsSessionVariables.end())? it->second : defaultValue;
 	} // end method
 	
 	////////////////////////////////////////////////////////////////////////////
@@ -231,30 +237,30 @@ public:
 	}; // end class
 	
 	// Register services.
-	void registerServices();
+	static void registerServices();
 	
 	// Register a service.
 	template<typename T>
-	void registerService(const std::string &name) {
-		auto it = data->clsServiceInstanciationFunctions.find(name);
-		if (it != data->clsServiceInstanciationFunctions.end()) {
+	static void registerService(const std::string &name) {
+		auto it = sessionData->clsServiceInstanciationFunctions.find(name);
+		if (it != sessionData->clsServiceInstanciationFunctions.end()) {
 			std::cout << "ERROR: Service '" << name << "' was already "
 					"registered.\n";
 			std::exit(1);
 		} else {
-			if (data->clsVerbose) {
+			if (sessionData->clsVerbose) {
 				std::cout << "Registering service '" << name << "' ...\n";
 			} // end if
-			data->clsServiceInstanciationFunctions[name] = []() -> Service *{
+			sessionData->clsServiceInstanciationFunctions[name] = []() -> Service *{
 				return new T();
 			};
 		} // end else
 	} // end method
 	
 	// Start a service.
-	bool startService(const std::string &name, const Json &params = {}) {
-		auto it = data->clsServiceInstanciationFunctions.find(name);
-		if (it == data->clsServiceInstanciationFunctions.end()) {
+	static bool startService(const std::string &name, const Json &params = {}) {
+		auto it = sessionData->clsServiceInstanciationFunctions.find(name);
+		if (it == sessionData->clsServiceInstanciationFunctions.end()) {
 			std::cout << "ERROR: Service '" << name << "' was not "
 					"registered.\n";
 			std::exit(1);
@@ -263,8 +269,8 @@ public:
 			Service * service = getServiceInternal(name);
 			if (!service) {
 				service = it->second();
-				service->start(*this, params);
-				data->clsRunningServices[name] = service;
+				service->start(params);
+				sessionData->clsRunningServices[name] = service;
 				postGraphicsEvent(GRAPHICS_EVENT_UPDATE_OVERLAY_LIST);
 				return true;
 			} else {
@@ -275,7 +281,7 @@ public:
 	} // end method
 	
 	// Gets a running service.
-	ServiceHandler getService(const std::string &name, 
+	static ServiceHandler getService(const std::string &name,
 			const ServiceRequestType requestType = SERVICE_MANDATORY) {
 		Service *service = getServiceInternal(name);
 		if (!service && (requestType == SERVICE_MANDATORY)) {
@@ -286,28 +292,28 @@ public:
 	} // end method
 	
 	// Checks if a service is running.
-	bool isServiceRunning(const std::string &name) {
+	static bool isServiceRunning(const std::string &name) {
 		return getServiceInternal(name) != nullptr;
 	} // end method
 	
 private:
 	
-	Service * getServiceInternal(const std::string &name) {
-		auto it = data->clsRunningServices.find(name);
-		return it == data->clsRunningServices.end()? nullptr : it->second;
+	static Service * getServiceInternal(const std::string &name) {
+		auto it = sessionData->clsRunningServices.find(name);
+		return it == sessionData->clsRunningServices.end()? nullptr : it->second;
 	} // end method
 
-	void listService(std::ostream & out = std::cout) {
+	static void listService(std::ostream & out = std::cout) {
 		out<<"List of services ";
 		out<<"([R] -> Running, [S] -> Stopped):\n";
 		// print only running services
-		for (std::pair<std::string, ServiceInstantiatonFunction> srv : data->clsServiceInstanciationFunctions) {
+		for (std::pair<std::string, ServiceInstantiatonFunction> srv : sessionData->clsServiceInstanciationFunctions) {
 			if (!isServiceRunning(srv.first))
 				continue;
 			out << "\t[R] " << srv.first << "\n";
 		} // end for 
 		// print only stopped services 
-		for (std::pair<std::string, ServiceInstantiatonFunction> srv : data->clsServiceInstanciationFunctions) {
+		for (std::pair<std::string, ServiceInstantiatonFunction> srv : sessionData->clsServiceInstanciationFunctions) {
 			if (isServiceRunning(srv.first))
 				continue;
 			out << "\t[S] "<<srv.first << "\n";
@@ -319,59 +325,59 @@ private:
 	// Processes
 	////////////////////////////////////////////////////////////////////////////
 private:
-	void listProcess(std::ostream & out = std::cout) {
+	static void listProcess(std::ostream & out = std::cout) {
 		out<<"List of registered processes:\n";
-		for(std::pair<std::string, ProcessInstantiatonFunction> process : data->clsProcesses) {
+		for(std::pair<std::string, ProcessInstantiatonFunction> process : sessionData->clsProcesses) {
 			out<<"\t"<<process.first<<"\n";
 		} // end for 
 		out<<"--------------------------------------\n";
-	} /// end method 
+	} // end method 
 public:
 	
 	// Register processes.
-	void registerProcesses();
+	static void registerProcesses();
 	
 	// Register a process.
 	template<typename T>
-	void registerProcess(const std::string &name) {
-		auto it = data->clsProcesses.find(name);
-		if (it != data->clsProcesses.end()) {
+	static void registerProcess(const std::string &name) {
+		auto it = sessionData->clsProcesses.find(name);
+		if (it != sessionData->clsProcesses.end()) {
 			std::cout << "ERROR: Process '" << name << "' was already "
 					"registered.\n";
 			std::exit(1);
 		} else {
-			if (data->clsVerbose) {
+			if (sessionData->clsVerbose) {
 				std::cout << "Registering process '" << name << "' ...\n";
 			} // end if
-			data->clsProcesses[name] = []() -> Process *{
+			sessionData->clsProcesses[name] = []() -> Process *{
 				return new T();
 			};
 		} // end else
 	} // end method
 	
 	// Run an optimizer.
-	bool runProcess(const std::string &name, const Json &params = {}) {
+	static bool runProcess(const std::string &name, const Json &params = {}) {
 		bool result = false;
 		
-		auto it = data->clsProcesses.find(name);
-		if (it == data->clsProcesses.end()) {
+		auto it = sessionData->clsProcesses.find(name);
+		if (it == sessionData->clsProcesses.end()) {
 			std::cout << "ERROR: Process '" << name << "' was not "
 					"registered.\n";
 		} else {
 			std::unique_ptr<Process> opto(it->second());
-			result = opto->run(*this, params);
+			result = opto->run(params);
 		} // end else
 		
 		return result;
 	} // end method
 		
 	////////////////////////////////////////////////////////////////////////////
-	// Loader
+	// Reader
 	////////////////////////////////////////////////////////////////////////////
 private:
-	void listReader(std::ostream & out = std::cout) {
+	static void listReader(std::ostream & out = std::cout) {
 		out<<"List of registered Readers:\n";
-		for(std::pair<std::string, ReaderInstantiatonFunction> reader : data->clsReaders) {
+		for(std::pair<std::string, ReaderInstantiatonFunction> reader : sessionData->clsReaders) {
 			out<<"\t"<<reader.first<<"\n";
 		} // end for 
 		out<<"--------------------------------------\n";
@@ -379,35 +385,35 @@ private:
 public:
 	
 	// Register loader.
-	void registerReaders();
+	static void registerReaders();
 	
 	// Register a loader.
 	template<typename T>
-	void registerReader(const std::string &name) {
-		auto it = data->clsReaders.find(name);
-		if (it != data->clsReaders.end()) {
+	static void registerReader(const std::string &name) {
+		auto it = sessionData->clsReaders.find(name);
+		if (it != sessionData->clsReaders.end()) {
 			std::cout << "ERROR: Reader '" << name << "' was already "
 					"registered.\n";
 			std::exit(1);
 		} else {
-			if (data->clsVerbose) {
+			if (sessionData->clsVerbose) {
 				std::cout << "Registering reader '" << name << "' ...\n";
 			} // end if
-			data->clsReaders[name] = []() -> Reader *{
+			sessionData->clsReaders[name] = []() -> Reader *{
 				return new T();
 			};
 		} // end else
 	} // end method
 	
 	// Run an loader.
-	void runReader(const std::string &name, const Json &params = {}) {
-		auto it = data->clsReaders.find(name);
-		if (it == data->clsReaders.end()) {
+	static void runReader(const std::string &name, const Json &params = {}) {
+		auto it = sessionData->clsReaders.find(name);
+		if (it == sessionData->clsReaders.end()) {
 			std::cout << "ERROR: Reader '" << name << "' was not "
 					"registered.\n";
 		} else {
 			std::unique_ptr<Reader> opto(it->second());
-			opto->load(*this, params);
+			opto->load(params);
 			postGraphicsEvent(GRAPHICS_EVENT_DESIGN_LOADED);
 		} // end else
 	} // end method
@@ -417,42 +423,42 @@ public:
 	////////////////////////////////////////////////////////////////////////////
 
 private:
-	void registerInternalMessages();
-	void registerDefaultMessages();
+	static void registerInternalMessages();
+	static void registerDefaultMessages();
 
 public:
 
-	void registerMessages();
+	static void registerMessages();
 
-	void registerMessage(const std::string &label, const MessageLevel &level, const std::string &title, const std::string &msg = "");
-	Message getMessage(const std::string &label);
+	static void registerMessage(const std::string &label, const MessageLevel &level, const std::string &title, const std::string &msg = "");
+	static Message getMessage(const std::string &label);
 	
 	////////////////////////////////////////////////////////////////////////////
 	// Misc
 	////////////////////////////////////////////////////////////////////////////
 
-	Rsyn::Design getDesign() { return data->clsDesign; }
+	static Rsyn::Design getDesign() { return sessionData->clsDesign; }
 
-	const std::string &getInstallationPath() const { return data->clsInstallationPath; }
+	static const std::string &getInstallationPath() { return sessionData->clsInstallationPath; }
 
 	////////////////////////////////////////////////////////////////////////////
 	// Script
 	////////////////////////////////////////////////////////////////////////////
 private:
 
-	void registerDefaultCommands();
+	static void registerDefaultCommands();
 	
 public:	
 
-	typedef std::function<void(Engine engine, const ScriptParsing::Command &command)> CommandHandler;
+	typedef std::function<void(const ScriptParsing::Command &command)> CommandHandler;
 	
-	void registerCommand(const ScriptParsing::CommandDescriptor &dscp, const CommandHandler handler);
+	static void registerCommand(const ScriptParsing::CommandDescriptor &dscp, const CommandHandler handler);
 	
-	void evaluateString(const std::string &str);
-	void evaluateFile(const std::string &filename);
+	static void evaluateString(const std::string &str);
+	static void evaluateFile(const std::string &filename);
 
-	ScriptParsing::CommandManager &getCommandManager() {
-		return data->clsCommandManager;
+	static ScriptParsing::CommandManager &getCommandManager() {
+		return sessionData->clsCommandManager;
 	} // end method
 
 	////////////////////////////////////////////////////////////////////////////
@@ -460,17 +466,17 @@ public:
 	////////////////////////////////////////////////////////////////////////////
 public:
 
-	void registerGraphicsCallback(const std::function<void(const GraphicsEvent event)> &callback) {
-		data->clsGraphicsCallback = callback;
+	static void registerGraphicsCallback(const std::function<void(const GraphicsEvent event)> &callback) {
+		sessionData->clsGraphicsCallback = callback;
 	} // end method
 
-	void postGraphicsEvent(const GraphicsEvent event) {
-		if (data->clsGraphicsCallback)
-			data->clsGraphicsCallback(event);
+	static void postGraphicsEvent(const GraphicsEvent event) {
+		if (sessionData->clsGraphicsCallback)
+			sessionData->clsGraphicsCallback(event);
 	} // end method
 
 }; // end class
 
 } // end namespace
 
-#endif /* INFRA_ICCAD15_ENGINE_H_ */
+#endif /* INFRA_ICCAD15_SESSION_H_ */
