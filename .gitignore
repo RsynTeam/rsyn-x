@@ -1,3 +1,7 @@
+private/*
+!private/CMakeLists.txt
+!private/cmake
+
 x/ide/netbeans/*
 x/ide/netbeans/nbproject/private
 !x/ide/netbeans/nbproject/
