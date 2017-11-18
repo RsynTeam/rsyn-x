@@ -659,7 +659,7 @@
           </incDir>
           <commandLine>`wx-config --debug=no --cppflags` -Wreturn-type -Wno-unused-result -Wfloat-conversion</commandLine>
           <preprocessorList>
-            <Elem>MACRO</Elem>
+            <Elem>RSYN_ENABLE_OVERLAP_REMOVER=1</Elem>
           </preprocessorList>
         </ccTool>
         <fortranCompilerTool>
@@ -2854,6 +2854,7 @@
             <Elem>DEBUG</Elem>
             <Elem>DIAGNOSTIC</Elem>
             <Elem>RSYN_DEBUG</Elem>
+            <Elem>RSYN_ENABLE_OVERLAP_REMOVER=1</Elem>
             <Elem>_GLIBCCX_DEBUG</Elem>
           </preprocessorList>
         </ccTool>

@@ -171,7 +171,7 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/netbeans: ${OBJECTFILES}
 ${OBJECTDIR}/_ext/b5ece7b6/flute.o: ../../../rsyn/src/rsyn/3rdparty/flute/flute.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/b5ece7b6
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/b5ece7b6/flute.o ../../../rsyn/src/rsyn/3rdparty/flute/flute.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/b5ece7b6/flute.o ../../../rsyn/src/rsyn/3rdparty/flute/flute.cpp
 
 ${OBJECTDIR}/_ext/2e9f8231/PI.o: ../../../rsyn/src/rsyn/3rdparty/parser/liberty/PI.c
 	${MKDIR} -p ${OBJECTDIR}/_ext/2e9f8231
@@ -236,472 +236,472 @@ ${OBJECTDIR}/_ext/2ef74bbb/nanovg.o: ../../../rsyn/src/rsyn/gui/3rdparty/nanovg/
 ${OBJECTDIR}/_ext/b3ae5bf7/App.o: ../../../rsyn/src/rsyn/gui/App.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/b3ae5bf7
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/b3ae5bf7/App.o ../../../rsyn/src/rsyn/gui/App.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/b3ae5bf7/App.o ../../../rsyn/src/rsyn/gui/App.cpp
 
 ${OBJECTDIR}/_ext/b3ae5bf7/CanvasGL.o: ../../../rsyn/src/rsyn/gui/CanvasGL.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/b3ae5bf7
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/b3ae5bf7/CanvasGL.o ../../../rsyn/src/rsyn/gui/CanvasGL.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/b3ae5bf7/CanvasGL.o ../../../rsyn/src/rsyn/gui/CanvasGL.cpp
 
 ${OBJECTDIR}/_ext/1686e670/GeometryManager.o: ../../../rsyn/src/rsyn/gui/canvas/GeometryManager.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1686e670
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1686e670/GeometryManager.o ../../../rsyn/src/rsyn/gui/canvas/GeometryManager.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1686e670/GeometryManager.o ../../../rsyn/src/rsyn/gui/canvas/GeometryManager.cpp
 
 ${OBJECTDIR}/_ext/1686e670/PhysicalCanvasGL.o: ../../../rsyn/src/rsyn/gui/canvas/PhysicalCanvasGL.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1686e670
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1686e670/PhysicalCanvasGL.o ../../../rsyn/src/rsyn/gui/canvas/PhysicalCanvasGL.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1686e670/PhysicalCanvasGL.o ../../../rsyn/src/rsyn/gui/canvas/PhysicalCanvasGL.cpp
 
 ${OBJECTDIR}/_ext/1686e670/SchematicCanvasGL.o: ../../../rsyn/src/rsyn/gui/canvas/SchematicCanvasGL.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1686e670
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1686e670/SchematicCanvasGL.o ../../../rsyn/src/rsyn/gui/canvas/SchematicCanvasGL.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1686e670/SchematicCanvasGL.o ../../../rsyn/src/rsyn/gui/canvas/SchematicCanvasGL.cpp
 
 ${OBJECTDIR}/_ext/5b7cf7b1/DensityGridOverlay.o: ../../../rsyn/src/rsyn/gui/canvas/overlay/DensityGridOverlay.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/5b7cf7b1
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/5b7cf7b1/DensityGridOverlay.o ../../../rsyn/src/rsyn/gui/canvas/overlay/DensityGridOverlay.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/5b7cf7b1/DensityGridOverlay.o ../../../rsyn/src/rsyn/gui/canvas/overlay/DensityGridOverlay.cpp
 
 ${OBJECTDIR}/_ext/5b7cf7b1/Layout.o: ../../../rsyn/src/rsyn/gui/canvas/overlay/Layout.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/5b7cf7b1
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/5b7cf7b1/Layout.o ../../../rsyn/src/rsyn/gui/canvas/overlay/Layout.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/5b7cf7b1/Layout.o ../../../rsyn/src/rsyn/gui/canvas/overlay/Layout.cpp
 
 ${OBJECTDIR}/_ext/5b7cf7b1/Region.o: ../../../rsyn/src/rsyn/gui/canvas/overlay/Region.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/5b7cf7b1
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/5b7cf7b1/Region.o ../../../rsyn/src/rsyn/gui/canvas/overlay/Region.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/5b7cf7b1/Region.o ../../../rsyn/src/rsyn/gui/canvas/overlay/Region.cpp
 
 ${OBJECTDIR}/_ext/f067b555/MainFrame.o: ../../../rsyn/src/rsyn/gui/frame/MainFrame.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/f067b555
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/f067b555/MainFrame.o ../../../rsyn/src/rsyn/gui/frame/MainFrame.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/f067b555/MainFrame.o ../../../rsyn/src/rsyn/gui/frame/MainFrame.cpp
 
 ${OBJECTDIR}/_ext/a8f1af4b/MainFrameBase.o: ../../../rsyn/src/rsyn/gui/frame/base/MainFrameBase.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/a8f1af4b
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/a8f1af4b/MainFrameBase.o ../../../rsyn/src/rsyn/gui/frame/base/MainFrameBase.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/a8f1af4b/MainFrameBase.o ../../../rsyn/src/rsyn/gui/frame/base/MainFrameBase.cpp
 
 ${OBJECTDIR}/_ext/a8f1af4b/SchematicFrameBase.o: ../../../rsyn/src/rsyn/gui/frame/base/SchematicFrameBase.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/a8f1af4b
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/a8f1af4b/SchematicFrameBase.o ../../../rsyn/src/rsyn/gui/frame/base/SchematicFrameBase.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/a8f1af4b/SchematicFrameBase.o ../../../rsyn/src/rsyn/gui/frame/base/SchematicFrameBase.cpp
 
 ${OBJECTDIR}/_ext/9a70faea/Graphics.o: ../../../rsyn/src/rsyn/io/Graphics.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/9a70faea
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/9a70faea/Graphics.o ../../../rsyn/src/rsyn/io/Graphics.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/9a70faea/Graphics.o ../../../rsyn/src/rsyn/io/Graphics.cpp
 
 ${OBJECTDIR}/_ext/9a70faea/Report.o: ../../../rsyn/src/rsyn/io/Report.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/9a70faea
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/9a70faea/Report.o ../../../rsyn/src/rsyn/io/Report.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/9a70faea/Report.o ../../../rsyn/src/rsyn/io/Report.cpp
 
 ${OBJECTDIR}/_ext/9a70faea/WebLogger.o: ../../../rsyn/src/rsyn/io/WebLogger.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/9a70faea
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/9a70faea/WebLogger.o ../../../rsyn/src/rsyn/io/WebLogger.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/9a70faea/WebLogger.o ../../../rsyn/src/rsyn/io/WebLogger.cpp
 
 ${OBJECTDIR}/_ext/9a70faea/Writer.o: ../../../rsyn/src/rsyn/io/Writer.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/9a70faea
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/9a70faea/Writer.o ../../../rsyn/src/rsyn/io/Writer.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/9a70faea/Writer.o ../../../rsyn/src/rsyn/io/Writer.cpp
 
 ${OBJECTDIR}/_ext/8cee11f6/DrawingBoard.o: ../../../rsyn/src/rsyn/io/image/DrawingBoard.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/8cee11f6
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/8cee11f6/DrawingBoard.o ../../../rsyn/src/rsyn/io/image/DrawingBoard.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/8cee11f6/DrawingBoard.o ../../../rsyn/src/rsyn/io/image/DrawingBoard.cpp
 
 ${OBJECTDIR}/_ext/8cee11f6/SVGDrawingBoard.o: ../../../rsyn/src/rsyn/io/image/SVGDrawingBoard.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/8cee11f6
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/8cee11f6/SVGDrawingBoard.o ../../../rsyn/src/rsyn/io/image/SVGDrawingBoard.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/8cee11f6/SVGDrawingBoard.o ../../../rsyn/src/rsyn/io/image/SVGDrawingBoard.cpp
 
 ${OBJECTDIR}/_ext/a6aceb76/BookshelfParser.o: ../../../rsyn/src/rsyn/io/parser/bookshelf/BookshelfParser.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/a6aceb76
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/a6aceb76/BookshelfParser.o ../../../rsyn/src/rsyn/io/parser/bookshelf/BookshelfParser.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/a6aceb76/BookshelfParser.o ../../../rsyn/src/rsyn/io/parser/bookshelf/BookshelfParser.cpp
 
 ${OBJECTDIR}/_ext/566d86a8/DEFControlParser.o: ../../../rsyn/src/rsyn/io/parser/lef_def/DEFControlParser.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/566d86a8
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/566d86a8/DEFControlParser.o ../../../rsyn/src/rsyn/io/parser/lef_def/DEFControlParser.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/566d86a8/DEFControlParser.o ../../../rsyn/src/rsyn/io/parser/lef_def/DEFControlParser.cpp
 
 ${OBJECTDIR}/_ext/566d86a8/LEFControlParser.o: ../../../rsyn/src/rsyn/io/parser/lef_def/LEFControlParser.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/566d86a8
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/566d86a8/LEFControlParser.o ../../../rsyn/src/rsyn/io/parser/lef_def/LEFControlParser.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/566d86a8/LEFControlParser.o ../../../rsyn/src/rsyn/io/parser/lef_def/LEFControlParser.cpp
 
 ${OBJECTDIR}/_ext/5d0b7bcc/LibertyControlParser.o: ../../../rsyn/src/rsyn/io/parser/liberty/LibertyControlParser.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/5d0b7bcc
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/5d0b7bcc/LibertyControlParser.o ../../../rsyn/src/rsyn/io/parser/liberty/LibertyControlParser.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/5d0b7bcc/LibertyControlParser.o ../../../rsyn/src/rsyn/io/parser/liberty/LibertyControlParser.cpp
 
 ${OBJECTDIR}/_ext/70634bf7/OperationsControlParser.o: ../../../rsyn/src/rsyn/io/parser/operations/OperationsControlParser.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/70634bf7
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/70634bf7/OperationsControlParser.o ../../../rsyn/src/rsyn/io/parser/operations/OperationsControlParser.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/70634bf7/OperationsControlParser.o ../../../rsyn/src/rsyn/io/parser/operations/OperationsControlParser.cpp
 
 ${OBJECTDIR}/_ext/1c24e6e4/parser_helper.o: ../../../rsyn/src/rsyn/io/parser/parser_helper.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1c24e6e4
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1c24e6e4/parser_helper.o ../../../rsyn/src/rsyn/io/parser/parser_helper.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1c24e6e4/parser_helper.o ../../../rsyn/src/rsyn/io/parser/parser_helper.cpp
 
 ${OBJECTDIR}/_ext/6630256/ScriptReader.o: ../../../rsyn/src/rsyn/io/parser/script/ScriptReader.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/6630256
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/6630256/ScriptReader.o ../../../rsyn/src/rsyn/io/parser/script/ScriptReader.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/6630256/ScriptReader.o ../../../rsyn/src/rsyn/io/parser/script/ScriptReader.cpp
 
 ${OBJECTDIR}/_ext/7eb35aea/Script.tab.o: ../../../rsyn/src/rsyn/io/parser/script/base/Script.tab.cc
 	${MKDIR} -p ${OBJECTDIR}/_ext/7eb35aea
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/7eb35aea/Script.tab.o ../../../rsyn/src/rsyn/io/parser/script/base/Script.tab.cc
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/7eb35aea/Script.tab.o ../../../rsyn/src/rsyn/io/parser/script/base/Script.tab.cc
 
 ${OBJECTDIR}/_ext/7eb35aea/Script.yy.o: ../../../rsyn/src/rsyn/io/parser/script/base/Script.yy.cc
 	${MKDIR} -p ${OBJECTDIR}/_ext/7eb35aea
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/7eb35aea/Script.yy.o ../../../rsyn/src/rsyn/io/parser/script/base/Script.yy.cc
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/7eb35aea/Script.yy.o ../../../rsyn/src/rsyn/io/parser/script/base/Script.yy.cc
 
 ${OBJECTDIR}/_ext/1fe5ee87/SDCControlParser.o: ../../../rsyn/src/rsyn/io/parser/sdc/SDCControlParser.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1fe5ee87
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fe5ee87/SDCControlParser.o ../../../rsyn/src/rsyn/io/parser/sdc/SDCControlParser.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fe5ee87/SDCControlParser.o ../../../rsyn/src/rsyn/io/parser/sdc/SDCControlParser.cpp
 
 ${OBJECTDIR}/_ext/dcd81009/SPEFControlParser.o: ../../../rsyn/src/rsyn/io/parser/spef/SPEFControlParser.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/dcd81009
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/dcd81009/SPEFControlParser.o ../../../rsyn/src/rsyn/io/parser/spef/SPEFControlParser.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/dcd81009/SPEFControlParser.o ../../../rsyn/src/rsyn/io/parser/spef/SPEFControlParser.cpp
 
 ${OBJECTDIR}/_ext/68199c33/SimplifiedVerilogReader.o: ../../../rsyn/src/rsyn/io/parser/verilog/SimplifiedVerilogReader.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/68199c33
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/68199c33/SimplifiedVerilogReader.o ../../../rsyn/src/rsyn/io/parser/verilog/SimplifiedVerilogReader.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/68199c33/SimplifiedVerilogReader.o ../../../rsyn/src/rsyn/io/parser/verilog/SimplifiedVerilogReader.cpp
 
 ${OBJECTDIR}/_ext/cdec96b3/SimplifiedVerilog.tab.o: ../../../rsyn/src/rsyn/io/parser/verilog/generated/SimplifiedVerilog.tab.cc
 	${MKDIR} -p ${OBJECTDIR}/_ext/cdec96b3
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/cdec96b3/SimplifiedVerilog.tab.o ../../../rsyn/src/rsyn/io/parser/verilog/generated/SimplifiedVerilog.tab.cc
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/cdec96b3/SimplifiedVerilog.tab.o ../../../rsyn/src/rsyn/io/parser/verilog/generated/SimplifiedVerilog.tab.cc
 
 ${OBJECTDIR}/_ext/cdec96b3/SimplifiedVerilog.yy.o: ../../../rsyn/src/rsyn/io/parser/verilog/generated/SimplifiedVerilog.yy.cc
 	${MKDIR} -p ${OBJECTDIR}/_ext/cdec96b3
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/cdec96b3/SimplifiedVerilog.yy.o ../../../rsyn/src/rsyn/io/parser/verilog/generated/SimplifiedVerilog.yy.cc
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/cdec96b3/SimplifiedVerilog.yy.o ../../../rsyn/src/rsyn/io/parser/verilog/generated/SimplifiedVerilog.yy.cc
 
 ${OBJECTDIR}/_ext/1fbf0388/BookshelfReader.o: ../../../rsyn/src/rsyn/io/reader/BookshelfReader.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1fbf0388
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/BookshelfReader.o ../../../rsyn/src/rsyn/io/reader/BookshelfReader.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/BookshelfReader.o ../../../rsyn/src/rsyn/io/reader/BookshelfReader.cpp
 
 ${OBJECTDIR}/_ext/1fbf0388/DesignPositionReader.o: ../../../rsyn/src/rsyn/io/reader/DesignPositionReader.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1fbf0388
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/DesignPositionReader.o ../../../rsyn/src/rsyn/io/reader/DesignPositionReader.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/DesignPositionReader.o ../../../rsyn/src/rsyn/io/reader/DesignPositionReader.cpp
 
 ${OBJECTDIR}/_ext/1fbf0388/GenericReader.o: ../../../rsyn/src/rsyn/io/reader/GenericReader.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1fbf0388
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/GenericReader.o ../../../rsyn/src/rsyn/io/reader/GenericReader.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/GenericReader.o ../../../rsyn/src/rsyn/io/reader/GenericReader.cpp
 
 ${OBJECTDIR}/_ext/1fbf0388/ICCAD15Reader.o: ../../../rsyn/src/rsyn/io/reader/ICCAD15Reader.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1fbf0388
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/ICCAD15Reader.o ../../../rsyn/src/rsyn/io/reader/ICCAD15Reader.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/ICCAD15Reader.o ../../../rsyn/src/rsyn/io/reader/ICCAD15Reader.cpp
 
 ${OBJECTDIR}/_ext/1fbf0388/ICCAD17Reader.o: ../../../rsyn/src/rsyn/io/reader/ICCAD17Reader.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1fbf0388
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/ICCAD17Reader.o ../../../rsyn/src/rsyn/io/reader/ICCAD17Reader.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/ICCAD17Reader.o ../../../rsyn/src/rsyn/io/reader/ICCAD17Reader.cpp
 
 ${OBJECTDIR}/_ext/1fbf0388/ISPD2012Reader.o: ../../../rsyn/src/rsyn/io/reader/ISPD2012Reader.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1fbf0388
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/ISPD2012Reader.o ../../../rsyn/src/rsyn/io/reader/ISPD2012Reader.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/ISPD2012Reader.o ../../../rsyn/src/rsyn/io/reader/ISPD2012Reader.cpp
 
 ${OBJECTDIR}/_ext/1fbf0388/ISPD2014Reader.o: ../../../rsyn/src/rsyn/io/reader/ISPD2014Reader.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1fbf0388
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/ISPD2014Reader.o ../../../rsyn/src/rsyn/io/reader/ISPD2014Reader.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/ISPD2014Reader.o ../../../rsyn/src/rsyn/io/reader/ISPD2014Reader.cpp
 
 ${OBJECTDIR}/_ext/1fbf0388/PopulateRsyn.o: ../../../rsyn/src/rsyn/io/reader/PopulateRsyn.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1fbf0388
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/PopulateRsyn.o ../../../rsyn/src/rsyn/io/reader/PopulateRsyn.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/PopulateRsyn.o ../../../rsyn/src/rsyn/io/reader/PopulateRsyn.cpp
 
 ${OBJECTDIR}/_ext/1fbf0388/SizingISPDReader.o: ../../../rsyn/src/rsyn/io/reader/SizingISPDReader.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1fbf0388
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/SizingISPDReader.o ../../../rsyn/src/rsyn/io/reader/SizingISPDReader.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1fbf0388/SizingISPDReader.o ../../../rsyn/src/rsyn/io/reader/SizingISPDReader.cpp
 
 ${OBJECTDIR}/_ext/cf7d64b0/DensityGridService.o: ../../../rsyn/src/rsyn/model/congestion/DensityGrid/DensityGridService.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/cf7d64b0
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/cf7d64b0/DensityGridService.o ../../../rsyn/src/rsyn/model/congestion/DensityGrid/DensityGridService.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/cf7d64b0/DensityGridService.o ../../../rsyn/src/rsyn/model/congestion/DensityGrid/DensityGridService.cpp
 
 ${OBJECTDIR}/_ext/f0e9b391/LibraryCharacterizer.o: ../../../rsyn/src/rsyn/model/library/LibraryCharacterizer.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/f0e9b391
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/f0e9b391/LibraryCharacterizer.o ../../../rsyn/src/rsyn/model/library/LibraryCharacterizer.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/f0e9b391/LibraryCharacterizer.o ../../../rsyn/src/rsyn/model/library/LibraryCharacterizer.cpp
 
 ${OBJECTDIR}/_ext/3998ef9c/DefaultRoutingEstimationModel.o: ../../../rsyn/src/rsyn/model/routing/DefaultRoutingEstimationModel.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/3998ef9c
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/3998ef9c/DefaultRoutingEstimationModel.o ../../../rsyn/src/rsyn/model/routing/DefaultRoutingEstimationModel.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/3998ef9c/DefaultRoutingEstimationModel.o ../../../rsyn/src/rsyn/model/routing/DefaultRoutingEstimationModel.cpp
 
 ${OBJECTDIR}/_ext/3998ef9c/DefaultRoutingExtractionModel.o: ../../../rsyn/src/rsyn/model/routing/DefaultRoutingExtractionModel.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/3998ef9c
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/3998ef9c/DefaultRoutingExtractionModel.o ../../../rsyn/src/rsyn/model/routing/DefaultRoutingExtractionModel.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/3998ef9c/DefaultRoutingExtractionModel.o ../../../rsyn/src/rsyn/model/routing/DefaultRoutingExtractionModel.cpp
 
 ${OBJECTDIR}/_ext/3998ef9c/RoutingEstimator.o: ../../../rsyn/src/rsyn/model/routing/RoutingEstimator.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/3998ef9c
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/3998ef9c/RoutingEstimator.o ../../../rsyn/src/rsyn/model/routing/RoutingEstimator.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/3998ef9c/RoutingEstimator.o ../../../rsyn/src/rsyn/model/routing/RoutingEstimator.cpp
 
 ${OBJECTDIR}/_ext/3998ef9c/RsttRoutingEstimatorModel.o: ../../../rsyn/src/rsyn/model/routing/RsttRoutingEstimatorModel.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/3998ef9c
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/3998ef9c/RsttRoutingEstimatorModel.o ../../../rsyn/src/rsyn/model/routing/RsttRoutingEstimatorModel.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/3998ef9c/RsttRoutingEstimatorModel.o ../../../rsyn/src/rsyn/model/routing/RsttRoutingEstimatorModel.cpp
 
 ${OBJECTDIR}/_ext/caf5bf7a/Scenario.o: ../../../rsyn/src/rsyn/model/scenario/Scenario.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/caf5bf7a
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/caf5bf7a/Scenario.o ../../../rsyn/src/rsyn/model/scenario/Scenario.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/caf5bf7a/Scenario.o ../../../rsyn/src/rsyn/model/scenario/Scenario.cpp
 
 ${OBJECTDIR}/_ext/1db32eb4/DefaultTimingModel.o: ../../../rsyn/src/rsyn/model/timing/DefaultTimingModel.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1db32eb4
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1db32eb4/DefaultTimingModel.o ../../../rsyn/src/rsyn/model/timing/DefaultTimingModel.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1db32eb4/DefaultTimingModel.o ../../../rsyn/src/rsyn/model/timing/DefaultTimingModel.cpp
 
 ${OBJECTDIR}/_ext/1db32eb4/SandboxTimer.o: ../../../rsyn/src/rsyn/model/timing/SandboxTimer.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1db32eb4
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1db32eb4/SandboxTimer.o ../../../rsyn/src/rsyn/model/timing/SandboxTimer.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1db32eb4/SandboxTimer.o ../../../rsyn/src/rsyn/model/timing/SandboxTimer.cpp
 
 ${OBJECTDIR}/_ext/1db32eb4/Timer.o: ../../../rsyn/src/rsyn/model/timing/Timer.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1db32eb4
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1db32eb4/Timer.o ../../../rsyn/src/rsyn/model/timing/Timer.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1db32eb4/Timer.o ../../../rsyn/src/rsyn/model/timing/Timer.cpp
 
 ${OBJECTDIR}/_ext/b3ae7c3d/PhysicalService.o: ../../../rsyn/src/rsyn/phy/PhysicalService.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/b3ae7c3d
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/b3ae7c3d/PhysicalService.o ../../../rsyn/src/rsyn/phy/PhysicalService.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/b3ae7c3d/PhysicalService.o ../../../rsyn/src/rsyn/phy/PhysicalService.cpp
 
 ${OBJECTDIR}/_ext/935be1ca/PhysicalDesign.o: ../../../rsyn/src/rsyn/phy/obj/impl/PhysicalDesign.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/935be1ca
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/935be1ca/PhysicalDesign.o ../../../rsyn/src/rsyn/phy/obj/impl/PhysicalDesign.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/935be1ca/PhysicalDesign.o ../../../rsyn/src/rsyn/phy/obj/impl/PhysicalDesign.cpp
 
 ${OBJECTDIR}/_ext/6ce3e294/BookshelfMapper.o: ../../../rsyn/src/rsyn/phy/util/BookshelfMapper.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/6ce3e294
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/6ce3e294/BookshelfMapper.o ../../../rsyn/src/rsyn/phy/util/BookshelfMapper.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/6ce3e294/BookshelfMapper.o ../../../rsyn/src/rsyn/phy/util/BookshelfMapper.cpp
 
 ${OBJECTDIR}/_ext/6ce3e294/PhysicalLayerUtil.o: ../../../rsyn/src/rsyn/phy/util/PhysicalLayerUtil.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/6ce3e294
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/6ce3e294/PhysicalLayerUtil.o ../../../rsyn/src/rsyn/phy/util/PhysicalLayerUtil.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/6ce3e294/PhysicalLayerUtil.o ../../../rsyn/src/rsyn/phy/util/PhysicalLayerUtil.cpp
 
 ${OBJECTDIR}/_ext/9ce18f52/Message.o: ../../../rsyn/src/rsyn/session/Message.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/9ce18f52
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/9ce18f52/Message.o ../../../rsyn/src/rsyn/session/Message.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/9ce18f52/Message.o ../../../rsyn/src/rsyn/session/Message.cpp
 
 ${OBJECTDIR}/_ext/9ce18f52/Session.o: ../../../rsyn/src/rsyn/session/Session.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/9ce18f52
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/9ce18f52/Session.o ../../../rsyn/src/rsyn/session/Session.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/9ce18f52/Session.o ../../../rsyn/src/rsyn/session/Session.cpp
 
 ${OBJECTDIR}/_ext/82294639/message.o: ../../../rsyn/src/rsyn/setup/message.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/82294639
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/82294639/message.o ../../../rsyn/src/rsyn/setup/message.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/82294639/message.o ../../../rsyn/src/rsyn/setup/message.cpp
 
 ${OBJECTDIR}/_ext/822a69ec/Shell.o: ../../../rsyn/src/rsyn/shell/Shell.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/822a69ec
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/822a69ec/Shell.o ../../../rsyn/src/rsyn/shell/Shell.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/822a69ec/Shell.o ../../../rsyn/src/rsyn/shell/Shell.cpp
 
 ${OBJECTDIR}/_ext/c2237cc6/Logger.o: ../../../rsyn/src/rsyn/util/Logger.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/c2237cc6
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/c2237cc6/Logger.o ../../../rsyn/src/rsyn/util/Logger.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/c2237cc6/Logger.o ../../../rsyn/src/rsyn/util/Logger.cpp
 
 ${OBJECTDIR}/_ext/c2237cc6/RCTreeExtractor.o: ../../../rsyn/src/rsyn/util/RCTreeExtractor.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/c2237cc6
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/c2237cc6/RCTreeExtractor.o ../../../rsyn/src/rsyn/util/RCTreeExtractor.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/c2237cc6/RCTreeExtractor.o ../../../rsyn/src/rsyn/util/RCTreeExtractor.cpp
 
 ${OBJECTDIR}/_ext/c2237cc6/Stepwatch.o: ../../../rsyn/src/rsyn/util/Stepwatch.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/c2237cc6
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/c2237cc6/Stepwatch.o ../../../rsyn/src/rsyn/util/Stepwatch.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/c2237cc6/Stepwatch.o ../../../rsyn/src/rsyn/util/Stepwatch.cpp
 
 ${OBJECTDIR}/_ext/c85071da/Abu.o: ../../src/x/gui/overlay/Abu.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/c85071da
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/c85071da/Abu.o ../../src/x/gui/overlay/Abu.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/c85071da/Abu.o ../../src/x/gui/overlay/Abu.cpp
 
 ${OBJECTDIR}/_ext/c85071da/Jezz.o: ../../src/x/gui/overlay/Jezz.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/c85071da
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/c85071da/Jezz.o ../../src/x/gui/overlay/Jezz.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/c85071da/Jezz.o ../../src/x/gui/overlay/Jezz.cpp
 
 ${OBJECTDIR}/_ext/c85071da/OverlapRemoverOverlay.o: ../../src/x/gui/overlay/OverlapRemoverOverlay.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/c85071da
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/c85071da/OverlapRemoverOverlay.o ../../src/x/gui/overlay/OverlapRemoverOverlay.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/c85071da/OverlapRemoverOverlay.o ../../src/x/gui/overlay/OverlapRemoverOverlay.cpp
 
 ${OBJECTDIR}/_ext/c85071da/RoutingEstimatorOverlay.o: ../../src/x/gui/overlay/RoutingEstimatorOverlay.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/c85071da
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/c85071da/RoutingEstimatorOverlay.o ../../src/x/gui/overlay/RoutingEstimatorOverlay.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/c85071da/RoutingEstimatorOverlay.o ../../src/x/gui/overlay/RoutingEstimatorOverlay.cpp
 
 ${OBJECTDIR}/_ext/c85071da/register.o: ../../src/x/gui/overlay/register.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/c85071da
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/c85071da/register.o ../../src/x/gui/overlay/register.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/c85071da/register.o ../../src/x/gui/overlay/register.cpp
 
 ${OBJECTDIR}/_ext/9c00092f/Infrastructure.o: ../../src/x/infra/iccad15/Infrastructure.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/9c00092f
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/9c00092f/Infrastructure.o ../../src/x/infra/iccad15/Infrastructure.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/9c00092f/Infrastructure.o ../../src/x/infra/iccad15/Infrastructure.cpp
 
 ${OBJECTDIR}/_ext/75e7ffaa/ICCAD15Reader.o: ../../src/x/io/reader/ICCAD15Reader.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/75e7ffaa
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/75e7ffaa/ICCAD15Reader.o ../../src/x/io/reader/ICCAD15Reader.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/75e7ffaa/ICCAD15Reader.o ../../src/x/io/reader/ICCAD15Reader.cpp
 
 ${OBJECTDIR}/_ext/2e2cbd1d/Jezz.o: ../../src/x/jezz/Jezz.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/2e2cbd1d
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2e2cbd1d/Jezz.o ../../src/x/jezz/Jezz.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2e2cbd1d/Jezz.o ../../src/x/jezz/Jezz.cpp
 
 ${OBJECTDIR}/_ext/616d296d/main.o: ../../src/x/main.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/616d296d
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/616d296d/main.o ../../src/x/main.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/616d296d/main.o ../../src/x/main.cpp
 
 ${OBJECTDIR}/_ext/8fac3cf5/lnalg.o: ../../src/x/math/lnalg/lnalg.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/8fac3cf5
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/8fac3cf5/lnalg.o ../../src/x/math/lnalg/lnalg.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/8fac3cf5/lnalg.o ../../src/x/math/lnalg/lnalg.cpp
 
 ${OBJECTDIR}/_ext/8fac3cf5/scrm.o: ../../src/x/math/lnalg/scrm.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/8fac3cf5
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/8fac3cf5/scrm.o ../../src/x/math/lnalg/scrm.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/8fac3cf5/scrm.o ../../src/x/math/lnalg/scrm.cpp
 
 ${OBJECTDIR}/_ext/caff1bd9/LemonLP.o: ../../src/x/opto/example/LemonLP.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/caff1bd9
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/caff1bd9/LemonLP.o ../../src/x/opto/example/LemonLP.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/caff1bd9/LemonLP.o ../../src/x/opto/example/LemonLP.cpp
 
 ${OBJECTDIR}/_ext/caff1bd9/QuadraticPlacement.o: ../../src/x/opto/example/QuadraticPlacement.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/caff1bd9
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/caff1bd9/QuadraticPlacement.o ../../src/x/opto/example/QuadraticPlacement.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/caff1bd9/QuadraticPlacement.o ../../src/x/opto/example/QuadraticPlacement.cpp
 
 ${OBJECTDIR}/_ext/caff1bd9/RandomPlacement.o: ../../src/x/opto/example/RandomPlacement.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/caff1bd9
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/caff1bd9/RandomPlacement.o ../../src/x/opto/example/RandomPlacement.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/caff1bd9/RandomPlacement.o ../../src/x/opto/example/RandomPlacement.cpp
 
 ${OBJECTDIR}/_ext/caff1bd9/SandboxTest.o: ../../src/x/opto/example/SandboxTest.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/caff1bd9
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/caff1bd9/SandboxTest.o ../../src/x/opto/example/SandboxTest.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/caff1bd9/SandboxTest.o ../../src/x/opto/example/SandboxTest.cpp
 
 ${OBJECTDIR}/_ext/e3a82410/FastPlace.o: ../../src/x/opto/ext/FastPlace.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/e3a82410
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/e3a82410/FastPlace.o ../../src/x/opto/ext/FastPlace.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/e3a82410/FastPlace.o ../../src/x/opto/ext/FastPlace.cpp
 
 ${OBJECTDIR}/_ext/2df4d1d6/ABU.o: ../../src/x/opto/ufrgs/ispd16/ABU.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/2df4d1d6
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2df4d1d6/ABU.o ../../src/x/opto/ufrgs/ispd16/ABU.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2df4d1d6/ABU.o ../../src/x/opto/ufrgs/ispd16/ABU.cpp
 
 ${OBJECTDIR}/_ext/2df4d1d6/AbuReduction.o: ../../src/x/opto/ufrgs/ispd16/AbuReduction.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/2df4d1d6
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2df4d1d6/AbuReduction.o ../../src/x/opto/ufrgs/ispd16/AbuReduction.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2df4d1d6/AbuReduction.o ../../src/x/opto/ufrgs/ispd16/AbuReduction.cpp
 
 ${OBJECTDIR}/_ext/2df4d1d6/Balancing.o: ../../src/x/opto/ufrgs/ispd16/Balancing.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/2df4d1d6
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2df4d1d6/Balancing.o ../../src/x/opto/ufrgs/ispd16/Balancing.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2df4d1d6/Balancing.o ../../src/x/opto/ufrgs/ispd16/Balancing.cpp
 
 ${OBJECTDIR}/_ext/2df4d1d6/ClusteredMove.o: ../../src/x/opto/ufrgs/ispd16/ClusteredMove.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/2df4d1d6
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2df4d1d6/ClusteredMove.o ../../src/x/opto/ufrgs/ispd16/ClusteredMove.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2df4d1d6/ClusteredMove.o ../../src/x/opto/ufrgs/ispd16/ClusteredMove.cpp
 
 ${OBJECTDIR}/_ext/2df4d1d6/EarlyOpto.o: ../../src/x/opto/ufrgs/ispd16/EarlyOpto.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/2df4d1d6
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2df4d1d6/EarlyOpto.o ../../src/x/opto/ufrgs/ispd16/EarlyOpto.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2df4d1d6/EarlyOpto.o ../../src/x/opto/ufrgs/ispd16/EarlyOpto.cpp
 
 ${OBJECTDIR}/_ext/2df4d1d6/ISPD16Flow.o: ../../src/x/opto/ufrgs/ispd16/ISPD16Flow.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/2df4d1d6
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2df4d1d6/ISPD16Flow.o ../../src/x/opto/ufrgs/ispd16/ISPD16Flow.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2df4d1d6/ISPD16Flow.o ../../src/x/opto/ufrgs/ispd16/ISPD16Flow.cpp
 
 ${OBJECTDIR}/_ext/2df4d1d6/LoadOptimization.o: ../../src/x/opto/ufrgs/ispd16/LoadOptimization.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/2df4d1d6
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2df4d1d6/LoadOptimization.o ../../src/x/opto/ufrgs/ispd16/LoadOptimization.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2df4d1d6/LoadOptimization.o ../../src/x/opto/ufrgs/ispd16/LoadOptimization.cpp
 
 ${OBJECTDIR}/_ext/6f699a3e/IncrementalTimingDrivenQP.o: ../../src/x/opto/ufrgs/qpdp/IncrementalTimingDrivenQP.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/6f699a3e
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/6f699a3e/IncrementalTimingDrivenQP.o ../../src/x/opto/ufrgs/qpdp/IncrementalTimingDrivenQP.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/6f699a3e/IncrementalTimingDrivenQP.o ../../src/x/opto/ufrgs/qpdp/IncrementalTimingDrivenQP.cpp
 
 ${OBJECTDIR}/_ext/6f699a3e/OverlapRemover.o: ../../src/x/opto/ufrgs/qpdp/OverlapRemover.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/6f699a3e
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/6f699a3e/OverlapRemover.o ../../src/x/opto/ufrgs/qpdp/OverlapRemover.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/6f699a3e/OverlapRemover.o ../../src/x/opto/ufrgs/qpdp/OverlapRemover.cpp
 
 ${OBJECTDIR}/_ext/6f699a3e/RelaxedPinPosition.o: ../../src/x/opto/ufrgs/qpdp/RelaxedPinPosition.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/6f699a3e
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/6f699a3e/RelaxedPinPosition.o ../../src/x/opto/ufrgs/qpdp/RelaxedPinPosition.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/6f699a3e/RelaxedPinPosition.o ../../src/x/opto/ufrgs/qpdp/RelaxedPinPosition.cpp
 
 ${OBJECTDIR}/_ext/6f699a3e/TDQuadraticFlow.o: ../../src/x/opto/ufrgs/qpdp/TDQuadraticFlow.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/6f699a3e
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/6f699a3e/TDQuadraticFlow.o ../../src/x/opto/ufrgs/qpdp/TDQuadraticFlow.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/6f699a3e/TDQuadraticFlow.o ../../src/x/opto/ufrgs/qpdp/TDQuadraticFlow.cpp
 
 ${OBJECTDIR}/_ext/6f699a3e/qpdpb2b.o: ../../src/x/opto/ufrgs/qpdp/qpdpb2b.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/6f699a3e
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/6f699a3e/qpdpb2b.o ../../src/x/opto/ufrgs/qpdp/qpdpb2b.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/6f699a3e/qpdpb2b.o ../../src/x/opto/ufrgs/qpdp/qpdpb2b.cpp
 
 ${OBJECTDIR}/_ext/97e9a35b/message.o: ../../src/x/setup/message.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/97e9a35b
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/97e9a35b/message.o ../../src/x/setup/message.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/97e9a35b/message.o ../../src/x/setup/message.cpp
 
 ${OBJECTDIR}/_ext/97e9a35b/process.o: ../../src/x/setup/process.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/97e9a35b
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/97e9a35b/process.o ../../src/x/setup/process.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/97e9a35b/process.o ../../src/x/setup/process.cpp
 
 ${OBJECTDIR}/_ext/97e9a35b/reader.o: ../../src/x/setup/reader.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/97e9a35b
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/97e9a35b/reader.o ../../src/x/setup/reader.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/97e9a35b/reader.o ../../src/x/setup/reader.cpp
 
 ${OBJECTDIR}/_ext/97e9a35b/service.o: ../../src/x/setup/service.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/97e9a35b
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/97e9a35b/service.o ../../src/x/setup/service.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/97e9a35b/service.o ../../src/x/setup/service.cpp
 
 ${OBJECTDIR}/_ext/2e31f364/BlockageControl.o: ../../src/x/util/BlockageControl.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/2e31f364
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -s -DMACRO -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2e31f364/BlockageControl.o ../../src/x/util/BlockageControl.cpp
+	$(COMPILE.cc) -O3 -s -DRSYN_ENABLE_OVERLAP_REMOVER=1 -I../../../rsyn/src -I../../../rsyn/include -I../../src -I../../include/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/2e31f364/BlockageControl.o ../../src/x/util/BlockageControl.cpp
 
 # Subprojects
 .build-subprojects:

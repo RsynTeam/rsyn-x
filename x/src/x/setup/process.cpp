@@ -33,8 +33,11 @@
 #include "x/opto/example/QuadraticPlacement.h"
 #include "x/opto/example/RandomPlacement.h"
 #include "x/opto/example/LemonLP.h"
-#include "x/opto/ufrgs/qpdp/OverlapRemover.h"
 #include "x/opto/example/SandboxTest.h"
+
+#if RSYN_ENABLE_OVERLAP_REMOVER
+#include "x/opto/ufrgs/qpdp/OverlapRemover.h"
+#endif
 
 // Registration
 namespace Rsyn {
@@ -50,7 +53,6 @@ void Session::registerProcesses() {
 	// New
 	registerProcess<ICCAD15::IncrementalTimingDrivenQP>("ufrgs.incrementalTimingDrivenQP");
 	registerProcess<ICCAD15::TDQuadraticFlow>("ufrgs.TDQuadraticFlow");
-	registerProcess<ICCAD15::OverlapRemover>("ufrgs.overlapRemover");
 	
 	// External
 	registerProcess<ICCAD15::FastPlace>("ext.FastPlace");
@@ -62,6 +64,12 @@ void Session::registerProcesses() {
 
 	// Testing
 	registerProcess<Testing::SandboxTest>("testing.sandbox");
+
+	// Optional
+#if RSYN_ENABLE_OVERLAP_REMOVER
+	registerProcess<ICCAD15::OverlapRemover>("ufrgs.overlapRemover");
+#endif
+
 } // end method
 } // end namespace
 
