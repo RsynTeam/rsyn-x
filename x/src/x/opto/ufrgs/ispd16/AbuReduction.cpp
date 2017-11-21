@@ -67,7 +67,7 @@ void AbuReduction::runAbuReduction() {
 // -----------------------------------------------------------------------------
 
 void AbuReduction::computeABUVioaltionCells(const double alpha ) {
-	const UPLACE::ABU &abu = infra->getAbuAnalyser();
+	const ABU &abu = infra->getAbuAnalyser();
 	
 	clsABUViolationCells.clear();
 	clsABUViolationCells.reserve(design.getNumInstances(Rsyn::CELL));
@@ -109,7 +109,7 @@ void AbuReduction::computeABUVioaltionCells(const double alpha ) {
 // -----------------------------------------------------------------------------
 
 void AbuReduction::moveABUViolationCells() {
-	UPLACE::ABU &abu = infra->getAbuAnalyser();
+	ABU &abu = infra->getAbuAnalyser();
 	
 	std::vector<std::tuple < Rsyn::Cell, DBUxy>> movedCells;
 	movedCells.reserve(clsABUViolationCells.size());

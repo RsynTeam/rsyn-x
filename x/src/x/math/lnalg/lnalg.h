@@ -305,7 +305,7 @@ void SolveByConjugateGradientWithPCond( const Matrix &A, const vector< double > 
 			break;
 	} // end while
 	
-	std::cout << "#iterations = " << niter  << "\n";
+	//std::cout << "#iterations = " << niter  << "\n";
 } // end function
 
 // -----------------------------------------------------------------------------

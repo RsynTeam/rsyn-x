@@ -70,7 +70,7 @@ public:
 			const std::vector<Rsyn::Cell>& cells,
 			std::vector<Rsyn::Cell>& overlaps) const;
 	
-	virtual void start(const Rsyn::Json& params);
+	virtual void start(const Rsyn::Json &params);
 	virtual void stop() {};
 };
 

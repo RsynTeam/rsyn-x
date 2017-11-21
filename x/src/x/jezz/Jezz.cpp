@@ -13,6 +13,21 @@
  * limitations under the License.
  */
  
+/* Copyright 2014-2017 Rsyn
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include <cassert>
 #include <algorithm>
 #include <limits>
@@ -54,111 +69,111 @@ void Jezz::start(const Rsyn::Json &params) {
 
 	// Observer changes in cell positions (i.e. from GUI).
 	clsPostInstanceMovedCallbackHandler =
-			clsPhysicalDesign.addPostInstanceMovedCallback(0, [&](Rsyn::PhysicalInstance physicalInstance) {
-				Rsyn::Instance instance = physicalInstance.getInstance();
-				if (instance.getType() == Rsyn::CELL) {
-					JezzNode *jezzNode = getJezzNode(instance);
-					if (jezzNode) {
-						const DBUxy position = physicalInstance.getPosition();
+		clsPhysicalDesign.addPostInstanceMovedCallback(0, [&](Rsyn::PhysicalInstance physicalInstance) {
+			Rsyn::Instance instance = physicalInstance.getInstance();
+			if (instance.getType() == Rsyn::CELL) {
+				JezzNode *jezzNode = getJezzNode(instance);
+				if (jezzNode) {
+					const DBUxy position = physicalInstance.getPosition();
 						jezz_dp_RemoveNode(jezzNode);
 						jezz_dp_UpdateReferencePosition(jezzNode, position.x, position.y);
-					} // end if
 				} // end if
-	});
+			} // end if
+		});
 
 	initJezz();
 
 	// Observe changes in the design.
 	clsDesign.registerObserver(this);
-	
+	clsPhysicalDesign.registerObserver(this);
 	{ // Store solution
 		ScriptParsing::CommandDescriptor dscp;
 		dscp.setName("storeJezzSolution");
 		dscp.setDescription("Stores the current placement solution under a given ID.");
 
 		dscp.addPositionalParam("id",
-				ScriptParsing::PARAM_TYPE_STRING,
-				ScriptParsing::PARAM_SPEC_MANDATORY,
-				"Identifier of the solution."
-		);
+			ScriptParsing::PARAM_TYPE_STRING,
+			ScriptParsing::PARAM_SPEC_MANDATORY,
+			"Identifier of the solution."
+			);
 
-		session.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
+		session.registerCommand(dscp, [&](const ScriptParsing::Command & command) {
 			const std::string id = command.getParam("id");
-			jezz_storeSolution(id);			
+			jezz_storeSolution(id);
 		});
 	} // end block
-	
+
 	{ // Restore solution
 		ScriptParsing::CommandDescriptor dscp;
 		dscp.setName("restoreJezzSolution");
 		dscp.setDescription("Restores a previous placement solution stored under a given ID.");
 
 		dscp.addPositionalParam("id",
-				ScriptParsing::PARAM_TYPE_STRING,
-				ScriptParsing::PARAM_SPEC_MANDATORY,
-				"Identifier of the solution."
-		);
-		
-		dscp.addNamedParam("full",
-				ScriptParsing::PARAM_TYPE_BOOLEAN,
-				ScriptParsing::PARAM_SPEC_OPTIONAL,
-				"Determines whether to perform a full or incremental restore.",
-				"false"
-		);
-		
+			ScriptParsing::PARAM_TYPE_STRING,
+			ScriptParsing::PARAM_SPEC_MANDATORY,
+			"Identifier of the solution."
+			);
 
-		session.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
+		dscp.addNamedParam("full",
+			ScriptParsing::PARAM_TYPE_BOOLEAN,
+			ScriptParsing::PARAM_SPEC_OPTIONAL,
+			"Determines whether to perform a full or incremental restore.",
+			"false"
+			);
+
+
+		session.registerCommand(dscp, [&](const ScriptParsing::Command & command) {
 			const std::string id = command.getParam("id");
 			const bool full = command.getParam("full");
-			
+
 			if (full)
 				jezz_restoreSolutionFull(id);
 			else jezz_restoreSolutionIncremental(id);
-		});
+			});
 	} // end block
-	
+
 	{ // legalize
 		ScriptParsing::CommandDescriptor dscp;
 		dscp.setName("legalize");
 		dscp.setDescription("Legalizes the current placement solution.");
-		
-		session.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
+
+		session.registerCommand(dscp, [&](const ScriptParsing::Command & command) {
 			Stepwatch leg("Legalizing circuit", false);
 			jezz_Legalize();
 			leg.finish();
 			clsRuntime = leg.getElapsedTime();
 		});
 	} // end block
-	
+
 	{ // legalizeCell
 		ScriptParsing::CommandDescriptor dscp;
 		dscp.setName("legalizeCell");
 		dscp.setDescription("Legalizes the position of a given cell.");
-		
+
 		dscp.addPositionalParam("cellName",
-				ScriptParsing::PARAM_TYPE_STRING,
-				ScriptParsing::PARAM_SPEC_MANDATORY,
-				"Name of the target cell.");
-				
-		session.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
+			ScriptParsing::PARAM_TYPE_STRING,
+			ScriptParsing::PARAM_SPEC_MANDATORY,
+			"Name of the target cell.");
+
+		session.registerCommand(dscp, [&](const ScriptParsing::Command & command) {
 			const std::string cellName = command.getParam("cellName");
 			const Rsyn::Instance cell = clsDesign.findCellByName(cellName);
-			
+
 			if (!cell) {
 				std::cout << "[ERROR] Cell \"" << cellName << "\" not found.\n";
 				return;
 			} // end if
-			
+
 			jezz_LegalizeNode(getJezzNode(cell));
 		});
 	} // end block
-	
+
 	{ // report
 		ScriptParsing::CommandDescriptor dscp;
 		dscp.setName("jezzReport");
 		dscp.setDescription("Reports the final results solution.");
-		
-		session.registerCommand(dscp, [&](const ScriptParsing::Command &command) {
+
+		session.registerCommand(dscp, [&](const ScriptParsing::Command & command) {
 			reportFinalResults();
 		});
 	} // end block
@@ -197,7 +212,7 @@ void Jezz::onPostInstanceCreate(Rsyn::Instance instance) {
 			for (const Bounds &obs : phLibCell.allLayerObstacles()) {
 				Bounds rect = obs;
 				DBUxy lower = obs.getCoordinate(LOWER);
-				rect.moveTo(phCell.getPosition()+ lower);
+				rect.moveTo(phCell.getPosition() + lower);
 				jezz_DefineObstacle(
 					rect[LOWER][X],
 					rect[LOWER][Y],
@@ -208,11 +223,11 @@ void Jezz::onPostInstanceCreate(Rsyn::Instance instance) {
 		} else {
 			const Bounds &rect = phCell.getBounds();
 			jezz_DefineObstacle(
-			rect[LOWER][X],
-			rect[LOWER][Y],
-			rect[UPPER][X],
-			rect[UPPER][Y]
-			);
+				rect[LOWER][X],
+				rect[LOWER][Y],
+				rect[UPPER][X],
+				rect[UPPER][Y]
+				);
 		}
 
 
@@ -232,6 +247,12 @@ void Jezz::onPostInstanceCreate(Rsyn::Instance instance) {
 
 // -----------------------------------------------------------------------------
 
+void Jezz::onPostMovedInstance(Rsyn::PhysicalInstance phInstance) {
+	// TODO 
+} // end method
+
+// -----------------------------------------------------------------------------
+
 void Jezz::initJezz() {
 	if (clsInitialized) {
 		std::cout << "[ERROR] Trying to re-initialize a Jezz legalizer.\n";
@@ -245,13 +266,13 @@ void Jezz::initJezz() {
 
 	// Create an attribute to map instances to jezz nodes.
 	clsMapInstancesToJezzNodes = clsDesign.createAttribute();
-	
+
 	//Initialize Jezz Legalizer
 	const int numRows = clsPhysicalDesign.getNumRows();
 	Rsyn::PhysicalModule phModule = clsPhysicalDesign.getPhysicalModule(clsModule);
 	const Bounds &coreBounds = phModule.getBounds();
 	const int numSites = coreBounds.computeLength(X) / clsPhysicalDesign.getRowSiteWidth();
-		
+
 	jezz_Init(
 		coreBounds.getCoordinate(LOWER, X),
 		coreBounds.getCoordinate(LOWER, Y),
@@ -265,13 +286,13 @@ void Jezz::initJezz() {
 			// Update session.
 			if (x != physicalCell.getCoordinate(LOWER, X) || y != physicalCell.getCoordinate(LOWER, Y)) {
 				clsPhysicalDesign.placeCell(physicalCell, x, y, true);
-				clsPhysicalDesign.notifyObservers(physicalCell, clsPostInstanceMovedCallbackHandler);
+					clsPhysicalDesign.notifyObservers(physicalCell, clsPostInstanceMovedCallbackHandler);
 			} // end if
-			
+
 			// Set the reference cell position as the new legalized one.
 			Jezz::JezzNode * jezzNode = clsMapInstancesToJezzNodes[physicalCell.getInstance()];
 			jezz_dp_UpdateReferencePosition(jezzNode, x, y);
-	});
+		});
 
 	// Define obstacles.
 	initJezz_Obstacles();
@@ -298,23 +319,24 @@ void Jezz::initJezz() {
 		clsMapInstancesToJezzNodes[instance] = jezzNode;
 	} // end for
 
-//	// Debug
-//	for (const Jezz::JezzNode *node : clsJezz->allNodes()) {
-//		cout << "jezz node: "
-//				<< "x=" << std::setw(8) << clsJezz->jezz_UnsnapPositionX(node->x) << " "
-//				<< "y=" << std::setw(8) << node->row->origin_y << " "
-//				<< "ws=" << node->ws << " "
-//				<< "fixed=" << node->fixed << " ";
-//
-//		cout << "cell=" << ((node->reference)?node->reference.getName():"<null>");
-//		cout << "\n";
-//	} // end for
+	//	// Debug
+	//	for (const Jezz::JezzNode *node : clsJezz->allNodes()) {
+	//		cout << "jezz node: "
+	//				<< "x=" << std::setw(8) << clsJezz->jezz_UnsnapPositionX(node->x) << " "
+	//				<< "y=" << std::setw(8) << node->row->origin_y << " "
+	//				<< "ws=" << node->ws << " "
+	//				<< "fixed=" << node->fixed << " ";
+	//
+	//		cout << "cell=" << ((node->reference)?node->reference.getName():"<null>");
+	//		cout << "\n";
+	//	} // end for
 
 } // end method
 
 // -----------------------------------------------------------------------------
 
 void Jezz::initJezz_Obstacles() {
+
 	struct Obstacle {
 		int x = 0;
 		int w = 0;
@@ -323,9 +345,13 @@ void Jezz::initJezz_Obstacles() {
 		bool operator<(const Obstacle &right) const {
 			return x < right.x;
 		} // end for
-		Obstacle() {}
+
+		Obstacle() {
+		}
+
 		Obstacle(const DBU x, const DBU w, Rsyn::Instance instance) :
-				x(x), w(w), instance(instance) {}
+		x(x), w(w), instance(instance) {
+		}
 	};
 
 	Rsyn::PhysicalModule phModule = clsPhysicalDesign.getPhysicalModule(clsModule);
@@ -334,7 +360,7 @@ void Jezz::initJezz_Obstacles() {
 	const Bounds &coreBounds = phModule.getBounds();
 
 	// Vector to store obstacles per row.
-	std::vector<std::vector<Obstacle>> rows(numRows);
+	std::vector<std::vector < Obstacle >> rows(numRows);
 
 	// Add an obstacle.
 	auto pushObstacle = [&](const DBU xmin, const DBU ymin, const DBU xmax, const DBU ymax, Rsyn::Instance instance) {
@@ -348,16 +374,16 @@ void Jezz::initJezz_Obstacles() {
 
 		if (clsEnableDebugMessages && ((ymin - ymax) % clsJezzRowHeight)) {
 			std::cout << "WARNING: Obstacle height is not integer multiple of the row height ("
-					<< "ymin=" << ymin << " "
-					<< "ymax=" << ymax << " "
-					<< "height=" << (ymax - ymin) << " "
-					<< "row_height=" << clsJezzRowHeight << ")\n";
+				<< "ymin=" << ymin << " "
+				<< "ymax=" << ymax << " "
+				<< "height=" << (ymax - ymin) << " "
+				<< "row_height=" << clsJezzRowHeight << ")\n";
 		} // end else
 	};
 
 	// Currently Jezz does not support rows starting/ending at different xmin,
 	// xmax. Therefore we define blockages to mimic uneven rows.
-	for ( const Rsyn::PhysicalRow phRow : clsPhysicalDesign.allPhysicalRows()) {
+	for (const Rsyn::PhysicalRow phRow : clsPhysicalDesign.allPhysicalRows()) {
 		const Bounds &bounds = phRow.getBounds();
 
 		if (bounds[LOWER][X] > coreBounds[LOWER][X]) {
@@ -421,8 +447,8 @@ void Jezz::initJezz_Obstacles() {
 				// handle uneven row (starting/ending after/before the core
 				// bounds).
 				std::cout << "INFO: Obstacle overlap at row " << i << " ("
-						<< "previous=" << previousInstance.getName() << ", "
-						<< "current=" << obs.instance.getName() << ").\n";		
+					<< "previous=" << previousInstance.getName() << ", "
+					<< "current=" << obs.instance.getName() << ").\n";
 			} // end if
 
 			// Keep track of previous instance.
@@ -471,12 +497,12 @@ void Jezz::jezz_InitRows() {
 		jezzNode->w = jezzRow.w;
 		jezzNode->x = jezzRow.x;
 		jezzNode->row = &jezzRow;
-		
+
 		jezzRow.insert(TAIL, jezzNode);
-		
+
 		// Initialize cache slots.
 		const int numSlots = roundedUpIntegralDivision(jezzRow.width(), clsJezzSlotLengthInJezzUnits);
-		jezzRow.slots.assign(numSlots, nullptr);		
+		jezzRow.slots.assign(numSlots, nullptr);
 	} // end for
 } // end method
 
@@ -488,17 +514,17 @@ void Jezz::jezz_DeleteWhitespaceNodes() {
 		jezz_DeleteWhitespaceNode(&whitespace);
 	} // end for
 } // end method
-	
+
 // -----------------------------------------------------------------------------
 
 void Jezz::jezz_Init(
-		const DBU originX,
-		const DBU originY,
-		const DBU rowHeight,
-		const DBU siteWidth,
-		const int numRows,
-		const int numSites,
-		UpdatePositionCallback updatePositionCallback) {
+	const DBU originX,
+	const DBU originY,
+	const DBU rowHeight,
+	const DBU siteWidth,
+	const int numRows,
+	const int numSites,
+	UpdatePositionCallback updatePositionCallback) {
 
 	clsJezzNumSites = numSites;
 	clsJezzNumRows = numRows;
@@ -556,8 +582,8 @@ bool Jezz::jezz_LegalizeNode(JezzNode *jezzNode) {
 		const DBU y1 = jezz_GetRowY(row);
 		const double costy = jezzNode->weight * std::abs(y1 - y0);
 		const double costx = clsJezzSiteWidth *
-				jezz_InsertNode(&clsJezzRows[row], jezzNode, jezzNode->x,
-				true, overflow, currMaxDisplacementCost);
+			jezz_InsertNode(&clsJezzRows[row], jezzNode, jezzNode->x,
+			true, overflow, currMaxDisplacementCost);
 		const double cost = costy + costx;
 
 		if (!overflow) {
@@ -580,8 +606,8 @@ bool Jezz::jezz_LegalizeNode(JezzNode *jezzNode) {
 		const DBU y1 = jezz_GetRowY(row);
 		const double costy = jezzNode->weight * std::abs(y1 - y0);
 		const double costx = clsJezzSiteWidth *
-				jezz_InsertNode(&clsJezzRows[row], jezzNode, jezzNode->x,
-				true, overflow, currMaxDisplacementCost);
+			jezz_InsertNode(&clsJezzRows[row], jezzNode, jezzNode->x,
+			true, overflow, currMaxDisplacementCost);
 		const double cost = costy + costx;
 
 		if (!overflow) {
@@ -602,7 +628,7 @@ bool Jezz::jezz_LegalizeNode(JezzNode *jezzNode) {
 
 	if (bestRow != -1) {
 		jezz_InsertNode(&clsJezzRows[bestRow], jezzNode, jezzNode->x, false,
-				overflow, smallestMaxDisplacementCost);
+			overflow, smallestMaxDisplacementCost);
 	} else {
 		// In this case, there's no more space to insert this node at least
 		// keep it with the approximately the same x.
@@ -634,7 +660,7 @@ bool Jezz::jezz_Legalize() {
 		JezzNode *jezzNode = sortedCells[i].second;
 		success &= jezz_LegalizeNode(jezzNode);
 	} // end for
-	
+
 	// Update cache.
 	jezz_UpdateCacheAll();
 
@@ -651,7 +677,7 @@ void Jezz::jezz_Cleanup() {
 	clsJezzRows.clear();
 	clsJezzNodes.clear();
 	clsJezzObstacles.clear();
-	
+
 	clsJezzDeletedNodes.clear();
 	clsJezzDeletedWhitespaces.clear();
 
@@ -662,11 +688,11 @@ void Jezz::jezz_Cleanup() {
 // -----------------------------------------------------------------------------
 
 Jezz::JezzNode *Jezz::jezz_DefineNode(
-		Rsyn::Cell cell,
-		const DBU xmin,
-		const DBU ymin,
-		const DBU xmax,
-		const DBU ymax) {
+	Rsyn::Cell cell,
+	const DBU xmin,
+	const DBU ymin,
+	const DBU xmax,
+	const DBU ymax) {
 
 	const int x = jezz_SnapPositionX(xmin);
 	const int w = jezz_SnapSizeX(xmin, xmax);
@@ -687,7 +713,7 @@ Jezz::JezzNode *Jezz::jezz_DefineNode(
 		clsJezzDeletedNodes.pop_front();
 		jezzNode->deleted = false;
 	} // end else	
-	
+
 	jezzNode->obstacle = false;
 	jezzNode->fixed = false;
 	jezzNode->reference = cell;
@@ -704,10 +730,10 @@ Jezz::JezzNode *Jezz::jezz_DefineNode(
 // -----------------------------------------------------------------------------
 
 void Jezz::jezz_DefineObstacleAtRowUsingJezzCoordinates(
-		const int row,
-		const int x,
-		const int w
-) {
+	const int row,
+	const int x,
+	const int w
+	) {
 	JezzRow *jezzRow = &clsJezzRows[row];
 
 	clsJezzObstacles.resize(clsJezzObstacles.size() + 1);
@@ -736,11 +762,11 @@ void Jezz::jezz_DefineObstacleAtRowUsingJezzCoordinates(
 // -----------------------------------------------------------------------------
 
 void Jezz::jezz_DefineObstacle(
-		const DBU xmin,
-		const DBU ymin,
-		const DBU xmax,
-		const DBU ymax
-		) {
+	const DBU xmin,
+	const DBU ymin,
+	const DBU xmax,
+	const DBU ymax
+	) {
 
 	const int x = jezz_SnapPositionX(xmin);
 	const int w = jezz_SnapSizeX(xmin, xmax);
@@ -798,7 +824,7 @@ bool Jezz::jezz_Overlap(const int x, JezzNode *jezzNode) {
 	// xmin    xmax = xmin + width (xmax is the xmin of the next node)
 	// xmin => fist site
 	// xmax => last site + 1
-	
+
 	return (x >= jezzNode->xmin() && x < jezzNode->xmax());
 } // end method
 
@@ -806,9 +832,9 @@ bool Jezz::jezz_Overlap(const int x, JezzNode *jezzNode) {
 
 bool Jezz::jezz_Enclosed(JezzNode *jezzNodeOutter, JezzNode *jezzNodeInner) {
 	return (
-			jezzNodeInner->xmin() >= jezzNodeOutter->xmin() &&
-			jezzNodeInner->xmax() <= jezzNodeOutter->xmax()
-			);
+		jezzNodeInner->xmin() >= jezzNodeOutter->xmin() &&
+		jezzNodeInner->xmax() <= jezzNodeOutter->xmax()
+		);
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -820,7 +846,7 @@ bool Jezz::jezz_ValidCachedNode(JezzRow *jezzRow, JezzNode *jezzNode) {
 // -----------------------------------------------------------------------------
 
 int Jezz::jezz_GetSlot(JezzRow *jezzRow, const int x) {
-	if (x <  jezzRow->xmin()) return -1;
+	if (x < jezzRow->xmin()) return -1;
 	if (x >= jezzRow->xmax()) return -1;
 	return (x - jezzRow->xmin()) / clsJezzSlotLengthInJezzUnits;
 } // end method
@@ -829,7 +855,7 @@ int Jezz::jezz_GetSlot(JezzRow *jezzRow, const int x) {
 
 void Jezz::jezz_UpdateCache(JezzNode *jezzNode) {
 	JezzRow *jezzRow = jezzNode->row;
-	
+
 	const int index = jezz_GetSlot(jezzRow, jezzNode->x);
 	if (index != -1) {
 		jezzRow->slots[index] = jezzNode;
@@ -855,7 +881,7 @@ Jezz::JezzNode *Jezz::jezz_FindOverlappingNodeCached(JezzRow *jezzRow, const int
 	} else if (x >= jezzRow->xmax()) {
 		return jezzRow->tail();
 	} // end else
-	
+
 	// Get the cache slot.
 	const int index = jezz_GetSlot(jezzRow, x);
 
@@ -870,13 +896,13 @@ Jezz::JezzNode *Jezz::jezz_FindOverlappingNodeCached(JezzRow *jezzRow, const int
 	if (!jezz_ValidCachedNode(jezzRow, jezzNode)) {
 		// Look at adjacent slots.
 		int i0 = index - 1;
-		int i1 = index + 1;	
+		int i1 = index + 1;
 
 		bool stop = false;
 
 		const int numSlots = jezzRow->slots.size();
 		while (!stop && (i0 >= 0 || i1 < numSlots)) {
-			
+
 			if (i0 >= 0 && jezz_ValidCachedNode(jezzRow, jezzRow->slots[i0])) {
 				jezzNode = jezzRow->slots[i0];
 				stop = true;
@@ -884,7 +910,7 @@ Jezz::JezzNode *Jezz::jezz_FindOverlappingNodeCached(JezzRow *jezzRow, const int
 				jezzNode = jezzRow->slots[i1];
 				stop = true;
 			} // end if
-			
+
 			i0--;
 			i1++;
 		} // end while
@@ -914,13 +940,13 @@ Jezz::JezzNode *Jezz::jezz_FindOverlappingNodeCached(JezzRow *jezzRow, const int
 // legalization process where node are processed in x order.
 
 Jezz::JezzNode * Jezz::jezz_FindOverlappingNodeNonCached(JezzRow *jezzRow, const int x) {
-	
+
 	// Check if the node is outside the row bounds...
 	if (x < jezzRow->xmin()) {
 		return &jezzRow->root; // root is ok here, should not be the head.
 	} else if (x >= jezzRow->xmax()) {
 		return jezzRow->tail();
-	} else {	
+	} else {
 		JezzNode *jezzNode = jezzRow->tail();
 		while (!jezzRow->isRoot(jezzNode)) {
 			if (jezz_Overlap(x, jezzNode))
@@ -947,13 +973,13 @@ void Jezz::jezz_RemoveZeroLengthWhitespace(JezzNode *jezzNode) {
 // Insert jezzNode after jezzNodeAnchor.
 
 double Jezz::jezz_InsertNode(
-		JezzRow *jezzRow,
-		JezzNode *jezzNode,
-		const int x,
-		const bool trial,
-		bool &overflow,
-		double &smallestMaxDisplacementCost
-) {
+	JezzRow *jezzRow,
+	JezzNode *jezzNode,
+	const int x,
+	const bool trial,
+	bool &overflow,
+	double &smallestMaxDisplacementCost
+	) {
 	JezzNode *jezzReferenceNode = jezz_FindOverlappingNode(jezzRow, x);
 
 	if (!jezzReferenceNode) {
@@ -1075,13 +1101,13 @@ double Jezz::jezz_InsertNode(
 			currentCost = jezzNode->weight * std::abs((nodeToLeft->xmax() - i) - x);
 
 			cost = compoundOffsetToLeft[i].first
-					+ currentCost
-					+ compoundOffsetToRight[offsetRequired - i].first;
+				+ currentCost
+				+ compoundOffsetToRight[offsetRequired - i].first;
 
-			const double currMaxDisplacementCost = std::max( (double) (
-					std::max(compoundOffsetToLeft[i].second, compoundOffsetToRight[offsetRequired - i].second)),
-					jezzNode->weight * std::abs(jezzRow->y - jezzNode->snnaped_refy) * clsJezzRowHeight
-					+ currentCost * clsJezzSiteWidth);
+			const double currMaxDisplacementCost = std::max((double) (
+				std::max(compoundOffsetToLeft[i].second, compoundOffsetToRight[offsetRequired - i].second)),
+				jezzNode->weight * std::abs(jezzRow->y - jezzNode->snnaped_refy) * clsJezzRowHeight
+				+ currentCost * clsJezzSiteWidth);
 
 			if (cost < bestCost) {
 				bestCost = cost;
@@ -1133,7 +1159,7 @@ double Jezz::jezz_InsertNode(
 	// this.
 	if (!trial && jezzNode->reference) {
 		clsJezzUpdatePositionCallback(jezzNode->reference,
-				jezz_UnsnapPositionX(jezzNode->x), jezzRow->origin_y);
+			jezz_UnsnapPositionX(jezzNode->x), jezzRow->origin_y);
 	} // end if	
 
 	return bestOverallDisturbance;
@@ -1142,13 +1168,13 @@ double Jezz::jezz_InsertNode(
 // -----------------------------------------------------------------------------
 
 void Jezz::jezz_AdjustShiftingCostToSide(
-		JezzRow *jezzRow,
-		JezzNode *jezzNode, //overlapping node, not the node to insert
-		const int numOfSitesRequired,
-		const ListLink direction,
-		int &overflow,
-		std::vector<std::pair<double, double>> &sideCompoundShiftingCost //cost vector for each side
-		) {
+	JezzRow *jezzRow,
+	JezzNode *jezzNode, //overlapping node, not the node to insert
+	const int numOfSitesRequired,
+	const ListLink direction,
+	int &overflow,
+	std::vector<std::pair<double, double>> &sideCompoundShiftingCost //cost vector for each side
+	) {
 
 	overflow = numOfSitesRequired;
 	sideCompoundShiftingCost.assign(sideCompoundShiftingCost.size(), std::make_pair(0.0, 0.0));
@@ -1164,7 +1190,7 @@ void Jezz::jezz_AdjustShiftingCostToSide(
 	while (!jezzRow->isRoot(nodeInTheWay) && overflow > 0) {
 		if (nodeInTheWay->isWhitespace()) {
 			const int maxNumSitesAllowed = nodeInTheWay->width() > overflow ?
-					overflow : nodeInTheWay->width();
+				overflow : nodeInTheWay->width();
 
 			k += maxNumSitesAllowed;
 			overflow -= maxNumSitesAllowed; // diminishes the number of sites available from moving aside 
@@ -1184,7 +1210,7 @@ void Jezz::jezz_AdjustShiftingCostToSide(
 				} // end if
 
 				sideCompoundShiftingCost[i].first += nodeInTheWay->weight *
-						jezz_isNodeApproachingOriginal(nodeInTheWay, shifts);
+					jezz_isNodeApproachingOriginal(nodeInTheWay, shifts);
 			} // end for
 		} // end else
 
@@ -1198,15 +1224,15 @@ int Jezz::jezz_isNodeApproachingOriginal(JezzNode *jezzNode, int shifts) {
 	// impact  = |original - shifted| - |current - original|
 	// shifted = current + shifts (can be negative) 
 	return std::abs(jezzNode->snapped_refx - (jezzNode->x + shifts)) -
-			std::abs(jezzNode->x - jezzNode->snapped_refx);
+		std::abs(jezzNode->x - jezzNode->snapped_refx);
 } //end method
 
 // -----------------------------------------------------------------------------
 
 int Jezz::jezz_AdjustPositionConsolidate(JezzRow *jezzRow,
-		JezzNode *jezzNode,
-		const int offset,
-		const ListLink direction) {
+	JezzNode *jezzNode,
+	const int offset,
+	const ListLink direction) {
 	int overflow = offset;
 	int disturbance = 0;
 
@@ -1253,7 +1279,7 @@ int Jezz::jezz_AdjustPositionConsolidate(JezzRow *jezzRow,
 			// let's do it like this.
 			if (node->reference) {
 				clsJezzUpdatePositionCallback(node->reference,
-						jezz_UnsnapPositionX(node->x), jezzRow->origin_y);
+					jezz_UnsnapPositionX(node->x), jezzRow->origin_y);
 			} // end if
 		} // end else
 
@@ -1275,31 +1301,31 @@ void Jezz::jezz_UpdatePositionsAll() {
 
 // ----------------------------------------------------------------------------- 
 
-void Jezz::reportFinalResults(std::ostream & out ) {
+void Jezz::reportFinalResults(std::ostream & out) {
 	clsPhysicalDesign.updateAllNetBounds();
 	double designUnits = double(clsPhysicalDesign.getDatabaseUnits(Rsyn::DESIGN_DBU));
 	DBU hpwl = clsPhysicalDesign.getHPWL().aggregated();
 	DBU initialHpwl = clsInitialHpwl.aggregated();
-	
+
 	DBU maxDisp = 0;
 	DBU totalDisp = 0;
 	double rowHeight = double(clsPhysicalDesign.getRowHeight());
 	int numCells = clsPhysicalDesign.getNumElements(Rsyn::PHYSICAL_MOVABLE);
-	for(Rsyn::Instance inst : clsModule.allInstances()) {
-		if(inst.getType() != Rsyn::CELL)
+	for (Rsyn::Instance inst : clsModule.allInstances()) {
+		if (inst.getType() != Rsyn::CELL)
 			continue;
 		Rsyn::PhysicalCell phCell = clsPhysicalDesign.getPhysicalCell(inst.asCell());
-		if(inst.isFixed())
+		if (inst.isFixed())
 			continue;
 		DBU disp = phCell.getDisplacement();
 		maxDisp = std::max(maxDisp, disp);
 		totalDisp += disp;
 	} // end for
-	
+
 	const int N = 15;
-	
+
 	StreamStateSaver sss(out);
-	
+
 	out << std::left;
 	out << "\n";
 	out << "Jezz          "; // reserve space for "Final Result: "
@@ -1307,25 +1333,25 @@ void Jezz::reportFinalResults(std::ostream & out ) {
 	out << std::setw(N) << "GP_HPWL(e6)";
 	out << std::setw(N) << "Leg_HPWL(e6)";
 	out << std::setw(N) << "HPWL(%)";
-	out << std::setw(N+5) << "Avg_Disp_#Rows";
-	out << std::setw(N+5) << "Max_Disp_#Rows";
-	out << std::setw(N) <<"runtime(s)";
+	out << std::setw(N + 5) << "Avg_Disp_#Rows";
+	out << std::setw(N + 5) << "Max_Disp_#Rows";
+	out << std::setw(N) << "runtime(s)";
 	out << "\n";
-		
+
 	out << "Final Result: "; // make it easy to grep
 	out << std::setw(N) << clsDesign.getName();
-	out << std::setw(N) << initialHpwl/(designUnits*1e6);
-	out << std::setw(N) << hpwl/(designUnits*1e6);	
-	out << std::setw(N) << 100*(hpwl/double(initialHpwl) -1);
-	out << std::setw(N+5) << totalDisp / (rowHeight*numCells);
-	out << std::setw(N+5) << maxDisp / rowHeight;
+	out << std::setw(N) << initialHpwl / (designUnits * 1e6);
+	out << std::setw(N) << hpwl / (designUnits * 1e6);
+	out << std::setw(N) << 100 * (hpwl / double(initialHpwl) - 1);
+	out << std::setw(N + 5) << totalDisp / (rowHeight * numCells);
+	out << std::setw(N + 5) << maxDisp / rowHeight;
 	out << std::setw(N) << clsRuntime;
 	out << "\n";
 	out << std::endl;
-	
+
 	sss.restore();
-	
-}  // end method 
+
+} // end method 
 
 // -----------------------------------------------------------------------------
 
@@ -1352,25 +1378,25 @@ bool Jezz::jezz_CheckRowConsistency_HeadToTail(JezzRow *jezzRow) {
 
 		if (x != jezzNode->xmin()) {
 			std::cout << "[JEZZ EXCEPTION] h2t Inconsistent row ==> "
-					<< "Position: " << x << " != " << jezzNode->xmin() << std::endl;
-					sucess = false;
+				<< "Position: " << x << " != " << jezzNode->xmin() << std::endl;
+			sucess = false;
 			break;
 		} // end if
 
 		if (ws && jezzNode->isWhitespace()) {
 			std::cout << "[JEZZ EXCEPTION] h2t Two consecutives whitespaces." << std::endl;
-					sucess = false;
+			sucess = false;
 			break;
 		} // end if
 
 		if (jezzNode->row != jezzRow) {
 			std::cout << "[JEZZ EXCEPTION] h2t Inconsistent row ==> " << "Jezz node is in the wrong row.\n";
-					sucess = false;
+			sucess = false;
 			break;
 		} // end if
 
 		x += jezzNode->w;
-				ws = jezzNode->isWhitespace();
+		ws = jezzNode->isWhitespace();
 	} // end for
 
 	if (w != jezzRow->width()) {
@@ -1396,20 +1422,20 @@ bool Jezz::jezz_CheckRowConsistency_TailToHead(JezzRow *jezzRow) {
 
 		if (x != jezzNode->xmin()) {
 			std::cout << "[JEZZ EXCEPTION] t2h Inconsistent row ==> "
-					<< "Position: " << x << " != " << jezzNode->xmin() << std::endl;
-					sucess = false;
+				<< "Position: " << x << " != " << jezzNode->xmin() << std::endl;
+			sucess = false;
 			break;
 		} // end if
 
 		if (ws && jezzNode->isWhitespace()) {
 			std::cout << "[JEZZ EXCEPTION] t2h Two consecutives whitespaces." << std::endl;
-					sucess = false;
+			sucess = false;
 			break;
 		} // end if
 
 		if (jezzNode->row != jezzRow) {
 			std::cout << "[JEZZ EXCEPTION] t2h Inconsistent row ==> " << "Jezz node is in the wrong row.\n";
-					sucess = false;
+			sucess = false;
 			break;
 		} // end if
 
@@ -1418,7 +1444,7 @@ bool Jezz::jezz_CheckRowConsistency_TailToHead(JezzRow *jezzRow) {
 
 	if (w != 0) {
 		std::cout << "[JEZZ EXCEPTION] t2h Inconsistent row ==>" << "w = " << w
-				<< " should be zero (width=" << jezzRow->width() << ")" << std::endl;
+			<< " should be zero (width=" << jezzRow->width() << ")" << std::endl;
 		sucess = false;
 	} // end if
 
@@ -1534,7 +1560,7 @@ void Jezz::jezz_StressTest_CacheSystem() {
 
 		if (jezzNode0 != jezzNode1) {
 			std::cout << "[BUG] Jezz node at position (" << x << ", " << y << ") "
-					<< "returned by cached version and non-cached version are different.\n";
+				<< "returned by cached version and non-cached version are different.\n";
 		} // end method
 	} // end for
 } // end method
@@ -1567,14 +1593,14 @@ Jezz::JezzNode *Jezz::jezz_dp_FindNodeAtPosition(const DBU x, const DBU y) {
 // -----------------------------------------------------------------------------
 
 void Jezz::jezz_dp_InsertNodeUsingJezzCoordinates(JezzNode *jezzNode,
-		const int jx, const int jy, bool &overflow) {
+	const int jx, const int jy, bool &overflow) {
 
 	if (jezz_dp_IsLegalized(jezzNode)) {
 		jezz_dp_RemoveNode(jezzNode);
 	} // end if	
 
 	jezz_dp_UpdateReferencePosition(jezzNode,
-			jezz_UnsnapPositionX(jx), jezz_UnsnapPositionY(jy));
+		jezz_UnsnapPositionX(jx), jezz_UnsnapPositionY(jy));
 
 	const int row = jy;
 	if (!jezz_ValidRowIndex(row)) {
@@ -1713,12 +1739,12 @@ void Jezz::jezz_dp_SwapNeighbours(JezzNode *jezzNode0, const ListLink link) {
 	// Ugly. Keep global position up-to-date.
 	if (jezzNode0->reference) {
 		clsJezzUpdatePositionCallback(jezzNode0->reference,
-				jezz_UnsnapPositionX(jezzNode0->x), jezzRow->origin_y);
+			jezz_UnsnapPositionX(jezzNode0->x), jezzRow->origin_y);
 	} // end if	
 
 	if (jezzNode1->reference) {
 		clsJezzUpdatePositionCallback(jezzNode1->reference,
-				jezz_UnsnapPositionX(jezzNode1->x), jezzRow->origin_y);
+			jezz_UnsnapPositionX(jezzNode1->x), jezzRow->origin_y);
 	} // end if	
 } // end method
 
@@ -1754,8 +1780,8 @@ void Jezz::jezz_restoreSolutionFull(const std::string name) {
 	jezz_InitRows();
 
 	// Set Jezz to the full mode again.
-	clsJezzIncrementalMode = false; 
-	
+	clsJezzIncrementalMode = false;
+
 	// Reinsert nodes one-by-one. It should be safe to re-insert them in any
 	// order as we are using integer coordinates and the stored solution is 
 	// legal.
@@ -1887,47 +1913,47 @@ void Jezz::jezz_restoreSolutionIncremental(const std::string name) {
 
 // -----------------------------------------------------------------------------
 
-void Jezz::jezz_diffSolutions( 
-					const std::string solution0, 
-					const std::string solution1, 
-					std::vector<std::tuple<Rsyn::Cell, double, double>>& diff) {
-	
-	const auto& it0 = clsJezzStoredSolution.find( solution0 );
-	const auto& it1 = clsJezzStoredSolution.find( solution1 );
-	
-	if( it0 == clsJezzStoredSolution.end() || 
-		it1 == clsJezzStoredSolution.end() ) {
+void Jezz::jezz_diffSolutions(
+	const std::string solution0,
+	const std::string solution1,
+	std::vector<std::tuple<Rsyn::Cell, double, double>>&diff) {
+
+	const auto& it0 = clsJezzStoredSolution.find(solution0);
+	const auto& it1 = clsJezzStoredSolution.find(solution1);
+
+	if (it0 == clsJezzStoredSolution.end() ||
+		it1 == clsJezzStoredSolution.end()) {
 		std::cout << "[ERROR] Jezz: Solution not found.\n";
 		return;
 	} // end if
-	
+
 	const std::deque<JezzNode>& storedSolution0 = it0->second;
 	const std::deque<JezzNode>& storedSolution1 = it1->second;
-	
-	if( storedSolution0.size() !=  storedSolution1.size() ) {
-		std::cout << "[BUG] Jezz: Something broken on line " <<__LINE__<< "\n";
+
+	if (storedSolution0.size() != storedSolution1.size()) {
+		std::cout << "[BUG] Jezz: Something broken on line " << __LINE__ << "\n";
 		return;
 	} //end if
 
 	DBU maxDiff = 0;
-	for( int i = 0; i < storedSolution0.size(); i++ ) {
+	for (int i = 0; i < storedSolution0.size(); i++) {
 		const JezzNode& jezzNode0 = storedSolution0[i];
 		const JezzNode& jezzNode1 = storedSolution1[i];
-		
-		if( jezzNode0.reference != jezzNode1.reference ) {
-			std::cout << "[BUG] Jezz: Something broken on line " 
-					<<__LINE__<< "\n";
+
+		if (jezzNode0.reference != jezzNode1.reference) {
+			std::cout << "[BUG] Jezz: Something broken on line "
+				<< __LINE__ << "\n";
 			return;
 		}
-		
-		const DBU cellDiff = std::abs( jezzNode0.x - jezzNode1.x ) +
-								std::abs( jezzNode0.row->y - jezzNode1.row->y );
-		
-		maxDiff = std::max( maxDiff, cellDiff );
-		diff.emplace_back( jezzNode0.reference, cellDiff, cellDiff );
+
+		const DBU cellDiff = std::abs(jezzNode0.x - jezzNode1.x) +
+			std::abs(jezzNode0.row->y - jezzNode1.row->y);
+
+		maxDiff = std::max(maxDiff, cellDiff);
+		diff.emplace_back(jezzNode0.reference, cellDiff, cellDiff);
 	} // end for
-	
-	if( maxDiff ){
+
+	if (maxDiff) {
 		for (int i = 0; i < diff.size(); i++) {
 			std::get<2>(diff[i]) /= maxDiff;
 		} // end for		

@@ -42,9 +42,9 @@ private:
 	Rsyn::PhysicalDesign clsPhysicalDesign;
 	
 public:	
-	void start(const Rsyn::Json& params) {
+	void start(const Rsyn::Json &params) {
 		Rsyn::Session session;
-
+		
 		Rsyn::PhysicalService *physical = session.getService("rsyn.physical");
 		clsPhysicalDesign = physical->getPhysicalDesign();
 		session.startService("rsyn.defaultTimingModel", {});

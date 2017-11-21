@@ -12,13 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-#include "rsyn/session/Session.h"
 
 // HOW-TO
-// To register process (e.g. optimization step), just include its .h below and 
+// To register process (e.g. optimization step), just include its .h below and
 // add a call to "registerProcess<T>(name)" where T is the process class name
 // and name how the process will be referred to.
+
+#include "rsyn/session/Session.h"
 
 // Optimizations
 #include "x/opto/ufrgs/ispd16/Balancing.h"
@@ -33,11 +33,8 @@
 #include "x/opto/example/QuadraticPlacement.h"
 #include "x/opto/example/RandomPlacement.h"
 #include "x/opto/example/LemonLP.h"
-#include "x/opto/example/SandboxTest.h"
-
-#if RSYN_ENABLE_OVERLAP_REMOVER
 #include "x/opto/ufrgs/qpdp/OverlapRemover.h"
-#endif
+#include "x/opto/example/SandboxTest.h"
 
 // Registration
 namespace Rsyn {
@@ -49,27 +46,22 @@ void Session::registerProcesses() {
 	registerProcess<ICCAD15::AbuReduction>("ufrgs.abuReduction");
 	registerProcess<ICCAD15::EarlyOpto>("ufrgs.earlyOpto");
 	registerProcess<ICCAD15::ISPD16Flow>("ufrgs.ISPD16Flow");
-	
-	// New
+
+	// Misc
 	registerProcess<ICCAD15::IncrementalTimingDrivenQP>("ufrgs.incrementalTimingDrivenQP");
 	registerProcess<ICCAD15::TDQuadraticFlow>("ufrgs.TDQuadraticFlow");
-	
+	registerProcess<ICCAD15::OverlapRemover>("ufrgs.overlapRemover");
+
 	// External
 	registerProcess<ICCAD15::FastPlace>("ext.FastPlace");
-	
-	// Example 
+
+	// Example
 	registerProcess<ICCAD15::QuadraticPlacementExample>("example.quadraticPlacement");
 	registerProcess<ICCAD15::RandomPlacementExample>("example.randomPlacement");
 	registerProcess<ICCAD15::LemonLP>("example.lemonLP");
 
 	// Testing
 	registerProcess<Testing::SandboxTest>("testing.sandbox");
-
-	// Optional
-#if RSYN_ENABLE_OVERLAP_REMOVER
-	registerProcess<ICCAD15::OverlapRemover>("ufrgs.overlapRemover");
-#endif
-
 } // end method
 } // end namespace
 

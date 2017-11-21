@@ -133,8 +133,8 @@ void ClusteredMove::clusterNeighborCriticalNets( Rsyn::Pin criticalPin, const bo
 //			if( std::abs( currSlack - initSlack ) / std::max( currSlack, initSlack ) > 1 )
 //				continue;
 //			
-			DBUxy dist = pCell.getBounds().computeCenter() - 
-					pOrigin.getBounds().computeCenter();
+			DBUxy dist = pCell.getCenter() - 
+					pOrigin.getCenter();
 			dist.abs();
 					
 			if( dist.aggregated() > maxDist )
@@ -186,8 +186,8 @@ void ClusteredMove::clusterNeighborCriticalNets( Rsyn::Pin criticalPin, const bo
 					(1 + infra->getPinImportance(neightbor, Rsyn::LATE)) / 2 : 1;
 				totalSlack += weight * slack;
 				auto pNeightbor = phDesign.getPhysicalCell(neightborCell.asCell());
-				targetPosition.x += (DBU) (weight * slack * pNeightbor.getBounds().computeCenter().x);
-				targetPosition.y += (DBU) (weight * slack * pNeightbor.getBounds().computeCenter().y);
+				targetPosition.x += (DBU) (weight * slack * pNeightbor.getCenter(X));
+				targetPosition.y += (DBU) (weight * slack * pNeightbor.getCenter(Y));
 			}
 		}
 	}
@@ -209,10 +209,10 @@ void ClusteredMove::clusterNeighborCriticalNets( Rsyn::Pin criticalPin, const bo
 				const double weight = (1 + infra->getPinImportance(pin, Rsyn::LATE)/2);
 				worstWeight = std::max(worstWeight, weight);
 			} // end for
-			clusterCenter += worstWeight * pCell.getBounds().computeCenter();
+			clusterCenter += worstWeight * pCell.getCenter();
 			totalWeight += worstWeight;
 		} else {
-			clusterCenter += pCell.getBounds().computeCenter();
+			clusterCenter += pCell.getCenter();
 			totalWeight += 1;
 		}
 	}

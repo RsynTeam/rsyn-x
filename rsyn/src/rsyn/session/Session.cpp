@@ -32,6 +32,13 @@
 
 namespace Rsyn {
 
+static Startup initEngine([]{
+	// This will ensure the engine singleton gets initialized when the program
+	// starts.
+});
+
+// -----------------------------------------------------------------------------
+
 SessionData * Session::sessionData = nullptr;
 
 // -----------------------------------------------------------------------------

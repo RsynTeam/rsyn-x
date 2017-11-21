@@ -21,7 +21,7 @@
 
 #include "ABU.h"
 #include "rsyn/util/FloatingPoint.h"
-namespace UPLACE {
+namespace ICCAD15 {
 
 ABU::ABU() {
 	clsModule = nullptr;
@@ -36,10 +36,10 @@ ABU::ABU() {
 // -----------------------------------------------------------------------------
 
 void ABU::initAbu(Rsyn::PhysicalDesign phDesign, Rsyn::Module module, double targetUtilization,
-	double unit) {
-	clsPhDesign= phDesign;
+	const double unit) {
+	clsPhDesign = phDesign;
 	clsModule = module;
-	clsTargetUtilization= targetUtilization;
+	clsTargetUtilization = targetUtilization;
 	clsPhDie = phDesign.getPhysicalDie();
 	const Bounds &dieBounds = clsPhDie.getBounds();
 	const double lx = dieBounds[LOWER][X];
@@ -82,7 +82,7 @@ void ABU::initAbu(Rsyn::PhysicalDesign phDesign, Rsyn::Module module, double tar
 	/* (a) calculate overlaps with row sites, and add them to free_space */
 	for (const Rsyn::PhysicalRow phRow : clsPhDesign.allPhysicalRows()) {
 
-		const DBUxy p0 = phRow.getCoordinate(LOWER); 
+		const DBUxy p0 = phRow.getCoordinate(LOWER);
 		const DBUxy p1 = phRow.getCoordinate(UPPER);
 
 		int lcol = std::max((int) std::floor((p0.x - lx) / clsAbuGridUnit), 0);
@@ -204,9 +204,9 @@ void ABU::updateAbu(bool showDetails) {
 	for (int j = 0; j < clsAbuNumRows; j++) {
 		for (int k = 0; k < clsAbuNumCols; k++) {
 			unsigned binId = j * clsAbuNumCols + k;
-			if (bins[binId].area > clsAbuGridUnit * clsAbuGridUnit * BIN_AREA_THRESHOLD) {
+			if (bins[binId].area > clsAbuGridUnit * clsAbuGridUnit * clsBinAreaThreshold) {
 				bins[binId].free_space -= bins[binId].f_util;
-				if (bins[binId].free_space > FREE_SPACE_THRESHOLD * bins[binId].area)
+				if (bins[binId].free_space > clsFreeSpaceThreshold * bins[binId].area)
 					util_array[binId] = bins[binId].m_util / bins[binId].free_space;
 				else
 					skipped_bin_cnt++;
@@ -226,13 +226,7 @@ void ABU::updateAbu(bool showDetails) {
 
 	/* 3. obtain ABU numbers */
 	double abu1 = 0.0, abu2 = 0.0, abu5 = 0.0, abu10 = 0.0, abu20 = 0.0;
-	int clip_index = (int) (0.01 * (clsAbuNumBins - skipped_bin_cnt));
-	for (int j = clsAbuNumBins - 1; j > clsAbuNumBins - 1 - clip_index; j--) {
-		abu1 += util_array[j];
-	}
-	abu1 = (clip_index) ? abu1 / clip_index : util_array[clsAbuNumBins - 1];
-
-	clip_index = (int) (0.02 * (clsAbuNumBins - skipped_bin_cnt));
+	int clip_index = (int) (0.02 * (clsAbuNumBins - skipped_bin_cnt));
 	for (int j = clsAbuNumBins - 1; j > clsAbuNumBins - 1 - clip_index; j--) {
 		abu2 += util_array[j];
 	}
@@ -263,16 +257,16 @@ void ABU::updateAbu(bool showDetails) {
 	} // end if
 
 	/* calculate overflow & ABU_penalty */
-	abu1 = std::max(0.0, abu1 / targUt - 1.0);
 	abu2 = std::max(0.0, abu2 / targUt - 1.0);
 	abu5 = std::max(0.0, abu5 / targUt - 1.0);
 	abu10 = std::max(0.0, abu10 / targUt - 1.0);
 	abu20 = std::max(0.0, abu20 / targUt - 1.0);
-	clsAbu = (ABU2_WGT * abu2 + ABU5_WGT * abu5 + ABU10_WGT * abu10 + ABU20_WGT * abu20) / (double) (ABU2_WGT + ABU5_WGT + ABU10_WGT + ABU20_WGT);
+	clsAbu = (clsAbu2Weight * abu2 + clsAbu5Weight * abu5 + clsAbu10Weight * abu10 +
+		clsAbu20Weight * abu20) / (clsAbu2Weight + clsAbu5Weight + clsAbu10Weight + clsAbu20Weight);
 
 	if (showDetails) {
 		std::cout << "\tABU penalty     : " << clsAbu << "\n";
-		std::cout << "\tALPHA           : " << ALPHA << "\n";
+		std::cout << "\tALPHA           : " << clsAlpha << "\n";
 	} // end if
 } // end method 
 
@@ -282,9 +276,9 @@ void ABU::coloringABU() {
 	clsABUColors.clear();
 	double maxUtil = 0;
 	clsABUColors.resize(bins.size());
-		Color gray(230, 230, 230);
-	
-	for(density_bin bin : bins){
+	Color gray(230, 230, 230);
+
+	for (density_bin bin : bins) {
 		//double util =  bin.m_util / bin.area;
 		double util = bin.m_util / bin.free_space;
 		maxUtil = std::max(maxUtil, util);
@@ -293,7 +287,7 @@ void ABU::coloringABU() {
 	for (unsigned i = 0; i < bins.size(); i++) {
 		density_bin bin = bins[i];
 		double util = bin.m_util / bin.free_space;
-		
+
 		if (util == 0.0) {
 			clsABUColors[i] = gray;
 			clsABUColors[i].transparent = true;
@@ -313,42 +307,41 @@ void ABU::coloringABUViolations() {
 	double maxUtil = 0;
 	clsABUColors.clear();
 	clsABUColors.resize(bins.size());
-		Color gray(230, 230, 230);
-	
-	for(density_bin bin : bins){
-		double util =  bin.m_util / bin.free_space;
+	Color gray(230, 230, 230);
+
+	for (density_bin bin : bins) {
+		double util = bin.m_util / bin.free_space;
 		maxUtil = std::max(maxUtil, util);
 	} // end for 
-		
-	for(unsigned i = 0; i < bins.size(); i++) {
-		density_bin bin  = bins[i];
+
+	for (unsigned i = 0; i < bins.size(); i++) {
+		density_bin bin = bins[i];
 		double util = bin.m_util / bin.free_space;
-			if(util <= clsTargetUtilization){
-				clsABUColors[i] = gray;
-				clsABUColors[i].transparent = true;
-			} else {
-				double weight = util / maxUtil;
-				Color &color = clsABUColors[i];
-				int r, g, b;
-				Colorize::colorTemperature(weight, r, g, b);
-				color.setRGB(r, g, b);
-			} // end if-else 
+		if (util <= clsTargetUtilization) {
+			clsABUColors[i] = gray;
+			clsABUColors[i].transparent = true;
+		} else {
+			double weight = util / maxUtil;
+			Color &color = clsABUColors[i];
+			int r, g, b;
+			Colorize::colorTemperature(weight, r, g, b);
+			color.setRGB(r, g, b);
+		} // end if-else 
 	} // end for 
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-
-void ABU::removeAbuUtilization(const DBUxy lowerPos, const DBUxy upperPos, 
+void ABU::removeAbuUtilization(const DBUxy lowerPos, const DBUxy upperPos,
 	const bool isFixed) {
 	int lowerCol, lowerRow, upperCol, upperRow;
 	getABUIndex(lowerPos, lowerCol, lowerRow);
 	getABUIndex(upperPos, upperCol, upperRow);
-	
+
 	for (int i = lowerRow; i <= upperRow; i++) {
 		for (int j = lowerCol; j <= upperCol; j++) {
 			int binId = getABUBinIndex(j, i);
-			if(binId >= bins.size())
+			if (binId >= bins.size())
 				continue;
 			/* get intersection */
 			double lower_x = std::max(bins[binId].lx, (double) lowerPos[X]);
@@ -372,12 +365,12 @@ void ABU::removeAbuUtilization(const DBUxy lowerPos, const DBUxy upperPos,
 
 // -----------------------------------------------------------------------------
 
-void ABU::addAbuUtilization(const DBUxy lowerPos, const DBUxy upperPos, 
+void ABU::addAbuUtilization(const DBUxy lowerPos, const DBUxy upperPos,
 	const bool isFixed) {
 	int lowerCol, lowerRow, upperCol, upperRow;
 	getABUIndex(lowerPos, lowerCol, lowerRow);
 	getABUIndex(upperPos, upperCol, upperRow);
-	
+
 	for (int i = lowerRow; i <= upperRow; i++) {
 		for (int j = lowerCol; j <= upperCol; j++) {
 			int binId = getABUBinIndex(j, i);
@@ -389,7 +382,7 @@ void ABU::addAbuUtilization(const DBUxy lowerPos, const DBUxy upperPos,
 
 			if ((higher_x - lower_x) > 1.0e-5 && (higher_y - lower_y) > 1.0e-5) {
 				double common_area = (higher_x - lower_x) * (higher_y - lower_y);
-				if (isFixed){
+				if (isFixed) {
 					bins[binId].f_util += common_area;
 					bins[binId].free_space -= common_area;
 				} else {
@@ -403,11 +396,11 @@ void ABU::addAbuUtilization(const DBUxy lowerPos, const DBUxy upperPos,
 
 // -----------------------------------------------------------------------------
 
-void ABU::getABUIndex(const DBUxy pos, int & col, int & row ) const {
+void ABU::getABUIndex(const DBUxy pos, int & col, int & row) const {
 	const Bounds &dieBounds = clsPhDie.getBounds();
 	const double origin_x = dieBounds[LOWER][X];
 	const double origin_y = dieBounds[LOWER][Y];
-	
+
 	col = std::max((int) std::floor((pos[X] - origin_x) / clsAbuGridUnit), 0);
 	row = std::max((int) std::floor((pos[Y] - origin_y) / clsAbuGridUnit), 0);
 } // end method 
@@ -416,8 +409,8 @@ void ABU::getABUIndex(const DBUxy pos, int & col, int & row ) const {
 
 void ABU::getABUBinPos(const int col, const int row, DBU &x, DBU &y) const {
 	int binId = getABUBinIndex(col, row);
-	x = (DBU) ((bins[binId].lx + bins[binId].hx)/2.0f);
-	y = (DBU) ((bins[binId].ly + bins[binId].hy)/2.0f);
+	x = (DBU) ((bins[binId].lx + bins[binId].hx) / 2.0f);
+	y = (DBU) ((bins[binId].ly + bins[binId].hy) / 2.0f);
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -432,7 +425,7 @@ DBUxy ABU::getBinLower(const int col, const int row) const {
 
 DBUxy ABU::getBinUpper(const int col, const int row) const {
 	int binId = getABUBinIndex(col, row);
-	double2 pos (bins[binId].hx, bins[binId].hy);
+	double2 pos(bins[binId].hx, bins[binId].hy);
 	return pos.convertToDbu();
 } // end method 
 
@@ -491,7 +484,7 @@ Bounds ABU::getABUBounds(const unsigned row, const unsigned col) const {
 } // end method 
 
 // -----------------------------------------------------------------------------
-	
+
 DBUxy ABU::getNearstNonViolationABU(DBUxy currentPos) const {
 	int x, y, i, j, dist, binId;
 	getABUIndex(currentPos, x, y);
@@ -500,58 +493,58 @@ DBUxy ABU::getNearstNonViolationABU(DBUxy currentPos) const {
 	int bestJ = -1;
 	double thresholdABU = 0.85 * clsTargetUtilization;
 	double util = std::numeric_limits<double>::max();
-	while ( dist < 5) {
-		for(j = y-dist; j <= y + dist; j = j + 2*dist){
-			if(j < 0 || j >= clsAbuNumRows)
+	while (dist < 5) {
+		for (j = y - dist; j <= y + dist; j = j + 2 * dist) {
+			if (j < 0 || j >= clsAbuNumRows)
 				continue;
-			for(i = x-dist; i <= x+dist; i++){
-				if(i < 0 || i >= clsAbuNumCols)
+			for (i = x - dist; i <= x + dist; i++) {
+				if (i < 0 || i >= clsAbuNumCols)
 					continue;
-				binId = getABUBinIndex(i,j);
+				binId = getABUBinIndex(i, j);
 				double binUtil = std::numeric_limits<double>::max();
-				if (bins[binId].free_space > FREE_SPACE_THRESHOLD * bins[binId].area)
+				if (bins[binId].free_space > clsFreeSpaceThreshold * bins[binId].area)
 					binUtil = bins[binId].m_util / bins[binId].free_space;
 
-				if(binUtil < thresholdABU) {
+				if (binUtil < thresholdABU) {
 					bestI = i;
 					bestJ = j;
 					util = binUtil;
 					break;
 				} // end if 
 			} // end for 
-			if(util < thresholdABU)
+			if (util < thresholdABU)
 				break;
 		} // end for 
-		if(util < thresholdABU)
+		if (util < thresholdABU)
 			break;
-			
-		for(i = x-dist; i <= x+dist; i = i + (2*dist)){
-			if(i < 0 || i >= clsAbuNumCols)
+
+		for (i = x - dist; i <= x + dist; i = i + (2 * dist)) {
+			if (i < 0 || i >= clsAbuNumCols)
 				continue;
-			for(j = y-dist+1; j < y+dist; j++){
-				if(j < 0 || j >= clsAbuNumRows)
+			for (j = y - dist + 1; j < y + dist; j++) {
+				if (j < 0 || j >= clsAbuNumRows)
 					continue;
-				binId = getABUBinIndex(i,j);
+				binId = getABUBinIndex(i, j);
 				double binUtil = std::numeric_limits<double>::max();
-				if (bins[binId].free_space > FREE_SPACE_THRESHOLD * bins[binId].area)
+				if (bins[binId].free_space > clsFreeSpaceThreshold * bins[binId].area)
 					binUtil = bins[binId].m_util / bins[binId].free_space;
 
-				if(binUtil < thresholdABU) {
+				if (binUtil < thresholdABU) {
 					bestI = i;
 					bestJ = j;
 					util = binUtil;
 					break;
 				} // end if 
 			} // end for 
-				if(util < thresholdABU)
+			if (util < thresholdABU)
 				break;
 		} // end for 
-		if(util < thresholdABU)
+		if (util < thresholdABU)
 			break;
-		dist ++;
-        } // end while
-	DBUxy pos(bestI,bestJ);
-	if(bestI > -1 && bestJ > -1)
+		dist++;
+	} // end while
+	DBUxy pos(bestI, bestJ);
+	if (bestI > -1 && bestJ > -1)
 		getABUBinPos(bestI, bestJ, pos[X], pos[Y]);
 	return pos;
 } // end method 
@@ -572,7 +565,7 @@ void ABU::writeABU(std::ostream& out) {
 			const density_bin & bin = bins[pos];
 			out << i << " " << j << " lx: " << bin.lx << " ly: " << bin.ly
 				<< " hx: " << bin.hx << " hy: " << bin.hy
-				<< " area " << bin.area << " initial free space: " 
+				<< " area " << bin.area << " initial free space: "
 				<< bin.initial_free_space << " f_util: " << bin.f_util
 				<< " m_util: " << bin.m_util
 				<< " util: " << (bins[pos].m_util / bins[pos].free_space)

@@ -51,7 +51,6 @@ namespace ICCAD15 {
 class BlockageControl;
 
 class Infrastructure : public Rsyn::Service {
-friend class Session; // temporary
 public:
 	Infrastructure();
 	~Infrastructure();
@@ -61,9 +60,11 @@ public:
 
 private:
 	
+	void init();
+	
 	// Session
 	Rsyn::Session clsSession;
-	
+
 	// Physical layer
 	Rsyn::PhysicalDesign clsPhysicalDesign;
 	
@@ -74,7 +75,7 @@ private:
 	// Services
 	Rsyn::Timer * clsTimer = nullptr;
 	Rsyn::PhysicalService * clsPhysical = nullptr;
-	UPLACE::ABU clsABU;
+	ABU clsABU;
 	const Rsyn::LibraryCharacterizer * clsLibraryCharacterizer = nullptr;
  	BlockageControl * clsBlockageControl = nullptr;
 	Rsyn::RoutingEstimator * clsRoutingEstimator = nullptr;
@@ -460,8 +461,8 @@ public:
 	// ABU
 	////////////////////////////////////////////////////////////////////////////
 	
-	const UPLACE::ABU &getAbuAnalyser() const { return clsABU; }
-	UPLACE::ABU &getAbuAnalyser() { return clsABU; }
+	const ABU &getAbuAnalyser() const { return clsABU; }
+	ABU &getAbuAnalyser() { return clsABU; }
 	void coloringABU() { clsABU.coloringABU(); }
 	void coloringABUViolations() { clsABU.coloringABUViolations(); }
 	unsigned getAbuNumCols() { return clsABU.getAbuNumCols(); }
@@ -481,7 +482,7 @@ public:
 	}
 
 	void initAbu(Rsyn::PhysicalDesign phDesign, Rsyn::Module module, double targetUtilization,
-		double unit = BIN_DIM) {
+		double unit = 9.0) {
 		clsABU.initAbu(phDesign, module, targetUtilization, unit);
 	}
 	void updateAbu(bool showDetails) {
@@ -642,13 +643,6 @@ public:
 	void setTargetUtilization(const double value) {
 		clsTargetUtilization = value;
 	} // end method
-	
-	////////////////////////////////////////////////////////////////////////////
-	// Initialization
-	////////////////////////////////////////////////////////////////////////////
-	
-public:
-	void init();
 	
 }; // end class
 

@@ -54,29 +54,6 @@ typedef std::function<Process *()> ProcessInstantiatonFunction;
 typedef std::function<Reader *()> ReaderInstantiatonFunction;
 
 ////////////////////////////////////////////////////////////////////////////////
-// Startup
-////////////////////////////////////////////////////////////////////////////////
-
-// Helper class used to perform component initialization during the application
-// startup. Declare a startup object in a cpp file:
-//
-// Rsyn::Startup startup([]{
-//     Rsyn::Session::registerService(...);
-//     Rsyn::Session::registerProcess(...);
-//     Rsyn::Session::registerMessage(...);
-// }); // end startup
-//
-// This will construct a global object that will be called during the
-// application initialization.
-
-class Startup {
-public:
-	Startup(std::function<void()> f) {
-		f();
-	} // end constructor
-}; // end class
-
-////////////////////////////////////////////////////////////////////////////////
 // Session Data
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -162,9 +139,19 @@ public:
 		return *this;
 	}	
 	
-	//~Session();
-	
 	static void init();
+
+	//! @note If I understood the C++ standard correctly, all static variables
+	//!       are first zero-initialized and then all constructors, if any, are
+	//!       called. In that case, it is safe to check if the session was
+	//!       already initialized by checking if the session data pointer is
+	//!       null as it would be zero-initialized before any more sophisticated
+	//!       initialization (e.g. constructor) is called. Hopefully this is the
+	//!       case and we don't have any risk of falling into the "static
+	//!       variable order initialization fiasco".
+	static bool isInitialized() {
+		return sessionData;
+	} // end method
 
 private:
 
@@ -475,6 +462,31 @@ public:
 			sessionData->clsGraphicsCallback(event);
 	} // end method
 
+}; // end class
+
+////////////////////////////////////////////////////////////////////////////////
+// Startup
+////////////////////////////////////////////////////////////////////////////////
+
+// Helper class used to perform component initialization during the application
+// startup. Declare a startup object in a cpp file:
+//
+// Rsyn::Startup startup([]{
+//     Rsyn::Session::registerService(...);
+//     Rsyn::Session::registerProcess(...);
+//     Rsyn::Session::registerMessage(...);
+// }); // end startup
+//
+// This will construct a global object that will be called during the
+// application initialization.
+
+class Startup {
+public:
+	Startup(std::function<void()> f) {
+		if (!Session::isInitialized())
+			Session::init();
+		f();
+	} // end constructor
 }; // end class
 
 } // end namespace

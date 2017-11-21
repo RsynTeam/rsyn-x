@@ -1,3 +1,18 @@
+/* Copyright 2014-2017 Rsyn
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
 /*
  * Session.cpp
  *
@@ -55,6 +70,32 @@ Infrastructure::~Infrastructure() {
 
 void Infrastructure::start(const Rsyn::Json &params) {
 	Rsyn::Session session;
+
+	this->clsDesign = session.getDesign();
+			
+	const double defaultTargetUtilization = 0.85;
+	if (!params.count("targetUtilization")) {
+		std::cout <<  "[WARNING] Parameter \"targetUtilization\" not specified " 
+			<< "assuming default value " << defaultTargetUtilization << ".\n";
+	}
+	clsTargetUtilization = 
+		params.value("targetUtilization", defaultTargetUtilization);
+	
+	const DBU defaultMaxDisplacement = 400;
+	if (!params.count("maxDisplacement")) {
+		std::cout <<  "[WARNING] Parameter \"maxDisplacement\" not specified " 
+			<< "assuming default value " << defaultMaxDisplacement << ".\n";
+	}
+	clsMaxDisplacement = params.value("maxDisplacement", defaultMaxDisplacement);
+	
+	Rsyn::PhysicalService *physicalService = session.getService("rsyn.physical");
+	Rsyn::PhysicalDesign physicalDesign = physicalService->getPhysicalDesign();
+	initAbu(physicalDesign, 
+			clsDesign.getTopModule(), 
+			clsTargetUtilization);
+	
+	updateAbu(true);
+	init();
 	
 	{ // reportDigest
 		ScriptParsing::CommandDescriptor dscp;
@@ -107,6 +148,8 @@ void Infrastructure::start(const Rsyn::Json &params) {
 			moveCell(cell, x, y, (legalize) ? LEG_NEAREST_WHITESPACE : LEG_NONE);
 		});
 	} // end block
+	
+	reportDigest();
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -125,7 +168,7 @@ void Infrastructure::init() {
 	clsLibraryCharacterizer = session.getService("rsyn.libraryCharacterizer");
 	clsRoutingEstimator = session.getService("rsyn.routingEstimator");
 	clsJezz = session.getService("rsyn.jezz");
-	clsWebLogger = session.getService("rsyn.webLogger");
+	clsWebLogger = session.getService("rsyn.webLogger", Rsyn::SERVICE_OPTIONAL);
 	clsBlockageControl = nullptr;
 
 	// Circuitry.
@@ -1707,6 +1750,7 @@ void Infrastructure::reportDigest() {
 	updateQualityScore();
 	
 	const double abu = getAbu();
+	const double alpha = clsABU.getAlpha(); 
 	
 	StreamStateSaver sss(cout);
 
@@ -1714,14 +1758,14 @@ void Infrastructure::reportDigest() {
 			(float) clsPhysicalDesign.getDatabaseUnits(Rsyn::DESIGN_DBU);
 	const float steinierWlInUm = (clsRoutingEstimator->getTotalWirelength() /
 			(float) clsPhysicalDesign.getDatabaseUnits(Rsyn::DESIGN_DBU));
-	const double scaledSteinierWlInUm = steinierWlInUm * (1 + ALPHA * abu);
+	const double scaledSteinierWlInUm = steinierWlInUm * (1 + alpha * abu);
 
 	cout << "Report Digest" << "\n";
 	cout << "--------------------------------------------------------------------------------\n";
 	cout << "Circuit              : " << clsDesign.getName() << "\n";
 	cout << std::fixed << setprecision(2);
 	cout << "Steiner WL (um)      : " << steinierWlInUm << "\n";
-	cout << "Scaled Steiner WL    : " << scaledSteinierWlInUm << " ( " << ALPHA * abu * 100 << "% )\n";
+	cout << "Scaled Steiner WL    : " << scaledSteinierWlInUm << " ( " << alpha * abu * 100 << "% )\n";
 	cout << "HPWL (um)            : " << hpwlInUm << "\n";
 	cout << "Clock period (ps)    : " << clsTimer->getClockPeriod() << "\n";
 	cout << std::scientific << setprecision(5);

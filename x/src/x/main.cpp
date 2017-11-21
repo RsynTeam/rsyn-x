@@ -19,6 +19,7 @@
 #include <string>
 #include <csignal>
 
+#include "rsyn/session/Session.h"
 #include "rsyn/shell/Shell.h"
 
 #ifndef RSYN_NO_GUI

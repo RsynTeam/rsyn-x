@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -21,30 +21,30 @@
 
 #include "rsyn/session/Session.h"
 
-
+// Readers
 #include "rsyn/io/reader/BookshelfReader.h"
 #include "rsyn/io/reader/DesignPositionReader.h"
+#include "rsyn/io/reader/SizingISPDReader.h"
+#include "rsyn/io/reader/ISPD2014Reader.h"
 #include "rsyn/io/reader/ICCAD15Reader.h"
 #include "rsyn/io/reader/ICCAD17Reader.h"
-#include "rsyn/io/reader/ISPD2012Reader.h"
-#include "rsyn/io/reader/ISPD2014Reader.h"
 #include "rsyn/io/reader/GenericReader.h"
 
-#include "x/io/reader/ICCAD15Reader.h"
+#include "x/io/reader/ICCAD15ReaderExtended.h"
 
 // Registration
 namespace Rsyn {
 
 void Session::registerReaders() {
-	//ICCAD 2015 contest 
+	//ICCAD 2015 contest
 	registerReader<Rsyn::ICCAD15Reader>("rsyn.iccad2015");
 	registerReader<Rsyn::ICCAD17Reader>("rsyn.iccad2017");
 	registerReader<Rsyn::BookshelfReader>("bookshelf");
 	registerReader<Rsyn::ISPD2014Reader>("ispd14");
-	registerReader<Rsyn::ISPD2012Reader>("ispd12");
+	registerReader<Rsyn::SizingISPDReader>("sizingISPD");
 	registerReader<Rsyn::DesignPositionReader>("loadDesignPosition");
-
 	registerReader<Rsyn::GenericReader>("generic");
-	registerReader<ICCAD15::ICCAD15Reader>("iccad2015");
-} // end method 
-} // end namespace 
+
+	registerReader<ICCAD15::ICCAD15ReaderExtended>("iccad2015");
+} // end method
+} // end namespace

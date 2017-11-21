@@ -19,8 +19,8 @@ SRCDIR := ./src
 GUIDIR := $(SRCDIR)/rsyn/gui
 GUXDIR := $(SRCDIR)/x/gui
 
-EXEGUI = ${BINDIR}/rsyn-gui
-EXECMD = ${BINDIR}/rsyn-cmd
+EXEGUI = ${BINDIR}/uplace-gui
+EXECMD = ${BINDIR}/uplace-cmd
 
 OBJDIR_COM = $(OBJDIR)/common
 OBJDIR_CMD = $(OBJDIR)/cmd
@@ -40,9 +40,8 @@ DEPS := $(shell find -L $(OBJDIR) -name '*.d')
 
 LIBERTYFLAG := -DPACKAGE_NAME=\"liberty_parser\" -DPACKAGE_TARNAME=\"liberty_parser\" -DPACKAGE_VERSION=\"2.5\" "-DPACKAGE_STRING=\"liberty_parser 2.5\"" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"liberty_parser\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DSTDC_HEADERS=1 -DHAVE_DIRENT_H=1 -DHAVE_MALLOC_H=1 -DHAVE_UNISTD_H=1 -DHAVE_STRSTR=1 -DHAVE_STRTOD=1 -I. -DYYERROR_VERBOSE
 
-ROUTERLIBS = -lnctugr -fopenmp
 COMMONFLAGS = $(OPTOFLAGS) -I$(SRCDIR) -I$(RSYN_INCDIR) -I$(X_INCDIR) -I$(RSYN_SRCDIR)/parser/liberty -lm -Wno-unused-result -Wno-format -Wno-return-type -Wno-unused-local-typedefs 
-COMMONLIBS = -L$(RSYN_LIBDIR) -L$(X_LIBDIR) $(ROUTERLIBS) -llef -ldef -lmunkres -pthread -lboost_filesystem -lboost_system -lboost_program_options -lemon -lCbc -lCbcSolver -lCgl -lOsi -lOsiCbc -lOsiClp -lCoinUtils -lClp -lpng
+COMMONLIBS = -L$(RSYN_LIBDIR) -L$(X_LIBDIR) -llef -ldef -lmunkres -pthread -lboost_filesystem -lboost_system -lboost_program_options -lemon -lCbc -lCbcSolver -lCgl -lOsi -lOsiCbc -lOsiClp -lCoinUtils -lClp -lpng -fopenmp
 
 
 CFLAGS = $(COMMONFLAGS) 

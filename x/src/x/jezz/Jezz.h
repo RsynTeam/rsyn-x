@@ -12,7 +12,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
+/* Copyright 2014-2017 Rsyn
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
 #ifndef JEZZ_H
 #define JEZZ_H
 
@@ -40,7 +55,7 @@ namespace Rsyn {
 class PhysicalService;
 }
 
-class Jezz : public Rsyn::Service, public Rsyn::Observer {
+class Jezz : public Rsyn::Service, public Rsyn::Observer, public Rsyn::PhysicalObserver {
 public:
 	
 	typedef	std::function<void(Rsyn::Cell cell, const DBU x, const DBU y)> UpdatePositionCallback;
@@ -68,14 +83,14 @@ public:
 	virtual void 
 	onPostInstanceCreate(Rsyn::Instance instance) override;
 
+	virtual void
+	onPostMovedInstance(Rsyn::PhysicalInstance phInstance) override;
+	
 	const Rsyn::PhysicalDesign::PostInstanceMovedCallbackHandler &getPostInstanceMovedCallbackHandler() const {
 		return clsPostInstanceMovedCallbackHandler;
 	} // end method
 
 private:
-
-	// Session
-	Rsyn::Session clsSession;
 
 	// Physical layer
 	Rsyn::PhysicalDesign clsPhysicalDesign;

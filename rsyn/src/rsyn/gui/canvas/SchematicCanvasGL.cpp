@@ -155,6 +155,14 @@ void SchematicCanvasGL::renderDemo(float mx, float my, float width, float height
 
 	// Stuff
 	drawXnor(width - 500, 100, 80, 70);
+	drawNand(width - 400, 100, 80, 70);
+	drawAnd(width - 600, 100, 80, 70);
+	drawXor(width - 500, 200, 80, 70);
+	drawNor(width - 400, 200, 80, 70);
+	drawOr(width - 600, 200, 80, 70);
+	drawInv(width - 500, 300, 80, 70);
+	
+	
 
 	nvgSave(vg);
 	if (blowup) {

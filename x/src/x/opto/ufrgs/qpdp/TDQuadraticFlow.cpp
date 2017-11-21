@@ -38,7 +38,7 @@ bool TDQuadraticFlow::run(const Rsyn::Json& params) {
 	clsTimer = session.getService("rsyn.timer");
 	clsInfra = session.getService("ufrgs.ispd16.infra");
 	clsJezz = clsInfra->getJezz();
-	
+		
 	if (params.count("overlapFlow")) {
 		if(params["overlapFlow"]=="Jezz")
 			overlapFlow();
@@ -67,9 +67,9 @@ void TDQuadraticFlow::defaultFlow() {
 	
 	while( true ) {
 		clsSession.runProcess( "ufrgs.incrementalTimingDrivenQP",
-            { {"alpha", initAlpha}, {"beta", 1.0}, {"flow", "netWeighting"} } );
+            { {"alpha", initAlpha}, {"beta", 1.0}, {"flow", "default"} } );
             
-        clsInfra->reportSummary( "QP-NetWeighting-Step1" );
+        clsInfra->reportSummary( "QP-Step1" );
 		
 		if( !clsInfra->updateTDPSolution(false, 1e-5) )
 			break;
@@ -78,7 +78,20 @@ void TDQuadraticFlow::defaultFlow() {
 	}; // end while
 	clsInfra->statePush("qp-net-weighting");
 	
-	clsSession.runProcess("ufrgs.ISPD16Flow");
+	while( true ) {
+		clsSession.runProcess( "ufrgs.incrementalTimingDrivenQP",
+            { {"alpha", 0.01}, {"beta", 1.0}, {"flow", "netWeighting"} } );
+            
+        clsInfra->reportSummary( "QP-Step2" );
+		
+		if( !clsInfra->updateTDPSolution(false, 1e-5) )
+			break;
+		
+		clsSession.runProcess("ufrgs.balancing", {{"type", "cell-driver-sink"}});
+	}; // end while
+	clsInfra->statePush("qp-net-weighting");
+	
+//	clsSession.runProcess("ufrgs.ISPD16Flow");
 } // end method
 
 //------------------------------------------------------------------------------

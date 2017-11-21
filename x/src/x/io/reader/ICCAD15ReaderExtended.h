@@ -28,8 +28,8 @@
 
 
 
-#ifndef ICCAD15_READER_H
-#define ICCAD15_READER_H
+#ifndef ICCAD15_READER_EXTENDED_H
+#define ICCAD15_READER_EXTENDED_H
 
 #include "rsyn/session/Session.h"
 
@@ -46,13 +46,13 @@ namespace ICCAD15 {
 // Reader to ICCAD 2015 benchmarks
 ////////////////////////////////////////////////////////////////////////////////
 
-class ICCAD15Reader : public Rsyn::ICCAD15Reader {
+class ICCAD15ReaderExtended : public Rsyn::ICCAD15Reader {
 protected:
 		
 public:
-	ICCAD15Reader() {}
-	ICCAD15Reader(const ICCAD15Reader& orig) {}
-	virtual ~ICCAD15Reader() {}
+	ICCAD15ReaderExtended() {}
+	ICCAD15ReaderExtended(const ICCAD15ReaderExtended& orig) {}
+	virtual ~ICCAD15ReaderExtended() {}
 	void load(const Rsyn::Json &params);
 
 protected:
@@ -62,5 +62,5 @@ protected:
 }; // end class 
 
 } // end namespace 
-#endif /* RSYN_ICCAD15READER_H */
+#endif /* RSYN_ICCAD15READER_EXTENDED_H */
 

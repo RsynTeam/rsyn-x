@@ -32,7 +32,7 @@
 
 namespace ICCAD15 {
 
-void BlockageControl::start(const Rsyn::Json& params) {
+void BlockageControl::start(const Rsyn::Json &params) {
 	Rsyn::Session session;
 
 	clsModule = session.getDesign().getTopModule();

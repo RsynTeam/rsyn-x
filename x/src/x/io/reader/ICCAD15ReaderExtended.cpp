@@ -26,7 +26,7 @@
  * Created on 20 de Fevereiro de 2017, 18:59
  */
 
-#include "ICCAD15Reader.h"
+#include "ICCAD15ReaderExtended.h"
 
 #include "rsyn/io/reader/ICCAD15Reader.h"
 #include "rsyn/util/StreamStateSaver.h"
@@ -40,7 +40,7 @@
 
 namespace ICCAD15 {
 
-void ICCAD15Reader::load(const Rsyn::Json &params) {
+void ICCAD15ReaderExtended::load(const Rsyn::Json &params) {
 	Rsyn::ICCAD15Reader::load(params);
 
 	const bool globalPlacementOnly = params.value("globalPlacementOnly", false);
@@ -53,7 +53,7 @@ void ICCAD15Reader::load(const Rsyn::Json &params) {
 
 // -----------------------------------------------------------------------------
 
-void ICCAD15Reader::openBenchmarkFromICCAD15()  {
+void ICCAD15ReaderExtended::openBenchmarkFromICCAD15()  {
 	Rsyn::PhysicalService *physicalService = session.getService("rsyn.physical");
 	Rsyn::PhysicalDesign physicalDesign = physicalService->getPhysicalDesign();
 
@@ -66,17 +66,12 @@ void ICCAD15Reader::openBenchmarkFromICCAD15()  {
 	watchBlockageControl.finish();
 		
 	Stepwatch watchInfrastructure("Initializing contest infrastructure");
-	session.startService("ufrgs.ispd16.infra", {});	
-	ICCAD15::Infrastructure *infra = session.getService("ufrgs.ispd16.infra");
-	infra->setTargetUtilization(optionTargetUtilization);
-	infra->setMaxDisplacement((DBU) optionMaxDisplacement);
-	infra->initAbu(physicalDesign, clsDesign.getTopModule(), optionTargetUtilization);
-	infra->updateAbu(true);
-	infra->init();
+	session.startService("ufrgs.ispd16.infra", {
+		{"targetUtilization", optionTargetUtilization},
+		{"maxDisplacement", optionMaxDisplacement}
+	});	
 	watchInfrastructure.finish();
-
-	infra->reportDigest();
-	
+		
 	// Stats
 	int statsSequentialCells = 0;
 	int statsCombinationalCells = 0;
@@ -121,12 +116,11 @@ void ICCAD15Reader::openBenchmarkFromICCAD15()  {
 	std::cout << "\t#LCBs : " << statsLCBs 
 			<< " (" << (100*statsLCBs/double(statsNonPortCells)) << "%)\n";
 	sss.restore();
-	
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-void ICCAD15Reader::openBenchmarkFromICCAD15ForGlobalPlacementOnly() {
+void ICCAD15ReaderExtended::openBenchmarkFromICCAD15ForGlobalPlacementOnly() {
 } // end method 
 
 } // end namespace 

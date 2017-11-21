@@ -36,7 +36,7 @@ namespace ICCAD15 {
 
 bool OverlapRemover::run(const Rsyn::Json& params) {
 	Rsyn::Session session;
-	
+
 	clsDesign = session.getDesign();
 	clsModule = session.getDesign().getTopModule();
 	clsTimer = session.getService("rsyn.timer");
