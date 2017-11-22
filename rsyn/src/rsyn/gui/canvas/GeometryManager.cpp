@@ -90,6 +90,10 @@ GeometryManager::tessellate_errorCallback(GLenum errorCode) {
 
 void
 GeometryManager::initTessellator() {
+#ifdef __WXMAC__
+	typedef GLvoid (*_GLUfuncptr)();	
+#endif
+
 	tobj = gluNewTess();
 	gluTessCallback(tobj, GLU_TESS_VERTEX_DATA, (_GLUfuncptr) tessellate_vertexCallback);
 	gluTessCallback(tobj, GLU_TESS_BEGIN_DATA, (_GLUfuncptr) tessellate_beginCallback);

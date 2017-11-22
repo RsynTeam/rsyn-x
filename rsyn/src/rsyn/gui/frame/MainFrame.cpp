@@ -1046,10 +1046,10 @@ void MainFrame::updateInstanceProperties(Rsyn::Instance instance, const bool upd
 		if (clsPhysicalPtr) {
 			Rsyn::PhysicalCell phCell = clsPhysicalDesign.getPhysicalCell(cell);
 			const Bounds &rect = phCell.getBounds();
-			clsPropertyGridItemCellX->SetValue(rect[LOWER][X]);
-			clsPropertyGridItemCellY->SetValue(rect[LOWER][Y]);
-			clsPropertyGridItemCellWidth->SetValue(rect.computeLength(X));
-			clsPropertyGridItemCellHeight->SetValue(rect.computeLength(Y));
+			clsPropertyGridItemCellX->SetValue((int) rect[LOWER][X]);
+			clsPropertyGridItemCellY->SetValue((int) rect[LOWER][Y]);
+			clsPropertyGridItemCellWidth->SetValue((int) rect.computeLength(X));
+			clsPropertyGridItemCellHeight->SetValue((int) rect.computeLength(Y));
 		} else {
 			clsPropertyGridItemCellX->SetValueToUnspecified();
 			clsPropertyGridItemCellY->SetValueToUnspecified();

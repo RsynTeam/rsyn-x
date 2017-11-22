@@ -47,7 +47,11 @@ void Session::init() {
 	if (isInitialized())
 		return;
 
-	std::setlocale(LC_ALL, "en_US.UTF-8");
+#ifdef __APPLE__
+    setlocale(LC_ALL, "en_US.UTF-8");
+#else
+    std::setlocale(LC_ALL, "en_US.UTF-8");
+#endif
 
 	sessionData = new SessionData();
 

@@ -15,6 +15,14 @@ message(STATUS ${CMAKE_CURRENT_SOURCE_DIR})
 # Project's name
 project(rsyn)
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    set(WINDOWS TRUE)
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    set(LINUX TRUE)
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set(MACOSX TRUE)
+endif()
+
 # Set the output folder where your program will be created
 set(CMAKE_BINARY_DIR ../bin)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
@@ -52,6 +60,8 @@ file(GLOB_RECURSE SRC_FILES_X
 set(SRC_FILES ${SRC_FILES_RSYN} ${SRC_FILES_X})
 
 if(NOT COIN_FOUND)
+  list(REMOVE_ITEM SRC_FILES ${PATH_X}/src/x/opto/example/LemonLP.h)
+  list(REMOVE_ITEM SRC_FILES ${PATH_X}/src/x/opto/example/LemonLP.cpp)
   list(REMOVE_ITEM SRC_FILES ${PATH_X}/src/x/opto/ufrgs/qpdp/OverlapRemover.h)
   list(REMOVE_ITEM SRC_FILES ${PATH_X}/src/x/opto/ufrgs/qpdp/OverlapRemover.cpp)
 else()
@@ -63,8 +73,15 @@ endif()
 #################
 # Need to come before target is created.
 
-link_directories(${PATH_RSYN}/lib)
-link_directories(${PATH_X}/lib)
+if(LINUX)
+link_directories(${PATH_RSYN}/lib/linux)
+link_directories(${PATH_X}/lib/linux)
+endif()
+
+if(MACOSX)
+link_directories(${PATH_RSYN}/lib/macosx)
+link_directories(${PATH_X}/lib/macosx)
+endif()
 
 ###########
 # Targets #

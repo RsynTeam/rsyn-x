@@ -46,6 +46,10 @@ void CALLBACK vertexCallback(GLvoid *vertex) {
 } // end cuntion
 
 GLUtesselator * initTess() {
+#ifdef __WXMAC__
+	typedef GLvoid (*_GLUfuncptr)();	
+#endif
+
 	GLUtesselator * tobj = gluNewTess();
 	gluTessCallback(tobj, GLU_TESS_VERTEX, (_GLUfuncptr) vertexCallback);
 	gluTessCallback(tobj, GLU_TESS_BEGIN, (_GLUfuncptr) beginCallback);

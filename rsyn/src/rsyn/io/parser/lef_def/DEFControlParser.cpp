@@ -23,7 +23,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <malloc.h>
+#include <stdlib.h>
 
 // DEF headers
 #include "def5.8/defiComponent.hpp"

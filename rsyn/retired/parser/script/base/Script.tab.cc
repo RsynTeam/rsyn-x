@@ -33,7 +33,7 @@
 
 // First part of user declarations.
 
-#line 37 "SimplifiedVerilog.tab.cc" // lalr1.cc:404
+#line 37 "Script.tab.cc" // lalr1.cc:404
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -43,25 +43,25 @@
 #  endif
 # endif
 
-#include "SimplifiedVerilog.tab.hh"
+#include "Script.tab.hh"
 
 // User implementation prologue.
 
-#line 51 "SimplifiedVerilog.tab.cc" // lalr1.cc:412
+#line 51 "Script.tab.cc" // lalr1.cc:412
 // Unqualified %code blocks.
-#line 27 "SimplifiedVerilog.yy" // lalr1.cc:413
+#line 31 "../Script.yy" // lalr1.cc:413
 
    #include <iostream>
    #include <cstdlib>
    #include <fstream>
    
-   /* include for all driver functions */
-   #include "../SimplifiedVerilogReader.h"
+   #include "../ScriptReader.h"
+   #include "../ScriptScanner.h"   
+ 
+   #undef yylex
+   #define yylex scanner.yylex
 
-#undef yylex
-#define yylex scanner.yylex
-
-#line 65 "SimplifiedVerilog.tab.cc" // lalr1.cc:413
+#line 65 "Script.tab.cc" // lalr1.cc:413
 
 
 #ifndef YY_
@@ -145,12 +145,12 @@
 #define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
-#line 4 "SimplifiedVerilog.yy" // lalr1.cc:479
-namespace Parsing {
-#line 151 "SimplifiedVerilog.tab.cc" // lalr1.cc:479
+#line 4 "../Script.yy" // lalr1.cc:479
+namespace ScriptParsing {
+#line 151 "Script.tab.cc" // lalr1.cc:479
 
   /// Build a parser object.
-  SimplifiedVerilogParser::SimplifiedVerilogParser (SimplifiedVerilogScanner &scanner_yyarg, SimplifiedVerilogReader &reader_yyarg)
+  ScriptParser::ScriptParser (ScriptScanner &scanner_yyarg, ScriptReader &reader_yyarg)
     :
 #if YYDEBUG
       yydebug_ (false),
@@ -160,7 +160,7 @@ namespace Parsing {
       reader (reader_yyarg)
   {}
 
-  SimplifiedVerilogParser::~SimplifiedVerilogParser ()
+  ScriptParser::~ScriptParser ()
   {}
 
 
@@ -169,7 +169,7 @@ namespace Parsing {
   `---------------*/
 
   inline
-  SimplifiedVerilogParser::syntax_error::syntax_error (const location_type& l, const std::string& m)
+  ScriptParser::syntax_error::syntax_error (const location_type& l, const std::string& m)
     : std::runtime_error (m)
     , location (l)
   {}
@@ -177,20 +177,45 @@ namespace Parsing {
   // basic_symbol.
   template <typename Base>
   inline
-  SimplifiedVerilogParser::basic_symbol<Base>::basic_symbol ()
+  ScriptParser::basic_symbol<Base>::basic_symbol ()
     : value ()
   {}
 
   template <typename Base>
   inline
-  SimplifiedVerilogParser::basic_symbol<Base>::basic_symbol (const basic_symbol& other)
+  ScriptParser::basic_symbol<Base>::basic_symbol (const basic_symbol& other)
     : Base (other)
     , value ()
     , location (other.location)
   {
       switch (other.type_get ())
     {
-      case 8: // IDENTIFIER
+      case 25: // param_value
+        value.copy< ParsedParamValue > (other.value);
+        break;
+
+      case 7: // BOOLEAN
+        value.copy< bool > (other.value);
+        break;
+
+      case 9: // FLOAT
+        value.copy< float > (other.value);
+        break;
+
+      case 8: // INTEGER
+        value.copy< int > (other.value);
+        break;
+
+      case 3: // STRING
+      case 4: // MALFORMED_STRING
+      case 5: // IDENTIFIER
+      case 6: // PARAM_NAME
+      case 26: // json
+      case 27: // json_element_list
+      case 28: // json_element
+      case 29: // json_value
+      case 30: // json_list
+      case 31: // json_list_elements
         value.copy< std::string > (other.value);
         break;
 
@@ -203,7 +228,7 @@ namespace Parsing {
 
   template <typename Base>
   inline
-  SimplifiedVerilogParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const semantic_type& v, const location_type& l)
+  ScriptParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const semantic_type& v, const location_type& l)
     : Base (t)
     , value ()
     , location (l)
@@ -211,7 +236,32 @@ namespace Parsing {
     (void) v;
       switch (this->type_get ())
     {
-      case 8: // IDENTIFIER
+      case 25: // param_value
+        value.copy< ParsedParamValue > (v);
+        break;
+
+      case 7: // BOOLEAN
+        value.copy< bool > (v);
+        break;
+
+      case 9: // FLOAT
+        value.copy< float > (v);
+        break;
+
+      case 8: // INTEGER
+        value.copy< int > (v);
+        break;
+
+      case 3: // STRING
+      case 4: // MALFORMED_STRING
+      case 5: // IDENTIFIER
+      case 6: // PARAM_NAME
+      case 26: // json
+      case 27: // json_element_list
+      case 28: // json_element
+      case 29: // json_value
+      case 30: // json_list
+      case 31: // json_list_elements
         value.copy< std::string > (v);
         break;
 
@@ -224,14 +274,42 @@ namespace Parsing {
   // Implementation of basic_symbol constructor for each type.
 
   template <typename Base>
-  SimplifiedVerilogParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const location_type& l)
+  ScriptParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const location_type& l)
     : Base (t)
     , value ()
     , location (l)
   {}
 
   template <typename Base>
-  SimplifiedVerilogParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l)
+  ScriptParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const ParsedParamValue v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+  template <typename Base>
+  ScriptParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const bool v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+  template <typename Base>
+  ScriptParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const float v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+  template <typename Base>
+  ScriptParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const int v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+  template <typename Base>
+  ScriptParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l)
     : Base (t)
     , value (v)
     , location (l)
@@ -240,7 +318,7 @@ namespace Parsing {
 
   template <typename Base>
   inline
-  SimplifiedVerilogParser::basic_symbol<Base>::~basic_symbol ()
+  ScriptParser::basic_symbol<Base>::~basic_symbol ()
   {
     clear ();
   }
@@ -248,7 +326,7 @@ namespace Parsing {
   template <typename Base>
   inline
   void
-  SimplifiedVerilogParser::basic_symbol<Base>::clear ()
+  ScriptParser::basic_symbol<Base>::clear ()
   {
     // User destructor.
     symbol_number_type yytype = this->type_get ();
@@ -263,7 +341,32 @@ namespace Parsing {
     // Type destructor.
     switch (yytype)
     {
-      case 8: // IDENTIFIER
+      case 25: // param_value
+        value.template destroy< ParsedParamValue > ();
+        break;
+
+      case 7: // BOOLEAN
+        value.template destroy< bool > ();
+        break;
+
+      case 9: // FLOAT
+        value.template destroy< float > ();
+        break;
+
+      case 8: // INTEGER
+        value.template destroy< int > ();
+        break;
+
+      case 3: // STRING
+      case 4: // MALFORMED_STRING
+      case 5: // IDENTIFIER
+      case 6: // PARAM_NAME
+      case 26: // json
+      case 27: // json_element_list
+      case 28: // json_element
+      case 29: // json_value
+      case 30: // json_list
+      case 31: // json_list_elements
         value.template destroy< std::string > ();
         break;
 
@@ -277,7 +380,7 @@ namespace Parsing {
   template <typename Base>
   inline
   bool
-  SimplifiedVerilogParser::basic_symbol<Base>::empty () const
+  ScriptParser::basic_symbol<Base>::empty () const
   {
     return Base::type_get () == empty_symbol;
   }
@@ -285,12 +388,37 @@ namespace Parsing {
   template <typename Base>
   inline
   void
-  SimplifiedVerilogParser::basic_symbol<Base>::move (basic_symbol& s)
+  ScriptParser::basic_symbol<Base>::move (basic_symbol& s)
   {
     super_type::move(s);
       switch (this->type_get ())
     {
-      case 8: // IDENTIFIER
+      case 25: // param_value
+        value.move< ParsedParamValue > (s.value);
+        break;
+
+      case 7: // BOOLEAN
+        value.move< bool > (s.value);
+        break;
+
+      case 9: // FLOAT
+        value.move< float > (s.value);
+        break;
+
+      case 8: // INTEGER
+        value.move< int > (s.value);
+        break;
+
+      case 3: // STRING
+      case 4: // MALFORMED_STRING
+      case 5: // IDENTIFIER
+      case 6: // PARAM_NAME
+      case 26: // json
+      case 27: // json_element_list
+      case 28: // json_element
+      case 29: // json_value
+      case 30: // json_list
+      case 31: // json_list_elements
         value.move< std::string > (s.value);
         break;
 
@@ -303,30 +431,30 @@ namespace Parsing {
 
   // by_type.
   inline
-  SimplifiedVerilogParser::by_type::by_type ()
+  ScriptParser::by_type::by_type ()
     : type (empty_symbol)
   {}
 
   inline
-  SimplifiedVerilogParser::by_type::by_type (const by_type& other)
+  ScriptParser::by_type::by_type (const by_type& other)
     : type (other.type)
   {}
 
   inline
-  SimplifiedVerilogParser::by_type::by_type (token_type t)
+  ScriptParser::by_type::by_type (token_type t)
     : type (yytranslate_ (t))
   {}
 
   inline
   void
-  SimplifiedVerilogParser::by_type::clear ()
+  ScriptParser::by_type::clear ()
   {
     type = empty_symbol;
   }
 
   inline
   void
-  SimplifiedVerilogParser::by_type::move (by_type& that)
+  ScriptParser::by_type::move (by_type& that)
   {
     type = that.type;
     that.clear ();
@@ -334,95 +462,101 @@ namespace Parsing {
 
   inline
   int
-  SimplifiedVerilogParser::by_type::type_get () const
+  ScriptParser::by_type::type_get () const
   {
     return type;
   }
   // Implementation of make_symbol for each symbol type.
-  SimplifiedVerilogParser::symbol_type
-  SimplifiedVerilogParser::make_END (const location_type& l)
+  ScriptParser::symbol_type
+  ScriptParser::make_END (const location_type& l)
   {
     return symbol_type (token::END, l);
   }
 
-  SimplifiedVerilogParser::symbol_type
-  SimplifiedVerilogParser::make_MODULE (const location_type& l)
+  ScriptParser::symbol_type
+  ScriptParser::make_STRING (const std::string& v, const location_type& l)
   {
-    return symbol_type (token::MODULE, l);
+    return symbol_type (token::STRING, v, l);
   }
 
-  SimplifiedVerilogParser::symbol_type
-  SimplifiedVerilogParser::make_END_MODULE (const location_type& l)
+  ScriptParser::symbol_type
+  ScriptParser::make_MALFORMED_STRING (const std::string& v, const location_type& l)
   {
-    return symbol_type (token::END_MODULE, l);
+    return symbol_type (token::MALFORMED_STRING, v, l);
   }
 
-  SimplifiedVerilogParser::symbol_type
-  SimplifiedVerilogParser::make_INPUT (const location_type& l)
-  {
-    return symbol_type (token::INPUT, l);
-  }
-
-  SimplifiedVerilogParser::symbol_type
-  SimplifiedVerilogParser::make_OUTPUT (const location_type& l)
-  {
-    return symbol_type (token::OUTPUT, l);
-  }
-
-  SimplifiedVerilogParser::symbol_type
-  SimplifiedVerilogParser::make_WIRE (const location_type& l)
-  {
-    return symbol_type (token::WIRE, l);
-  }
-
-  SimplifiedVerilogParser::symbol_type
-  SimplifiedVerilogParser::make_IDENTIFIER (const std::string& v, const location_type& l)
+  ScriptParser::symbol_type
+  ScriptParser::make_IDENTIFIER (const std::string& v, const location_type& l)
   {
     return symbol_type (token::IDENTIFIER, v, l);
   }
 
-  SimplifiedVerilogParser::symbol_type
-  SimplifiedVerilogParser::make_CHAR (const location_type& l)
+  ScriptParser::symbol_type
+  ScriptParser::make_PARAM_NAME (const std::string& v, const location_type& l)
   {
-    return symbol_type (token::CHAR, l);
+    return symbol_type (token::PARAM_NAME, v, l);
+  }
+
+  ScriptParser::symbol_type
+  ScriptParser::make_BOOLEAN (const bool& v, const location_type& l)
+  {
+    return symbol_type (token::BOOLEAN, v, l);
+  }
+
+  ScriptParser::symbol_type
+  ScriptParser::make_INTEGER (const int& v, const location_type& l)
+  {
+    return symbol_type (token::INTEGER, v, l);
+  }
+
+  ScriptParser::symbol_type
+  ScriptParser::make_FLOAT (const float& v, const location_type& l)
+  {
+    return symbol_type (token::FLOAT, v, l);
+  }
+
+  ScriptParser::symbol_type
+  ScriptParser::make_NIL (const location_type& l)
+  {
+    return symbol_type (token::NIL, l);
   }
 
 
 
   // by_state.
   inline
-  SimplifiedVerilogParser::by_state::by_state ()
+  ScriptParser::by_state::by_state ()
     : state (empty_state)
   {}
 
   inline
-  SimplifiedVerilogParser::by_state::by_state (const by_state& other)
+  ScriptParser::by_state::by_state (const by_state& other)
     : state (other.state)
   {}
 
   inline
   void
-  SimplifiedVerilogParser::by_state::clear ()
+  ScriptParser::by_state::clear ()
   {
     state = empty_state;
   }
 
   inline
   void
-  SimplifiedVerilogParser::by_state::move (by_state& that)
+  ScriptParser::by_state::move (by_state& that)
   {
     state = that.state;
     that.clear ();
   }
 
   inline
-  SimplifiedVerilogParser::by_state::by_state (state_type s)
+  ScriptParser::by_state::by_state (state_type s)
     : state (s)
   {}
 
   inline
-  SimplifiedVerilogParser::symbol_number_type
-  SimplifiedVerilogParser::by_state::type_get () const
+  ScriptParser::symbol_number_type
+  ScriptParser::by_state::type_get () const
   {
     if (state == empty_state)
       return empty_symbol;
@@ -431,17 +565,42 @@ namespace Parsing {
   }
 
   inline
-  SimplifiedVerilogParser::stack_symbol_type::stack_symbol_type ()
+  ScriptParser::stack_symbol_type::stack_symbol_type ()
   {}
 
 
   inline
-  SimplifiedVerilogParser::stack_symbol_type::stack_symbol_type (state_type s, symbol_type& that)
+  ScriptParser::stack_symbol_type::stack_symbol_type (state_type s, symbol_type& that)
     : super_type (s, that.location)
   {
       switch (that.type_get ())
     {
-      case 8: // IDENTIFIER
+      case 25: // param_value
+        value.move< ParsedParamValue > (that.value);
+        break;
+
+      case 7: // BOOLEAN
+        value.move< bool > (that.value);
+        break;
+
+      case 9: // FLOAT
+        value.move< float > (that.value);
+        break;
+
+      case 8: // INTEGER
+        value.move< int > (that.value);
+        break;
+
+      case 3: // STRING
+      case 4: // MALFORMED_STRING
+      case 5: // IDENTIFIER
+      case 6: // PARAM_NAME
+      case 26: // json
+      case 27: // json_element_list
+      case 28: // json_element
+      case 29: // json_value
+      case 30: // json_list
+      case 31: // json_list_elements
         value.move< std::string > (that.value);
         break;
 
@@ -454,13 +613,38 @@ namespace Parsing {
   }
 
   inline
-  SimplifiedVerilogParser::stack_symbol_type&
-  SimplifiedVerilogParser::stack_symbol_type::operator= (const stack_symbol_type& that)
+  ScriptParser::stack_symbol_type&
+  ScriptParser::stack_symbol_type::operator= (const stack_symbol_type& that)
   {
     state = that.state;
       switch (that.type_get ())
     {
-      case 8: // IDENTIFIER
+      case 25: // param_value
+        value.copy< ParsedParamValue > (that.value);
+        break;
+
+      case 7: // BOOLEAN
+        value.copy< bool > (that.value);
+        break;
+
+      case 9: // FLOAT
+        value.copy< float > (that.value);
+        break;
+
+      case 8: // INTEGER
+        value.copy< int > (that.value);
+        break;
+
+      case 3: // STRING
+      case 4: // MALFORMED_STRING
+      case 5: // IDENTIFIER
+      case 6: // PARAM_NAME
+      case 26: // json
+      case 27: // json_element_list
+      case 28: // json_element
+      case 29: // json_value
+      case 30: // json_list
+      case 31: // json_list_elements
         value.copy< std::string > (that.value);
         break;
 
@@ -476,7 +660,7 @@ namespace Parsing {
   template <typename Base>
   inline
   void
-  SimplifiedVerilogParser::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
+  ScriptParser::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
   {
     if (yymsg)
       YY_SYMBOL_PRINT (yymsg, yysym);
@@ -485,7 +669,7 @@ namespace Parsing {
 #if YYDEBUG
   template <typename Base>
   void
-  SimplifiedVerilogParser::yy_print_ (std::ostream& yyo,
+  ScriptParser::yy_print_ (std::ostream& yyo,
                                      const basic_symbol<Base>& yysym) const
   {
     std::ostream& yyoutput = yyo;
@@ -505,7 +689,7 @@ namespace Parsing {
 
   inline
   void
-  SimplifiedVerilogParser::yypush_ (const char* m, state_type s, symbol_type& sym)
+  ScriptParser::yypush_ (const char* m, state_type s, symbol_type& sym)
   {
     stack_symbol_type t (s, sym);
     yypush_ (m, t);
@@ -513,7 +697,7 @@ namespace Parsing {
 
   inline
   void
-  SimplifiedVerilogParser::yypush_ (const char* m, stack_symbol_type& s)
+  ScriptParser::yypush_ (const char* m, stack_symbol_type& s)
   {
     if (m)
       YY_SYMBOL_PRINT (m, s);
@@ -522,40 +706,40 @@ namespace Parsing {
 
   inline
   void
-  SimplifiedVerilogParser::yypop_ (unsigned int n)
+  ScriptParser::yypop_ (unsigned int n)
   {
     yystack_.pop (n);
   }
 
 #if YYDEBUG
   std::ostream&
-  SimplifiedVerilogParser::debug_stream () const
+  ScriptParser::debug_stream () const
   {
     return *yycdebug_;
   }
 
   void
-  SimplifiedVerilogParser::set_debug_stream (std::ostream& o)
+  ScriptParser::set_debug_stream (std::ostream& o)
   {
     yycdebug_ = &o;
   }
 
 
-  SimplifiedVerilogParser::debug_level_type
-  SimplifiedVerilogParser::debug_level () const
+  ScriptParser::debug_level_type
+  ScriptParser::debug_level () const
   {
     return yydebug_;
   }
 
   void
-  SimplifiedVerilogParser::set_debug_level (debug_level_type l)
+  ScriptParser::set_debug_level (debug_level_type l)
   {
     yydebug_ = l;
   }
 #endif // YYDEBUG
 
-  inline SimplifiedVerilogParser::state_type
-  SimplifiedVerilogParser::yy_lr_goto_state_ (state_type yystate, int yysym)
+  inline ScriptParser::state_type
+  ScriptParser::yy_lr_goto_state_ (state_type yystate, int yysym)
   {
     int yyr = yypgoto_[yysym - yyntokens_] + yystate;
     if (0 <= yyr && yyr <= yylast_ && yycheck_[yyr] == yystate)
@@ -565,19 +749,19 @@ namespace Parsing {
   }
 
   inline bool
-  SimplifiedVerilogParser::yy_pact_value_is_default_ (int yyvalue)
+  ScriptParser::yy_pact_value_is_default_ (int yyvalue)
   {
     return yyvalue == yypact_ninf_;
   }
 
   inline bool
-  SimplifiedVerilogParser::yy_table_value_is_error_ (int yyvalue)
+  ScriptParser::yy_table_value_is_error_ (int yyvalue)
   {
     return yyvalue == yytable_ninf_;
   }
 
   int
-  SimplifiedVerilogParser::parse ()
+  ScriptParser::parse ()
   {
     // State.
     int yyn;
@@ -691,7 +875,32 @@ namespace Parsing {
          when using variants.  */
         switch (yyr1_[yyn])
     {
-      case 8: // IDENTIFIER
+      case 25: // param_value
+        yylhs.value.build< ParsedParamValue > ();
+        break;
+
+      case 7: // BOOLEAN
+        yylhs.value.build< bool > ();
+        break;
+
+      case 9: // FLOAT
+        yylhs.value.build< float > ();
+        break;
+
+      case 8: // INTEGER
+        yylhs.value.build< int > ();
+        break;
+
+      case 3: // STRING
+      case 4: // MALFORMED_STRING
+      case 5: // IDENTIFIER
+      case 6: // PARAM_NAME
+      case 26: // json
+      case 27: // json_element_list
+      case 28: // json_element
+      case 29: // json_value
+      case 30: // json_list
+      case 31: // json_list_elements
         yylhs.value.build< std::string > ();
         break;
 
@@ -712,68 +921,164 @@ namespace Parsing {
         {
           switch (yyn)
             {
-  case 3:
-#line 62 "SimplifiedVerilog.yy" // lalr1.cc:859
-    {reader.readModuleName(yystack_[0].value.as< std::string > ());}
-#line 719 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
-    break;
-
-  case 7:
-#line 70 "SimplifiedVerilog.yy" // lalr1.cc:859
-    { reader.readIdentifier(yystack_[0].value.as< std::string > ()); }
-#line 725 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+  case 5:
+#line 83 "../Script.yy" // lalr1.cc:859
+    { reader.readCommandName(yystack_[0].value.as< std::string > ()); }
+#line 928 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 8:
-#line 71 "SimplifiedVerilog.yy" // lalr1.cc:859
-    { reader.readIdentifier(yystack_[0].value.as< std::string > ()); }
-#line 731 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+#line 88 "../Script.yy" // lalr1.cc:859
+    { reader.readPositionalParam(ParsedParamValue(yystack_[0].value.as< ParsedParamValue > ())); }
+#line 934 "Script.tab.cc" // lalr1.cc:859
+    break;
+
+  case 11:
+#line 97 "../Script.yy" // lalr1.cc:859
+    { reader.readNamedParam(yystack_[0].value.as< std::string > (), ParsedParamValue()); }
+#line 940 "Script.tab.cc" // lalr1.cc:859
+    break;
+
+  case 12:
+#line 98 "../Script.yy" // lalr1.cc:859
+    { reader.readNamedParam(yystack_[1].value.as< std::string > (), yystack_[0].value.as< ParsedParamValue > ()); }
+#line 946 "Script.tab.cc" // lalr1.cc:859
+    break;
+
+  case 13:
+#line 102 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< ParsedParamValue > () = ParsedParamValue(yystack_[0].value.as< int > ()); }
+#line 952 "Script.tab.cc" // lalr1.cc:859
+    break;
+
+  case 14:
+#line 103 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< ParsedParamValue > () = ParsedParamValue(yystack_[0].value.as< float > ()); }
+#line 958 "Script.tab.cc" // lalr1.cc:859
+    break;
+
+  case 15:
+#line 104 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< ParsedParamValue > () = ParsedParamValue(yystack_[0].value.as< std::string > ()); }
+#line 964 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 16:
-#line 91 "SimplifiedVerilog.yy" // lalr1.cc:859
-    { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_INPUT_PORT); }
-#line 737 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+#line 105 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< ParsedParamValue > () = ParsedParamValue(yystack_[0].value.as< bool > ()); }
+#line 970 "Script.tab.cc" // lalr1.cc:859
+    break;
+
+  case 17:
+#line 106 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< ParsedParamValue > () = ParsedParamValue(); }
+#line 976 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 18:
-#line 92 "SimplifiedVerilog.yy" // lalr1.cc:859
-    { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_OUTPUT_PORTS); }
-#line 743 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+#line 107 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< ParsedParamValue > () = ParsedParamValue(Json::parse(yystack_[0].value.as< std::string > ())); }
+#line 982 "Script.tab.cc" // lalr1.cc:859
+    break;
+
+  case 19:
+#line 111 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< std::string > () = '{' + yystack_[1].value.as< std::string > () + '}'; }
+#line 988 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 20:
-#line 96 "SimplifiedVerilog.yy" // lalr1.cc:859
-    { reader.setCurrentIdentifierListType(IDENTIFIER_LIST_NETS); }
-#line 749 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+#line 115 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< std::string > () = ""; }
+#line 994 "Script.tab.cc" // lalr1.cc:859
+    break;
+
+  case 21:
+#line 116 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< std::string > () = yystack_[0].value.as< std::string > (); }
+#line 1000 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 22:
-#line 99 "SimplifiedVerilog.yy" // lalr1.cc:859
-    { reader.readInstance(yystack_[1].value.as< std::string > (), yystack_[0].value.as< std::string > ()); }
-#line 755 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+#line 117 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< std::string > () = yystack_[2].value.as< std::string > () + ',' + yystack_[0].value.as< std::string > (); }
+#line 1006 "Script.tab.cc" // lalr1.cc:859
+    break;
+
+  case 23:
+#line 122 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< std::string > () = '"' + yystack_[2].value.as< std::string > () + '"' + ':' + yystack_[0].value.as< std::string > (); }
+#line 1012 "Script.tab.cc" // lalr1.cc:859
+    break;
+
+  case 24:
+#line 126 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< std::string > () = std::to_string(yystack_[0].value.as< int > ()); }
+#line 1018 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 25:
-#line 104 "SimplifiedVerilog.yy" // lalr1.cc:859
-    { reader.error(ERROR_UNNAMED_PORT_MAPPING_NOT_SUPPORTED); }
-#line 761 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+#line 127 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< std::string > () = std::to_string(yystack_[0].value.as< float > ()); }
+#line 1024 "Script.tab.cc" // lalr1.cc:859
+    break;
+
+  case 26:
+#line 128 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< std::string > () = '"' + yystack_[0].value.as< std::string > () + '"'; }
+#line 1030 "Script.tab.cc" // lalr1.cc:859
+    break;
+
+  case 27:
+#line 129 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< std::string > () = yystack_[0].value.as< bool > ()? "true" : "false"; }
+#line 1036 "Script.tab.cc" // lalr1.cc:859
+    break;
+
+  case 28:
+#line 130 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< std::string > () = "null"; }
+#line 1042 "Script.tab.cc" // lalr1.cc:859
+    break;
+
+  case 29:
+#line 131 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< std::string > () = yystack_[0].value.as< std::string > (); }
+#line 1048 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 30:
-#line 118 "SimplifiedVerilog.yy" // lalr1.cc:859
-    { reader.readConnection(yystack_[2].value.as< std::string > (), ""); }
-#line 767 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+#line 132 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< std::string > () = yystack_[0].value.as< std::string > (); }
+#line 1054 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 31:
-#line 119 "SimplifiedVerilog.yy" // lalr1.cc:859
-    { reader.readConnection(yystack_[3].value.as< std::string > (), yystack_[1].value.as< std::string > ()); }
-#line 773 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+#line 136 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< std::string > () = "[]"; }
+#line 1060 "Script.tab.cc" // lalr1.cc:859
+    break;
+
+  case 32:
+#line 137 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< std::string > () = '[' + yystack_[1].value.as< std::string > () + ']'; }
+#line 1066 "Script.tab.cc" // lalr1.cc:859
+    break;
+
+  case 33:
+#line 141 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< std::string > () = yystack_[0].value.as< std::string > (); }
+#line 1072 "Script.tab.cc" // lalr1.cc:859
+    break;
+
+  case 34:
+#line 142 "../Script.yy" // lalr1.cc:859
+    { yylhs.value.as< std::string > () = yystack_[2].value.as< std::string > () + ',' + yystack_[0].value.as< std::string > (); }
+#line 1078 "Script.tab.cc" // lalr1.cc:859
     break;
 
 
-#line 777 "SimplifiedVerilog.tab.cc" // lalr1.cc:859
+#line 1082 "Script.tab.cc" // lalr1.cc:859
             default:
               break;
             }
@@ -926,106 +1231,103 @@ namespace Parsing {
   }
 
   void
-  SimplifiedVerilogParser::error (const syntax_error& yyexc)
+  ScriptParser::error (const syntax_error& yyexc)
   {
     error (yyexc.location, yyexc.what());
   }
 
   // Generate an error message.
   std::string
-  SimplifiedVerilogParser::yysyntax_error_ (state_type, const symbol_type&) const
+  ScriptParser::yysyntax_error_ (state_type, const symbol_type&) const
   {
     return YY_("syntax error");
   }
 
 
-  const signed char SimplifiedVerilogParser::yypact_ninf_ = -27;
+  const signed char ScriptParser::yypact_ninf_ = -32;
 
-  const signed char SimplifiedVerilogParser::yytable_ninf_ = -1;
+  const signed char ScriptParser::yytable_ninf_ = -1;
 
   const signed char
-  SimplifiedVerilogParser::yypact_[] =
+  ScriptParser::yypact_[] =
   {
-      16,     3,    12,    22,   -27,   -27,   -27,    13,    17,    18,
-     -27,    -7,     9,   -27,    19,   -27,   -27,   -27,    21,    26,
-       9,   -27,   -27,   -27,   -27,   -27,    17,    17,    17,   -27,
-     -27,   -27,    -3,     8,    10,    15,   -27,   -27,   -27,    -5,
-      23,    20,    24,   -27,    25,   -27,    28,    27,    29,    -4,
-     -27,   -27,    30,   -27,   -27
+      -2,   -32,     1,   -32,   -32,   -32,    -2,    19,   -32,   -32,
+      27,   -32,   -32,   -32,   -32,     5,   -32,    13,   -32,   -32,
+     -32,     6,    31,   -32,   -32,     8,   -32,     5,   -32,   -32,
+     -32,   -32,   -32,    -3,   -32,   -32,   -32,   -32,   -32,   -32,
+      24,     8,   -32,   -32
   };
 
   const unsigned char
-  SimplifiedVerilogParser::yydefact_[] =
+  ScriptParser::yydefact_[] =
   {
-       0,     0,     0,     0,     3,     1,     2,     5,     0,     0,
-       7,     0,     9,     6,     0,    16,    18,    20,     0,     0,
-      10,    11,    13,    14,    15,     8,     0,     0,     0,    22,
-       4,    12,     0,     0,     0,     0,    17,    19,    21,    24,
-       0,    27,     0,    25,    26,    28,     0,     0,     0,     0,
-      23,    29,     0,    30,    31
+       4,     5,     0,     2,     7,     1,     4,     9,     3,    15,
+      11,    16,    13,    14,    17,    20,     6,     9,     8,    18,
+      12,     0,     0,    21,    10,     0,    19,     0,    26,    27,
+      24,    25,    28,     0,    30,    23,    29,    22,    31,    33,
+       0,     0,    32,    34
   };
 
   const signed char
-  SimplifiedVerilogParser::yypgoto_[] =
+  ScriptParser::yypgoto_[] =
   {
-     -27,   -27,   -27,   -27,   -27,   -26,   -27,   -27,    14,   -27,
-     -27,   -27,   -27,   -27,   -27,   -27,   -27,   -27,   -27,   -16
+     -32,   -32,    17,   -32,   -32,    15,   -32,    23,    33,   -32,
+      20,   -31,   -32,   -32
   };
 
   const signed char
-  SimplifiedVerilogParser::yydefgoto_[] =
+  ScriptParser::yydefgoto_[] =
   {
-      -1,     2,     3,     7,     9,    11,    19,    20,    21,    22,
-      26,    27,    23,    28,    24,    35,    42,    43,    44,    45
+      -1,     2,     3,     4,     7,    16,    17,    18,    34,    22,
+      23,    35,    36,    40
   };
 
   const unsigned char
-  SimplifiedVerilogParser::yytable_[] =
+  ScriptParser::yytable_[] =
   {
-      32,    33,    34,    10,    52,    13,    14,    36,    53,    40,
-      14,     4,     5,    41,    15,    16,    17,    18,    37,     1,
-      38,    14,     6,    14,     8,    10,    39,    25,    12,    29,
-      30,    46,    51,    14,    31,     0,    47,    50,    48,    49,
-       0,     0,    54,    40
+      28,     5,    39,     1,    29,    30,    31,    32,    21,    15,
+      43,    28,     6,    33,    38,    29,    30,    31,    32,    10,
+      15,    25,     9,     8,    33,    10,    11,    12,    13,    14,
+       9,    15,    24,    20,    11,    12,    13,    14,    41,    15,
+      19,    42,     0,    19,    26,    27,     0,    37
   };
 
   const signed char
-  SimplifiedVerilogParser::yycheck_[] =
+  ScriptParser::yycheck_[] =
   {
-      26,    27,    28,     8,     8,    12,    13,    10,    12,    14,
-      13,     8,     0,    39,     5,     6,     7,     8,    10,     3,
-      10,    13,     0,    13,    11,     8,    11,     8,    10,     8,
-       4,     8,    48,    13,    20,    -1,    12,    10,    13,    11,
-      -1,    -1,    12,    14
+       3,     0,    33,     5,     7,     8,     9,    10,     3,    12,
+      41,     3,    11,    16,    17,     7,     8,     9,    10,     6,
+      12,    15,     3,     6,    16,     6,     7,     8,     9,    10,
+       3,    12,    17,    10,     7,     8,     9,    10,    14,    12,
+       7,    17,    -1,    10,    13,    14,    -1,    27
   };
 
   const unsigned char
-  SimplifiedVerilogParser::yystos_[] =
+  ScriptParser::yystos_[] =
   {
-       0,     3,    16,    17,     8,     0,     0,    18,    11,    19,
-       8,    20,    10,    12,    13,     5,     6,     7,     8,    21,
-      22,    23,    24,    27,    29,     8,    25,    26,    28,     8,
-       4,    23,    20,    20,    20,    30,    10,    10,    10,    11,
-      14,    20,    31,    32,    33,    34,     8,    12,    13,    11,
-      10,    34,     8,    12,    12
+       0,     5,    19,    20,    21,     0,    11,    22,    20,     3,
+       6,     7,     8,     9,    10,    12,    23,    24,    25,    26,
+      25,     3,    27,    28,    23,    15,    13,    14,     3,     7,
+       8,     9,    10,    16,    26,    29,    30,    28,    17,    29,
+      31,    14,    17,    29
   };
 
   const unsigned char
-  SimplifiedVerilogParser::yyr1_[] =
+  ScriptParser::yyr1_[] =
   {
-       0,    15,    16,    18,    17,    19,    19,    20,    20,    21,
-      21,    22,    22,    23,    23,    23,    25,    24,    26,    24,
-      28,    27,    30,    29,    31,    31,    31,    32,    33,    33,
-      34,    34
+       0,    18,    19,    19,    20,    21,    20,    22,    22,    23,
+      23,    24,    24,    25,    25,    25,    25,    25,    25,    26,
+      27,    27,    27,    28,    29,    29,    29,    29,    29,    29,
+      29,    30,    30,    31,    31
   };
 
   const unsigned char
-  SimplifiedVerilogParser::yyr2_[] =
+  ScriptParser::yyr2_[] =
   {
-       0,     2,     2,     0,     7,     0,     3,     1,     3,     0,
-       1,     1,     2,     1,     1,     1,     0,     4,     0,     4,
-       0,     4,     0,     7,     0,     1,     1,     1,     1,     3,
-       4,     5
+       0,     2,     1,     3,     0,     0,     4,     0,     2,     0,
+       2,     1,     2,     1,     1,     1,     1,     1,     1,     3,
+       0,     1,     3,     3,     1,     1,     1,     1,     1,     1,
+       1,     2,     3,     1,     3
   };
 
 
@@ -1033,30 +1335,29 @@ namespace Parsing {
   // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
   // First, the terminals, then, starting at \a yyntokens_, nonterminals.
   const char*
-  const SimplifiedVerilogParser::yytname_[] =
+  const ScriptParser::yytname_[] =
   {
-  "\"end of file\"", "error", "$undefined", "MODULE", "END_MODULE",
-  "INPUT", "OUTPUT", "WIRE", "IDENTIFIER", "CHAR", "';'", "'('", "')'",
-  "','", "'.'", "$accept", "start", "module_declaration", "$@1", "io",
-  "identifier_list", "implementation", "declaration_list", "declaration",
-  "port_declaration", "$@2", "$@3", "net_declaration", "$@4",
-  "instance_declaration", "$@5", "port_mapping", "ordered_port_mapping",
-  "named_port_mapping", "connection", YY_NULLPTR
+  "\"end of file\"", "error", "$undefined", "STRING", "MALFORMED_STRING",
+  "IDENTIFIER", "PARAM_NAME", "BOOLEAN", "INTEGER", "FLOAT", "NIL", "';'",
+  "'{'", "'}'", "','", "':'", "'['", "']'", "$accept", "command_list",
+  "command", "$@1", "pos_param_list", "named_param_list", "named_param",
+  "param_value", "json", "json_element_list", "json_element", "json_value",
+  "json_list", "json_list_elements", YY_NULLPTR
   };
 
 
   const unsigned char
-  SimplifiedVerilogParser::yyrline_[] =
+  ScriptParser::yyrline_[] =
   {
-       0,    58,    58,    62,    62,    65,    67,    70,    71,    74,
-      76,    80,    81,    85,    86,    87,    91,    91,    92,    92,
-      96,    96,    99,    99,   102,   104,   105,   109,   113,   114,
-     118,   119
+       0,    77,    77,    78,    81,    83,    83,    86,    88,    91,
+      93,    97,    98,   102,   103,   104,   105,   106,   107,   111,
+     115,   116,   117,   122,   126,   127,   128,   129,   130,   131,
+     132,   136,   137,   141,   142
   };
 
   // Print the state stack on the debug stream.
   void
-  SimplifiedVerilogParser::yystack_print_ ()
+  ScriptParser::yystack_print_ ()
   {
     *yycdebug_ << "Stack now";
     for (stack_type::const_iterator
@@ -1069,7 +1370,7 @@ namespace Parsing {
 
   // Report on the debug stream that the rule \a yyrule is going to be reduced.
   void
-  SimplifiedVerilogParser::yy_reduce_print_ (int yyrule)
+  ScriptParser::yy_reduce_print_ (int yyrule)
   {
     unsigned int yylno = yyrline_[yyrule];
     int yynrhs = yyr2_[yyrule];
@@ -1085,8 +1386,8 @@ namespace Parsing {
 
   // Symbol number corresponding to token number t.
   inline
-  SimplifiedVerilogParser::token_number_type
-  SimplifiedVerilogParser::yytranslate_ (int t)
+  ScriptParser::token_number_type
+  ScriptParser::yytranslate_ (int t)
   {
     static
     const token_number_type
@@ -1096,15 +1397,15 @@ namespace Parsing {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      11,    12,     2,     2,    13,     2,    14,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,    10,
+       2,     2,     2,     2,    14,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,    15,    11,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,    16,     2,    17,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,    12,     2,    13,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -1118,9 +1419,9 @@ namespace Parsing {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9
+       5,     6,     7,     8,     9,    10
     };
-    const unsigned int user_token_number_max_ = 264;
+    const unsigned int user_token_number_max_ = 265;
     const token_number_type undef_token_ = 2;
 
     if (static_cast<int>(t) <= yyeof_)
@@ -1131,13 +1432,13 @@ namespace Parsing {
       return undef_token_;
   }
 
-#line 4 "SimplifiedVerilog.yy" // lalr1.cc:1167
-} // Parsing
-#line 1137 "SimplifiedVerilog.tab.cc" // lalr1.cc:1167
-#line 122 "SimplifiedVerilog.yy" // lalr1.cc:1168
+#line 4 "../Script.yy" // lalr1.cc:1167
+} // ScriptParsing
+#line 1438 "Script.tab.cc" // lalr1.cc:1167
+#line 145 "../Script.yy" // lalr1.cc:1168
 
 
 void 
-Parsing::SimplifiedVerilogParser::error(const Parsing::SimplifiedVerilogParser::location_type &l, const std::string &err_message) {
-   std::cout << "Parsing Error: " << err_message << " at " << l << "\n";
+ScriptParsing::ScriptParser::error(const ScriptParsing::ScriptParser::location_type &l, const std::string &err_message) {
+   std::cout << "ScriptParsing Error: " << err_message << " at " << l << "\n";
 }
