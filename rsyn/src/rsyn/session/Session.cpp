@@ -44,7 +44,7 @@ SessionData * Session::sessionData = nullptr;
 // -----------------------------------------------------------------------------
 
 void Session::init() {
-	if (sessionData)
+	if (isInitialized())
 		return;
 
 	std::setlocale(LC_ALL, "en_US.UTF-8");

@@ -44,6 +44,7 @@ using std::make_pair;
 // -----------------------------------------------------------------------------
 
 const std::string MainFrame::DEFAULT_STORED_SOLUTION_NAME = "_gui";
+MainFrame::RegisteredOverlayMap *MainFrame::clsRegisteredOverlays = nullptr;
 
 // -----------------------------------------------------------------------------
 
@@ -133,8 +134,123 @@ MainFrame::~MainFrame() {
 	delete clsSaveSnapshot;
 	delete clsAboutDialog;
 	
-	unregisterAllOverlays();
-} // end destructor 
+	deleteAllOverlays();
+} // end destructor
+
+// -----------------------------------------------------------------------------
+
+void MainFrame::startAllOverlays() {
+	RegisteredOverlayMap &registeredOverlayMap = *clsRegisteredOverlays;
+	for (auto overlaphDescriptor : registeredOverlayMap) {
+		startOverlay(overlaphDescriptor.first, std::get<1>(overlaphDescriptor.second));
+	} // end for
+} // end method
+
+// -----------------------------------------------------------------------------
+
+bool MainFrame::startOverlay(const std::string &name, const bool visibility) {
+	RegisteredOverlayMap &registeredOverlayMap = *clsRegisteredOverlays;
+
+	CanvasOverlay * overlay = nullptr;
+
+	auto it0 = registeredOverlayMap.find(name);
+	if (it0 == registeredOverlayMap.end()) {
+		std::cout << "WARNING: Overlay '" << name << "' was not "
+				"registered.\n";
+		return false;
+	} else {
+		// Check if it was already started.
+		auto it1 = clsOverlays.find(name);
+		if (it1 != clsOverlays.end()) {
+			std::cout << "WARNING: Overlay '" << name << "' is already "
+					"started.\n";
+			return false;
+		} else {
+			overlay = std::get<0>(it0->second)();
+		} // end else
+	} // end else
+
+	Rsyn::Json properties;
+	const bool success = overlay->init(clsPhysicalCanvasGLPtr, properties);
+	if (success) {
+		clsOverlays[name] = overlay;
+		clsPhysicalCanvasGLPtr->addOverlay(name, overlay, visibility);
+
+		wxPGProperty* overlay = clsOverlayPropertyGrid->Append(
+			new wxBoolProperty(name,
+			wxPG_LABEL,
+			visibility));
+
+		for (const Rsyn::Json prop : properties) {
+			if (!prop.count("name") || !prop.count("type")) {
+				std::cout << "ERROR: Overlay properties must have 'name' and 'type' specified.\n";
+				std::cout << prop << "\n";
+				std::exit(1);
+			} // end if
+
+			wxPGProperty* parent = overlay;
+			if (prop.count("parent")) {
+				parent = overlay->GetPropertyByName(prop["parent"]);
+				if (!parent) {
+					std::cout << "ERROR: Parent property " << prop["parent"] <<
+						" not found.\n";
+					std::exit(1);
+				} // end if
+			} // end if
+
+			const std::string name = prop.at("name");
+			const std::string label = prop.value("label", name);
+			const std::string type = prop.at("type");
+
+			wxPGProperty* child = nullptr;
+			if (type == "bool") {
+				const bool defaultValue = prop.value("default", false);
+				child = parent->AppendChild(new wxBoolProperty(label, name, defaultValue));
+			} else if (type == "int") {
+				const int defaultValue = prop.value("default", 0);
+				child = parent->AppendChild(new wxIntProperty(label, name,	defaultValue));
+			} else if (type == "color") {
+				Rsyn::Json defaultValue = {{"r", 0}, {"g", 0}, {"b", 0}};
+
+				if (prop.count("default"))
+					defaultValue = prop["default"];
+
+				wxColour color(
+					defaultValue["r"],
+					defaultValue["g"],
+					defaultValue["b"]
+				);
+
+				const int stipple = prop.value("stipple", 0);
+				wxBitmap bitmap =
+					createBitmapFromMask(STIPPLE_MASKS[stipple], color, color);
+				parent->SetValueImage(bitmap);
+
+				child = parent->AppendChild(new wxColourProperty(label, name, color));
+				// Awful... a way to store the stipple from a mask...
+				propToStipple[child] = stipple;
+			} else {
+				std::cout << "ERROR: Property type '" << type <<
+					" not supported.\n";
+				std::exit(1);
+			} // end if
+
+			if (child) {
+				child->SetExpanded(false);
+			} // end if
+
+		} // end for
+	} else {
+		if (visibility) {
+			std::cout << "WARNING: Overlay '" + name + "' was not successfully initialized.\n";
+		} // end if
+	} // end else
+
+	// Why do we need this? Add a comment...
+	clsOverlayPropertyGrid->SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX, true);
+
+	return success;
+} // end method
 
 // -----------------------------------------------------------------------------
 
@@ -1110,7 +1226,7 @@ void MainFrame::processGraphicsEventDesignLoaded() {
 	//if (clsSchematicCanvasGLPtr)
 	//	clsSchematicCanvasGLPtr->attachSession(clsSession);
 		
-	registerAllOverlays();
+	startAllOverlays();
 
 	updateCircuitInfo();
 	UpdateStats(true);
@@ -1168,7 +1284,7 @@ void MainFrame::processGraphicsEventUpdateOverlayList() {
 	if (!clsGraphicsPtr)
 		return;
 	
-	registerAllOverlays();
+	startAllOverlays();
 } // end method
 
 // -----------------------------------------------------------------------------

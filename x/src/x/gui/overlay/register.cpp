@@ -30,12 +30,14 @@
 #include "x/gui/overlay/RoutingEstimatorOverlay.h"
 
 // Overlays
-void MainFrame::registerAllOverlays() {
-	// Default overlays.
-	registerOverlay<LayoutOverlay>("Layout", true);
-	registerOverlay<JezzOverlay>("Jezz");
-	registerOverlay<AbuOverlay>("Abu");
-	registerOverlay<DensityGridOverlay>("Density Grid");
-	registerOverlay<OverlapRemoverOverlay>("Macro Overlap");
-	registerOverlay<RoutingEstimatorOverlay>("Routing Estimation");
-} // end method
+namespace Rsyn {
+static Startup registerOverlays([]{
+	MainFrame::registerOverlay<LayoutOverlay>("Layout", true);
+	MainFrame::registerOverlay<DensityGridOverlay>("Density Grid");
+
+	MainFrame::registerOverlay<JezzOverlay>("Jezz");
+	MainFrame::registerOverlay<AbuOverlay>("Abu");
+	MainFrame::registerOverlay<OverlapRemoverOverlay>("Macro Overlap");
+	MainFrame::registerOverlay<RoutingEstimatorOverlay>("Routing Estimation");
+});
+} // end namespace

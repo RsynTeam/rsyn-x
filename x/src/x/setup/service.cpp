@@ -57,7 +57,7 @@ void Session::registerServices() {
 	registerService<Rsyn::Report>("rsyn.report");
 	registerService<Rsyn::Writer>("rsyn.writer");
 	registerService<Rsyn::Graphics>("rsyn.graphics");
-	registerService<Rsyn::WebLogger>("rsyn.webLogger");
+	//registerService<Rsyn::WebLogger>("rsyn.webLogger");
 
 	registerService<Jezz>("rsyn.jezz");
 	registerService<ICCAD15::DefaultTimingModelWithIdealClock>("rsyn.defaultTimingModelWithIdealClock");

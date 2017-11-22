@@ -160,7 +160,7 @@ void ICCAD15Reader::openBenchmarkFromICCAD15()  {
 		clsDesign);
 	watchRsyn.finish();	
 
-	session.startService("rsyn.webLogger", {});
+	//session.startService("rsyn.webLogger", {});
 	
 	Stepwatch watchScenario("Loading scenario");
 	session.startService("rsyn.scenario", {});

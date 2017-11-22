@@ -127,95 +127,11 @@ private:
 	std::map<std::string, CanvasOverlay *> clsOverlays;
 	std::map<wxPGProperty*, int> propToStipple;
 
-	template<typename T>
-	void registerOverlay(const std::string &name, const bool visibility = false) {
-		auto it = clsOverlays.find(name);
-		if (it == clsOverlays.end()) {
-			CanvasOverlay * overlay = new T();
-			Rsyn::Json properties;
-			const bool success = overlay->init(clsPhysicalCanvasGLPtr, properties);
-			if (success) {
-				clsOverlays[name] = overlay;
-				clsPhysicalCanvasGLPtr->addOverlay(name, overlay, visibility);
-
-				wxPGProperty* overlay = clsOverlayPropertyGrid->Append(
-					new wxBoolProperty(name, 
-					wxPG_LABEL, 
-					visibility));
-				
-				for (const Rsyn::Json prop : properties) {
-					if (!prop.count("name") || !prop.count("type")) {
-						std::cout << "ERROR: Overlay properties must have 'name' and 'type' specified.\n";
-						std::cout << prop << "\n";
-						std::exit(1);
-					} // end if 
-					
-					wxPGProperty* parent = overlay;
-					if (prop.count("parent")) {
-						parent = overlay->GetPropertyByName(prop["parent"]);
-						if (!parent) { 
-							std::cout << "ERROR: Parent property " << prop["parent"] <<
-								" not found.\n";
-							std::exit(1);
-						} // end if
-					} // end if
-					
-					const std::string name = prop.at("name");
-					const std::string label = prop.value("label", name);
-					const std::string type = prop.at("type");
-
-					wxPGProperty* child = nullptr;
-					if (type == "bool") {
-						const bool defaultValue = prop.value("default", false);
-						child = parent->AppendChild(new wxBoolProperty(label, name, defaultValue));
-					} else if (type == "int") {
-						const int defaultValue = prop.value("default", 0);
-						child = parent->AppendChild(new wxIntProperty(label, name,	defaultValue));
-					} else if (type == "color") {
-						Rsyn::Json defaultValue = {{"r", 0}, {"g", 0}, {"b", 0}};
-						
-						if (prop.count("default"))
-							defaultValue = prop["default"];
-						
-						wxColour color(
-							defaultValue["r"], 
-							defaultValue["g"], 
-							defaultValue["b"]
-						);
-						
-						const int stipple = prop.value("stipple", 0);
-						wxBitmap bitmap = 
-							createBitmapFromMask(STIPPLE_MASKS[stipple], color, color);
-						parent->SetValueImage(bitmap);
-												
-						child = parent->AppendChild(new wxColourProperty(label, name, color));
-						// Awful... a way to store the stipple from a mask...
-						propToStipple[child] = stipple;
-					} else {
-						std::cout << "ERROR: Property type '" << type << 
-							" not supported.\n";
-						std::exit(1);
-					} // end if
-
-					if (child) {
-						child->SetExpanded(false);
-					} // end if
-
-				} // end for
-			} else {
-				if (visibility) {	
-					std::cout << "WARNING: Overlay '" + name + "' was not successfully initialized.\n";
-				} // end if
-				delete overlay;
-			} // end else
-		} // end else
-		
-		clsOverlayPropertyGrid->SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX, true);
-	} // end method
+	bool startOverlay(const std::string &name, const bool visibility = false);
 	
-	void registerAllOverlays();
+	void startAllOverlays();
 
-	void unregisterAllOverlays() {
+	void deleteAllOverlays() {
 		for (std::pair<std::string, CanvasOverlay *> p : clsOverlays) {
 			delete p.second;
 		} // end for		
@@ -230,6 +146,36 @@ private:
 			overlay->config(params);
 		} // end else		
 	} // end method
+
+public:
+	// Register a process.
+	template<typename T>
+	static void registerOverlay(const std::string &name, const bool initialVisibility = false) {
+		if (!clsRegisteredOverlays) {
+			// Try to avoid "static variable initialization fiasco".
+			clsRegisteredOverlays = new RegisteredOverlayMap();
+		} // end if
+
+		RegisteredOverlayMap &registeredOverlayMap = *clsRegisteredOverlays;
+
+		auto it = registeredOverlayMap.find(name);
+		if (it != registeredOverlayMap.end()) {
+			std::cout << "ERROR: Process '" << name << "' was already "
+					"registered.\n";
+			std::exit(1);
+		} else {
+			//std::cout << "Registering overlay '" << name << "' ...\n";
+			registeredOverlayMap[name] = std::make_tuple([]() -> CanvasOverlay *{
+				return new T();
+			}, initialVisibility);
+		} // end else
+	} // end method
+
+private:
+	// Generic functions used to instantiate overlays.
+	typedef std::function<CanvasOverlay *()> OverlayInstantiatonFunction;
+	typedef std::unordered_map<std::string, std::tuple<OverlayInstantiatonFunction, bool>> RegisteredOverlayMap;
+	static RegisteredOverlayMap *clsRegisteredOverlays;
 
 	// Session events.
 	void processGraphicsEventDesignLoaded();
