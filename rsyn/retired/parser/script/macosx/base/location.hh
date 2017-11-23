@@ -40,7 +40,7 @@
 
 # include "position.hh"
 
-#line 4 "Script.yy" // location.cc:296
+#line 4 "../Script.yy" // location.cc:296
 namespace ScriptParsing {
 #line 46 "location.hh" // location.cc:296
   /// Abstract a location.
@@ -186,7 +186,7 @@ namespace ScriptParsing {
     return ostr;
   }
 
-#line 4 "Script.yy" // location.cc:296
+#line 4 "../Script.yy" // location.cc:296
 } // ScriptParsing
 #line 192 "location.hh" // location.cc:296
 #endif // !YY_YY_LOCATION_HH_INCLUDED

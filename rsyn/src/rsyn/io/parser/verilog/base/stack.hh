@@ -32,7 +32,7 @@
 
 /**
  ** \file stack.hh
- ** Define the ScriptParsing::stack class.
+ ** Define the Parsing::stack class.
  */
 
 #ifndef YY_YY_STACK_HH_INCLUDED
@@ -40,8 +40,8 @@
 
 # include <vector>
 
-#line 4 "Script.yy" // stack.hh:132
-namespace ScriptParsing {
+#line 4 "SimplifiedVerilog.yy" // stack.hh:132
+namespace Parsing {
 #line 46 "stack.hh" // stack.hh:132
   template <class T, class S = std::vector<T> >
   class stack
@@ -150,8 +150,8 @@ namespace ScriptParsing {
     unsigned int range_;
   };
 
-#line 4 "Script.yy" // stack.hh:132
-} // ScriptParsing
+#line 4 "SimplifiedVerilog.yy" // stack.hh:132
+} // Parsing
 #line 156 "stack.hh" // stack.hh:132
 
 #endif // !YY_YY_STACK_HH_INCLUDED

@@ -50,7 +50,7 @@
 #  endif
 # endif
 
-#line 4 "Script.yy" // location.cc:296
+#line 4 "../Script.yy" // location.cc:296
 namespace ScriptParsing {
 #line 56 "position.hh" // location.cc:296
   /// Abstract a position.
@@ -174,7 +174,7 @@ namespace ScriptParsing {
     return ostr << pos.line << '.' << pos.column;
   }
 
-#line 4 "Script.yy" // location.cc:296
+#line 4 "../Script.yy" // location.cc:296
 } // ScriptParsing
 #line 180 "position.hh" // location.cc:296
 #endif // !YY_YY_POSITION_HH_INCLUDED

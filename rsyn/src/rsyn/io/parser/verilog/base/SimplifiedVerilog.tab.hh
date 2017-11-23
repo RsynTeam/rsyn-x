@@ -31,27 +31,23 @@
 // version 2.2 of Bison.
 
 /**
- ** \file Script.tab.hh
- ** Define the ScriptParsing::parser class.
+ ** \file SimplifiedVerilog.tab.hh
+ ** Define the Parsing::parser class.
  */
 
 // C++ LALR(1) parser skeleton written by Akim Demaille.
 
-#ifndef YY_YY_SCRIPT_TAB_HH_INCLUDED
-# define YY_YY_SCRIPT_TAB_HH_INCLUDED
+#ifndef YY_YY_SIMPLIFIEDVERILOG_TAB_HH_INCLUDED
+# define YY_YY_SIMPLIFIEDVERILOG_TAB_HH_INCLUDED
 // //                    "%code requires" blocks.
-#line 7 "Script.yy" // lalr1.cc:377
+#line 7 "SimplifiedVerilog.yy" // lalr1.cc:377
 
-   namespace ScriptParsing {
-      class ScriptScanner;
-      class ScriptReader;
+   namespace Parsing {
+      class SimplifiedVerilogScanner;
+      class SimplifiedVerilogReader;
    }
 
-   #include "../ScriptCommand.h"
-   using ScriptParsing::ParsedParamValue;
-   using ScriptParsing::Json;
-
-// The following definitions is missing when "%locations" isn't used
+// The following definitions is missing when %locations isn't used
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
 #   define YY_NULLPTR nullptr
@@ -61,7 +57,7 @@
 # endif
 
 
-#line 65 "Script.tab.hh" // lalr1.cc:377
+#line 61 "SimplifiedVerilog.tab.hh" // lalr1.cc:377
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -136,9 +132,9 @@
 # define YYDEBUG 0
 #endif
 
-#line 4 "Script.yy" // lalr1.cc:377
-namespace ScriptParsing {
-#line 142 "Script.tab.hh" // lalr1.cc:377
+#line 4 "SimplifiedVerilog.yy" // lalr1.cc:377
+namespace Parsing {
+#line 138 "SimplifiedVerilog.tab.hh" // lalr1.cc:377
 
 
 
@@ -298,36 +294,18 @@ namespace ScriptParsing {
 
 
   /// A Bison parser.
-  class ScriptParser
+  class SimplifiedVerilogParser
   {
   public:
 #ifndef YYSTYPE
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
-      // param_value
-      char dummy1[sizeof(ParsedParamValue)];
-
-      // BOOLEAN
-      char dummy2[sizeof(bool)];
-
-      // FLOAT
-      char dummy3[sizeof(float)];
-
       // INTEGER
-      char dummy4[sizeof(int)];
+      char dummy1[sizeof(int)];
 
-      // STRING
-      // MALFORMED_STRING
       // IDENTIFIER
-      // PARAM_NAME
-      // json
-      // json_element_list
-      // json_element
-      // json_value
-      // json_list
-      // json_list_elements
-      char dummy5[sizeof(std::string)];
+      char dummy2[sizeof(std::string)];
 };
 
     /// Symbol semantic values.
@@ -351,14 +329,14 @@ namespace ScriptParsing {
       enum yytokentype
       {
         END = 0,
-        STRING = 258,
-        MALFORMED_STRING = 259,
-        IDENTIFIER = 260,
-        PARAM_NAME = 261,
-        BOOLEAN = 262,
-        INTEGER = 263,
-        FLOAT = 264,
-        NIL = 265
+        INTEGER = 258,
+        MODULE = 259,
+        END_MODULE = 260,
+        INPUT = 261,
+        OUTPUT = 262,
+        WIRE = 263,
+        IDENTIFIER = 264,
+        CHAR = 265
       };
     };
 
@@ -395,12 +373,6 @@ namespace ScriptParsing {
       /// Constructor for valueless symbols, and symbols from each type.
 
   basic_symbol (typename Base::kind_type t, const location_type& l);
-
-  basic_symbol (typename Base::kind_type t, const ParsedParamValue v, const location_type& l);
-
-  basic_symbol (typename Base::kind_type t, const bool v, const location_type& l);
-
-  basic_symbol (typename Base::kind_type t, const float v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const int v, const location_type& l);
 
@@ -479,11 +451,27 @@ namespace ScriptParsing {
 
     static inline
     symbol_type
-    make_STRING (const std::string& v, const location_type& l);
+    make_INTEGER (const int& v, const location_type& l);
 
     static inline
     symbol_type
-    make_MALFORMED_STRING (const std::string& v, const location_type& l);
+    make_MODULE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_END_MODULE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_INPUT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OUTPUT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_WIRE (const location_type& l);
 
     static inline
     symbol_type
@@ -491,28 +479,12 @@ namespace ScriptParsing {
 
     static inline
     symbol_type
-    make_PARAM_NAME (const std::string& v, const location_type& l);
-
-    static inline
-    symbol_type
-    make_BOOLEAN (const bool& v, const location_type& l);
-
-    static inline
-    symbol_type
-    make_INTEGER (const int& v, const location_type& l);
-
-    static inline
-    symbol_type
-    make_FLOAT (const float& v, const location_type& l);
-
-    static inline
-    symbol_type
-    make_NIL (const location_type& l);
+    make_CHAR (const location_type& l);
 
 
     /// Build a parser object.
-    ScriptParser (ScriptScanner &scanner_yyarg, ScriptReader &reader_yyarg);
-    virtual ~ScriptParser ();
+    SimplifiedVerilogParser (SimplifiedVerilogScanner &scanner_yyarg, SimplifiedVerilogReader &reader_yyarg);
+    virtual ~SimplifiedVerilogParser ();
 
     /// Parse.
     /// \returns  0 iff parsing succeeded.
@@ -542,8 +514,8 @@ namespace ScriptParsing {
 
   private:
     /// This class is not copyable.
-    ScriptParser (const ScriptParser&);
-    ScriptParser& operator= (const ScriptParser&);
+    SimplifiedVerilogParser (const SimplifiedVerilogParser&);
+    SimplifiedVerilogParser& operator= (const SimplifiedVerilogParser&);
 
     /// State numbers.
     typedef int state_type;
@@ -711,26 +683,26 @@ namespace ScriptParsing {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 47,     ///< Last index in yytable_.
-      yynnts_ = 14,  ///< Number of nonterminal symbols.
+      yylast_ = 69,     ///< Last index in yytable_.
+      yynnts_ = 23,  ///< Number of nonterminal symbols.
       yyfinal_ = 5, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 18  ///< Number of tokens.
+      yyntokens_ = 19  ///< Number of tokens.
     };
 
 
     // User arguments.
-    ScriptScanner &scanner;
-    ScriptReader &reader;
+    SimplifiedVerilogScanner &scanner;
+    SimplifiedVerilogReader &reader;
   };
 
 
-#line 4 "Script.yy" // lalr1.cc:377
-} // ScriptParsing
-#line 732 "Script.tab.hh" // lalr1.cc:377
+#line 4 "SimplifiedVerilog.yy" // lalr1.cc:377
+} // Parsing
+#line 704 "SimplifiedVerilog.tab.hh" // lalr1.cc:377
 
 
 
 
-#endif // !YY_YY_SCRIPT_TAB_HH_INCLUDED
+#endif // !YY_YY_SIMPLIFIEDVERILOG_TAB_HH_INCLUDED

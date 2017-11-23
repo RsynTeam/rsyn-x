@@ -32,7 +32,7 @@
 
 /**
  ** \file position.hh
- ** Define the ScriptParsing::position class.
+ ** Define the Parsing::position class.
  */
 
 #ifndef YY_YY_POSITION_HH_INCLUDED
@@ -50,8 +50,8 @@
 #  endif
 # endif
 
-#line 4 "Script.yy" // location.cc:296
-namespace ScriptParsing {
+#line 4 "SimplifiedVerilog.yy" // location.cc:296
+namespace Parsing {
 #line 56 "position.hh" // location.cc:296
   /// Abstract a position.
   class position
@@ -174,7 +174,7 @@ namespace ScriptParsing {
     return ostr << pos.line << '.' << pos.column;
   }
 
-#line 4 "Script.yy" // location.cc:296
-} // ScriptParsing
+#line 4 "SimplifiedVerilog.yy" // location.cc:296
+} // Parsing
 #line 180 "position.hh" // location.cc:296
 #endif // !YY_YY_POSITION_HH_INCLUDED

@@ -32,7 +32,7 @@
 
 /**
  ** \file location.hh
- ** Define the ScriptParsing::location class.
+ ** Define the Parsing::location class.
  */
 
 #ifndef YY_YY_LOCATION_HH_INCLUDED
@@ -40,8 +40,8 @@
 
 # include "position.hh"
 
-#line 4 "Script.yy" // location.cc:296
-namespace ScriptParsing {
+#line 4 "SimplifiedVerilog.yy" // location.cc:296
+namespace Parsing {
 #line 46 "location.hh" // location.cc:296
   /// Abstract a location.
   class location
@@ -186,7 +186,7 @@ namespace ScriptParsing {
     return ostr;
   }
 
-#line 4 "Script.yy" // location.cc:296
-} // ScriptParsing
+#line 4 "SimplifiedVerilog.yy" // location.cc:296
+} // Parsing
 #line 192 "location.hh" // location.cc:296
 #endif // !YY_YY_LOCATION_HH_INCLUDED

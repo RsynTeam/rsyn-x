@@ -1,5 +1,5 @@
 %skeleton "lalr1.cc"
-%require  "3.0"
+%require  "2.3"
 %defines 
 %define api.namespace {ScriptParsing}
 %define parser_class_name {ScriptParser}

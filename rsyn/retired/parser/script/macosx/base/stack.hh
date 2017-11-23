@@ -40,7 +40,7 @@
 
 # include <vector>
 
-#line 4 "Script.yy" // stack.hh:132
+#line 4 "../Script.yy" // stack.hh:132
 namespace ScriptParsing {
 #line 46 "stack.hh" // stack.hh:132
   template <class T, class S = std::vector<T> >
@@ -150,7 +150,7 @@ namespace ScriptParsing {
     unsigned int range_;
   };
 
-#line 4 "Script.yy" // stack.hh:132
+#line 4 "../Script.yy" // stack.hh:132
 } // ScriptParsing
 #line 156 "stack.hh" // stack.hh:132
 

@@ -1,6 +1,6 @@
-#line 2 "Script.yy.cc"
+#line 2 "SimplifiedVerilog.yy.cc"
 
-#line 4 "Script.yy.cc"
+#line 4 "SimplifiedVerilog.yy.cc"
 
 #define  YY_INT_ALIGNED short int
 
@@ -20,7 +20,7 @@
      * We will address this in a future release of flex, or omit the C++ scanner
      * altogether.
      */
-    #define yyFlexLexer yyScriptFlexLexer
+    #define yyFlexLexer yyFlexLexer
 
 /* First, we deal with  platform-specific or compiler-specific issues. */
 
@@ -285,9 +285,9 @@ struct yy_buffer_state
  */
 #define YY_CURRENT_BUFFER_LVALUE (yy_buffer_stack)[(yy_buffer_stack_top)]
 
-void *yyScriptalloc (yy_size_t  );
-void *yyScriptrealloc (void *,yy_size_t  );
-void yyScriptfree (void *  );
+void *yyalloc (yy_size_t  );
+void *yyrealloc (void *,yy_size_t  );
+void yyfree (void *  );
 
 #define yy_new_buffer yy_create_buffer
 
@@ -330,7 +330,7 @@ int yyFlexLexer::yylex()
 	return 0;
 	}
 
-#define YY_DECL int ScriptParsing::ScriptScanner::yylex()
+#define YY_DECL int Parsing::SimplifiedVerilogScanner::yylex()
 
 /* Done after the current pattern has been matched and before the
  * corresponding action - sets up yytext.
@@ -343,8 +343,8 @@ int yyFlexLexer::yylex()
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 16
-#define YY_END_OF_BUFFER 17
+#define YY_NUM_RULES 20
+#define YY_END_OF_BUFFER 21
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -352,13 +352,14 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[51] =
+static yyconst flex_int16_t yy_accept[58] =
     {   0,
-        0,    0,    0,    0,    0,    0,   17,   15,    1,    2,
-       15,    3,   15,   15,   15,   11,    9,    9,    9,    9,
-       16,    4,    5,    1,    0,   14,    0,    0,   10,   13,
-       11,    0,    9,    9,    9,    9,   10,    0,    0,   12,
-        9,    9,    9,    0,   13,    9,    8,    6,    7,    0
+        0,    0,    0,    0,    0,    0,   21,   19,    1,    2,
+       17,   17,   18,   15,   19,   15,   15,   15,   15,   15,
+        7,    8,    7,    4,    5,    6,    3,   18,   15,   16,
+       15,   15,   15,   15,   15,    9,   15,   15,   15,   15,
+       15,   15,   15,   15,   15,   14,   15,   10,   15,   15,
+       15,   12,   11,   15,   15,   13,    0
     } ;
 
 static yyconst YY_CHAR yy_ec[256] =
@@ -366,17 +367,17 @@ static yyconst YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    2,    2,    3,
         1,    2,    2,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    2,    1,    4,    5,    1,    1,    1,    1,    1,
-        1,    1,    6,    1,    7,    8,    1,    9,    9,    9,
-        9,    9,    9,    9,    9,    9,    9,    1,    1,    1,
-        1,    1,    1,    1,   10,   10,   10,   10,   11,   10,
-       10,   10,   10,   10,   10,   10,   10,   10,   10,   10,
-       10,   10,   10,   10,   10,   10,   10,   10,   10,   10,
-        1,    1,    1,    1,   10,    1,   12,   10,   10,   10,
+        1,    2,    4,    1,    4,    5,    4,    4,    1,    4,
+        4,    6,    4,    4,    4,    4,    7,    8,    8,    8,
+        8,    8,    8,    8,    8,    8,    8,    4,    4,    4,
+        4,    4,    4,    4,    9,    9,    9,    9,    9,    9,
+        9,    9,    9,    9,    9,    9,    9,    9,    9,    9,
+        9,    9,    9,    9,    9,    9,    9,    9,    9,    9,
+        4,   10,    4,    4,    9,    1,    9,    9,    9,   11,
 
-       13,   14,   10,   10,   10,   10,   10,   15,   10,   16,
-       10,   10,   10,   17,   18,   19,   20,   10,   10,   10,
-       10,   10,    1,    1,    1,    1,    1,    1,    1,    1,
+       12,    9,    9,    9,   13,    9,    9,   14,   15,   16,
+       17,   18,    9,   19,    9,   20,   21,    9,   22,    9,
+        9,    9,    4,    4,    4,    4,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -393,64 +394,63 @@ static yyconst YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static yyconst YY_CHAR yy_meta[21] =
+static yyconst YY_CHAR yy_meta[23] =
     {   0,
-        1,    1,    1,    1,    1,    2,    2,    3,    4,    5,
-        6,    5,    6,    5,    5,    5,    5,    5,    5,    5
+        1,    2,    1,    1,    3,    1,    1,    3,    3,    1,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3
     } ;
 
-static yyconst flex_uint16_t yy_base[60] =
+static yyconst flex_uint16_t yy_base[62] =
     {   0,
-        0,    0,    0,    0,   88,   87,   89,   92,   86,   92,
-       18,   92,   15,   17,   78,   19,    0,   74,   65,   67,
-       92,   92,   92,   81,   30,   92,   73,   72,    0,   71,
-        0,   70,    0,   63,   62,   56,    0,   66,   65,   64,
-       54,   55,   54,   55,   22,   16,    0,    0,    0,   92,
-       34,   40,   46,   50,   53,   56,   59,   64,   67
+        0,    0,   20,   21,   65,   64,   66,   69,   69,   69,
+       69,   22,   57,    0,    0,   48,   47,   45,   40,   47,
+       69,   69,   52,   69,   69,   69,   69,   50,    0,    0,
+       46,   38,   44,   34,   34,   69,   37,   30,   29,   31,
+       36,   30,   26,   31,   23,    0,   32,    0,   30,   21,
+       19,    0,    0,   25,   25,    0,   69,   29,   32,   22,
+       35
     } ;
 
-static yyconst flex_int16_t yy_def[60] =
+static yyconst flex_int16_t yy_def[62] =
     {   0,
-       50,    1,   51,   51,   52,   52,   50,   50,   50,   50,
-       53,   50,   50,   54,   50,   50,   55,   55,   55,   55,
-       50,   50,   50,   50,   53,   50,   50,   16,   56,   57,
-       16,   58,   55,   55,   55,   55,   56,   59,   50,   50,
-       55,   55,   55,   50,   50,   55,   55,   55,   55,    0,
-       50,   50,   50,   50,   50,   50,   50,   50,   50
+       57,    1,   58,   58,   59,   59,   57,   57,   57,   57,
+       57,   57,   57,   60,   61,   60,   60,   60,   60,   60,
+       57,   57,   57,   57,   57,   57,   57,   57,   60,   61,
+       60,   60,   60,   60,   60,   57,   60,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,    0,   57,   57,   57,
+       57
     } ;
 
-static yyconst flex_uint16_t yy_nxt[113] =
+static yyconst flex_uint16_t yy_nxt[92] =
     {   0,
-        8,    9,   10,   11,   12,   13,   14,   15,   16,   17,
-       17,   17,   17,   18,   17,   19,   17,   17,   20,   17,
-       26,   26,   27,   28,   27,   28,   27,   31,   49,   32,
-       45,   32,   26,   26,   21,   21,   21,   21,   21,   21,
-       22,   22,   22,   22,   22,   22,   25,   25,   25,   25,
-       25,   25,   29,   29,   29,   29,   33,   33,   33,   37,
-       37,   37,   38,   45,   38,   39,   48,   39,   44,   47,
-       44,   46,   40,   40,   45,   43,   42,   41,   40,   30,
-       28,   30,   24,   36,   35,   34,   30,   24,   50,   23,
-       23,    7,   50,   50,   50,   50,   50,   50,   50,   50,
+        8,    9,   10,   11,    8,   11,   12,   13,   14,   15,
+       14,   16,   17,   14,   18,   14,   19,   14,   14,   14,
+       14,   20,   22,   22,   29,   23,   23,   26,   27,   21,
+       21,   21,   24,   24,   24,   30,   56,   30,   55,   54,
+       53,   52,   51,   50,   49,   48,   47,   46,   45,   44,
+       43,   42,   41,   40,   39,   38,   37,   28,   36,   35,
+       34,   33,   32,   31,   28,   57,   25,   25,    7,   57,
+       57,   57,   57,   57,   57,   57,   57,   57,   57,   57,
+       57,   57,   57,   57,   57,   57,   57,   57,   57,   57,
+       57
 
-       50,   50,   50,   50,   50,   50,   50,   50,   50,   50,
-       50,   50
     } ;
 
-static yyconst flex_int16_t yy_chk[113] =
+static yyconst flex_int16_t yy_chk[92] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       11,   11,   13,   13,   14,   14,   16,   16,   46,   16,
-       45,   16,   25,   25,   51,   51,   51,   51,   51,   51,
-       52,   52,   52,   52,   52,   52,   53,   53,   53,   53,
-       53,   53,   54,   54,   54,   54,   55,   55,   55,   56,
-       56,   56,   57,   44,   57,   58,   43,   58,   59,   42,
-       59,   41,   40,   39,   38,   36,   35,   34,   32,   30,
-       28,   27,   24,   20,   19,   18,   15,    9,    7,    6,
-        5,   50,   50,   50,   50,   50,   50,   50,   50,   50,
+        1,    1,    3,    4,   60,    3,    4,   12,   12,   58,
+       58,   58,   59,   59,   59,   61,   55,   61,   54,   51,
+       50,   49,   47,   45,   44,   43,   42,   41,   40,   39,
+       38,   37,   35,   34,   33,   32,   31,   28,   23,   20,
+       19,   18,   17,   16,   13,    7,    6,    5,   57,   57,
+       57,   57,   57,   57,   57,   57,   57,   57,   57,   57,
+       57,   57,   57,   57,   57,   57,   57,   57,   57,   57,
+       57
 
-       50,   50,   50,   50,   50,   50,   50,   50,   50,   50,
-       50,   50
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -460,19 +460,19 @@ static yyconst flex_int16_t yy_chk[113] =
 #define yymore() ((yy_more_flag) = 1)
 #define YY_MORE_ADJ (yy_more_len)
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "Script.l"
-#line 2 "Script.l"
+#line 1 "SimplifiedVerilog.l"
+#line 2 "SimplifiedVerilog.l"
 #include <string>
 
 /* Implementation of yyFlexScanner */ 
-#include "../ScriptScanner.h"
+#include "../SimplifiedVerilogScanner.h"
 #undef  YY_DECL
-#define YY_DECL int ScriptParsing::ScriptScanner::yylex( \
-  ScriptParsing::ScriptParser::semantic_type * const lval, \
-  ScriptParsing::ScriptParser::location_type * loc)
+#define YY_DECL int Parsing::SimplifiedVerilogScanner::yylex( \
+  Parsing::SimplifiedVerilogParser::semantic_type * const lval, \
+  Parsing::SimplifiedVerilogParser::location_type *loc)
 
 /* typedef to make the returns for the tokens shorter */
-using token = ScriptParsing::ScriptParser::token;
+using token = Parsing::SimplifiedVerilogParser::token;
 
 /* define yyterminate as this instead of NULL */
 #define yyterminate() return( token::END )
@@ -485,11 +485,11 @@ using token = ScriptParsing::ScriptParser::token;
 
 
 
-#line 489 "Script.yy.cc"
+#line 489 "SimplifiedVerilog.yy.cc"
 
 #define INITIAL 0
-#define MULTI_LINE_COMMENT 1
-#define SINGLE_LINE_COMMENT 2
+#define CCOMMENT 1
+#define LCOMMENT 2
 
 #ifndef YY_NO_UNISTD_H
 /* Special case for "unistd.h", since it is non-ANSI. We include it way
@@ -619,16 +619,13 @@ YY_DECL
 		}
 
 	{
-#line 37 "Script.l"
+#line 36 "SimplifiedVerilog.l"
 
-          
-/* Executed at the beginning of yylex */
-yylval = lval;
+          /** Code executed at the beginning of yylex **/
+            yylval = lval;
 
 
- /* Whitespaces and New Lines */
-
-#line 632 "Script.yy.cc"
+#line 629 "SimplifiedVerilog.yy.cc"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -661,13 +658,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 51 )
+				if ( yy_current_state >= 58 )
 					yy_c = yy_meta[(unsigned int) yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 92 );
+		while ( yy_base[yy_current_state] != 69 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -693,131 +690,124 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 45 "Script.l"
+#line 41 "SimplifiedVerilog.l"
 { ; }
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 46 "Script.l"
+#line 42 "SimplifiedVerilog.l"
 { loc->lines(); }
 	YY_BREAK
-/* Single Line Comment */
 case 3:
 YY_RULE_SETUP
-#line 50 "Script.l"
-{ BEGIN(SINGLE_LINE_COMMENT); }
+#line 44 "SimplifiedVerilog.l"
+{ BEGIN(LCOMMENT); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 51 "Script.l"
+#line 45 "SimplifiedVerilog.l"
 { yymore(); }
 	YY_BREAK
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 52 "Script.l"
+#line 46 "SimplifiedVerilog.l"
 { loc->lines(); BEGIN(0); }
 	YY_BREAK
-/* Keywords */
 case 6:
 YY_RULE_SETUP
-#line 55 "Script.l"
-{
-		yylval->build<bool>(true);
-		return token::BOOLEAN;
-	}
+#line 48 "SimplifiedVerilog.l"
+{ BEGIN(CCOMMENT); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 60 "Script.l"
-{
-		yylval->build<bool>(false);
-		return token::BOOLEAN;
-	}
+#line 49 "SimplifiedVerilog.l"
+{ yymore(); }
 	YY_BREAK
 case 8:
+/* rule 8 can match eol */
 YY_RULE_SETUP
-#line 65 "Script.l"
-{
-		return token::NIL;
-	}
+#line 50 "SimplifiedVerilog.l"
+{ loc->lines(); yymore(); }
 	YY_BREAK
-/* Identifiers */
 case 9:
 YY_RULE_SETUP
-#line 71 "Script.l"
+#line 51 "SimplifiedVerilog.l"
+{ BEGIN(0); }
+	YY_BREAK
+/* ************************************************************************ */
+/* Keywords */
+case 10:
+YY_RULE_SETUP
+#line 56 "SimplifiedVerilog.l"
+{ return token::INPUT; }
+	YY_BREAK
+case 11:
+YY_RULE_SETUP
+#line 57 "SimplifiedVerilog.l"
+{ return token::OUTPUT; }
+	YY_BREAK
+case 12:
+YY_RULE_SETUP
+#line 58 "SimplifiedVerilog.l"
+{ return token::MODULE; }
+	YY_BREAK
+case 13:
+YY_RULE_SETUP
+#line 59 "SimplifiedVerilog.l"
+{ return token::END_MODULE; }
+	YY_BREAK
+case 14:
+YY_RULE_SETUP
+#line 60 "SimplifiedVerilog.l"
+{ return token::WIRE; }
+	YY_BREAK
+/* ************************************************************************ */
+/* Identifiers */
+case 15:
+YY_RULE_SETUP
+#line 65 "SimplifiedVerilog.l"
 {
 		yylval->build<std::string>(yytext);
 		return token::IDENTIFIER; 
 	}
 	YY_BREAK
-case 10:
+case 16:
+/* rule 16 can match eol */
 YY_RULE_SETUP
-#line 76 "Script.l"
+#line 70 "SimplifiedVerilog.l"
 {
 		yylval->build<std::string>(yytext + 1);
-		return token::PARAM_NAME; 
+		return token::IDENTIFIER; 
 	}
 	YY_BREAK
-/* Integer */
-case 11:
+/* ************************************************************************ */
+/* Misc */
+case 17:
 YY_RULE_SETUP
-#line 83 "Script.l"
-{
-		yylval->build<int>(std::stoi(yytext));
-		return token::INTEGER;
-	}
-	YY_BREAK
-/* Floating Point: +1e10, 1e5, -1e-3 */
-case 12:
-YY_RULE_SETUP
-#line 89 "Script.l"
-{
-		yylval->build<float>(std::stof(yytext));
-		return token::FLOAT;
-	}
-	YY_BREAK
-/* Floating Point: +1.02e10, 1.003, -1e-3, .0 */
-case 13:
-YY_RULE_SETUP
-#line 95 "Script.l"
-{
-		yylval->build<float>(std::stof(yytext));
-		return token::FLOAT;
-	}
-	YY_BREAK
-/* String */
-case 14:
-/* rule 14 can match eol */
-YY_RULE_SETUP
-#line 102 "Script.l"
-{
-		// Note: '\r' is handled as a whitespace, so we don't need to deal 
-		// with it here.
-		
-		const bool malformed = yytext[yyleng-1] != '"';
-		if (!malformed)
-			 yytext[yyleng-1] = '\0';
-		yylval->build<std::string>(yytext + 1); // +1 skips initial quote		
-		return malformed? token::MALFORMED_STRING : token::STRING;		
-	}
-	YY_BREAK
-/* Unmatched */
-case 15:
-YY_RULE_SETUP
-#line 115 "Script.l"
+#line 78 "SimplifiedVerilog.l"
 { return yytext[0]; }
 	YY_BREAK
-case 16:
+case 18:
 YY_RULE_SETUP
-#line 117 "Script.l"
+#line 80 "SimplifiedVerilog.l"
+{ yylval->build<int>(std::atoi(yytext)); return token::INTEGER; }
+	YY_BREAK
+case 19:
+YY_RULE_SETUP
+#line 82 "SimplifiedVerilog.l"
+{ return token::CHAR; }
+	YY_BREAK
+case 20:
+YY_RULE_SETUP
+#line 84 "SimplifiedVerilog.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 818 "Script.yy.cc"
+#line 808 "SimplifiedVerilog.yy.cc"
 case YY_STATE_EOF(INITIAL):
-case YY_STATE_EOF(MULTI_LINE_COMMENT):
-case YY_STATE_EOF(SINGLE_LINE_COMMENT):
+case YY_STATE_EOF(CCOMMENT):
+case YY_STATE_EOF(LCOMMENT):
 	yyterminate();
 
 	case YY_END_OF_BUFFER:
@@ -1003,9 +993,9 @@ void yyFlexLexer::ctor_common()
 yyFlexLexer::~yyFlexLexer()
 {
 	delete [] yy_state_buf;
-	yyScriptfree(yy_start_stack  );
+	yyfree(yy_start_stack  );
 	yy_delete_buffer( YY_CURRENT_BUFFER );
-	yyScriptfree(yy_buffer_stack  );
+	yyfree(yy_buffer_stack  );
 }
 
 /* The contents of this function are C++ specific, so the () macro is not used.
@@ -1146,7 +1136,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
 				b->yy_ch_buf = (char *)
 					/* Include room in for 2 EOB chars. */
-					yyScriptrealloc((void *) b->yy_ch_buf,b->yy_buf_size + 2  );
+					yyrealloc((void *) b->yy_ch_buf,b->yy_buf_size + 2  );
 				}
 			else
 				/* Can't grow it, we don't own it. */
@@ -1195,7 +1185,7 @@ int yyFlexLexer::yy_get_next_buffer()
 	if ((int) ((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
 		/* Extend the array by 50%, plus the number we really need. */
 		int new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
-		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) yyScriptrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf,new_size  );
+		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) yyrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf,new_size  );
 		if ( ! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
 			YY_FATAL_ERROR( "out of dynamic memory in yy_get_next_buffer()" );
 	}
@@ -1229,7 +1219,7 @@ int yyFlexLexer::yy_get_next_buffer()
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 51 )
+			if ( yy_current_state >= 58 )
 				yy_c = yy_meta[(unsigned int) yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
@@ -1257,11 +1247,11 @@ int yyFlexLexer::yy_get_next_buffer()
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 51 )
+		if ( yy_current_state >= 58 )
 			yy_c = yy_meta[(unsigned int) yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 50);
+	yy_is_jam = (yy_current_state == 57);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1453,7 +1443,7 @@ void yyFlexLexer::yyrestart( std::istream* input_file )
 {
 	YY_BUFFER_STATE b;
     
-	b = (YY_BUFFER_STATE) yyScriptalloc(sizeof( struct yy_buffer_state )  );
+	b = (YY_BUFFER_STATE) yyalloc(sizeof( struct yy_buffer_state )  );
 	if ( ! b )
 		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
 
@@ -1462,7 +1452,7 @@ void yyFlexLexer::yyrestart( std::istream* input_file )
 	/* yy_ch_buf has to be 2 characters longer than the size given because
 	 * we need to put in 2 end-of-buffer characters.
 	 */
-	b->yy_ch_buf = (char *) yyScriptalloc(b->yy_buf_size + 2  );
+	b->yy_ch_buf = (char *) yyalloc(b->yy_buf_size + 2  );
 	if ( ! b->yy_ch_buf )
 		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
 
@@ -1498,9 +1488,9 @@ void yyFlexLexer::yyrestart( std::istream* input_file )
 		YY_CURRENT_BUFFER_LVALUE = (YY_BUFFER_STATE) 0;
 
 	if ( b->yy_is_our_buffer )
-		yyScriptfree((void *) b->yy_ch_buf  );
+		yyfree((void *) b->yy_ch_buf  );
 
-	yyScriptfree((void *) b  );
+	yyfree((void *) b  );
 }
 
 /* Initializes or reinitializes a buffer.
@@ -1623,7 +1613,7 @@ void yyFlexLexer::yyensure_buffer_stack(void)
 		 * immediate realloc on the next call.
          */
 		num_to_alloc = 1; /* After all that talk, this was set to 1 anyways... */
-		(yy_buffer_stack) = (struct yy_buffer_state**)yyScriptalloc
+		(yy_buffer_stack) = (struct yy_buffer_state**)yyalloc
 								(num_to_alloc * sizeof(struct yy_buffer_state*)
 								);
 		if ( ! (yy_buffer_stack) )
@@ -1642,7 +1632,7 @@ void yyFlexLexer::yyensure_buffer_stack(void)
 		yy_size_t grow_size = 8 /* arbitrary grow size */;
 
 		num_to_alloc = (yy_buffer_stack_max) + grow_size;
-		(yy_buffer_stack) = (struct yy_buffer_state**)yyScriptrealloc
+		(yy_buffer_stack) = (struct yy_buffer_state**)yyrealloc
 								((yy_buffer_stack),
 								num_to_alloc * sizeof(struct yy_buffer_state*)
 								);
@@ -1665,10 +1655,10 @@ void yyFlexLexer::yyensure_buffer_stack(void)
 		new_size = (yy_start_stack_depth) * sizeof( int );
 
 		if ( ! (yy_start_stack) )
-			(yy_start_stack) = (int *) yyScriptalloc(new_size  );
+			(yy_start_stack) = (int *) yyalloc(new_size  );
 
 		else
-			(yy_start_stack) = (int *) yyScriptrealloc((void *) (yy_start_stack),new_size  );
+			(yy_start_stack) = (int *) yyrealloc((void *) (yy_start_stack),new_size  );
 
 		if ( ! (yy_start_stack) )
 			YY_FATAL_ERROR( "out of memory expanding start-condition stack" );
@@ -1746,12 +1736,12 @@ static int yy_flex_strlen (yyconst char * s )
 }
 #endif
 
-void *yyScriptalloc (yy_size_t  size )
+void *yyalloc (yy_size_t  size )
 {
 			return (void *) malloc( size );
 }
 
-void *yyScriptrealloc  (void * ptr, yy_size_t  size )
+void *yyrealloc  (void * ptr, yy_size_t  size )
 {
 		
 	/* The cast to (char *) in the following accommodates both
@@ -1764,16 +1754,16 @@ void *yyScriptrealloc  (void * ptr, yy_size_t  size )
 	return (void *) realloc( (char *) ptr, size );
 }
 
-void yyScriptfree (void * ptr )
+void yyfree (void * ptr )
 {
-			free( (char *) ptr );	/* see yyScriptrealloc() for (char *) cast */
+			free( (char *) ptr );	/* see yyrealloc() for (char *) cast */
 }
 
 #define YYTABLES_NAME "yytables"
 
-#line 117 "Script.l"
+#line 84 "SimplifiedVerilog.l"
 
 
 
-	
+
 

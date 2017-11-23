@@ -26,7 +26,7 @@
 #include "rsyn/io/legacy/PlacerInternals.h"
 
 #include "SimplifiedVerilogScanner.h"
-#include "base/SimplifiedVerilog.tab.hh"
+#include "generated/SimplifiedVerilog.tab.hh"
 
 namespace Parsing {
 
@@ -86,8 +86,6 @@ private:
 	
 	Parsing::SimplifiedVerilogParser *parser;
 	Parsing::SimplifiedVerilogScanner *scanner;
-
-    virtual void setBusRange(int &, int &) {}
 
 	////////////////////////////////////////////////////////////////////////////
 	// Parsing state and callbacks.

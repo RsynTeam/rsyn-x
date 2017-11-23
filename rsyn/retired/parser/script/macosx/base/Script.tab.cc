@@ -49,7 +49,7 @@
 
 #line 51 "Script.tab.cc" // lalr1.cc:412
 // Unqualified %code blocks.
-#line 31 "Script.yy" // lalr1.cc:413
+#line 31 "../Script.yy" // lalr1.cc:413
 
    #include <iostream>
    #include <cstdlib>
@@ -145,7 +145,7 @@
 #define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
-#line 4 "Script.yy" // lalr1.cc:479
+#line 4 "../Script.yy" // lalr1.cc:479
 namespace ScriptParsing {
 #line 151 "Script.tab.cc" // lalr1.cc:479
 
@@ -922,157 +922,157 @@ namespace ScriptParsing {
           switch (yyn)
             {
   case 5:
-#line 83 "Script.yy" // lalr1.cc:859
+#line 83 "../Script.yy" // lalr1.cc:859
     { reader.readCommandName(yystack_[0].value.as< std::string > ()); }
 #line 928 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 8:
-#line 88 "Script.yy" // lalr1.cc:859
+#line 88 "../Script.yy" // lalr1.cc:859
     { reader.readPositionalParam(ParsedParamValue(yystack_[0].value.as< ParsedParamValue > ())); }
 #line 934 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 11:
-#line 97 "Script.yy" // lalr1.cc:859
+#line 97 "../Script.yy" // lalr1.cc:859
     { reader.readNamedParam(yystack_[0].value.as< std::string > (), ParsedParamValue()); }
 #line 940 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 12:
-#line 98 "Script.yy" // lalr1.cc:859
+#line 98 "../Script.yy" // lalr1.cc:859
     { reader.readNamedParam(yystack_[1].value.as< std::string > (), yystack_[0].value.as< ParsedParamValue > ()); }
 #line 946 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 13:
-#line 102 "Script.yy" // lalr1.cc:859
+#line 102 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< ParsedParamValue > () = ParsedParamValue(yystack_[0].value.as< int > ()); }
 #line 952 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 14:
-#line 103 "Script.yy" // lalr1.cc:859
+#line 103 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< ParsedParamValue > () = ParsedParamValue(yystack_[0].value.as< float > ()); }
 #line 958 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 15:
-#line 104 "Script.yy" // lalr1.cc:859
+#line 104 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< ParsedParamValue > () = ParsedParamValue(yystack_[0].value.as< std::string > ()); }
 #line 964 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 16:
-#line 105 "Script.yy" // lalr1.cc:859
+#line 105 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< ParsedParamValue > () = ParsedParamValue(yystack_[0].value.as< bool > ()); }
 #line 970 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 17:
-#line 106 "Script.yy" // lalr1.cc:859
+#line 106 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< ParsedParamValue > () = ParsedParamValue(); }
 #line 976 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 18:
-#line 107 "Script.yy" // lalr1.cc:859
+#line 107 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< ParsedParamValue > () = ParsedParamValue(Json::parse(yystack_[0].value.as< std::string > ())); }
 #line 982 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 19:
-#line 111 "Script.yy" // lalr1.cc:859
+#line 111 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< std::string > () = '{' + yystack_[1].value.as< std::string > () + '}'; }
 #line 988 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 20:
-#line 115 "Script.yy" // lalr1.cc:859
+#line 115 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< std::string > () = ""; }
 #line 994 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 21:
-#line 116 "Script.yy" // lalr1.cc:859
+#line 116 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< std::string > () = yystack_[0].value.as< std::string > (); }
 #line 1000 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 22:
-#line 117 "Script.yy" // lalr1.cc:859
+#line 117 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< std::string > () = yystack_[2].value.as< std::string > () + ',' + yystack_[0].value.as< std::string > (); }
 #line 1006 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 23:
-#line 122 "Script.yy" // lalr1.cc:859
+#line 122 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< std::string > () = '"' + yystack_[2].value.as< std::string > () + '"' + ':' + yystack_[0].value.as< std::string > (); }
 #line 1012 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 24:
-#line 126 "Script.yy" // lalr1.cc:859
+#line 126 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< std::string > () = std::to_string(yystack_[0].value.as< int > ()); }
 #line 1018 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 25:
-#line 127 "Script.yy" // lalr1.cc:859
+#line 127 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< std::string > () = std::to_string(yystack_[0].value.as< float > ()); }
 #line 1024 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 26:
-#line 128 "Script.yy" // lalr1.cc:859
+#line 128 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< std::string > () = '"' + yystack_[0].value.as< std::string > () + '"'; }
 #line 1030 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 27:
-#line 129 "Script.yy" // lalr1.cc:859
+#line 129 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< std::string > () = yystack_[0].value.as< bool > ()? "true" : "false"; }
 #line 1036 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 28:
-#line 130 "Script.yy" // lalr1.cc:859
+#line 130 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< std::string > () = "null"; }
 #line 1042 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 29:
-#line 131 "Script.yy" // lalr1.cc:859
+#line 131 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< std::string > () = yystack_[0].value.as< std::string > (); }
 #line 1048 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 30:
-#line 132 "Script.yy" // lalr1.cc:859
+#line 132 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< std::string > () = yystack_[0].value.as< std::string > (); }
 #line 1054 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 31:
-#line 136 "Script.yy" // lalr1.cc:859
+#line 136 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< std::string > () = "[]"; }
 #line 1060 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 32:
-#line 137 "Script.yy" // lalr1.cc:859
+#line 137 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< std::string > () = '[' + yystack_[1].value.as< std::string > () + ']'; }
 #line 1066 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 33:
-#line 141 "Script.yy" // lalr1.cc:859
+#line 141 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< std::string > () = yystack_[0].value.as< std::string > (); }
 #line 1072 "Script.tab.cc" // lalr1.cc:859
     break;
 
   case 34:
-#line 142 "Script.yy" // lalr1.cc:859
+#line 142 "../Script.yy" // lalr1.cc:859
     { yylhs.value.as< std::string > () = yystack_[2].value.as< std::string > () + ',' + yystack_[0].value.as< std::string > (); }
 #line 1078 "Script.tab.cc" // lalr1.cc:859
     break;
@@ -1432,10 +1432,10 @@ namespace ScriptParsing {
       return undef_token_;
   }
 
-#line 4 "Script.yy" // lalr1.cc:1167
+#line 4 "../Script.yy" // lalr1.cc:1167
 } // ScriptParsing
 #line 1438 "Script.tab.cc" // lalr1.cc:1167
-#line 145 "Script.yy" // lalr1.cc:1168
+#line 145 "../Script.yy" // lalr1.cc:1168
 
 
 void 

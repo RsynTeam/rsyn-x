@@ -20,8 +20,8 @@
 #include <FlexLexer.h>
 #endif
 
-#include "base/SimplifiedVerilog.tab.hh"
-#include "base/location.hh"
+#include "generated/SimplifiedVerilog.tab.hh"
+#include "generated/location.hh"
 
 namespace Parsing {
 

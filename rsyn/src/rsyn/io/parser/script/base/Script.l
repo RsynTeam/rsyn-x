@@ -23,6 +23,7 @@ using token = ScriptParsing::ScriptParser::token;
 %}
 
 %option nodefault
+%option posix-compat
 %option yyclass="ScriptParsing::ScriptScanner"
 %option noyywrap
 %option c++

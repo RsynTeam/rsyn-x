@@ -40,7 +40,7 @@
 #ifndef YY_YY_SCRIPT_TAB_HH_INCLUDED
 # define YY_YY_SCRIPT_TAB_HH_INCLUDED
 // //                    "%code requires" blocks.
-#line 7 "Script.yy" // lalr1.cc:377
+#line 7 "../Script.yy" // lalr1.cc:377
 
    namespace ScriptParsing {
       class ScriptScanner;
@@ -136,7 +136,7 @@
 # define YYDEBUG 0
 #endif
 
-#line 4 "Script.yy" // lalr1.cc:377
+#line 4 "../Script.yy" // lalr1.cc:377
 namespace ScriptParsing {
 #line 142 "Script.tab.hh" // lalr1.cc:377
 
@@ -726,7 +726,7 @@ namespace ScriptParsing {
   };
 
 
-#line 4 "Script.yy" // lalr1.cc:377
+#line 4 "../Script.yy" // lalr1.cc:377
 } // ScriptParsing
 #line 732 "Script.tab.hh" // lalr1.cc:377
 
