@@ -29,7 +29,9 @@
 #define yyFlexLexer yyScriptFlexLexer
 
 #if ! defined(yyFlexLexerOnce)
-#include <FlexLexer.h>
+// Use a copy from the enviroment where the parser was generated in order to
+// improve portability.
+#include "base/FlexLexerCopy.h" 
 #endif
 
 #undef yylex

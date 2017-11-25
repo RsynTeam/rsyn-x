@@ -17,7 +17,9 @@
 #define SIMPLIFIED_VERILOG_SCANNER_H
 
 #if ! defined(yyFlexLexerOnce)
-#include <FlexLexer.h>
+// Use a copy from the enviroment where the parser was generated in order to
+// improve portability.
+#include "base/FlexLexerCopy.h" 
 #endif
 
 #include "base/SimplifiedVerilog.tab.hh"

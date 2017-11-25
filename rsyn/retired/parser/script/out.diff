@@ -1,0 +1,5 @@
+diff -r linux/ScriptCommand.h macosx/ScriptCommand.h
+28c28
+< class Session;
+---
+> class Engine;

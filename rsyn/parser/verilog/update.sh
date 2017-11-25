@@ -3,20 +3,31 @@
 # If you make changes to the lex and grammar files, you need to call this script
 # in order to regenerate the parser files.
 
-mkdir build
-cp SimplifiedVerilog.l build
-cp SimplifiedVerilog.yy build
+mkdir -p build
 cd build
 
+# Copy scanner and gramar specifications.
+cp ../SimplifiedVerilog.l .
+cp ../SimplifiedVerilog.yy .
+
+# Let's copy this include to improve portability among different operating 
+# systems.
+cp /usr/include/FlexLexer.h FlexLexerCopy.h 
+
+# Generate parser.
 bison -d -v SimplifiedVerilog.yy
+
+# Generate scanner.
 flex --outfile=SimplifiedVerilog.yy.cc SimplifiedVerilog.l
 
+# Move files to the target source folder.
 path=../../../src/rsyn/io/parser/verilog/base
 rm -rf $path
 mkdir -p $path
 rm *.output
 mv * $path
 
+# Clean-up
 cd ..
 rm -rf build
 
