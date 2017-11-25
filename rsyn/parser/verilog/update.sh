@@ -20,6 +20,9 @@ bison -d -v SimplifiedVerilog.yy
 # Generate scanner.
 flex --outfile=SimplifiedVerilog.yy.cc SimplifiedVerilog.l
 
+# Patch to improve portability.
+sed -i -e 's/#include <FlexLexer.h>/#include "FlexLexerCopy.h"/g' SimplifiedVerilog.yy.cc
+
 # Move files to the target source folder.
 path=../../../src/rsyn/io/parser/verilog/base
 rm -rf $path

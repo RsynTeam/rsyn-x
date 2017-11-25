@@ -14,12 +14,14 @@ cp ../Script.yy .
 # systems.
 cp /usr/include/FlexLexer.h FlexLexerCopy.h 
 
-
 # Generate parser.
 bison -d -v Script.yy
 
 # Generate scanner.
 flex --outfile=Script.yy.cc Script.l
+
+# Patch to improve portability.
+sed -i -e 's/#include <FlexLexer.h>/#include "FlexLexerCopy.h"/g' Script.yy.cc
 
 # Move files to the target source folder.
 path=../../../src/rsyn/io/parser/script/base

@@ -321,7 +321,7 @@ typedef unsigned char YY_CHAR;
 #define yytext_ptr yytext
 #define YY_INTERACTIVE
 
-#include <FlexLexer.h>
+#include "FlexLexerCopy.h"
 
 int yyFlexLexer::yywrap() { return 1; }
 int yyFlexLexer::yylex()
