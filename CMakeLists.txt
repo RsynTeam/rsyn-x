@@ -24,15 +24,15 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif()
 
 # Set the output folder where your program will be created
-set(CMAKE_BINARY_DIR ../bin)
+set(CMAKE_BINARY_DIR bin)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/x/cmake)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(PATH_RSYN ${CMAKE_CURRENT_SOURCE_DIR}/../rsyn)
-set(PATH_X ${CMAKE_CURRENT_SOURCE_DIR}/../x)
+set(PATH_RSYN ${CMAKE_CURRENT_SOURCE_DIR}/rsyn)
+set(PATH_X ${CMAKE_CURRENT_SOURCE_DIR}/x)
 
 ######################
 # Check Dependencies #
