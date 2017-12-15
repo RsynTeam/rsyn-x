@@ -19,7 +19,8 @@ namespace Rsyn {
 
 void Shell::run(const std::string &startupScript, const bool interactive) {
 	if (startupScript.empty() && !interactive) {
-		std::cout << "Exiting. Nothing to be done... Try -gui or -interactive flags.\n";
+		std::cout << "Exiting. Nothing to be done... \n";
+		std::cout << " >> Try run with -gui, -interactive or -script <path_to_rsyn_script> flags. <<\n";
 		return;
 	} // end if
 

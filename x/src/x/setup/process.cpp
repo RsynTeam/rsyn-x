@@ -33,6 +33,7 @@
 #include "x/opto/example/QuadraticPlacement.h"
 #include "x/opto/example/RandomPlacement.h"
 #include "x/opto/example/SandboxTest.h"
+#include "x/opto/example/PhysicalDesignEx.h"
 
 #ifdef RSYN_ENABLE_OVERLAP_REMOVER
 #include "x/opto/example/LemonLP.h"
@@ -60,6 +61,7 @@ void Session::registerProcesses() {
 	// Example
 	registerProcess<ICCAD15::QuadraticPlacementExample>("example.quadraticPlacement");
 	registerProcess<ICCAD15::RandomPlacementExample>("example.randomPlacement");
+	registerProcess<PhysicalDesignExample>("example.physicalDesign");
 	
 	// Testing
 	registerProcess<Testing::SandboxTest>("testing.sandbox");
