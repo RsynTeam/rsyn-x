@@ -106,56 +106,7 @@ bool LayoutOverlay::init(PhysicalCanvasGL* canvas, nlohmann::json& properties) {
 	properties += {{"name", "ports"}, {"label", "Ports"}, {"type", "bool"}, {"default", clsViewInstances_Ports}, {"parent", "instances"}};
 	properties += {{"name", "pins"}, {"label", "Pins"}, {"type", "bool"}, {"default", clsViewInstances_Pins}, {"parent", "instances"}};
 
-	// Initialize layer colors on GUI View tab
-	int index = 0;
-	for (const Rsyn::PhysicalLayer phLayer : phDesign.allPhysicalLayers()) {
-		const std::string name = phLayer.getName();
-		
-		const Layer layer = getLayer(std::min(index++, (int)clsLayers.size()-1));
-		const Color color = layer.getFillColor();
-
-		properties += {
-			{"name", name},
-			{"type", "bool"},
-			{"default", true},
-			{"parent", "routing" },
-		};
-
-		properties += {
-			{"name", "color"},
-			{"label", "Color"},
-			{"type", "color"},
-			{"parent", "routing." + name},
-			{"default", {{"r", color.r}, {"g", color.g}, {"b", color.b}}},
-			{"stipple", layer.getStippleMask()}
-		};
-	}; // end for
-	
-	// HACK. how to get the total number of layers from PhysicalDesign?
-	clsViewLayer.assign(index, true);
-//	
-//	properties += {
-//		{"name", "metal1"}, 
-//		{"label", "Metal 1"},  
-//		{"type", "bool"}, 
-//		{"default", true}
-//	};
-//	
-//	properties += {
-//		{"name", "color"}, 
-//		{"label", "Color"},  
-//		{"type", "color"},
-//		{"parent", "metal1"},
-//		{"default", {{"r", 255}, {"g", 0}, {"b", 0}}}
-//	};
-	
-//	properties += {
-//		{"name", "color"}, 
-//		{"label", "Color"},  
-//		{"type", "color"},
-//		{"parent", "metal1.color"},
-//		{"default", {{"r", 0}, {"g", 0}, {"b", 255}}}
-//	};
+	initLayerColor(properties);
 
 	return true;
 } // end method
@@ -165,8 +116,8 @@ bool LayoutOverlay::init(PhysicalCanvasGL* canvas, nlohmann::json& properties) {
 void LayoutOverlay::render(PhysicalCanvasGL * canvas) {
 	//renderCells(canvas);
 	renderPorts(canvas);
-	//renderPins(canvas);
-	//renderRouting(canvas);
+	renderPins(canvas);
+	renderRouting(canvas);
 	renderRows(canvas);
 	renderRowSites(canvas);
 	//renderSpecialNets(canvas);
@@ -222,6 +173,65 @@ void LayoutOverlay::config(const nlohmann::json &params) {
 			geoMgr->setLayerVisibility(layer.getName(), !clsViewRouting? false : clsViewLayer[layer.getIndex()]);
 		} // end if
 	} // end for	
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void LayoutOverlay::initLayerColor(nlohmann::json& properties) {
+	// Initialize layer colors on GUI View tab
+	int index = 0;
+	for (const Rsyn::PhysicalLayer phLayer : phDesign.allPhysicalLayers()) {
+		const std::string name = phLayer.getName();
+		
+		
+		const Layer layer = getLayer(std::min(index++, (int)clsLayers.size()-1));
+		const Color color = layer.getFillColor();
+
+		properties += {
+			{"name", name},
+			{"type", "bool"},
+			{"default", true},
+			{"parent", "routing" },
+		};
+
+		properties += {
+			{"name", "color"},
+			{"label", "Color"},
+			{"type", "color"},
+			{"parent", "routing." + name},
+			{"default", {{"r", color.r}, {"g", color.g}, {"b", color.b}}},
+			{"stipple", layer.getStippleMask()}
+		};
+	}; // end for
+	
+	//phDesign.getNumLayers()
+	// HACK. how to get the total number of layers from PhysicalDesign?
+	clsViewLayer.assign(index, true);
+	
+	//	
+//	properties += {
+//		{"name", "metal1"}, 
+//		{"label", "Metal 1"},  
+//		{"type", "bool"}, 
+//		{"default", true}
+//	};
+//	
+//	properties += {
+//		{"name", "color"}, 
+//		{"label", "Color"},  
+//		{"type", "color"},
+//		{"parent", "metal1"},
+//		{"default", {{"r", 255}, {"g", 0}, {"b", 0}}}
+//	};
+	
+//	properties += {
+//		{"name", "color"}, 
+//		{"label", "Color"},  
+//		{"type", "color"},
+//		{"parent", "metal1.color"},
+//		{"default", {{"r", 0}, {"g", 0}, {"b", 255}}}
+//	};
+
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -1075,7 +1085,6 @@ void LayoutOverlay::setupLayers() {
 //	getLayer(  1 ).configure( "NWEL" ,  1, Color(   0, 204, 102 ), Color(   0, 204, 102 ), STIPPLE_MASK_DIAGONAL_UP   );
 //	getLayer(  0 ).configure( "PWEL" ,  0, Color( 255, 128,   0 ), Color( 255, 128,   0 ), STIPPLE_MASK_DIAGONAL_UP   );
 
-	// usp_phy
 	clsLayers.resize(14);
 	getLayer( 13 ).configure( "VIA6" ,  9, DARK_RED, DARK_RED, STIPPLE_MASK_EMPTY           );
 	getLayer( 12 ).configure( "MET6" ,  8, DARK_RED, DARK_RED, STIPPLE_MASK_DIAGONAL_UP_3   );

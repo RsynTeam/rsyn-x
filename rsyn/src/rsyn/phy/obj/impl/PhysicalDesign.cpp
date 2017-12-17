@@ -618,8 +618,6 @@ void PhysicalDesign::addPhysicalNet(const DefNetDscp & netDscp) {
 	Rsyn::Net net = data->clsDesign.findNetByName(netDscp.clsName);
 	PhysicalNetData & netData = data->clsPhysicalNets[net];
 	netData.clsWires.reserve(netDscp.clsWires.size());
-	if (netDscp.clsWires.size() > 0)
-		netData.clsViaInstances.reserve(100);
 	for (const DefWireDscp & wireDscp : netDscp.clsWires) {
 		netData.clsWires.push_back(PhysicalWire(new PhysicalWireData()));
 		PhysicalWire phWire = netData.clsWires.back();
@@ -692,8 +690,6 @@ void PhysicalDesign::addPhysicalNet(const DefNetDscp & netDscp) {
 			} // end if
 		} // end for 
 	} // end for
-	if (netDscp.clsWires.size() > 0)
-		netData.clsViaInstances.shrink_to_fit();
 } // end method 
 
 // -----------------------------------------------------------------------------
