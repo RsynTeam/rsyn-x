@@ -292,15 +292,26 @@ void PhysicalDesign::addPhysicalLayer(const LefLayerDscp& layer) {
 		return;
 	} // end if 
 
+	DBU libDBU = getDatabaseUnits(LIBRARY_DBU);
 	Element<PhysicalLayerData> *element = data->clsPhysicalLayers.create();
 	Rsyn::PhysicalLayerData * phLayer = &(element->value);
 	phLayer->id = data->clsPhysicalLayers.lastId();
 	phLayer->clsName = layer.clsName;
 	phLayer->clsDirection = Rsyn::getPhysicalLayerDirection(layer.clsDirection);
 	phLayer->clsType = Rsyn::getPhysicalLayerType(layer.clsType);
-	phLayer->clsPitch = static_cast<DBU> (std::round(layer.clsPitch * getDatabaseUnits(LIBRARY_DBU)));
-	phLayer->clsSpacing = static_cast<DBU> (std::round(layer.clsSpacing * getDatabaseUnits(LIBRARY_DBU)));
-	phLayer->clsWidth = static_cast<DBU> (std::round(layer.clsWidth * getDatabaseUnits(LIBRARY_DBU)));
+	phLayer->clsPitch[X] = static_cast<DBU> (std::round(layer.clsPitch[X] * libDBU));
+	phLayer->clsPitch[Y] = static_cast<DBU> (std::round(layer.clsPitch[Y] * libDBU));
+	phLayer->clsSpacing.reserve(layer.clsSpacingRules.size());
+	for(const LefSpacingRuleDscp & spcRule : layer.clsSpacingRules) {
+		phLayer->clsSpacing.push_back(PhysicalSpacingRule(new PhysicalSpacingRuleData()));
+		PhysicalSpacingRule & spc = phLayer->clsSpacing.back();
+		spc.data->clsEOL  = static_cast<DBU> (std::round(spcRule.clsEOL * libDBU));
+		spc.data->clsSpacing  = static_cast<DBU> (std::round(spcRule.clsSpacing * libDBU));
+		spc.data->clsEOLWithin= static_cast<DBU> (std::round(spcRule.clsEOLWithin * libDBU));
+	} // end for 
+	phLayer->clsMinWidth = static_cast<DBU> (std::round(layer.clsMinWidth * libDBU));
+	phLayer->clsArea = static_cast<DBU> (std::round(layer.clsArea * libDBU));
+	phLayer->clsWidth = static_cast<DBU> (std::round(layer.clsWidth * libDBU));
 	phLayer->clsRelativeIndex = data->clsNumLayers[phLayer->clsType];
 	data->clsMapPhysicalLayers[layer.clsName] = phLayer->id;
 	data->clsNumLayers[phLayer->clsType]++;

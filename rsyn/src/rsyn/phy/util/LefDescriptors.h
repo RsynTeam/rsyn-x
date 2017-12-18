@@ -108,6 +108,17 @@ public:
 
 // -----------------------------------------------------------------------------
 
+//! Descriptor for LEF Spacing Rule Layer
+class LefSpacingRuleDscp {
+public:
+	double clsSpacing = 0.0;
+	double clsEOL = 0.0; // End of line
+	double clsEOLWithin = 0.0;
+	LefSpacingRuleDscp() = default;
+}; // end class 
+
+// -----------------------------------------------------------------------------
+
 //! Descriptor for LEF Layer
 
 class LefLayerDscp {
@@ -115,10 +126,12 @@ public:
 	std::string clsName = INVALID_LEF_NAME;
 	std::string clsType = INVALID_LEF_NAME;
 	std::string clsDirection = INVALID_LEF_NAME;
-	double clsPitch = 0.0;
+	double clsPitch [2] = {0.0, 0.0};
 	double clsOffset = 0.0;
 	double clsWidth = 0.0;
-	double clsSpacing = 0.0;
+	double clsMinWidth = 0.0;
+	double clsArea = 0.0;
+	std::vector<LefSpacingRuleDscp> clsSpacingRules;
 	LefLayerDscp() = default;
 }; // end class 
 

@@ -325,8 +325,11 @@ void BookshelfMapper::createMetal(LefDscp & lef) {
 	layer1.clsDirection = "HORIZONTAL";
 	layer1.clsType = "ROUTING";
 	layer1.clsOffset = 0.1;
-	layer1.clsPitch = 0.2;
-	layer1.clsSpacing = 0.15;
+	layer1.clsPitch[X] = 0.2;
+	layer1.clsPitch[Y] = 0.2;
+	layer1.clsSpacingRules.push_back(LefSpacingRuleDscp());
+	LefSpacingRuleDscp & spc1 = layer1.clsSpacingRules.back();
+	spc1.clsSpacing = 0.15;
 	layer1.clsWidth = 0.1;
 	
 	// metal 2 
@@ -336,8 +339,11 @@ void BookshelfMapper::createMetal(LefDscp & lef) {
 	layer2.clsDirection = "HORIZONTAL";
 	layer2.clsType = "ROUTING";
 	layer2.clsOffset = 0.2;
-	layer2.clsPitch = 0.4;
-	layer2.clsSpacing = 0.30;
+	layer2.clsPitch[X] = 0.4;
+	layer2.clsPitch[Y] = 0.4;
+	layer2.clsSpacingRules.push_back(LefSpacingRuleDscp());
+	LefSpacingRuleDscp & spc2 = layer2.clsSpacingRules.back();
+	spc2.clsSpacing = 0.30;
 	layer2.clsWidth = 0.2;
 
 	// metal 3
@@ -347,8 +353,11 @@ void BookshelfMapper::createMetal(LefDscp & lef) {
 	layer3.clsDirection = "HORIZONTAL";
 	layer3.clsType = "ROUTING";
 	layer3.clsOffset = 0.3;
-	layer3.clsPitch = 0.6;
-	layer3.clsSpacing = 0.45;
+	layer3.clsPitch[X] = 0.6;
+	layer3.clsPitch[Y] = 0.6;
+	layer3.clsSpacingRules.push_back(LefSpacingRuleDscp());
+	LefSpacingRuleDscp & spc3 = layer3.clsSpacingRules.back();
+	spc3.clsSpacing = 0.45;
 	layer3.clsWidth = 0.3;
 	
 	// metal 4
@@ -358,8 +367,11 @@ void BookshelfMapper::createMetal(LefDscp & lef) {
 	layer4.clsDirection = "HORIZONTAL";
 	layer4.clsType = "ROUTING";
 	layer4.clsOffset = 0.4;
-	layer4.clsPitch = 0.8;
-	layer4.clsSpacing = 0.6;
+	layer4.clsPitch[X] = 0.8;
+	layer4.clsPitch[Y] = 0.8;
+	layer4.clsSpacingRules.push_back(LefSpacingRuleDscp());
+	LefSpacingRuleDscp & spc4 = layer4.clsSpacingRules.back();
+	spc4.clsSpacing = 0.6;
 	layer4.clsWidth = 0.4;
 } // end method 
 

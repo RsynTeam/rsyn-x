@@ -306,14 +306,30 @@ int lefLayerCB(lefrCallbackType_e c, lefiLayer* layer, lefiUserData ud) {
 	lefLayer.clsName = layer->lefiLayer::name();
 	if (layer->lefiLayer::hasType())
 		lefLayer.clsType = layer->lefiLayer::type();
-	if (layer->lefiLayer::hasPitch())
-		lefLayer.clsPitch = layer->lefiLayer::pitch();
+	if (layer->lefiLayer::hasPitch()) {
+		lefLayer.clsPitch[X] = layer->lefiLayer::pitch();
+		lefLayer.clsPitch[Y] = layer->lefiLayer::pitch();
+	}
+	if (layer->lefiLayer::hasXYPitch()) {
+		lefLayer.clsPitch[X] = layer->lefiLayer::pitchX();
+		lefLayer.clsPitch[Y] = layer->lefiLayer::pitchY();
+	}
 	if (layer->lefiLayer::hasWidth())
 		lefLayer.clsWidth = layer->lefiLayer::width();
 	if (layer->lefiLayer::hasDirection())
 		lefLayer.clsDirection = layer->lefiLayer::direction();
-	if (layer->lefiLayer::hasSpacingNumber())
-		lefLayer.clsSpacing = layer->lefiLayer::spacing(0);
+	if (layer->lefiLayer::hasSpacingNumber()) {
+		int numSpacing = layer->lefiLayer::numSpacing();
+		lefLayer.clsSpacingRules.resize(numSpacing);
+		for(int i = 0; i < numSpacing; ++i){
+			LefSpacingRuleDscp & spcRule = lefLayer.clsSpacingRules[i];
+			spcRule.clsSpacing = layer->lefiLayer::spacing(i);
+			spcRule.clsEOL = layer->lefiLayer::spacingEolWidth(i);
+			spcRule.clsEOLWithin = layer->lefiLayer::spacingEolWithin(i);
+		} // end for 
+	} // end if 
+	if (layer->lefiLayer::hasArea())
+		lefLayer.clsArea = layer->lefiLayer::area();
 	return 0;
 } // end method 
 

@@ -73,6 +73,7 @@ class PhysicalRoutingPointData;
 class PhysicalDieData;
 class PhysicalLayerData;
 class PhysicalSpacingData;
+class PhysicalSpacingRuleData;
 class PhysicalSiteData;
 class PhysicalRowData;
 class PhysicalObstacleData;
@@ -99,6 +100,7 @@ class PhysicalRoutingPoint;
 class PhysicalDie;
 class PhysicalLayer;
 class PhysicalSpacing;
+class PhysicalSpacingRule;
 class PhysicalSite;
 class PhysicalRow;
 class PhysicalObstacle;
@@ -139,6 +141,7 @@ class PhysicalObserver;
 #include "rsyn/phy/obj/decl/PhysicalDie.h"
 #include "rsyn/phy/obj/decl/PhysicalLayer.h"
 #include "rsyn/phy/obj/decl/PhysicalSpacing.h"
+#include "rsyn/phy/obj/decl/PhysicalSpacingRule.h"
 #include "rsyn/phy/obj/decl/PhysicalSite.h"
 #include "rsyn/phy/obj/decl/PhysicalRow.h"
 #include "rsyn/phy/obj/decl/PhysicalPinLayer.h"
@@ -170,6 +173,7 @@ class PhysicalObserver;
 #include "rsyn/phy/obj/data/PhysicalDieData.h"
 #include "rsyn/phy/obj/data/PhysicalLayerData.h"
 #include "rsyn/phy/obj/data/PhysicalSpacingData.h"
+#include "rsyn/phy/obj/data/PhysicalSpacingRuleData.h"
 #include "rsyn/phy/obj/data/PhysicalSiteData.h"
 #include "rsyn/phy/obj/data/PhysicalRowData.h"
 #include "rsyn/phy/obj/data/PhysicalPinLayerData.h"
@@ -201,6 +205,7 @@ class PhysicalObserver;
 #include "rsyn/phy/obj/impl/PhysicalLayer.h"
 #include "rsyn/phy/obj/impl/PhysicalDie.h"
 #include "rsyn/phy/obj/impl/PhysicalSpacing.h"
+#include "rsyn/phy/obj/impl/PhysicalSpacingRule.h"
 #include "rsyn/phy/obj/impl/PhysicalSite.h"
 #include "rsyn/phy/obj/impl/PhysicalRow.h"
 #include "rsyn/phy/obj/impl/PhysicalPinLayer.h"

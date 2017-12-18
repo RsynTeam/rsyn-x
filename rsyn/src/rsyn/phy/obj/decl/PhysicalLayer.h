@@ -29,6 +29,8 @@
 #ifndef PHYSICALDESIGN_PHYSICALLAYER_H
 #define PHYSICALDESIGN_PHYSICALLAYER_H
 
+
+
 namespace Rsyn {
 
 class PhysicalLayer : public Proxy<PhysicalLayerData> {
@@ -52,10 +54,14 @@ public:
 	Rsyn::PhysicalLayerDirection getDirection() const;
 	//! @brief Returns the layer width in DBU.
 	DBU getWidth() const;
+	DBU getMinWidth() const;
+	DBU getMinArea() const;
+	//! @brief Returns the layer pitch in DBU for given dimension.
+	DBU getPitch(const Dimension dim) const;
 	//! @brief Returns the layer pitch in DBU.
-	DBU getPitch() const;
+	DBUxy getPitch() const;
 	//! @brief Returns the layer spacing in DBU.
-	DBU getSpacing() const;
+	const std::vector<Rsyn::PhysicalSpacingRule> & allSpacingRule() const;
 	//! @brief Returns the layer index w.r.t to all physical layers. It starts
 	//!        from 0 that is the bottom layer
 	//! @note  If you need an index relative to the layer type, see
@@ -63,6 +69,7 @@ public:
 	int getIndex() const;
 	//! @brief Returns the relative layer index w.r.t. the layers of same type.
 	int getRelativeIndex() const;
+	
 }; // end class 
 
 } // end namespace 

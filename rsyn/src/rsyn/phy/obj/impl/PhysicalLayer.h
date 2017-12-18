@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -45,13 +45,31 @@ inline DBU PhysicalLayer::getWidth() const {
 
 // -----------------------------------------------------------------------------
 
-inline DBU PhysicalLayer::getPitch() const {
+inline DBU PhysicalLayer::getMinWidth() const {
+	return data->clsMinWidth;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline DBU PhysicalLayer::getMinArea() const {
+	return data->clsArea;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline DBU PhysicalLayer::getPitch(const Dimension dim) const {
+	return data->clsPitch[dim];
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline DBUxy PhysicalLayer::getPitch() const {
 	return data->clsPitch;
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-inline DBU PhysicalLayer::getSpacing() const {
+inline const std::vector<Rsyn::PhysicalSpacingRule> & PhysicalLayer::allSpacingRule() const {
 	return data->clsSpacing;
 } // end method 
 

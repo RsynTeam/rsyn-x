@@ -20,35 +20,26 @@
  */
 
 /* 
- * File:   PhysicalLayerData.h
+ * File:   PhysicalSpacingRuleData.h
  * Author: jucemar
  *
- * Created on 13 de Setembro de 2016, 19:09
+ * Created on 17 de dezembro de 2017, 14:10
  */
 
-#ifndef PHYSICALDESIGN_PHYSICALLAYERDATA_H
-#define PHYSICALDESIGN_PHYSICALLAYERDATA_H
-
+#ifndef PHYSICALDESIGN_PHYSICALSPACINGRULEDATA_H
+#define PHYSICALDESIGN_PHYSICALSPACINGRULEDATA_H
 
 namespace Rsyn {
 
-class PhysicalLayerData : public PhysicalObject {
+class PhysicalSpacingRuleData {
 public:
-	DBU clsWidth = 0;
-	DBU clsMinWidth = 0;
-	DBU clsArea = 0;
-	int clsIndex = -1;
-	int clsRelativeIndex = -1;
-	DBUxy clsPitch;
-	Rsyn::PhysicalLayerType clsType = INVALID_PHY_LAYER_TYPE;
-	Rsyn::PhysicalLayerDirection clsDirection = INVALID_PHY_LAYER_DIRECTION;
-	std::string clsName = Rsyn::getPhysicalInvalidName();
-	std::vector<Rsyn::PhysicalSpacingRule> clsSpacing;
-	PhysicalLayerData() = default;
+	DBU clsSpacing = 0;
+	DBU clsEOL = 0;
+	DBU clsEOLWithin = 0;
+	PhysicalSpacingRuleData() = default;
 }; // end class 
 
 } // end namespace 
 
-
-#endif /* PHYSICALDESIGN_PHYSICALLAYERDATA_H */
+#endif /* PHYSICALDESIGN_PHYSICALSPACINGRULEDATA_H */
 
