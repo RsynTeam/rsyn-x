@@ -36,6 +36,8 @@ bool PhysicalDesignExample::run(const Rsyn::Json &params) {
 	assigningUserDefinedDataToRows();
 	
 	moveCells();
+	
+	visitAllPhysicalLayers();
 	return true;
 } // end method 
 
@@ -225,3 +227,32 @@ void PhysicalDesignExample::moveCells(){
 	} // end for 
 	
 }
+
+
+void PhysicalDesignExample::visitAllPhysicalLayers() {
+	
+	// Visiting all routing physical layers
+	for(Rsyn::PhysicalLayer phLayer : clsPhDesign.allPhysicalLayers()) {
+		// skipping non routing types
+		if(phLayer.getType() != Rsyn::PhysicalLayerType::ROUTING)
+			continue;
+		std::cout<<phLayer.getName()<<" direction: "
+			<<Rsyn::getPhysicalLayerDirection(phLayer.getDirection())
+			<<" type: "
+			<<Rsyn::getPhysicalLayerType(phLayer.getType())
+			<<"\n";
+	} // end for 
+	
+	// Visiting all cut physical layers
+	for(Rsyn::PhysicalLayer phLayer : clsPhDesign.allPhysicalLayers()) {
+		// skipping non routing types
+		if(phLayer.getType() != Rsyn::PhysicalLayerType::CUT)
+			continue;
+		std::cout<<phLayer.getName()
+			<<" type: "
+			<<Rsyn::getPhysicalLayerType(phLayer.getType())
+			<<"\n";
+	} // end for 
+} // end method 
+
+// -----------------------------------------------------------------------------

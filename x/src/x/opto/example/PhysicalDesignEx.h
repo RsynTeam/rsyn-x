@@ -37,6 +37,7 @@ private:
 	void visitAllPhysicalRows();
 	void assigningUserDefinedDataToRows();
 	void moveCells();
+	void visitAllPhysicalLayers();
 };
 
 #endif /* PHYSICALDESIGNEXAMPLE_H */
