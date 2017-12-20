@@ -1270,6 +1270,8 @@ PhysicalCanvasGL::createGeoReference(Rsyn::Pin pin) {
 // -----------------------------------------------------------------------------
 
 void PhysicalCanvasGL::prepareGeometryManager() {
+	const bool debug = false;	
+
 	clsGeoNets = design.createAttribute();
 
 	// Instances
@@ -1281,32 +1283,36 @@ void PhysicalCanvasGL::prepareGeometryManager() {
 	geoPinsLayerId = geoMgr.createLayer("pins", 5, Color(0, 0, 255), Color(0, 0, 255), LINE_STIPPLE_SOLID, STIPPLE_MASK_DOT);
 	geoMgr.setLayerVisibility(geoPinsLayerId, false);
 
-	// Routing.
-	// TODO: HARD-CODED
-	for (const Rsyn::PhysicalLayer phLayer : phDesign.allPhysicalLayers()) {
-		if (phLayer.getType() == Rsyn::ROUTING) {
-			routingLayerNames.push_back(phLayer.getName());
-		} else if (phLayer.getType() == phLayer.getType() == Rsyn::CUT) {
-			routingLayerNames.push_back(phLayer.getName());
-		} // end else
-	} // end for
-
+	// Routing
 	const int offset = 10;
-	techLayerIds[11] = geoMgr.createLayer( "via6"  , 13 + offset, DARK_RED, DARK_RED, LINE_STIPPLE_SOLID, STIPPLE_MASK_EMPTY          );
-	techLayerIds[10] = geoMgr.createLayer( "metal6", 12 + offset, DARK_RED, DARK_RED, LINE_STIPPLE_SOLID, STIPPLE_MASK_DIAGONAL_UP_3  );
-	techLayerIds[ 9] = geoMgr.createLayer( "via5"  , 11 + offset,   YELLOW,   YELLOW, LINE_STIPPLE_SOLID, STIPPLE_MASK_EMPTY          );
-	techLayerIds[ 8] = geoMgr.createLayer( "metal5", 10 + offset,   YELLOW,   YELLOW, LINE_STIPPLE_SOLID, STIPPLE_MASK_DIAGONAL_DOWN_3);
-	techLayerIds[ 7] = geoMgr.createLayer( "via4"  ,  9 + offset,    GREEN,    GREEN, LINE_STIPPLE_SOLID, STIPPLE_MASK_EMPTY          );
-	techLayerIds[ 6] = geoMgr.createLayer( "metal4",  8 + offset,    GREEN,    GREEN, LINE_STIPPLE_SOLID, STIPPLE_MASK_DIAGONAL_UP_2  );
-	techLayerIds[ 5] = geoMgr.createLayer( "via3"  ,  7 + offset,      RED,      RED, LINE_STIPPLE_SOLID, STIPPLE_MASK_EMPTY          );
-	techLayerIds[ 4] = geoMgr.createLayer( "metal3",  6 + offset,      RED,      RED, LINE_STIPPLE_SOLID, STIPPLE_MASK_DIAGONAL_DOWN_2);
-	techLayerIds[ 3] = geoMgr.createLayer( "via2"  ,  5 + offset,     BLUE,     BLUE, LINE_STIPPLE_SOLID, STIPPLE_MASK_EMPTY          );
-	techLayerIds[ 2] = geoMgr.createLayer( "metal2",  4 + offset,     BLUE,     BLUE, LINE_STIPPLE_SOLID, STIPPLE_MASK_DIAGONAL_UP_1  );
-	techLayerIds[ 1] = geoMgr.createLayer( "via1"  ,  3 + offset,    BLACK,    BLACK, LINE_STIPPLE_SOLID, STIPPLE_MASK_EMPTY          );
-	techLayerIds[ 0] = geoMgr.createLayer( "metal1",  2 + offset,    BLACK,    BLACK, LINE_STIPPLE_SOLID, STIPPLE_MASK_DIAGONAL_DOWN_1);
-
-	for (GeometryManager::LayerId layerId : techLayerIds)
-		geoMgr.setLayerVisibility(layerId, false);	
+	size_t currStyle = 0;
+	int z = 2 + offset;
+	for (const Rsyn::PhysicalLayer phLayer : phDesign.allPhysicalLayers()) {
+		Rsyn::PhysicalLayerType type = phLayer.getType();
+		FillStippleMask mask = techLayerMasks[currStyle];
+		Color c = techLayerColors[currStyle];
+		
+		if (type == Rsyn::ROUTING) { // If is a routing layer, increment style
+			currStyle = std::min(currStyle+1, techLayerMasks.size()-1);	
+		} else if (type == Rsyn::CUT) { // If is a via, force empty mask
+			mask = STIPPLE_MASK_EMPTY;
+		} else { // Other tech layers are not supported 
+			continue;
+		}
+		
+		if(debug) {
+			std::cout << "Adding a layer called " << phLayer.getName()
+					  << " (id=" << phLayer.getIndex() << ") "
+					  << " with mask " << mask << " and color (" << (int) c.r 
+					  << ", " << (int) c.g << ", " << (int) c.b << ")\n"; 
+		}
+		
+		GeometryManager::LayerId id = geoMgr.createLayer(phLayer.getName(), z++, c, c, LINE_STIPPLE_SOLID, mask);
+		techLayerIds[phLayer.getIndex()] = id;
+	} // end for
+	
+	for (auto& element : techLayerIds)
+		geoMgr.setLayerVisibility(element.second, false);
 } // end method
 
 // -----------------------------------------------------------------------------

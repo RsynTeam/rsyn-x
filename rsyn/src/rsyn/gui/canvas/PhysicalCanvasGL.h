@@ -161,8 +161,37 @@ private:
 	GeometryManager::LayerId geoMacroLayerId;
 	GeometryManager::LayerId geoPortLayerId;
 	GeometryManager::LayerId geoPinsLayerId;
-	std::array<GeometryManager::LayerId, 12> techLayerIds;
-	std::vector<std::string> routingLayerNames;
+	
+	std::unordered_map<int, GeometryManager::LayerId> techLayerIds;
+	
+	// We currently support up to 11 tech layer styles
+	std::array<FillStippleMask, 11> techLayerMasks = {
+		STIPPLE_MASK_DIAGONAL_DOWN_1,
+		STIPPLE_MASK_DIAGONAL_UP_1,
+		STIPPLE_MASK_DIAGONAL_DOWN_2,
+		STIPPLE_MASK_DIAGONAL_UP_2,
+		STIPPLE_MASK_DIAGONAL_DOWN_3,
+		STIPPLE_MASK_DIAGONAL_UP_3,
+		STIPPLE_MASK_DIAGONAL_DOWN_4,
+		STIPPLE_MASK_DIAGONAL_UP_4,
+		STIPPLE_MASK_DIAGONAL_DOWN_5,
+		STIPPLE_MASK_DIAGONAL_UP_5,
+		STIPPLE_MASK_CROSS
+	}; 
+	
+	std::array<Color, 11> techLayerColors = {
+		Color(  0,   0,   0), // BLACK
+		Color(  0,   0, 255), // BLUE
+		Color(255,   0,   0), // RED
+		Color(  0, 255,   0), // GREEN
+		Color(230, 230,   0), // YELLOW, 
+		Color( 42,  42, 165), // DARK_BLUE
+		Color(165,  42,  42), // DARK_RED
+		Color( 42, 165,  42), // DARK_GREEN
+		Color(230,   0, 230), // PINK 
+		Color(  0, 230, 230), // CYAN
+		Color( 75,   0, 130) // INDIGO
+	};	
 
 	GeometryManager::ObjectId clsHoverObjectId;
 	Rsyn::Attribute<Rsyn::Net, GeometryManager::GroupId> clsGeoNets;
