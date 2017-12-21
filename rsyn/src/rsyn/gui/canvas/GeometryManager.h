@@ -216,6 +216,24 @@ private:
 		return layers[layerId];
 	} // end method
 
+public:
+	LineStippleMask getLayerLinePattern (const LayerId &layerId) const {
+		return layers[layerId].linePattern;
+	} // end method
+	
+	Color getLayerLineColor (const LayerId &layerId) const {
+		return layers[layerId].lineColor;
+	} // end method
+	
+	FillStippleMask getLayerFillPattern (const LayerId &layerId) const {
+		return layers[layerId].fillPattern;
+	} // end method
+	
+	Color getLayerFillColor (const LayerId &layerId) const {
+		return layers[layerId].fillColor;
+	} // end method
+	
+private:
 	void resortLayers();
 
 	void applyColor(const Color &color) const {

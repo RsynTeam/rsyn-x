@@ -133,7 +133,6 @@ private:
 	
 	void setupLayers();
 
-	void initLayerColor(nlohmann::json& properties);
 public:
 	
 	LayoutOverlay();

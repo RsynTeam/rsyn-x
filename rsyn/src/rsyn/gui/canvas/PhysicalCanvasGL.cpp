@@ -1285,8 +1285,10 @@ void PhysicalCanvasGL::prepareGeometryManager() {
 
 	// Routing
 	const int offset = 10;
-	size_t currStyle = 0;
 	int z = 2 + offset;
+	size_t currStyle = 0;
+	techLayerIds.clear();
+	techLayerIds.resize(phDesign.getNumLayers(), -1);
 	for (const Rsyn::PhysicalLayer phLayer : phDesign.allPhysicalLayers()) {
 		Rsyn::PhysicalLayerType type = phLayer.getType();
 		FillStippleMask mask = techLayerMasks[currStyle];
@@ -1297,7 +1299,8 @@ void PhysicalCanvasGL::prepareGeometryManager() {
 		} else if (type == Rsyn::CUT) { // If is a via, force empty mask
 			mask = STIPPLE_MASK_EMPTY;
 		} else { // Other tech layers are not supported 
-			continue;
+			mask = STIPPLE_MASK_EMPTY;
+			c = Color(0, 0 ,0);
 		}
 		
 		if(debug) {
@@ -1311,8 +1314,11 @@ void PhysicalCanvasGL::prepareGeometryManager() {
 		techLayerIds[phLayer.getIndex()] = id;
 	} // end for
 	
-	for (auto& element : techLayerIds)
-		geoMgr.setLayerVisibility(element.second, false);
+	for (GeometryManager::LayerId& id : techLayerIds) {
+		if (id < 0)
+			continue;
+		geoMgr.setLayerVisibility(id, false);
+	}
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -1324,7 +1330,7 @@ void PhysicalCanvasGL::populateGeometryManager() {
 
 	// TODO: Make the update incremental.
 	geoMgr.removeAllObjects();
-
+	
 	//
 	// Instances
 	//
@@ -1373,16 +1379,23 @@ void PhysicalCanvasGL::populateGeometryManager() {
 	//
 	// Nets.
 	//
-
 	for (Rsyn::Net net : module.allNets()) {
 		const GeometryManager::GroupId groupId = geoMgr.createGroup();
 		clsGeoNets[net] = groupId;
 		Rsyn::PhysicalNet phNet = phDesign.getPhysicalNet(net);
+		
+		// TEMPORARY
+		const bool debug = false;
+		if (debug) {
+			std::cout << "Net [" << net.getName() << "] has " << 
+				phNet.allWires().size() << " wires...\n"; 
+		}	
+		
 		for (Rsyn::PhysicalWire phWire : phNet.allWires()) {
 			for (Rsyn::PhysicalWireSegment phWireSegment : phWire.allSegments()) {
 				if (phWireSegment.getNumPoints() < 2)
 					continue;
-
+								
 				const std::vector<DBUxy> &points = phWireSegment.allSegmentPoints();
 				Rsyn::PhysicalLayer phLayer = phWireSegment.getLayer();
 				const DBU width = phLayer.getWidth();
