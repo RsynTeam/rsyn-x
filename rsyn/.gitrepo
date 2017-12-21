@@ -6,6 +6,6 @@
 [subrepo]
 	remote = https://github.com/rsyn/rsyn.git
 	branch = master
-	commit = ac50dea117330c44b7e74211aca75e1f1f5d8d4b
-	parent = d4d83c8d527d1d0265c9e90a52cef4a3e4a80a7c
+	commit = 17710147ebb0a79cfa9625cda8f67a3882b450b1
+	parent = a881bd9fd73abe3a018727589b16b295e07131d2
 	cmdver = 0.3.1
