@@ -165,7 +165,7 @@ private:
 	std::vector<int> techLayerIds;
 	
 	// We currently support up to 11 tech layer styles
-	std::array<FillStippleMask, 11> techLayerMasks = {
+	std::array<FillStippleMask, 11> techLayerMasks {{
 		STIPPLE_MASK_DIAGONAL_DOWN_1,
 		STIPPLE_MASK_DIAGONAL_UP_1,
 		STIPPLE_MASK_DIAGONAL_DOWN_2,
@@ -177,9 +177,9 @@ private:
 		STIPPLE_MASK_DIAGONAL_DOWN_5,
 		STIPPLE_MASK_DIAGONAL_UP_5,
 		STIPPLE_MASK_CROSS
-	}; 
+	}}; 
 	
-	std::array<Color, 11> techLayerColors = {
+	std::array<Color, 11> techLayerColors {{
 		//Color(  0,   0,   0), // BLACK
 		Color(  0,   0, 255), // BLUE
 		Color(255,   0,   0), // RED
@@ -192,7 +192,7 @@ private:
 		Color(  0, 230, 230), // CYAN
 		Color( 75,   0, 130), // INDIGO
 		Color(128,   0, 128) // PURPLE
-	};	
+	}};	
 
 public:
 	GeometryManager::LayerId getTechLayerID(const int id) { 
