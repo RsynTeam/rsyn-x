@@ -200,6 +200,9 @@ public:
 	// Services
 	////////////////////////////////////////////////////////////////////////////
 
+	// Register services.
+	static void registerServices();
+
 public:
 	
 	// Helper class to allow seamless casting from a Service pointer to any type
@@ -222,10 +225,7 @@ public:
 			return pointer;
 		} // end operator
 	}; // end class
-	
-	// Register services.
-	static void registerServices();
-	
+		
 	// Register a service.
 	template<typename T>
 	static void registerService(const std::string &name) {
@@ -318,11 +318,12 @@ private:
 			out<<"\t"<<process.first<<"\n";
 		} // end for 
 		out<<"--------------------------------------\n";
-	} // end method 
-public:
-	
+	} // end method
+
 	// Register processes.
 	static void registerProcesses();
+
+public:	
 	
 	// Register a process.
 	template<typename T>
@@ -369,11 +370,12 @@ private:
 		} // end for 
 		out<<"--------------------------------------\n";
 	} /// end method
-public:
-	
+
 	// Register loader.
 	static void registerReaders();
-	
+
+public:
+		
 	// Register a loader.
 	template<typename T>
 	static void registerReader(const std::string &name) {
@@ -410,12 +412,9 @@ public:
 	////////////////////////////////////////////////////////////////////////////
 
 private:
-	static void registerInternalMessages();
-	static void registerDefaultMessages();
+	static void registerMessages();
 
 public:
-
-	static void registerMessages();
 
 	static void registerMessage(const std::string &label, const MessageLevel &level, const std::string &title, const std::string &msg = "");
 	static Message getMessage(const std::string &label);

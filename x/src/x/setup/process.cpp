@@ -42,35 +42,37 @@
 
 // Registration
 namespace Rsyn {
-void Session::registerProcesses() {
+static Startup registerProcesses([]{
+	Rsyn::Session session;
+
 	// ISPD16
-	registerProcess<ICCAD15::Balancing>("ufrgs.balancing");
-	registerProcess<ICCAD15::LoadOptimization>("ufrgs.loadOpto");
-	registerProcess<ICCAD15::ClusteredMove>("ufrgs.clusteredMove");
-	registerProcess<ICCAD15::AbuReduction>("ufrgs.abuReduction");
-	registerProcess<ICCAD15::EarlyOpto>("ufrgs.earlyOpto");
-	registerProcess<ICCAD15::ISPD16Flow>("ufrgs.ISPD16Flow");
+	session.registerProcess<ICCAD15::Balancing>("ufrgs.balancing");
+	session.registerProcess<ICCAD15::LoadOptimization>("ufrgs.loadOpto");
+	session.registerProcess<ICCAD15::ClusteredMove>("ufrgs.clusteredMove");
+	session.registerProcess<ICCAD15::AbuReduction>("ufrgs.abuReduction");
+	session.registerProcess<ICCAD15::EarlyOpto>("ufrgs.earlyOpto");
+	session.registerProcess<ICCAD15::ISPD16Flow>("ufrgs.ISPD16Flow");
 
 	// Misc
-	registerProcess<ICCAD15::IncrementalTimingDrivenQP>("ufrgs.incrementalTimingDrivenQP");
-	registerProcess<ICCAD15::TDQuadraticFlow>("ufrgs.TDQuadraticFlow");
-	
+	session.registerProcess<ICCAD15::IncrementalTimingDrivenQP>("ufrgs.incrementalTimingDrivenQP");
+	session.registerProcess<ICCAD15::TDQuadraticFlow>("ufrgs.TDQuadraticFlow");
+
 	// External
-	registerProcess<ICCAD15::FastPlace>("ext.FastPlace");
+	session.registerProcess<ICCAD15::FastPlace>("ext.FastPlace");
 
 	// Example
-	registerProcess<ICCAD15::QuadraticPlacementExample>("example.quadraticPlacement");
-	registerProcess<ICCAD15::RandomPlacementExample>("example.randomPlacement");
-	registerProcess<PhysicalDesignExample>("example.physicalDesign");
-	
+	session.registerProcess<ICCAD15::QuadraticPlacementExample>("example.quadraticPlacement");
+	session.registerProcess<ICCAD15::RandomPlacementExample>("example.randomPlacement");
+	session.registerProcess<PhysicalDesignExample>("example.physicalDesign");
+
 	// Testing
-	registerProcess<Testing::SandboxTest>("testing.sandbox");
+	session.registerProcess<Testing::SandboxTest>("testing.sandbox");
 
 	// Optionals
 #ifdef RSYN_ENABLE_OVERLAP_REMOVER
-	registerProcess<ICCAD15::LemonLP>("example.lemonLP");
-	registerProcess<ICCAD15::OverlapRemover>("ufrgs.overlapRemover");
-#endif	
-} // end method
+	session.registerProcess<ICCAD15::LemonLP>("example.lemonLP");
+	session.registerProcess<ICCAD15::OverlapRemover>("ufrgs.overlapRemover");
+#endif
+});
 } // end namespace
 

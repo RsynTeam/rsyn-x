@@ -13,21 +13,17 @@
  * limitations under the License.
  */
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+// HOW-TO
+// To register process (e.g. optimization step), just include its .h below and
+// add a call to "registerProcess<T>(name)" where T is the process class name
+// and name how the process will be referred to.
 
 #include "rsyn/session/Session.h"
 
-// Readers
-#include "x/io/reader/ICCAD15ReaderExtended.h"
+// Optimizations
 
 // Registration
 namespace Rsyn {
-static Startup registerReaders([]{
-	Rsyn::Session session;
-	session.registerReader<ICCAD15::ICCAD15ReaderExtended>("iccad2015");
-});
+void Session::registerProcesses() {
+} // end method
 } // end namespace

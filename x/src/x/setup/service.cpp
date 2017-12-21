@@ -21,20 +21,6 @@
 #include "rsyn/session/Session.h"
 
 // Services
-#include "rsyn/phy/PhysicalService.h"
-#include "rsyn/model/scenario/Scenario.h"
-#include "rsyn/model/timing/Timer.h"
-#include "rsyn/model/timing/DefaultTimingModel.h"
-#include "rsyn/model/library/LibraryCharacterizer.h"
-#include "rsyn/model/routing/RoutingEstimator.h"
-#include "rsyn/model/routing/DefaultRoutingEstimationModel.h"
-#include "rsyn/model/routing/DefaultRoutingExtractionModel.h"
-#include "rsyn/model/routing/RsttRoutingEstimatorModel.h"
-#include "rsyn/model/congestion/DensityGrid/DensityGridService.h"
-#include "rsyn/io/Report.h"
-#include "rsyn/io/Writer.h"
-#include "rsyn/io/Graphics.h"
-#include "rsyn/io/WebLogger.h"
 #include "x/model/DefaultTimingModelWithIdealClock.h"
 #include "x/infra/iccad15/Infrastructure.h"
 #include "x/jezz/Jezz.h"
@@ -43,28 +29,14 @@
 
 // Registration
 namespace Rsyn {
-void Session::registerServices() {
-	registerService<Rsyn::PhysicalService>("rsyn.physical");
-	registerService<Rsyn::Scenario>("rsyn.scenario");
-	registerService<Rsyn::Timer>("rsyn.timer");
-	registerService<Rsyn::DefaultTimingModel>("rsyn.defaultTimingModel");
-	registerService<Rsyn::LibraryCharacterizer>("rsyn.libraryCharacterizer");
-	registerService<Rsyn::RoutingEstimator>("rsyn.routingEstimator");
-	registerService<Rsyn::DefaultRoutingEstimationModel>("rsyn.defaultRoutingEstimationModel");
-	registerService<Rsyn::DefaultRoutingExtractionModel>("rsyn.defaultRoutingExtractionModel");
-	registerService<Rsyn::RsttRoutingEstimatorModel>("rsyn.RSTTroutingEstimationModel");
-	registerService<Rsyn::DensityGridService>("rsyn.densityGrid");
-	registerService<Rsyn::Report>("rsyn.report");
-	registerService<Rsyn::Writer>("rsyn.writer");
-	registerService<Rsyn::Graphics>("rsyn.graphics");
-	//registerService<Rsyn::WebLogger>("rsyn.webLogger");
+static Startup registerMessages([]{
+	Rsyn::Session session;
 
-	registerService<Jezz>("rsyn.jezz");
-	registerService<ICCAD15::DefaultTimingModelWithIdealClock>("rsyn.defaultTimingModelWithIdealClock");
-	registerService<ICCAD15::Infrastructure>("ufrgs.ispd16.infra");
-	registerService<ICCAD15::BlockageControl>("ufrgs.blockageControl");
+	session.registerService<Jezz>("rsyn.jezz");
+	session.registerService<ICCAD15::DefaultTimingModelWithIdealClock>("rsyn.defaultTimingModelWithIdealClock");
+	session.registerService<ICCAD15::Infrastructure>("ufrgs.ispd16.infra");
+	session.registerService<ICCAD15::BlockageControl>("ufrgs.blockageControl");
 
-	registerService<NetlistExtractor>("rsyn.netlistExtractor");
-} // end method
-} // end namespace
+	session.registerService<NetlistExtractor>("rsyn.netlistExtractor");
+});} // end namespace
 

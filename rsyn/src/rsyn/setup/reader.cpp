@@ -22,12 +22,24 @@
 #include "rsyn/session/Session.h"
 
 // Readers
-#include "x/io/reader/ICCAD15ReaderExtended.h"
+#include "rsyn/io/reader/BookshelfReader.h"
+#include "rsyn/io/reader/DesignPositionReader.h"
+#include "rsyn/io/reader/SizingISPDReader.h"
+#include "rsyn/io/reader/ISPD2014Reader.h"
+#include "rsyn/io/reader/ICCAD15Reader.h"
+#include "rsyn/io/reader/ICCAD17Reader.h"
+#include "rsyn/io/reader/GenericReader.h"
 
 // Registration
 namespace Rsyn {
-static Startup registerReaders([]{
-	Rsyn::Session session;
-	session.registerReader<ICCAD15::ICCAD15ReaderExtended>("iccad2015");
-});
+
+void Session::registerReaders() {
+	registerReader<Rsyn::ICCAD15Reader>("rsyn.iccad2015");
+	registerReader<Rsyn::ICCAD17Reader>("rsyn.iccad2017");
+	registerReader<Rsyn::BookshelfReader>("bookshelf");
+	registerReader<Rsyn::ISPD2014Reader>("ispd14");
+	registerReader<Rsyn::SizingISPDReader>("sizingISPD");
+	registerReader<Rsyn::DesignPositionReader>("loadDesignPosition");
+	registerReader<Rsyn::GenericReader>("generic");
+} // end method
 } // end namespace

@@ -17,7 +17,6 @@
 
 // Registration
 namespace Rsyn {
-void Session::registerMessages() {
-
-} // end method
+static Startup registerMessages([]{
+});
 } // end namespace

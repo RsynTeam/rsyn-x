@@ -325,9 +325,6 @@ void GenericReader::initializeAuxiliarInfrastructure() {
 
 	// Start writer service...
 	session.startService("rsyn.writer",{});
-
-	// Start jezz service..
-	session.startService("rsyn.jezz",{});
 } // end method
 
 // -----------------------------------------------------------------------------

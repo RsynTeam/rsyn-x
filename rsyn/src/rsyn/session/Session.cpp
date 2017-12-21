@@ -59,9 +59,7 @@ void Session::init() {
 	sessionData->clsInstallationPath = "../../rsyn/install";
 
 	// Register messages.
-	registerInternalMessages(); // session
-	registerDefaultMessages();  // default services/processes
-	registerMessages();         // user services/processes
+	registerMessages();
 
 	// Register processes.
 	registerProcesses();
@@ -89,14 +87,6 @@ void Session::init() {
 ////////////////////////////////////////////////////////////////////////////////
 // Message
 ////////////////////////////////////////////////////////////////////////////////
-
-void Session::registerInternalMessages() {
-	registerMessage("SESSION-001", WARNING,
-			"Message registration failed.",
-			"Cannot register message <message> after initialization.");
-} // end method
-
-// -----------------------------------------------------------------------------
 
 void Session::registerMessage(const std::string& label, const MessageLevel& level, const std::string& title, const std::string& msg) {
 	sessionData->clsMessageManager.registerMessage(label, level, title, msg);

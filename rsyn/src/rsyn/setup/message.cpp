@@ -2,7 +2,10 @@
 
 // Registration
 namespace Rsyn {
-void Session::registerDefaultMessages() {
+void Session::registerMessages() {
+	registerMessage("SESSION-001", WARNING,
+			"Message registration failed.",
+			"Cannot register message <message> after initialization.");
 	registerMessage("TIMER-001", WARNING,
 			"Unusual timing arc sense.",
 			"Timing arc <arc> has the unusual (for academic tools) sense <sense>.");
