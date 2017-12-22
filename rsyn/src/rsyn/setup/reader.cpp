@@ -29,6 +29,7 @@
 #include "rsyn/io/reader/ICCAD15Reader.h"
 #include "rsyn/io/reader/ICCAD17Reader.h"
 #include "rsyn/io/reader/GenericReader.h"
+#include "rsyn/io/reader/ISPD2018Reader.h"
 
 // Registration
 namespace Rsyn {
@@ -41,5 +42,6 @@ void Session::registerReaders() {
 	registerReader<Rsyn::SizingISPDReader>("sizingISPD");
 	registerReader<Rsyn::DesignPositionReader>("loadDesignPosition");
 	registerReader<Rsyn::GenericReader>("generic");
+	registerReader<Rsyn::ISPD2018Reader>("ispd18");
 } // end method
 } // end namespace
