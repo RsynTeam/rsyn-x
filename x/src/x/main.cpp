@@ -24,6 +24,7 @@
 
 #ifndef RSYN_NO_GUI
 #include "rsyn/gui/App.h"
+#include "rsyn/io/reader/ISPD2018Reader.h"
 #endif
 
 // -----------------------------------------------------------------------------
@@ -35,6 +36,68 @@ void signalHandler(int signum) {
 
     // terminate program
 	std::exit(signum);
+} // end function
+
+// -----------------------------------------------------------------------------
+
+void runISPD18Flow(const boost::program_options::variables_map& vm) {
+	Rsyn::Session session;
+	
+	std::string lefFile;
+	if (!vm.count("lef")) {
+		std::cout << "[ERROR] Please specify the .lef file...\n";
+		return;
+	} // end if
+	lefFile = vm.at("lef").as<std::string>();
+	
+	std::string defFile;
+	if (!vm.count("def")) {
+		std::cout << "[ERROR] Please specify the .def file...\n";
+		return;
+	} // end if
+	defFile = vm.at("def").as<std::string>();
+	
+	std::string guideFile;
+	if (!vm.count("guide")) {
+		std::cout << "[ERROR] Please specify the .guide file...\n";
+		return;
+	} // end if
+	guideFile = vm.at("guide").as<std::string>();
+	
+	if (!vm.count("threads"))
+		session.setSessionVariable("ispd18.numThreads", 1);
+	else
+		session.setSessionVariable("ispd18.numThreads", vm.at("threads").as<int>());
+	
+	if (!vm.count("output"))
+		session.setSessionVariable("ispd18.outputFile", "solution.def");
+	else
+		session.setSessionVariable("ispd18.outputFile", vm.at("output").as<std::string>());
+	
+	std::cout << "---- Input configuration ---- \n";
+	std::cout << std::left << std::setw(18) << "LEF file:";
+	std::cout << lefFile << "\n";
+	std::cout << std::setw(18) << "DEF file:";
+	std::cout << defFile << "\n";
+	std::cout << std::setw(18) << "Guide file:";
+	std::cout << guideFile << "\n";
+	std::cout << std::setw(18) << "Output file:";
+	std::cout << session.getSessionVariableAsString("ispd18.outputFile") << "\n";
+	std::cout << std::setw(18) << "# of threads:";
+	std::cout << session.getSessionVariableAsInteger("ispd18.numThreads") << "\n";
+	std::cout << "----------------------------- \n\n";
+	
+	Rsyn::ISPD2018Reader reader;
+	const Rsyn::Json params = 
+	{
+		{"lefFile", lefFile},
+		{"defFile", defFile},
+		{"guideFile", guideFile},
+	};
+	reader.load(params);
+	
+	// START YOUR FLOW HERE!!!
+	
 } // end function
 
 // -----------------------------------------------------------------------------
@@ -84,11 +147,20 @@ int main(int argc, char *argv[]) {
 		std::string optGui;
 
 		options_description desc{"Options"};
+		#ifndef ISPD18_BIN
 		desc.add_options()
 				("script", value<std::string>(&optScript), "The script to run at startup.")
 				("interactive", "Does not exit after running the script.")
 				("gui", "The graphics user interface.");
-
+		#else
+		desc.add_options()
+				("lef", value<std::string>(), "Input .lef file.")
+				("def", value<std::string>(), "Input .def file.")
+				("guide", value<std::string>(), "Input .guide file.")
+				("threads", value<int>(), "# of threads.")
+				("output", value<std::string>(), "Output file name.");
+		#endif
+		
 		variables_map vm;
         store (command_line_parser(argc, argv).options(desc)
 				.style (command_line_style::unix_style |
@@ -96,6 +168,7 @@ int main(int argc, char *argv[]) {
 				.run(), vm);
 		notify(vm);
 
+		#ifndef ISPD18_BIN
 		if (vm.count("gui")) {
 			// User interface mode...
 			#ifndef RSYN_NO_GUI
@@ -108,6 +181,9 @@ int main(int argc, char *argv[]) {
 			Rsyn::Shell shell;
 			shell.run(optScript, vm.count("interactive"));
 		} // end else
+		#else
+		runISPD18Flow(vm);
+		#endif
 
 	} catch (const boost::program_options::error &e) {
 		std::cerr << e.what() << '\n';

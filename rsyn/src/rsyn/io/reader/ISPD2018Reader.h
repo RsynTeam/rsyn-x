@@ -30,7 +30,7 @@ private:
 	
 	std::string lefFile;
 	std::string defFile;
-	std::string guidesFile;
+	std::string guideFile;
 	LefDscp lefDescriptor;
 	DefDscp defDescriptor;
 	RoutingGuide *routingGuide;
@@ -38,7 +38,7 @@ private:
 	void parsingFlow();
 	void parseLEFFile();
 	void parseDEFFile();
-	void parseGuidesFile();
+	void parseGuideFile();
 	void populateDesign();
 	void initializeAuxiliarInfrastructure();
 };

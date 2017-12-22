@@ -44,12 +44,12 @@ void ISPD2018Reader::load(const Json& params) {
 	
 	defFile = path + params.value("defFile", "");
 	
-	if (!params.count("guidesFile")) {
+	if (!params.count("guideFile")) {
 		std::cout << "[ERROR] Guides file not specified...\n";
 		return;
 	} // end if
 	
-	guidesFile = path + params.value("guidesFile", "");
+	guideFile = path + params.value("guideFile", "");
 	
 	parsingFlow();
 } // end method
@@ -60,14 +60,14 @@ void ISPD2018Reader::parsingFlow() {
 	parseLEFFile();
 	parseDEFFile();
 	populateDesign();
-	parseGuidesFile();
+	parseGuideFile();
 	initializeAuxiliarInfrastructure();
 } // end method
 
 // -----------------------------------------------------------------------------
 
 void ISPD2018Reader::parseLEFFile() {
-	Stepwatch watch("Parsing LEF files");
+	Stepwatch watch("Parsing LEF file");
 	LEFControlParser lefParser;
 	lefParser.parseLEF(lefFile, lefDescriptor);
 } // end method
@@ -75,17 +75,18 @@ void ISPD2018Reader::parseLEFFile() {
 // -----------------------------------------------------------------------------
 
 void ISPD2018Reader::parseDEFFile() {
-	Stepwatch watch("Parsing DEF files");
+	Stepwatch watch("Parsing DEF file");
 	DEFControlParser defParser;
 	defParser.parseDEF(defFile, defDescriptor);
 } // end method
 
 // -----------------------------------------------------------------------------
 
-void ISPD2018Reader::parseGuidesFile() {
+void ISPD2018Reader::parseGuideFile() {
+	Stepwatch watch("Parsing guide file");
 	GuideDscp guideDescriptor;
 	GuideParser guideParser;
-	guideParser.parse(guidesFile, guideDescriptor);
+	guideParser.parse(guideFile, guideDescriptor);
 	session.startService("rsyn.routingGuide");
 	routingGuide = (RoutingGuide*) session.getService("rsyn.routingGuide");
 	routingGuide->loadGuides(guideDescriptor);
