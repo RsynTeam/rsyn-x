@@ -36,7 +36,6 @@ public:
 	Bounds clsBounds;
 	Rsyn::Pin clsBoundPins[2][2];
 	std::vector<Rsyn::PhysicalWire> clsWires;
-	std::deque<Rsyn::PhysicalViaInstance> clsViaInstances;
 	PhysicalNetData() {
 		clsBoundPins[LOWER][X] = nullptr;
 		clsBoundPins[LOWER][Y] = nullptr;

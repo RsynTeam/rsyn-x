@@ -34,18 +34,12 @@ namespace Rsyn {
 class PhysicalWireSegmentData {
 public:
 	Rsyn::PhysicalLayer clsPhysicalLayer;
-	Rsyn::PhysicalVia clsPhysicalVia;
-	std::vector<DBUxy> clsPoints;
 	std::vector<PhysicalRoutingPoint> clsRoutingPoints;
 	DBU clsRoutedWidth = 0;
 	bool clsNew : 1;
 	
-	Bounds clsRectangle;
-	DBU clsWireExtension = 0;
-	bool clsHasRectangle : 1;
 	PhysicalWireSegmentData() {
 		clsNew = false;
-		clsHasRectangle = false;
 	} // end constructor 
 }; // end class 
 

@@ -723,7 +723,7 @@ void LayoutOverlay::renderRouting(PhysicalCanvasGL * canvas) {
 	if (!clsViewRouting)
 		return;
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	
+	/*glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	
 	glColor3ub(255, 0, 0);
 	for (Rsyn::Net net : module.allNets()) {
 		Rsyn::PhysicalNet phNet = phDesign.getPhysicalNet(net);
@@ -781,6 +781,7 @@ void LayoutOverlay::renderRouting(PhysicalCanvasGL * canvas) {
 		} // end for
 	} // end for
 	glDisable(GL_POLYGON_STIPPLE);
+	 * */
 } // end method
 
 // -----------------------------------------------------------------------------

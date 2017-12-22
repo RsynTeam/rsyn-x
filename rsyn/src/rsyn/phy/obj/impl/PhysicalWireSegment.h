@@ -35,62 +35,8 @@ inline DBU PhysicalWireSegment::getRoutedWidth() const {
 
 // -----------------------------------------------------------------------------
 
-inline bool PhysicalWireSegment::hasPoints() const {
-	return data->clsPoints.size() > 0;
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-inline const std::vector<DBUxy> & PhysicalWireSegment::allSegmentPoints() const {
-	return data->clsPoints;
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-inline DBUxy PhysicalWireSegment::getPoint(const std::size_t index) const {
-	return data->clsPoints[index];
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-inline const std::size_t PhysicalWireSegment::getNumPoints() const {
-	return data->clsPoints.size();
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-inline DBU PhysicalWireSegment::getExtension() const {
-	return data->clsWireExtension;
-} // end method 
-
-// -----------------------------------------------------------------------------
-
 inline Rsyn::PhysicalLayer PhysicalWireSegment::getLayer() const {
 	return data->clsPhysicalLayer;
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-inline Rsyn::PhysicalVia PhysicalWireSegment::getVia() const {
-	return data->clsPhysicalVia;
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-inline bool PhysicalWireSegment::hasVia() const {
-	return data->clsPhysicalVia != nullptr;
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-inline const Bounds & PhysicalWireSegment::getRectangle() const {
-	return data->clsRectangle;
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-inline const bool PhysicalWireSegment::hasRectangle() const {
-	return data->clsHasRectangle;
 } // end method 
 
 // -----------------------------------------------------------------------------

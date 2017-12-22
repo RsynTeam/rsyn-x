@@ -1391,22 +1391,29 @@ void PhysicalCanvasGL::populateGeometryManager() {
 				phNet.allWires().size() << " wires...\n"; 
 		}	
 		
+		
 		for (Rsyn::PhysicalWire phWire : phNet.allWires()) {
 			for (Rsyn::PhysicalWireSegment phWireSegment : phWire.allSegments()) {
-				if (phWireSegment.getNumPoints() < 2)
-					continue;
-								
-				const std::vector<DBUxy> &points = phWireSegment.allSegmentPoints();
-				Rsyn::PhysicalLayer phLayer = phWireSegment.getLayer();
-				const DBU width = phLayer.getWidth();
-				const GeometryManager::LayerId layerId =
-					techLayerIds[std::min(phLayer.getIndex(), (int) techLayerIds.size() - 1)];
-				geoMgr.addPath(layerId, points, width, createGeoReference(net), groupId);
+				const std::vector<Rsyn::PhysicalRoutingPoint> & routingPts = phWireSegment.allRoutingPoints();
+				if (phWireSegment.getNumRoutingPoints() > 1) {
+					
+					std::vector<DBUxy> points;
+					points.reserve(routingPts.size());
+					for (Rsyn::PhysicalRoutingPoint phRoutingPt : routingPts)
+						points.push_back(phRoutingPt.getPosition());
+					Rsyn::PhysicalLayer phLayer = phWireSegment.getLayer();
+					const DBU width = phLayer.getWidth();
+					const GeometryManager::LayerId layerId =
+						techLayerIds[std::min(phLayer.getIndex(), (int) techLayerIds.size() - 1)];
+					geoMgr.addPath(layerId, points, width, createGeoReference(net), groupId);
+				}
+				for (Rsyn::PhysicalRoutingPoint phRoutingPt : routingPts) {
 
-				if (phWireSegment.hasVia()) {
-					Rsyn::PhysicalVia phVia = phWireSegment.getVia();
+					if (!phRoutingPt.hasVia())
+						continue;
+					Rsyn::PhysicalVia phVia = phRoutingPt.getVia();
 
-					const DBUxy pos = points.back();
+					const DBUxy pos = phRoutingPt.getPosition();
 
 					for (Rsyn::PhysicalViaLayer phViaLayer : phVia.allLayers()) {
 						Rsyn::PhysicalLayer phLayer = phViaLayer.getLayer();
@@ -1415,7 +1422,7 @@ void PhysicalCanvasGL::populateGeometryManager() {
 							bounds.translate(pos);
 
 							const GeometryManager::LayerId layerId =
-									techLayerIds[std::min(phLayer.getIndex(), (int) techLayerIds.size() - 1)];
+								techLayerIds[std::min(phLayer.getIndex(), (int) techLayerIds.size() - 1)];
 
 							GeometryManager::Point p0(bounds[LOWER][X], bounds[LOWER][Y]);
 							GeometryManager::Point p1(bounds[UPPER][X], bounds[UPPER][Y]);
@@ -1423,7 +1430,7 @@ void PhysicalCanvasGL::populateGeometryManager() {
 
 							// Stripe Lines
 							if (phLayer.getType() == Rsyn::ROUTING) {
-								const DBU width = static_cast<DBU>(bounds.computeLength(X) / 2.0);
+								const DBU width = static_cast<DBU> (bounds.computeLength(X) / 2.0);
 								std::vector<DBUxy> points(2);
 								points[0] = DBUxy(pos[X], bounds[LOWER][Y]);
 								points[1] = DBUxy(pos[X], bounds[UPPER][Y]);

@@ -88,7 +88,6 @@ class PhysicalRegionData;
 class PhysicalGroupData;
 class PhysicalViaLayerData;
 class PhysicalViaData;
-class PhysicalViaInstanceData;
 class PhysicalWireSegmentData;
 class PhysicalWireData;
 class PhysicalSpecialWireData;
@@ -118,7 +117,6 @@ class PhysicalRegion;
 class PhysicalGroup;
 class PhysicalViaLayer;
 class PhysicalVia;
-class PhysicalViaInstance;
 class PhysicalWireSegment;
 class PhysicalWire;
 class PhysicalSpecialWire;
@@ -159,7 +157,6 @@ class PhysicalObserver;
 #include "rsyn/phy/obj/decl/PhysicalGroup.h"
 #include "rsyn/phy/obj/decl/PhysicalViaLayer.h"
 #include "rsyn/phy/obj/decl/PhysicalVia.h"
-#include "rsyn/phy/obj/decl/PhysicalViaInstance.h"
 #include "rsyn/phy/obj/decl/PhysicalWireSegment.h"
 #include "rsyn/phy/obj/decl/PhysicalWire.h"
 #include "rsyn/phy/obj/decl/PhysicalSpecialWire.h"
@@ -188,7 +185,6 @@ class PhysicalObserver;
 #include "rsyn/phy/obj/data/PhysicalGroupData.h"
 #include "rsyn/phy/obj/data/PhysicalViaLayerData.h"
 #include "rsyn/phy/obj/data/PhysicalViaData.h"
-#include "rsyn/phy/obj/data/PhysicalViaInstanceData.h"
 #include "rsyn/phy/obj/data/PhysicalWireSegmentData.h"
 #include "rsyn/phy/obj/data/PhysicalWireData.h"
 #include "rsyn/phy/obj/data/PhysicalSpecialWireData.h"
@@ -223,7 +219,6 @@ class PhysicalObserver;
 #include "rsyn/phy/obj/impl/PhysicalGroup.h"
 #include "rsyn/phy/obj/impl/PhysicalViaLayer.h"
 #include "rsyn/phy/obj/impl/PhysicalVia.h"
-#include "rsyn/phy/obj/impl/PhysicalViaInstance.h"
 #include "rsyn/phy/obj/impl/PhysicalWireSegment.h"
 #include "rsyn/phy/obj/impl/PhysicalWire.h"
 #include "rsyn/phy/obj/impl/PhysicalSpecialWire.h"
