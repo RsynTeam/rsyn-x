@@ -45,7 +45,7 @@ void ISPD2018Reader::load(const Json& params) {
 	defFile = path + params.value("defFile", "");
 	
 	if (!params.count("guideFile")) {
-		std::cout << "[ERROR] Guides file not specified...\n";
+		std::cout << "[ERROR] Guide file not specified...\n";
 		return;
 	} // end if
 	
