@@ -35,6 +35,7 @@
 #include "rsyn/io/Writer.h"
 #include "rsyn/io/Graphics.h"
 #include "rsyn/io/WebLogger.h"
+#include "rsyn/ispd18/RoutingGuide.h"
 
 // Registration
 namespace Rsyn {
@@ -52,6 +53,7 @@ void Session::registerServices() {
 	registerService<Rsyn::Report>("rsyn.report");
 	registerService<Rsyn::Writer>("rsyn.writer");
 	registerService<Rsyn::Graphics>("rsyn.graphics");
+	registerService<Rsyn::RoutingGuide>("rsyn.routingGuide");
 	//registerService<Rsyn::WebLogger>("rsyn.webLogger");
 } // end method
 } // end namespace
