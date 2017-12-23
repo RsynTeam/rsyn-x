@@ -1498,18 +1498,42 @@ void PhysicalCanvasGL::populateGeometryManager() {
 
 			for (Rsyn::PhysicalPinGeometry phPinPort : phLibPin.allPinGeometries()) {
 				Rsyn::PhysicalPinLayer phPinLayer = phPinPort.getPinLayer();
-				for (const Rsyn::PhysicalPolygon &polygon : phPinLayer.allPolygons()) {
-					std::vector<DBUxy> points;
-					for (auto it1 = boost::begin(boost::geometry::exterior_ring(polygon));
+				if (phPinLayer.hasPolygonBounds()) {
+					for (const Rsyn::PhysicalPolygon &polygon : phPinLayer.allPolygons()) {
+						std::vector<DBUxy> points;
+						for (auto it1 = boost::begin(boost::geometry::exterior_ring(polygon));
 							it1 != boost::end(boost::geometry::exterior_ring(polygon)); ++it1) {
-						const Rsyn::PhysicalPolygonPoint &p = *it1;
-						points.push_back(DBUxy(p.get<0>(), p.get<1>()));
+							const Rsyn::PhysicalPolygonPoint &p = *it1;
+							points.push_back(DBUxy(p.get<0>(), p.get<1>()));
+						} // end for
+						geoMgr.addPolygon(geoPinsLayerId, points, float2(displacement), createGeoReference(pin));
 					} // end for
-					geoMgr.addPolygon(geoPinsLayerId, points, float2(displacement), createGeoReference(pin));
-				} // end for
+				}
+				if (phPinLayer.hasRectangleBounds()) {
+					for (Bounds bounds : phPinLayer.allBounds()) {
+						bounds.translate(displacement);
+						GeometryManager::Point p0(bounds[LOWER][X], bounds[LOWER][Y]);
+						GeometryManager::Point p1(bounds[UPPER][X], bounds[UPPER][Y]);
+						geoMgr.addRectangle(geoPinsLayerId, GeometryManager::Box(p0, p1), createGeoReference(pin));
+					}
+				}
 			} // end for
 		} // end for
 	} // end if
+	
+	//
+	// Ports
+	//
+	
+//	for (Rsyn::Instance instance : module.allInstances()) {
+//		if (instance.getType() != Rsyn::CELL)
+//			continue;
+//		Rsyn::Port port = instance.asPort(); 
+//		Rsyn::PhysicalPort phPort = phDesign.getPhysicalPort(port);
+//		const DBUxy &pos = phPort.getPosition();
+//		
+//	}
+	
 } // end method
 
 // -----------------------------------------------------------------------------
