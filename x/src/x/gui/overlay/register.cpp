@@ -40,6 +40,6 @@ static Startup registerOverlays([]{
 	MainFrame::registerOverlay<AbuOverlay>("Abu");
 	MainFrame::registerOverlay<OverlapRemoverOverlay>("Macro Overlap");
 	MainFrame::registerOverlay<RoutingEstimatorOverlay>("Routing Estimation");
-	MainFrame::registerOverlay<RoutingGuidesOverlay>("Routing guide overlay");
+	MainFrame::registerOverlay<RoutingGuidesOverlay>("Routing guide");
 });
 } // end namespace
