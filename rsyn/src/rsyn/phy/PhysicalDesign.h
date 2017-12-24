@@ -49,6 +49,7 @@
 #include "rsyn/phy/util/LefDescriptors.h"
 #include "rsyn/phy/util/PhysicalTypes.h"
 #include "rsyn/phy/util/PhysicalUtil.h"
+#include "rsyn/phy/util/PhysicalTransform.h"
 #include "rsyn/util/Exception.h"
 #include "rsyn/3rdparty/json/json.hpp"
 

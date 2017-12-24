@@ -117,6 +117,12 @@ inline PhysicalOrientation PhysicalCell::getOrientation() const {
 
 // -----------------------------------------------------------------------------
 
+inline PhysicalTransform PhysicalCell::getTransform() const {
+	return PhysicalTransform(getPosition(), getOrientation());
+} // end method
+
+// -----------------------------------------------------------------------------
+
 inline bool PhysicalCell::hasLayerBounds() const {
 	return data->clsHasLayerBounds;
 } // end method 
