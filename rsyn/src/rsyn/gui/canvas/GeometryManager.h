@@ -233,6 +233,10 @@ public:
 		return layers[layerId].fillColor;
 	} // end method
 	
+	float getLayerZ(const LayerId &layerId) const {
+		return layers[layerId].z;
+	}
+	
 private:
 	void resortLayers();
 

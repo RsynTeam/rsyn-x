@@ -23,6 +23,7 @@
 
 #include "rsyn/gui/canvas/overlay/Layout.h"
 #include "rsyn/gui/canvas/overlay/DensityGridOverlay.h"
+#include "rsyn/gui/canvas/overlay/RoutingGuidesOverlay.h"
 
 #include "x/gui/overlay/Jezz.h"
 #include "x/gui/overlay/Abu.h"
@@ -39,5 +40,6 @@ static Startup registerOverlays([]{
 	MainFrame::registerOverlay<AbuOverlay>("Abu");
 	MainFrame::registerOverlay<OverlapRemoverOverlay>("Macro Overlap");
 	MainFrame::registerOverlay<RoutingEstimatorOverlay>("Routing Estimation");
+	MainFrame::registerOverlay<RoutingGuidesOverlay>("Routing guide overlay");
 });
 } // end namespace
