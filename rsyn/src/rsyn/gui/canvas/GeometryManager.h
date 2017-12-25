@@ -70,6 +70,14 @@ public:
 		PATH
 	}; // end enum
 
+	enum BoxOrientation {
+		BOX_ORIENTATION_INVALID,
+		BOX_ORIENTATION_SW,
+		BOX_ORIENTATION_SE,
+		BOX_ORIENTATION_NE,
+		BOX_ORIENTATION_NW
+	};
+
 	GeometryManager();
 
 	void reset();
@@ -86,7 +94,7 @@ public:
 	GroupId createGroup();
 	void addObjectToGroup(const ObjectId objectId, const GroupId groupId);
 
-	ObjectId addRectangle(const LayerId layerId, const Box &box, void * data = nullptr, const GroupId groupId = INVALID_GROUP_ID);
+	ObjectId addRectangle(const LayerId layerId, const Box &box, void * data = nullptr, const BoxOrientation orientation = BOX_ORIENTATION_INVALID, const GroupId groupId = INVALID_GROUP_ID);
 	ObjectId addPolygon(const LayerId layerId, const std::vector<DBUxy> &points, const float2 displacement, void * data = nullptr, const GroupId groupId = INVALID_GROUP_ID);
 	ObjectId addPath(const LayerId layerId, const std::vector<DBUxy> &points, const float thickness, void * data = nullptr, const GroupId groupId = INVALID_GROUP_ID);
 
@@ -160,6 +168,7 @@ private:
 
 		bool hasFillColor : 1;
 		bool hasLineColor : 1;
+		BoxOrientation orientation : 3;
 
 		Color fillColor;
 		Color lineColor;
@@ -173,7 +182,8 @@ private:
 
 		Object() :
 				hasFillColor(false),
-				hasLineColor(false) {}
+				hasLineColor(false),
+				orientation(BOX_ORIENTATION_INVALID) {}
 	}; // end struct
 
 	struct Layer {

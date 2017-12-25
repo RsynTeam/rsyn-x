@@ -62,17 +62,19 @@ void ICCAD15Reader::load(const Json &options) {
 	optionSetting = boost::filesystem::exists(optionSetting) ?
 		optionSetting : path + "/" + optionSetting;
 	
-	if (boost::filesystem::is_directory(optionBenchmark) || !boost::filesystem::exists(optionBenchmark)) {
-		std::cout << "\t>>>	Error to open <design>.iccad2015 file: " << optionBenchmark << "	<<<\n";
-	} // end if 
-
 	if (globalPlacementOnly) {
 		openBenchmarkFromICCAD15ForGlobalPlacementOnly();
 	} else {
+		if (boost::filesystem::is_directory(optionBenchmark) || !boost::filesystem::exists(optionBenchmark)) {
+			std::cout << "Error: File <design>.iccad2015 file not found: " << optionBenchmark << "\n";
+			std::exit(1);
+		} // end if
+
 		if (boost::filesystem::is_directory(optionSetting) || !boost::filesystem::exists(optionSetting)) {
-			std::cout << "\t>>>	Error to open ICCAD15.parm file: " << optionSetting << "	<<< \n";
-			exit(1);
-		} // end if 
+			std::cout << "Error: File ICCAD15.parm not found: " << optionSetting << "\n";
+			std::exit(1);
+		} // end if
+
 		openBenchmarkFromICCAD15();
 	} // end else
 } // end method 

@@ -628,7 +628,7 @@ void PhysicalCanvasGL::renderCoreBounds() {
 		return;
 	Rsyn::PhysicalDie phDie = phDesign.getPhysicalDie();
 	const FloatRectangle &bounds = phDie.getBounds();
-	glLineWidth(2);
+	glLineWidth(1);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//	glLineStipple(3, 0xAAAA);
 	//	glEnable(GL_LINE_STIPPLE);	
@@ -1366,10 +1366,33 @@ void PhysicalCanvasGL::populateGeometryManager() {
 				} // end else
 			} else {
 				const Bounds & bounds = phCell.getBounds();
+
+				GeometryManager::BoxOrientation orientation;
+				switch (phCell.getOrientation()) {
+					case Rsyn::ORIENTATION_N:
+					case Rsyn::ORIENTATION_FW:
+						orientation = GeometryManager::BOX_ORIENTATION_SW;
+						break;
+					case Rsyn::ORIENTATION_S:
+					case Rsyn::ORIENTATION_FE:
+						orientation = GeometryManager::BOX_ORIENTATION_NE;
+						break;
+					case Rsyn::ORIENTATION_W:
+					case Rsyn::ORIENTATION_FN:
+						orientation = GeometryManager::BOX_ORIENTATION_SE;
+						break;
+					case Rsyn::ORIENTATION_E:
+					case Rsyn::ORIENTATION_FS:
+						orientation = GeometryManager::BOX_ORIENTATION_NW;
+						break;
+					default:
+						orientation = GeometryManager::BOX_ORIENTATION_INVALID;
+				} // end switch
+
 				GeometryManager::Point p0(bounds[LOWER][X], bounds[LOWER][Y]);
 				GeometryManager::Point p1(bounds[UPPER][X], bounds[UPPER][Y]);
 				GeometryManager::ObjectId objectId =
-						geoMgr.addRectangle(geoCellLayerId, GeometryManager::Box(p0, p1), createGeoReference(instance));
+						geoMgr.addRectangle(geoCellLayerId, GeometryManager::Box(p0, p1), createGeoReference(instance), orientation);
 				const Color rgb = graphics->getCellColor(instance);
 				geoMgr.setObjectFillColor(objectId,rgb);
 			} // end if-else
@@ -1426,7 +1449,8 @@ void PhysicalCanvasGL::populateGeometryManager() {
 
 							GeometryManager::Point p0(bounds[LOWER][X], bounds[LOWER][Y]);
 							GeometryManager::Point p1(bounds[UPPER][X], bounds[UPPER][Y]);
-							geoMgr.addRectangle(layerId, GeometryManager::Box(p0, p1), createGeoReference(net), groupId);
+							geoMgr.addRectangle(layerId, GeometryManager::Box(p0, p1), createGeoReference(net), 
+									GeometryManager::BOX_ORIENTATION_INVALID, groupId);
 
 							// Stripe Lines
 							if (phLayer.getType() == Rsyn::ROUTING) {

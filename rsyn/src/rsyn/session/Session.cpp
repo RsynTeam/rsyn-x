@@ -219,7 +219,8 @@ void Session::registerDefaultCommands() {
 		registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string format = command.getParam("format");
 			Json options = command.getParam("options");
-			options["globalPlacementOnly"] = getSessionVariableAsBool("globalPlacementOnly", false);
+			if (getSessionVariableAsBool("globalPlacementOnly", false))
+				options["globalPlacementOnly"] = true;
 			options["path"] = command.getPath();
 
 			runReader(format, options);

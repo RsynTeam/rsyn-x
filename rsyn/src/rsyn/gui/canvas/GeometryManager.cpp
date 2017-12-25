@@ -224,6 +224,7 @@ GeometryManager::addRectangle(
 		const LayerId layerId,
 		const Box &box,
 		void * data,
+		const BoxOrientation orientation,
 		const GroupId groupId
 ) {
 	Object object;
@@ -231,6 +232,7 @@ GeometryManager::addRectangle(
 	object.box = box;
 	object.area = (float) bg::area(box);
 	object.data = data;
+	object.orientation = orientation;
 
 	Layer &layer = layers[layerId];
 	layer.objects.push_back(object);
@@ -530,6 +532,50 @@ GeometryManager::renderRectangleOutline(const Layer &layer, const Object &object
 	glVertex3f(object.box.max_corner().get<0>(), object.box.max_corner().get<1>(), layer.z);
 	glVertex3f(object.box.min_corner().get<0>(), object.box.max_corner().get<1>(), layer.z);
 	glEnd();
+
+	if (object.orientation != BOX_ORIENTATION_INVALID) {
+		const float d = (object.box.max_corner().get<1>() - object.box.min_corner().get<1>()) / 6;
+		const float xmin = object.box.min_corner().get<0>();
+		const float ymin = object.box.min_corner().get<1>();
+		const float xmax = object.box.max_corner().get<0>();
+		const float ymax = object.box.max_corner().get<1>();
+
+		float x0, y0, x1, y1;
+		switch (object.orientation) {
+			case BOX_ORIENTATION_SW:
+				x0 = xmin;
+				y0 = ymin + d;
+				x1 = xmin + d;
+				y1 = ymin;
+				break;
+			case BOX_ORIENTATION_SE:
+				x0 = xmax - d;
+				y0 = ymin;
+				x1 = xmax;
+				y1 = ymin + d;
+				break;
+			case BOX_ORIENTATION_NE:
+				x0 = xmax - d;
+				y0 = ymax;
+				x1 = xmax;
+				y1 = ymax - d;
+				break;
+			case BOX_ORIENTATION_NW:
+				x0 = xmin;
+				y0 = ymax - d;
+				x1 = xmin + d;
+				y1 = ymax;
+				break;
+			default:
+				assert(false);
+		} // end switch
+
+		glBegin(GL_LINES);
+		glVertex3f(x0, y0, layer.z);
+		glVertex3f(x1, y1, layer.z);
+		glEnd();
+
+	} // end if
 
 	if (object.hasLineColor) {
 		restoreDefaultColor();
