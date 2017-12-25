@@ -118,6 +118,11 @@ struct SessionData {
 	ScriptParsing::CommandManager clsCommandManager;
 	
 	std::function<void(const GraphicsEvent event)> clsGraphicsCallback = nullptr;
+
+	////////////////////////////////////////////////////////////////////////////
+	// Misc
+	////////////////////////////////////////////////////////////////////////////
+	std::list<std::string> clsPaths;
 }; // end struct
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -461,6 +466,24 @@ public:
 			sessionData->clsGraphicsCallback(event);
 	} // end method
 
+	////////////////////////////////////////////////////////////////////////////
+	// Utilities
+	////////////////////////////////////////////////////////////////////////////
+
+private:
+
+	static void addPath(const std::string &path, const bool prepend);
+	static void removePath(const std::string &path);
+	static std::string mergePathAndFileName(const std::string &path, const std::string &fileName);
+
+public:
+
+	//! @brief Find a file in the current path. If found, returns its absolute
+	//!        path, an empty string otherwise.
+	//! @param extraPath can be used to specify an extra path location besides
+	//!        the one stored internally in the current path list.
+	std::string findFile(const std::string fileName, const std::string extraPath = "");
+	
 }; // end class
 
 ////////////////////////////////////////////////////////////////////////////////

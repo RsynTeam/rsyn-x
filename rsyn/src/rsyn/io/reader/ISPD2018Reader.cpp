@@ -27,31 +27,27 @@
 namespace Rsyn {
 	
 void ISPD2018Reader::load(const Json& params) {
+	Rsyn::Session session;
+
 	std::string path = params.value("path", "");
-			
-	if (path.back() != '/')
-		path += "/";
-	
+				
 	if (!params.count("lefFile")) {
 		std::cout << "[ERROR] LEF file not specified...\n";
 		return;
 	} // end if
-	
-	lefFile = path + params.value("lefFile", "");
+	lefFile = session.findFile(params.value("lefFile", ""), path);
 	
 	if (!params.count("defFile")) {
 		std::cout << "[ERROR] DEF file not specified...\n";
 		return;
 	} // end if
-	
-	defFile = path + params.value("defFile", "");
+	defFile = session.findFile(params.value("defFile", ""), path);
 	
 	if (!params.count("guideFile")) {
 		std::cout << "[ERROR] Guide file not specified...\n";
 		return;
 	} // end if
-	
-	guideFile = path + params.value("guideFile", "");
+	guideFile = session.findFile(params.value("guideFile", ""), path);
 	
 	parsingFlow();
 } // end method
