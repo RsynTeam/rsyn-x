@@ -1,15 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   RoutingGuidesOverlay.cpp
- * Author: mateus
- * 
- * Created on December 24, 2017, 11:05 AM
- */
+ /* Copyright 2014-2017 Rsyn
+  *
+  * Licensed under the Apache License, Version 2.0 (the "License");
+  * you may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at
+  *
+  *     http://www.apache.org/licenses/LICENSE-2.0
+  *
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  */
 
 #include "RoutingGuidesOverlay.h"
 #include "rsyn/ispd18/Guide.h"
@@ -68,14 +70,12 @@ bool RoutingGuidesOverlay::init(PhysicalCanvasGL* canvas, nlohmann::json& proper
 // -----------------------------------------------------------------------------
 
 void RoutingGuidesOverlay::render(PhysicalCanvasGL* canvas) {
-	glEnable(GL_POLYGON_STIPPLE);
 	for (const Rsyn::Net net : module.allNets()) {
 		if (!visible[net])
 			continue;
 		
 		drawGuide(net);
 	} // end for
-	glDisable(GL_POLYGON_STIPPLE);
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -91,22 +91,23 @@ void RoutingGuidesOverlay::drawGuide(const Rsyn::Net net) const {
 	const Rsyn::NetGuide &netGuide = routingGuide->getGuide(net);
 	
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glBegin(GL_QUADS);
 	glLineWidth(2.0);
 	for(const Rsyn::LayerGuide &layerGuide : netGuide.allLayerGuides()) {		
 		const Bounds& bounds = layerGuide.getBounds();
-		const GeometryManager::LayerId layerId = canvas->getTechLayerID(layerGuide.getLayer().getIndex());
+		const GeometryManager::LayerId layerId = canvas->getTechLayerID(layerGuide.getLayer().getIndex());		
 		const float z = geometryManager->getLayerZ(layerId);
 		const Color color = geometryManager->getLayerLineColor(layerId);
-		glColor3f(color.r, color.g, color.b);
+		glColor3ub(color.r, color.g, color.b);
+		glBegin(GL_LINE_LOOP);
 		glVertex3f(bounds[LOWER][X], bounds[LOWER][Y], z + alpha);
 		glVertex3f(bounds[UPPER][X], bounds[LOWER][Y], z + alpha);
 		glVertex3f(bounds[UPPER][X], bounds[UPPER][Y], z + alpha);
 		glVertex3f(bounds[LOWER][X], bounds[UPPER][Y], z + alpha);
+		glEnd();
 	} // end for
-	glEnd();
 	
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glEnable(GL_POLYGON_STIPPLE);
 	for(const Rsyn::LayerGuide &layerGuide : netGuide.allLayerGuides()) {
 		// For a better visualization experience, the first metal layers will
 		// not be filled.. 
@@ -117,7 +118,7 @@ void RoutingGuidesOverlay::drawGuide(const Rsyn::Net net) const {
 		const GeometryManager::LayerId layerId = canvas->getTechLayerID(layerGuide.getLayer().getIndex());
 		const float z = geometryManager->getLayerZ(layerId);
 		const Color color = geometryManager->getLayerFillColor(layerId);
-		glColor3f(color.r, color.g, color.b);
+		glColor3ub(color.r, color.g, color.b);
 		
 		glPolygonStipple(STIPPLE_MASKS[geometryManager->getLayerFillPattern(layerId)]);
 		
@@ -128,6 +129,7 @@ void RoutingGuidesOverlay::drawGuide(const Rsyn::Net net) const {
 		glVertex3f(bounds[LOWER][X], bounds[UPPER][Y], z + alpha);
 		glEnd();
 	} // end for
+	glDisable(GL_POLYGON_STIPPLE);
 } // end method
 
 void RoutingGuidesOverlay::setAll(const bool isVisible) {
