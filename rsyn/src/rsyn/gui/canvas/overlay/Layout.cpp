@@ -466,7 +466,7 @@ void LayoutOverlay::renderRows(PhysicalCanvasGL * canvas) {
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glBegin(GL_QUADS);
-	glColor3ub(0, 0, 0);
+	glColor3ub(255, 255, 255);
 	double layer = layer = PhysicalCanvasGL::LAYER_OBSTACLES;
 	for (Rsyn::PhysicalRow phRow : phDesign.allPhysicalRows()) {
 		const Bounds & bounds = phRow.getBounds();
@@ -683,7 +683,7 @@ void LayoutOverlay::renderBlockages(PhysicalCanvasGL * canvas) {
 				glColor3ub(color.r, color.g, color.b);
 				layer = graphicsLayer.getZ();
 			} else {
-				glColor3ub(0, 0, 0);
+				glColor3ub(255, 255, 255);
 			} // end if-else 
 			for (Bounds bounds : phObs.allBounds()) {
 				bounds.translate(pos);

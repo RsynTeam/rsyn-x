@@ -335,7 +335,7 @@ void CanvasGL::adjustAspectRatio() {
 void CanvasGL::prepare2DViewport(const int width, const int height, const bool clear) {
 	wxGLCanvas::SetCurrent(*clsContext);
 	
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // white background
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glDisable(GL_TEXTURE_2D); // textures
 	glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_BLEND);

@@ -472,7 +472,7 @@ GeometryManager::renderFocusedObject(
 	//glLogicOp(GL_INVERT);
 	//glEnable(GL_COLOR_LOGIC_OP);
 	glLineWidth(2);
-	glColor3ub(0, 0, 0);
+	glColor3ub(255, 255, 255);
 	glLineStipple(3, 0xAAAA);
 	glEnable(GL_LINE_STIPPLE);
 	glDisable(GL_DEPTH_TEST);
@@ -497,7 +497,7 @@ void
 GeometryManager::renderHighlightedObjects() const {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(2);
-	glColor3ub(0, 0, 0);
+	glColor3ub(255, 255, 255);
 	glDisable(GL_DEPTH_TEST);
 
 	for (const ObjectId &objectId : highlightedObjects) {

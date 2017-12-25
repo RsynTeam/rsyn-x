@@ -634,7 +634,7 @@ void PhysicalCanvasGL::renderCoreBounds() {
 	//	glEnable(GL_LINE_STIPPLE);	
 
 	glBegin(GL_QUADS);
-	glColor3ub(0, 0, 0);
+	glColor3ub(255, 255, 255);
 	glVertex3d(bounds[LOWER][X], bounds[LOWER][Y], LAYER_BACKGROUND);
 	glVertex3d(bounds[UPPER][X], bounds[LOWER][Y], LAYER_BACKGROUND);
 	glVertex3d(bounds[UPPER][X], bounds[UPPER][Y], LAYER_BACKGROUND);
@@ -901,7 +901,7 @@ void PhysicalCanvasGL::renderSelectedCell() {
 		Rsyn::Design design = clsSession.getDesign();
 		
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);		
-		glColor3ub(0, 0, 0);
+		glColor3ub(255, 255, 255);
 				
 		for (Rsyn::Pin sink : clsSelectedCell.allPins(Rsyn::IN)) {
 			drawPin(sink);
@@ -936,7 +936,7 @@ void PhysicalCanvasGL::renderSelectedCell() {
 	if (clsViewSelectedNodeNeighbours && clsSelectedCell) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glLineWidth(3);
-		glColor3ub(0, 0, 0);
+		glColor3ub(255, 255, 255);
 		
 		glBegin(GL_QUADS);
 				
@@ -1013,7 +1013,7 @@ void PhysicalCanvasGL::renderTree() {
 	
 	glLineWidth(2.0);
 	glBegin(GL_LINES);
-	glColor3ub(0, 0, 0);
+	glColor3ub(255, 255, 255);
 	for (Rsyn::Pin pin : clsSelectedCell.allPins()) {
 		if (!pin.isConnected())
 			continue;
@@ -1033,7 +1033,7 @@ void PhysicalCanvasGL::renderTree() {
 			glColor3ub(color.r, color.g, color.b);
 			colorIndex++;
 		} else {
-			glColor3ub(0, 0, 0);
+			glColor3ub(255, 255, 255);
 		} // end else
 			
 		const Rsyn::RCTree & tree = routingEstimator->getRCTree(net);
@@ -1276,8 +1276,8 @@ void PhysicalCanvasGL::prepareGeometryManager() {
 
 	// Instances
 	geoCellLayerId = geoMgr.createLayer("cells", 0, Color(0, 210, 210), Color(0, 210, 210), LINE_STIPPLE_SOLID, STIPPLE_MASK_EMPTY);
-	geoMacroLayerId = geoMgr.createLayer("macros", 0, Color(0, 0, 0), Color(0, 0, 0), LINE_STIPPLE_NONE, STIPPLE_MASK_FILL);
-	geoPortLayerId = geoMgr.createLayer("ports", 0, Color(0, 0, 0), Color(0, 0, 0), LINE_STIPPLE_NONE, STIPPLE_MASK_EMPTY);
+	geoMacroLayerId = geoMgr.createLayer("macros", 0, Color(200, 200, 200), Color(200, 200, 200), LINE_STIPPLE_SOLID, STIPPLE_MASK_YACIF1);
+	geoPortLayerId = geoMgr.createLayer("ports", 0, Color(255, 255, 255), Color(255, 255, 255), LINE_STIPPLE_NONE, STIPPLE_MASK_EMPTY);
 
 	// Pins
 	geoPinsLayerId = geoMgr.createLayer("pins", 5, Color(0, 0, 255), Color(0, 0, 255), LINE_STIPPLE_SOLID, STIPPLE_MASK_DOT);
