@@ -12,19 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   ISPD2014Reader.h
- * Author: jucemar
- *
- * Created on 20 de Fevereiro de 2017, 19:06
- */
 
 #ifndef RSYN_ISPD2014READER_H
 #define RSYN_ISPD2014READER_H

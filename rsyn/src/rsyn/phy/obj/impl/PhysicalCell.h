@@ -118,7 +118,7 @@ inline PhysicalOrientation PhysicalCell::getOrientation() const {
 // -----------------------------------------------------------------------------
 
 inline PhysicalTransform PhysicalCell::getTransform() const {
-	return PhysicalTransform(getPosition(), getOrientation());
+	return PhysicalTransform(getBounds(), getOrientation());
 } // end method
 
 // -----------------------------------------------------------------------------

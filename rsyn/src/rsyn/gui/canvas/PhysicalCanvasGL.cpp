@@ -1275,13 +1275,13 @@ void PhysicalCanvasGL::prepareGeometryManager() {
 	clsGeoNets = design.createAttribute();
 
 	// Instances
-	geoCellLayerId = geoMgr.createLayer("cells", 0, Color(0, 210, 210), Color(0, 210, 210), LINE_STIPPLE_NONE, STIPPLE_MASK_FILL);
+	geoCellLayerId = geoMgr.createLayer("cells", 0, Color(0, 210, 210), Color(0, 210, 210), LINE_STIPPLE_SOLID, STIPPLE_MASK_EMPTY);
 	geoMacroLayerId = geoMgr.createLayer("macros", 0, Color(0, 0, 0), Color(0, 0, 0), LINE_STIPPLE_NONE, STIPPLE_MASK_FILL);
 	geoPortLayerId = geoMgr.createLayer("ports", 0, Color(0, 0, 0), Color(0, 0, 0), LINE_STIPPLE_NONE, STIPPLE_MASK_EMPTY);
 
 	// Pins
 	geoPinsLayerId = geoMgr.createLayer("pins", 5, Color(0, 0, 255), Color(0, 0, 255), LINE_STIPPLE_SOLID, STIPPLE_MASK_DOT);
-	geoMgr.setLayerVisibility(geoPinsLayerId, false);
+	geoMgr.setLayerVisibility(geoPinsLayerId, true);
 
 	// Routing
 	const int offset = 10;
@@ -1317,7 +1317,7 @@ void PhysicalCanvasGL::prepareGeometryManager() {
 	for (GeometryManager::LayerId& id : techLayerIds) {
 		if (id < 0)
 			continue;
-		geoMgr.setLayerVisibility(id, false);
+		geoMgr.setLayerVisibility(id, true);
 	}
 } // end method
 
@@ -1486,7 +1486,9 @@ void PhysicalCanvasGL::populateGeometryManager() {
 			continue;
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
 		Rsyn::PhysicalCell phCell = phDesign.getPhysicalCell(cell);
+		Rsyn::PhysicalTransform transform = phCell.getTransform();
 		const DBUxy displacement = phCell.getPosition();
+
 		for (Rsyn::Pin pin : instance.allPins()) {
 			if (pin.isPort())
 				continue;
@@ -1504,19 +1506,21 @@ void PhysicalCanvasGL::populateGeometryManager() {
 						for (auto it1 = boost::begin(boost::geometry::exterior_ring(polygon));
 							it1 != boost::end(boost::geometry::exterior_ring(polygon)); ++it1) {
 							const Rsyn::PhysicalPolygonPoint &p = *it1;
-							points.push_back(DBUxy(p.get<0>(), p.get<1>()));
+							points.push_back(transform.apply(
+								p.get<0>() + displacement.x, p.get<1>() + displacement.y));
 						} // end for
-						geoMgr.addPolygon(geoPinsLayerId, points, float2(displacement), createGeoReference(pin));
+						geoMgr.addPolygon(geoPinsLayerId, points, float2(0, 0), createGeoReference(pin));
 					} // end for
-				}
+				} // end if
 				if (phPinLayer.hasRectangleBounds()) {
 					for (Bounds bounds : phPinLayer.allBounds()) {
 						bounds.translate(displacement);
+						bounds = transform.apply(bounds);
 						GeometryManager::Point p0(bounds[LOWER][X], bounds[LOWER][Y]);
 						GeometryManager::Point p1(bounds[UPPER][X], bounds[UPPER][Y]);
 						geoMgr.addRectangle(geoPinsLayerId, GeometryManager::Box(p0, p1), createGeoReference(pin));
-					}
-				}
+					} // end for
+				} // end if
 			} // end for
 		} // end for
 	} // end if

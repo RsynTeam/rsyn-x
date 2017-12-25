@@ -18,45 +18,59 @@
 
 #include "rsyn/phy/util/PhysicalTypes.h"
 #include "rsyn/util/dbu.h"
+#include "rsyn/util/Bounds.h"
 
 namespace Rsyn {
 
 class PhysicalTransform {
 public:
 
-	PhysicalTransform() : referencePoint(0, 0), orientation(ORIENTATION_N) {}
-	PhysicalTransform(const DBUxy referencePoint, const PhysicalOrientation orientation) : referencePoint(referencePoint), orientation(orientation) {}
+	PhysicalTransform() : clsOrientation(ORIENTATION_INVALID) {}
+	PhysicalTransform(const Bounds bounds, const PhysicalOrientation orientation) : clsBounds(bounds), clsOrientation(orientation) {}
 
-	DBUxy transform(const DBUxy &p) const {
-		// Translate to the reference point.
-		const DBUxy v = p - referencePoint;
+	DBUxy apply(const DBUxy &point) const {
+		const DBU &x = point.x - clsBounds.getX();
+		const DBU &y = point.y - clsBounds.getY();
+		const DBU &w = clsBounds.getWidth();
+		const DBU &h = clsBounds.getHeight();
+		const PhysicalOrientation &o =  clsOrientation == ORIENTATION_INVALID?
+			ORIENTATION_N : clsOrientation;
 
-		// Apply transformation.
-		const DBU (&M)[2][2] = orientation == ORIENTATION_INVALID?
-			TRANSFORMATION_MATRIXES[ORIENTATION_N] :
-			TRANSFORMATION_MATRIXES[orientation];
-		const DBU tx = (v.x*M[0][0]) + (v.y*M[0][1]);
-		const DBU ty = (v.x*M[1][0]) + (v.y*M[1][1]);
+		// Compute transformation.
+		const DBU (&M)[2][2] = TRANSFORMATION_MATRIXES[o];
+		const DBU mx = (x*M[0][0]) + (y*M[0][1]);
+		const DBU my = (x*M[1][0]) + (y*M[1][1]);
 
-		// Translate back to the original position.
-		const DBUxy q = DBUxy(tx, ty) + referencePoint;
+		// Compute translation.
+		const DBU (&T)[2][2] = TRANSLATION_MATRIXES[o];
+		const DBU tx = (w*T[0][0]) + (h*T[0][1]);
+		const DBU ty = (w*T[1][0]) + (h*T[1][1]);
 
-		// Return.
-		return q;
+		// Compute transformed point.
+		return DBUxy(mx, my) + DBUxy(tx, ty) + clsBounds.getLower();
 	} // end method
 
-	DBUxy getReferencePoint() const { return referencePoint; }
-	PhysicalOrientation getOrientation() const { return orientation; }
+	DBUxy apply(const DBU &x, const DBU &y) const {return apply(DBUxy(x, y));}
 
-	void setReferencePoint(const DBUxy refPoint) {referencePoint = refPoint;}
-	void setOrientation(const PhysicalOrientation &orient) {orientation = orient;}
+	Bounds apply(const Bounds &bounds) const {
+		const DBUxy p0 = apply(bounds.getLower());
+		const DBUxy p1 = apply(bounds.getUpper());
+		return Bounds(min(p0, p1), max(p0, p1));
+	} // end method
+
+	Bounds getBounds() const {return clsBounds;}
+	PhysicalOrientation getOrientation() const {return clsOrientation;}
+
+	void setBounds(const Bounds &bounds) {clsBounds = bounds;}
+	void setOrientation(const PhysicalOrientation &orientation) {clsOrientation = orientation;}
 
 private:
 
-	DBUxy referencePoint;
-	PhysicalOrientation orientation;
+	Bounds clsBounds;
+	PhysicalOrientation clsOrientation;
 
 	static const DBU TRANSFORMATION_MATRIXES[NUM_PHY_ORIENTATION][2][2];
+	static const DBU TRANSLATION_MATRIXES[NUM_PHY_ORIENTATION][2][2];
 }; // end class
 
 } // end namespace

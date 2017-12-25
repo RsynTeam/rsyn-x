@@ -1,18 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   ISPD2018Reader.h
- * Author: mateus
+/* Copyright 2014-2017 Rsyn
  *
- * Created on December 21, 2017, 9:13 PM
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-#ifndef ISPD2018READER_H
-#define ISPD2018READER_H
+#ifndef RSYN_ISPD2018READER_H
+#define RSYN_ISPD2018READER_H
 
 #include "rsyn/session/Session.h"
 
