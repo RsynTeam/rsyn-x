@@ -173,6 +173,7 @@
             <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/Region.h</itemPath>
             <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/RoutingGuidesOverlay.cpp</itemPath>
             <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/RoutingGuidesOverlay.h</itemPath>
+            <itemPath>../../../rsyn/src/rsyn/gui/canvas/overlay/register.cpp</itemPath>
           </logicalFolder>
           <itemPath>../../../rsyn/src/rsyn/gui/canvas/GeometryManager.cpp</itemPath>
           <itemPath>../../../rsyn/src/rsyn/gui/canvas/GeometryManager.h</itemPath>
@@ -1252,6 +1253,11 @@
       <item path="../../../rsyn/src/rsyn/gui/canvas/overlay/RoutingGuidesOverlay.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/gui/canvas/overlay/register.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/gui/frame/MainFrame.cpp"
@@ -3443,6 +3449,11 @@
       <item path="../../../rsyn/src/rsyn/gui/canvas/overlay/RoutingGuidesOverlay.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../rsyn/src/rsyn/gui/canvas/overlay/register.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="../../../rsyn/src/rsyn/gui/frame/MainFrame.cpp"

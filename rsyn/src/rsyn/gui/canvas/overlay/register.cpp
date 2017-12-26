@@ -23,12 +23,13 @@
 
 #include "rsyn/gui/canvas/overlay/Layout.h"
 #include "rsyn/gui/canvas/overlay/DensityGridOverlay.h"
-
-#include "ispd18/gui/overlay/Example.h"
+#include "rsyn/gui/canvas/overlay/RoutingGuidesOverlay.h"
 
 // Overlays
 namespace Rsyn {
 static Startup registerOverlays([]{
-	MainFrame::registerOverlay<ExampleOverlay>("Example");
+	MainFrame::registerOverlay<LayoutOverlay>("Layout", true);
+	MainFrame::registerOverlay<DensityGridOverlay>("Density Grid");
+	MainFrame::registerOverlay<RoutingGuidesOverlay>("Routing guide");
 });
 } // end namespace

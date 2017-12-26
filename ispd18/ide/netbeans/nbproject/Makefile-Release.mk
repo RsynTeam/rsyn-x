@@ -57,6 +57,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/5b7cf7b1/Layout.o \
 	${OBJECTDIR}/_ext/5b7cf7b1/Region.o \
 	${OBJECTDIR}/_ext/5b7cf7b1/RoutingGuidesOverlay.o \
+	${OBJECTDIR}/_ext/5b7cf7b1/register.o \
 	${OBJECTDIR}/_ext/f067b555/MainFrame.o \
 	${OBJECTDIR}/_ext/a8f1af4b/MainFrameBase.o \
 	${OBJECTDIR}/_ext/a8f1af4b/SchematicFrameBase.o \
@@ -271,6 +272,11 @@ ${OBJECTDIR}/_ext/5b7cf7b1/RoutingGuidesOverlay.o: ../../../rsyn/src/rsyn/gui/ca
 	${MKDIR} -p ${OBJECTDIR}/_ext/5b7cf7b1
 	${RM} "$@.d"
 	$(COMPILE.cc) -O3 -s -DMACRO -I../../include -I../../src -I../../../rsyn/include -I../../../rsyn/src -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/5b7cf7b1/RoutingGuidesOverlay.o ../../../rsyn/src/rsyn/gui/canvas/overlay/RoutingGuidesOverlay.cpp
+
+${OBJECTDIR}/_ext/5b7cf7b1/register.o: ../../../rsyn/src/rsyn/gui/canvas/overlay/register.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/5b7cf7b1
+	${RM} "$@.d"
+	$(COMPILE.cc) -O3 -s -DMACRO -I../../include -I../../src -I../../../rsyn/include -I../../../rsyn/src -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/5b7cf7b1/register.o ../../../rsyn/src/rsyn/gui/canvas/overlay/register.cpp
 
 ${OBJECTDIR}/_ext/f067b555/MainFrame.o: ../../../rsyn/src/rsyn/gui/frame/MainFrame.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/f067b555
@@ -919,6 +925,19 @@ ${OBJECTDIR}/_ext/5b7cf7b1/RoutingGuidesOverlay_nomain.o: ${OBJECTDIR}/_ext/5b7c
 	    $(COMPILE.cc) -O3 -s -DMACRO -I../../include -I../../src -I../../../rsyn/include -I../../../rsyn/src -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/5b7cf7b1/RoutingGuidesOverlay_nomain.o ../../../rsyn/src/rsyn/gui/canvas/overlay/RoutingGuidesOverlay.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/_ext/5b7cf7b1/RoutingGuidesOverlay.o ${OBJECTDIR}/_ext/5b7cf7b1/RoutingGuidesOverlay_nomain.o;\
+	fi
+
+${OBJECTDIR}/_ext/5b7cf7b1/register_nomain.o: ${OBJECTDIR}/_ext/5b7cf7b1/register.o ../../../rsyn/src/rsyn/gui/canvas/overlay/register.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/5b7cf7b1
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/5b7cf7b1/register.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O3 -s -DMACRO -I../../include -I../../src -I../../../rsyn/include -I../../../rsyn/src -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/5b7cf7b1/register_nomain.o ../../../rsyn/src/rsyn/gui/canvas/overlay/register.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/_ext/5b7cf7b1/register.o ${OBJECTDIR}/_ext/5b7cf7b1/register_nomain.o;\
 	fi
 
 ${OBJECTDIR}/_ext/f067b555/MainFrame_nomain.o: ${OBJECTDIR}/_ext/f067b555/MainFrame.o ../../../rsyn/src/rsyn/gui/frame/MainFrame.cpp 
