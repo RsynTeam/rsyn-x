@@ -70,6 +70,11 @@ PhysicalCanvasGL::PhysicalCanvasGL(wxWindow* parent) : CanvasGL(parent) {
 
 // -----------------------------------------------------------------------------
 
+PhysicalCanvasGL::~PhysicalCanvasGL() {
+} // end destructor
+
+// -----------------------------------------------------------------------------
+
 void PhysicalCanvasGL::reset() {
 	clsEnableLegalizerInfo = true;
 	
@@ -296,6 +301,9 @@ Rsyn::Cell PhysicalCanvasGL::selectCellAt(const float x, const float y, const bo
 // -----------------------------------------------------------------------------
 
 void PhysicalCanvasGL::onMouseDown(wxMouseEvent& event) {
+	// Hack to allow the canvas to capture keyboard events.
+	this->SetFocus();
+	
 	if (!clsInitialized)
 		return;
 
@@ -1414,26 +1422,28 @@ void PhysicalCanvasGL::populateGeometryManager() {
 				phNet.allWires().size() << " wires...\n"; 
 		}	
 		
-		
 		for (Rsyn::PhysicalWire phWire : phNet.allWires()) {
 			for (Rsyn::PhysicalWireSegment phWireSegment : phWire.allSegments()) {
+
 				const std::vector<Rsyn::PhysicalRoutingPoint> & routingPts = phWireSegment.allRoutingPoints();
-				if (phWireSegment.getNumRoutingPoints() > 1) {
-					
+				if (phWireSegment.getNumRoutingPoints() > 1) {					
 					std::vector<DBUxy> points;
 					points.reserve(routingPts.size());
-					for (Rsyn::PhysicalRoutingPoint phRoutingPt : routingPts)
+					for (Rsyn::PhysicalRoutingPoint phRoutingPt : routingPts) {
 						points.push_back(phRoutingPt.getPosition());
+					} // end for
+
 					Rsyn::PhysicalLayer phLayer = phWireSegment.getLayer();
 					const DBU width = phLayer.getWidth();
 					const GeometryManager::LayerId layerId =
 						techLayerIds[std::min(phLayer.getIndex(), (int) techLayerIds.size() - 1)];
 					geoMgr.addPath(layerId, points, width, createGeoReference(net), groupId);
-				}
-				for (Rsyn::PhysicalRoutingPoint phRoutingPt : routingPts) {
+				} // end if
 
+				for (Rsyn::PhysicalRoutingPoint phRoutingPt : routingPts) {
 					if (!phRoutingPt.hasVia())
 						continue;
+
 					Rsyn::PhysicalVia phVia = phRoutingPt.getVia();
 
 					const DBUxy pos = phRoutingPt.getPosition();
@@ -1567,8 +1577,12 @@ void PhysicalCanvasGL::populateGeometryManager() {
 // -----------------------------------------------------------------------------
 
 void PhysicalCanvasGL::prepareRenderingTexture() {
+	if (!clsRenderingToTextureEnabled || clsRenderingToTextureNotSupported) {
+		return;
+	} // end if
+
 	// Clean up
-	if (clsRenderingToTextureEnabled) {
+	if (clsRenderingToTextureInitialized) {
 		glDeleteFramebuffers(1, &fboId);
 		glDeleteRenderbuffers(1, &rboColorId);
 		glDeleteRenderbuffers(1, &rboDepthId);
@@ -1601,10 +1615,10 @@ void PhysicalCanvasGL::prepareRenderingTexture() {
 
 		GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 		if (status != GL_FRAMEBUFFER_COMPLETE) {
-			clsRenderingToTextureEnabled = false;
+			clsRenderingToTextureNotSupported = true;
 			msgNoRenderToTexture.print();
 		} else {
-			clsRenderingToTextureEnabled = true;
+			clsRenderingToTextureNotSupported = false;
 		} // end else
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1650,13 +1664,6 @@ void PhysicalCanvasGL::prepareRenderingTexture() {
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-		// If not render buffer is available use old inverted colors as a
-		// workaround.
-		if (clsRenderingToTextureEnabled) {
-		//glLogicOp(GL_INVERT);
-		//glEnable(GL_COLOR_LOGIC_OP);
-		}
-
 		// Make back buffer the current buffer.
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -1665,6 +1672,7 @@ void PhysicalCanvasGL::prepareRenderingTexture() {
 		//std::exit(1);
 	} // end else
 
+	clsRenderingToTextureInitialized = true;
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -1689,7 +1697,7 @@ void PhysicalCanvasGL::swapBuffers() {
 // -----------------------------------------------------------------------------
 
 void PhysicalCanvasGL::saveRendering() {
-	if (!clsRenderingToTextureEnabled)
+	if (!clsRenderingToTextureEnabled || clsRenderingToTextureNotSupported)
 		return;
 
 	// std::cout << "SAVE *****" << std::endl;
@@ -1708,7 +1716,7 @@ void PhysicalCanvasGL::saveRendering() {
 // -----------------------------------------------------------------------------
 
 void PhysicalCanvasGL::restoreRendering() {
-	if (!clsRenderingToTextureEnabled)
+	if (!clsRenderingToTextureEnabled || clsRenderingToTextureNotSupported)
 		return;
 
 	glDisable(GL_DEPTH_TEST);

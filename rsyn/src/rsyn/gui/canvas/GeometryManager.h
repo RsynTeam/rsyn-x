@@ -173,9 +173,11 @@ private:
 		Color fillColor;
 		Color lineColor;
 
-		// TODO: Maybe replace this by an OpenGL genlist (seeglGenLists).
+		// TODO: memory optimization... Only store this when the object is a
+		// polygon.
 		std::vector<std::tuple<GLenum, int>> tessellationType;
 		std::vector<float2> tessellationPoints;
+		std::vector<DBUxy> pathPoints;
 
 		// Client data.
 		void * data = nullptr;
@@ -208,6 +210,8 @@ private:
 
 	GLUtriangulatorObj *tobj = nullptr;
 
+	mutable ObjectId previousFocusedObjectId = INVALID_OBJECT_ID;
+
 	mutable Color defaultColor;
 
 	Object &getObject(const ObjectId &objectId) { 
@@ -225,6 +229,8 @@ private:
 	const Layer &getLayer(const LayerId &layerId) const {
 		return layers[layerId];
 	} // end method
+
+	void renderFocusedObject_Core(const ObjectId &objectId) const;
 
 public:
 	LineStippleMask getLayerLinePattern (const LayerId &layerId) const {

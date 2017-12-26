@@ -305,8 +305,9 @@ GeometryManager::addPath(
 	tracePathOutline(points, thickness/2, outlinePoints);
 
 	Object object;
-	object.type = POLYGON;
+	object.type = PATH;
 	object.data = data;
+	object.pathPoints = points;
 	for (const float2 &p : outlinePoints) {
 		bg::append(object.polygon, PolygonPoint(p.x, p.y));
 	} // end for
@@ -316,7 +317,7 @@ GeometryManager::addPath(
 	Layer &layer = layers[layerId];
 	layer.objects.push_back(object);
 
-	const ObjectId objectId =  std::make_tuple(layerId, (int) (layer.objects.size() - 1));
+	const ObjectId objectId = std::make_tuple(layerId, (int) (layer.objects.size() - 1));
     Box box;
     bg::envelope(object.polygon, box);
 	layer.rtree.insert(std::make_pair(box, objectId));
@@ -462,6 +463,17 @@ void
 GeometryManager::renderFocusedObject(
 		const ObjectId &objectId
 ) const {
+	if (objectId != previousFocusedObjectId) {
+		//renderFocusedObject_Core(previousFocusedObjectId);
+		renderFocusedObject_Core(objectId);
+		previousFocusedObjectId = objectId;
+	} // end if
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void
+GeometryManager::renderFocusedObject_Core(const ObjectId &objectId) const {
 	if (!isObjectIdValid(objectId))
 		return;
 
@@ -607,6 +619,12 @@ GeometryManager::renderPolygonOutline(const Layer &layer, const Object &object) 
 
 void
 GeometryManager::renderPathOutline(const Layer &layer, const Object &object) const {
+	glBegin(GL_LINES);
+	for (const DBUxy &p : object.pathPoints) {
+		glVertex3f((GLfloat) p.x, (GLfloat) p.y, layer.z);
+	} // end for
+	glEnd();
+
 	renderPolygonOutline(layer, object);
 } // end method
 
