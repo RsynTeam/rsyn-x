@@ -47,12 +47,12 @@ private:
 	bool clsViewInstances_Ports = true;
 	bool clsViewInstances_Pins = true;
 
-	bool clsViewFloorplan = false;
-	bool clsViewFloorplan_Rows = true;
+	bool clsViewFloorplan = true;
+	bool clsViewFloorplan_Rows = false;
 	bool clsViewFloorplan_Sites = false;
 	bool clsViewFloorplan_SpecialNets = false;
-	bool clsViewFloorplan_Tracks = false;
-	bool clsViewFloorplan_Blockages = false;
+	bool clsViewFloorplan_Tracks = true;
+	bool clsViewFloorplan_Blockages = true;
 	bool clsViewFloorplan_Regions = false;
 
 	bool clsViewRouting = true;
@@ -76,6 +76,9 @@ private:
 	////////////////////////////////////////////////////////////////////////////
 	
 	std::vector<bool> clsViewLayer;
+	std::vector<bool> clsViewTrackLayer;
+	std::vector<bool> clsViewBlockageLayer;
+	
 	
 	class Layer {
 	private:
@@ -122,6 +125,7 @@ private:
 
 	std::vector<Layer> clsLayers;
 	Layer &getLayer(const int id) {return clsLayers[id]; }
+	
 
 	float2 findIntersection(float2 p1, float2 p2, float2 d1, float2 d2) const;
 	bool findMyPoint(float2 v0, float2 v1, float2 v2, const float thickness, const float z) const;
@@ -130,6 +134,8 @@ private:
 	void drawWireSegmentFill(const std::vector<DBUxy> &points, const float thickness, const float z) const;
 	void drawWireSegmentOutline(const std::vector<DBUxy> &points, const float thickness, const float z) const;
 	void drawWireSegmentVia(Rsyn::PhysicalVia phVia, const DBUxy pos);
+	
+	void drawBoundsSegmentFill(const Bounds & bds, const float x) const;
 	
 	void setupLayers();
 

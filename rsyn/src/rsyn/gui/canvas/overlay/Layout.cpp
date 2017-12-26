@@ -130,10 +130,57 @@ bool LayoutOverlay::init(PhysicalCanvasGL* canvas, nlohmann::json& properties) {
 			{"default", {{"r", color.r}, {"g", color.g}, {"b", color.b}}},
 			{"stipple", mask}
 		};
+	}
+	
+	// Initialize layer colors on GUI View tab for tracks 
+	for (const Rsyn::PhysicalLayer phLayer : phDesign.allPhysicalLayers()) {
+		if (phLayer.getType() != Rsyn::ROUTING) 
+			continue;
+		const std::string name = phLayer.getName();
+		properties +={
+			{"name", name},
+			{"type", "bool"},
+			{"default", false},
+			{"parent", "floorplan.tracks"},};
+		GeometryManager::LayerId id = canvas->getTechLayerID(phLayer.getIndex());
+		Color color = geoMgr->getLayerFillColor(id);
+		FillStippleMask mask = geoMgr->getLayerFillPattern(id);		
+		properties += {
+			{"name", "color"},
+			{"label", "Color"},
+			{"type", "color"},
+			{"parent", "floorplan.tracks." + name},
+			{"default", {{"r", color.r}, {"g", color.g}, {"b", color.b}}},
+			{"stipple", mask}
+		};
+	}; // end for
+	
+	// Initialize layer colors on GUI View tab for Metal Blockages 
+	for (const Rsyn::PhysicalLayer phLayer : phDesign.allPhysicalLayers()) {
+		
+		const std::string name = phLayer.getName();
+		properties +={
+			{"name", name},
+			{"type", "bool"},
+			{"default", true},
+			{"parent", "floorplan.blockages"},};
+		GeometryManager::LayerId id = canvas->getTechLayerID(phLayer.getIndex());
+		Color color = geoMgr->getLayerFillColor(id);
+		FillStippleMask mask = geoMgr->getLayerFillPattern(id);		
+		properties += {
+			{"name", "color"},
+			{"label", "Color"},
+			{"type", "color"},
+			{"parent", "floorplan.blockages." + name},
+			{"default", {{"r", color.r}, {"g", color.g}, {"b", color.b}}},
+			{"stipple", mask}
+		};
 	}; // end for
 	
 	// HACK. how to get the total number of layers from PhysicalDesign?
 	clsViewLayer.assign(phDesign.getNumLayers(), true);
+	clsViewTrackLayer.assign(phDesign.getNumLayers(), false);
+	clsViewBlockageLayer.assign(phDesign.getNumLayers(), true);
 //	
 //	properties += {
 //		{"name", "metal1"}, 
@@ -211,7 +258,7 @@ void LayoutOverlay::config(const nlohmann::json &params) {
 	for (Rsyn::PhysicalLayer layer : phDesign.allPhysicalLayers()) {			
 		clsViewLayer[layer.getIndex()] =
 			params.value("routing." + layer.getName(), (bool) clsViewLayer[layer.getIndex()]);
-
+		
 		if (params.count(layer.getName() + ".color")) {
 			Rsyn::Json param = params["routing." + layer.getName() + ".color"];
 			Color c(param["r"], param["g"], param["b"]);
@@ -222,6 +269,19 @@ void LayoutOverlay::config(const nlohmann::json &params) {
 		if (geoMgr) {
 			geoMgr->setLayerVisibility(layer.getName(), !clsViewRouting? false : clsViewLayer[layer.getIndex()]);
 		} // end if
+		
+		
+		// Setting tracks
+		if (layer.getType() == Rsyn::ROUTING) {
+			clsViewTrackLayer[layer.getIndex()] =
+				params.value("floorplan.tracks." + layer.getName(),
+				(bool)clsViewTrackLayer[layer.getIndex()]);
+		}
+		
+		// Setting Blockages
+		clsViewBlockageLayer[layer.getIndex()] =
+			params.value("floorplan.blockages." + layer.getName(),
+			(bool)clsViewBlockageLayer[layer.getIndex()]);
 	} // end for	
 } // end method
 
@@ -606,10 +666,10 @@ void LayoutOverlay::renderTracks(PhysicalCanvasGL * canvas) {
 		Dimension reverse = REVERSE_DIMENSION[dir];
 		const DBU space = phTrack.getSpace();
 		for (Rsyn::PhysicalLayer phLayer : phTrack.allLayers()) {
-			if (!clsViewLayer[phLayer.getIndex()])
+			if (!clsViewTrackLayer[phLayer.getIndex()])
 				continue;
-			const Layer &graphicsLayer = getLayer(std::min(phLayer.getIndex(), (int) clsLayers.size() - 1));
-			const Color &color = graphicsLayer.getBorderColor();
+			const GeometryManager::LayerId layerId = canvas->getTechLayerID(phLayer.getIndex());
+			const Color &color = geoMgr->getLayerLineColor(layerId);
 			glColor3ub(color.r, color.g, color.b);
 			std::vector<DBUxy> points = {DBUxy(), DBUxy()};
 			points[lower][dir] = points[upper][dir] = phTrack.getLocation();
@@ -617,7 +677,7 @@ void LayoutOverlay::renderTracks(PhysicalCanvasGL * canvas) {
 			points[upper][reverse] = module[UPPER][reverse];
 			for (int i = 0; i < phTrack.getNumberOfTracks(); i++) {
 				DBU width = phLayer.getWidth();
-				drawWireSegmentOutline(points, width/2, graphicsLayer.getZ());
+				drawWireSegmentOutline(points, width/2,  geoMgr->getLayerZ(layerId));
 				points[lower][dir] += space;
 				points[upper][dir] += space;
 			} // end for 
@@ -631,11 +691,11 @@ void LayoutOverlay::renderTracks(PhysicalCanvasGL * canvas) {
 		Dimension reverse = REVERSE_DIMENSION[dir];
 		const DBU space = phTrack.getSpace();
 		for (Rsyn::PhysicalLayer phLayer : phTrack.allLayers()) {
-			if (!clsViewLayer[phLayer.getIndex()])
+			if (!clsViewTrackLayer[phLayer.getIndex()])
 				continue;
-			const Layer &graphicsLayer = getLayer(std::min(phLayer.getIndex(), (int) clsLayers.size() - 1));
-			glPolygonStipple(STIPPLE_MASKS[graphicsLayer.getStippleMask()]);
-			const Color &color = graphicsLayer.getBorderColor();
+			const GeometryManager::LayerId layerId = canvas->getTechLayerID(phLayer.getIndex());
+			glPolygonStipple(STIPPLE_MASKS[geoMgr->getLayerFillPattern(layerId)]);
+			const Color &color = geoMgr->getLayerFillColor(layerId);
 			glColor3ub(color.r, color.g, color.b);
 			std::vector<DBUxy> points = {DBUxy(), DBUxy()};
 			points[lower][dir] = points[upper][dir] = phTrack.getLocation();
@@ -643,7 +703,7 @@ void LayoutOverlay::renderTracks(PhysicalCanvasGL * canvas) {
 			points[upper][reverse] = module[UPPER][reverse];
 			for (int i = 0; i < phTrack.getNumberOfTracks(); i++) {
 				DBU width = phLayer.getWidth();
-				drawWireSegmentFill(points, width/2, graphicsLayer.getZ());
+				drawWireSegmentFill(points, width/2, geoMgr->getLayerZ(layerId));
 				points[lower][dir] += space;
 				points[upper][dir] += space;
 			} // end for 
@@ -673,15 +733,16 @@ void LayoutOverlay::renderBlockages(PhysicalCanvasGL * canvas) {
 			continue;
 		for (Rsyn::PhysicalObstacle phObs : phLibCell.allObstacles()) {
 			double layer = PhysicalCanvasGL::LAYER_OBSTACLES;
+
 			if (phObs.hasLayer()) {
 				Rsyn::PhysicalLayer phLayer = phObs.getLayer();
-				if (!clsViewLayer[phLayer.getIndex()])
+				if (!clsViewBlockageLayer[phLayer.getIndex()])
 					continue;
 
-				const Layer &graphicsLayer = getLayer(std::min(phLayer.getIndex(), (int) clsLayers.size() - 1));
-				const Color &color = graphicsLayer.getBorderColor();
+				const GeometryManager::LayerId layerId = canvas->getTechLayerID(phLayer.getIndex());
+				const Color &color = geoMgr->getLayerFillColor(layerId);
 				glColor3ub(color.r, color.g, color.b);
-				layer = graphicsLayer.getZ();
+				layer = geoMgr->getLayerZ(layerId);
 			} else {
 				glColor3ub(255, 255, 255);
 			} // end if-else 

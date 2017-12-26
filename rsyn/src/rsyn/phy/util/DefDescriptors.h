@@ -189,7 +189,7 @@ public:
 
 // ! Descriptor for DEF Special Nets
 
-class DefSpecialNetDscp {
+ class DefSpecialNetDscp {
 public:
 	std::string clsName = INVALID_DEF_NAME;
 	std::vector<DefWireDscp> clsWires;

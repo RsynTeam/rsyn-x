@@ -268,7 +268,7 @@ protected:
 	//! @brief Initializes Rsyn::PhysicalSpecialNet into Ryn::PhysicalDesign.
 	void addPhysicalSpecialNet(const DefSpecialNetDscp & specialNet);
 	//! @brief Initializes Rsyn::PhysicalWire object
-	void addWireNet(const DefWireDscp & wire, PhysicalWire phWire, const bool isSpecialNet = false);
+	void addSpecialWireNet(const DefWireDscp & wire, PhysicalWire phWire, const bool isSpecialNet = false);
 	//! @brief Initializes Rsyn::PhysicalWireSegment object
 	void addWireSegment(const DefWireSegmentDscp & segmentDscp, PhysicalWireSegment phWireSegment, const bool isSpecialNet = false);
 	//! @brief TODO

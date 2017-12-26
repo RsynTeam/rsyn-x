@@ -189,7 +189,7 @@ int lefMacroCB(lefrCallbackType_e c, lefiMacro* macro, lefiUserData ud) {
 } // end function
 
 // -----------------------------------------------------------------------------
-
+int numWarningsInoutPins = 0;
 int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
 	// Skip power and ground pins...
 	if (strcmp(pin->use(), "GROUND") == 0) return 0;
@@ -202,6 +202,18 @@ int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
 
 	lefPin.clsPinName = pin->name();
 	lefPin.clsPinDirection = pin->direction();
+	
+	// WORKORUND to support inout data pin
+	if(lefPin.clsPinDirection.compare("INOUT") == 0 ) {
+		lefPin.clsPinDirection = "OUTPUT";
+		if(numWarningsInoutPins < 10)
+			std::cout<<"WARNING: Unsupported INOUT direction in data pin. "
+				<<lefPin.clsPinName<<". Pin direction is replaced to "<<lefPin.clsPinDirection
+				<<" [LEF CONTROL PARSER]\n";
+		numWarningsInoutPins++;
+	} // end if 
+	// END WORKORUND to support inout data pin
+	
 	lefPin.clsHasPort = pin->numPorts() > 0;
 
 	if (lefPin.clsHasPort)

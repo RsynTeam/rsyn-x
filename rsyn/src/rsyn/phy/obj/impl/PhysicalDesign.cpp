@@ -670,13 +670,13 @@ void PhysicalDesign::addPhysicalSpecialNet(const DefSpecialNetDscp & specialNet)
 	for (const DefWireDscp & wire : specialNet.clsWires) {
 		phSpecialNet->clsWires.push_back(PhysicalWire(new PhysicalWireData()));
 		PhysicalWire phWire = phSpecialNet->clsWires.back();
-		addWireNet(wire, phWire, true);
+		addSpecialWireNet(wire, phWire, true);
 	} // end for 
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-void PhysicalDesign::addWireNet(const DefWireDscp & wire, PhysicalWire phWire, const bool isSpecialNet) {
+void PhysicalDesign::addSpecialWireNet(const DefWireDscp & wire, PhysicalWire phWire, const bool isSpecialNet) {
 	phWire->clsWireSegments.reserve(wire.clsWireSegments.size());
 	for (const DefWireSegmentDscp & segmentDscp : wire.clsWireSegments) {
 		phWire->clsWireSegments.push_back(PhysicalWireSegment(new PhysicalWireSegmentData()));

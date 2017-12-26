@@ -179,7 +179,7 @@ private:
 		STIPPLE_MASK_CROSS
 	}}; 
 	
-	std::array<Color, 11> techLayerColors {{
+	std::array<Color, 12> techLayerColors {{
 		//Color(  0,   0,   0), // BLACK
 		Color(  0,   0, 255), // BLUE
 		Color(255,   0,   0), // RED
