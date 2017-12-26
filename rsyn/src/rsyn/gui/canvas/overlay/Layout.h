@@ -47,12 +47,12 @@ private:
 	bool clsViewInstances_Ports = true;
 	bool clsViewInstances_Pins = true;
 
-	bool clsViewFloorplan = true;
+	bool clsViewFloorplan = false;
 	bool clsViewFloorplan_Rows = false;
 	bool clsViewFloorplan_Sites = false;
 	bool clsViewFloorplan_SpecialNets = false;
 	bool clsViewFloorplan_Tracks = true;
-	bool clsViewFloorplan_Blockages = true;
+	bool clsViewFloorplan_Blockages = false;
 	bool clsViewFloorplan_Regions = false;
 
 	bool clsViewRouting = true;
@@ -60,13 +60,10 @@ private:
 	GeometryManager * geoMgr = nullptr;
 	GLUtriangulatorObj *tess;
 
-	void renderCells(PhysicalCanvasGL * canvas);
+	void renderCellsForInterpolatedMode(PhysicalCanvasGL * canvas);
 	void renderPorts(PhysicalCanvasGL * canvas);
-	void renderPins(PhysicalCanvasGL * canvas);
-	void renderRouting(PhysicalCanvasGL * canvas);
 	void renderRows(PhysicalCanvasGL * canvas);
 	void renderRowSites(PhysicalCanvasGL * canvas);
-	void renderSpecialNets(PhysicalCanvasGL * canvas);
 	void renderTracks(PhysicalCanvasGL * canvas);
 	void renderBlockages(PhysicalCanvasGL * canvas);
 	void renderRegions(PhysicalCanvasGL * canvas);
@@ -122,22 +119,6 @@ private:
 			clsZ = z;
 		} // end method
 	}; // end class
-
-	std::vector<Layer> clsLayers;
-	Layer &getLayer(const int id) {return clsLayers[id]; }
-	
-
-	float2 findIntersection(float2 p1, float2 p2, float2 d1, float2 d2) const;
-	bool findMyPoint(float2 v0, float2 v1, float2 v2, const float thickness, const float z) const;
-	void findTwoPoints(float2 const v0, float2 const v1, float2 const v2, const float thickness, const float z) const;
-	
-	void drawWireSegmentFill(const std::vector<DBUxy> &points, const float thickness, const float z) const;
-	void drawWireSegmentOutline(const std::vector<DBUxy> &points, const float thickness, const float z) const;
-	void drawWireSegmentVia(Rsyn::PhysicalVia phVia, const DBUxy pos);
-	
-	void drawBoundsSegmentFill(const Bounds & bds, const float x) const;
-	
-	void setupLayers();
 
 public:
 	

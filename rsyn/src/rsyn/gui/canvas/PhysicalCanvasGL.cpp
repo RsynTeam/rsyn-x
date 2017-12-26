@@ -1278,7 +1278,7 @@ PhysicalCanvasGL::createGeoReference(Rsyn::Pin pin) {
 // -----------------------------------------------------------------------------
 
 void PhysicalCanvasGL::prepareGeometryManager() {
-	const bool debug = false;	
+	const bool debug = false;
 
 	clsGeoNets = design.createAttribute();
 
@@ -1311,15 +1311,16 @@ void PhysicalCanvasGL::prepareGeometryManager() {
 			c = Color(0, 0 ,0);
 		}
 		
-		if(debug) {
-			std::cout << "Adding a layer called " << phLayer.getName()
-					  << " (id=" << phLayer.getIndex() << ") "
-					  << " with mask " << mask << " and color (" << (int) c.r 
-					  << ", " << (int) c.g << ", " << (int) c.b << ")\n"; 
-		}
-		
 		GeometryManager::LayerId id = geoMgr.createLayer(phLayer.getName(), z++, c, c, LINE_STIPPLE_SOLID, mask);
 		techLayerIds[phLayer.getIndex()] = id;
+
+		if (debug) {
+			std::cout << "Adding a layer called " << phLayer.getName()
+					<< " (techLayerId=" << phLayer.getIndex() << ") "
+					<< " (geoLayerId=" << id << ") "
+					<< " with mask " << mask << " and color (" << (int) c.r
+					<< ", " << (int) c.g << ", " << (int) c.b << ")\n";
+		} // end if
 	} // end for
 	
 	for (GeometryManager::LayerId& id : techLayerIds) {
