@@ -33,7 +33,7 @@ Type "-j 4" in "Make Options".
 ## Opening a Benchmark using Rsyn
 
 ```cpp
-./rsyn -gui
+./rsyn
 Ctrl+R
 Select file "rsyn-x/ispd18/sample/ispd18_sample/ispd18_sample.rsyn"
 ```
