@@ -54,6 +54,12 @@ public:
 	DBU getExtension() const;
 	Rsyn::PhysicalVia getVia() const;
 	
+	/*! @details
+	 "RECT ( deltax1 deltay1 deltax2 deltay2 )
+	 Indicates that a rectangle is created from the previous ( x y ) 
+	 routing point using the delta values. The RECT values leave the 
+	 current point and layer unchanged." Source: LEf/DEf Reference Manual 5.8
+	 */
 	const Bounds & getRectangle() const;
 	bool hasExtension() const;
 	bool hasRectangle() const;

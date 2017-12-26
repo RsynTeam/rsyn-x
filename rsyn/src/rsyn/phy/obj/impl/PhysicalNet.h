@@ -70,10 +70,4 @@ inline const std::vector<Rsyn::PhysicalWire> & PhysicalNet::allWires() const {
 
 // -----------------------------------------------------------------------------
 
-inline const std::deque<Rsyn::PhysicalViaInstance> & PhysicalNet::allVias() const {
-	return data->clsViaInstances;
-} // end method 
-
-// -----------------------------------------------------------------------------
-
 } // end namespace 

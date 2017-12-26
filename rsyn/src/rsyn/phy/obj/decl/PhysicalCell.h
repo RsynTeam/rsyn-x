@@ -82,6 +82,10 @@ public:
 	DBU getDisplacementFromInitialPosition(const DBU pos, const Dimension dim) const;
 	//! @brief Returns the orientation of the cell.
 	PhysicalOrientation getOrientation() const;
+	//! @brief Returns a transformation that allows one to transform the
+	//! coordinates from the library cell space to the cell space. The
+	//! transformation accounts for translation and the orientation of the cell.
+	PhysicalTransform getTransform() const;
 	//! @brief Returns true if the cell boundaries is defined by a PhysicalLayer. Otherwise, returns false.
 	//! @details Cell boundaries may be defined by some PhysicalLayer instead of rectangular Bounds.
 	//! In the 2015 ICCAD contest, some macro have their boundaries defined by metal1 layer.

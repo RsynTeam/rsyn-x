@@ -466,7 +466,7 @@ void LayoutOverlay::renderRows(PhysicalCanvasGL * canvas) {
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glBegin(GL_QUADS);
-	glColor3ub(0, 0, 0);
+	glColor3ub(255, 255, 255);
 	double layer = layer = PhysicalCanvasGL::LAYER_OBSTACLES;
 	for (Rsyn::PhysicalRow phRow : phDesign.allPhysicalRows()) {
 		const Bounds & bounds = phRow.getBounds();
@@ -683,7 +683,7 @@ void LayoutOverlay::renderBlockages(PhysicalCanvasGL * canvas) {
 				glColor3ub(color.r, color.g, color.b);
 				layer = graphicsLayer.getZ();
 			} else {
-				glColor3ub(0, 0, 0);
+				glColor3ub(255, 255, 255);
 			} // end if-else 
 			for (Bounds bounds : phObs.allBounds()) {
 				bounds.translate(pos);
@@ -723,7 +723,7 @@ void LayoutOverlay::renderRouting(PhysicalCanvasGL * canvas) {
 	if (!clsViewRouting)
 		return;
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	
+	/*glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	
 	glColor3ub(255, 0, 0);
 	for (Rsyn::Net net : module.allNets()) {
 		Rsyn::PhysicalNet phNet = phDesign.getPhysicalNet(net);
@@ -781,6 +781,7 @@ void LayoutOverlay::renderRouting(PhysicalCanvasGL * canvas) {
 		} // end for
 	} // end for
 	glDisable(GL_POLYGON_STIPPLE);
+	 * */
 } // end method
 
 // -----------------------------------------------------------------------------

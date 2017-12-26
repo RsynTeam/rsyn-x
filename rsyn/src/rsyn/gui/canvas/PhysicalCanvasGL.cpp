@@ -70,6 +70,11 @@ PhysicalCanvasGL::PhysicalCanvasGL(wxWindow* parent) : CanvasGL(parent) {
 
 // -----------------------------------------------------------------------------
 
+PhysicalCanvasGL::~PhysicalCanvasGL() {
+} // end destructor
+
+// -----------------------------------------------------------------------------
+
 void PhysicalCanvasGL::reset() {
 	clsEnableLegalizerInfo = true;
 	
@@ -296,6 +301,9 @@ Rsyn::Cell PhysicalCanvasGL::selectCellAt(const float x, const float y, const bo
 // -----------------------------------------------------------------------------
 
 void PhysicalCanvasGL::onMouseDown(wxMouseEvent& event) {
+	// Hack to allow the canvas to capture keyboard events.
+	this->SetFocus();
+	
 	if (!clsInitialized)
 		return;
 
@@ -628,13 +636,13 @@ void PhysicalCanvasGL::renderCoreBounds() {
 		return;
 	Rsyn::PhysicalDie phDie = phDesign.getPhysicalDie();
 	const FloatRectangle &bounds = phDie.getBounds();
-	glLineWidth(2);
+	glLineWidth(1);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//	glLineStipple(3, 0xAAAA);
 	//	glEnable(GL_LINE_STIPPLE);	
 
 	glBegin(GL_QUADS);
-	glColor3ub(0, 0, 0);
+	glColor3ub(255, 255, 255);
 	glVertex3d(bounds[LOWER][X], bounds[LOWER][Y], LAYER_BACKGROUND);
 	glVertex3d(bounds[UPPER][X], bounds[LOWER][Y], LAYER_BACKGROUND);
 	glVertex3d(bounds[UPPER][X], bounds[UPPER][Y], LAYER_BACKGROUND);
@@ -901,7 +909,7 @@ void PhysicalCanvasGL::renderSelectedCell() {
 		Rsyn::Design design = clsSession.getDesign();
 		
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);		
-		glColor3ub(0, 0, 0);
+		glColor3ub(255, 255, 255);
 				
 		for (Rsyn::Pin sink : clsSelectedCell.allPins(Rsyn::IN)) {
 			drawPin(sink);
@@ -936,7 +944,7 @@ void PhysicalCanvasGL::renderSelectedCell() {
 	if (clsViewSelectedNodeNeighbours && clsSelectedCell) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glLineWidth(3);
-		glColor3ub(0, 0, 0);
+		glColor3ub(255, 255, 255);
 		
 		glBegin(GL_QUADS);
 				
@@ -1013,7 +1021,7 @@ void PhysicalCanvasGL::renderTree() {
 	
 	glLineWidth(2.0);
 	glBegin(GL_LINES);
-	glColor3ub(0, 0, 0);
+	glColor3ub(255, 255, 255);
 	for (Rsyn::Pin pin : clsSelectedCell.allPins()) {
 		if (!pin.isConnected())
 			continue;
@@ -1033,7 +1041,7 @@ void PhysicalCanvasGL::renderTree() {
 			glColor3ub(color.r, color.g, color.b);
 			colorIndex++;
 		} else {
-			glColor3ub(0, 0, 0);
+			glColor3ub(255, 255, 255);
 		} // end else
 			
 		const Rsyn::RCTree & tree = routingEstimator->getRCTree(net);
@@ -1275,13 +1283,13 @@ void PhysicalCanvasGL::prepareGeometryManager() {
 	clsGeoNets = design.createAttribute();
 
 	// Instances
-	geoCellLayerId = geoMgr.createLayer("cells", 0, Color(0, 210, 210), Color(0, 210, 210), LINE_STIPPLE_NONE, STIPPLE_MASK_FILL);
-	geoMacroLayerId = geoMgr.createLayer("macros", 0, Color(0, 0, 0), Color(0, 0, 0), LINE_STIPPLE_NONE, STIPPLE_MASK_FILL);
-	geoPortLayerId = geoMgr.createLayer("ports", 0, Color(0, 0, 0), Color(0, 0, 0), LINE_STIPPLE_NONE, STIPPLE_MASK_EMPTY);
+	geoCellLayerId = geoMgr.createLayer("cells", 0, Color(0, 210, 210), Color(0, 210, 210), LINE_STIPPLE_SOLID, STIPPLE_MASK_EMPTY);
+	geoMacroLayerId = geoMgr.createLayer("macros", 0, Color(200, 200, 200), Color(200, 200, 200), LINE_STIPPLE_SOLID, STIPPLE_MASK_YACIF1);
+	geoPortLayerId = geoMgr.createLayer("ports", 0, Color(255, 255, 255), Color(255, 255, 255), LINE_STIPPLE_NONE, STIPPLE_MASK_EMPTY);
 
 	// Pins
 	geoPinsLayerId = geoMgr.createLayer("pins", 5, Color(0, 0, 255), Color(0, 0, 255), LINE_STIPPLE_SOLID, STIPPLE_MASK_DOT);
-	geoMgr.setLayerVisibility(geoPinsLayerId, false);
+	geoMgr.setLayerVisibility(geoPinsLayerId, true);
 
 	// Routing
 	const int offset = 10;
@@ -1317,7 +1325,7 @@ void PhysicalCanvasGL::prepareGeometryManager() {
 	for (GeometryManager::LayerId& id : techLayerIds) {
 		if (id < 0)
 			continue;
-		geoMgr.setLayerVisibility(id, false);
+		geoMgr.setLayerVisibility(id, true);
 	}
 } // end method
 
@@ -1366,10 +1374,33 @@ void PhysicalCanvasGL::populateGeometryManager() {
 				} // end else
 			} else {
 				const Bounds & bounds = phCell.getBounds();
+
+				GeometryManager::BoxOrientation orientation;
+				switch (phCell.getOrientation()) {
+					case Rsyn::ORIENTATION_N:
+					case Rsyn::ORIENTATION_FW:
+						orientation = GeometryManager::BOX_ORIENTATION_SW;
+						break;
+					case Rsyn::ORIENTATION_S:
+					case Rsyn::ORIENTATION_FE:
+						orientation = GeometryManager::BOX_ORIENTATION_NE;
+						break;
+					case Rsyn::ORIENTATION_W:
+					case Rsyn::ORIENTATION_FN:
+						orientation = GeometryManager::BOX_ORIENTATION_SE;
+						break;
+					case Rsyn::ORIENTATION_E:
+					case Rsyn::ORIENTATION_FS:
+						orientation = GeometryManager::BOX_ORIENTATION_NW;
+						break;
+					default:
+						orientation = GeometryManager::BOX_ORIENTATION_INVALID;
+				} // end switch
+
 				GeometryManager::Point p0(bounds[LOWER][X], bounds[LOWER][Y]);
 				GeometryManager::Point p1(bounds[UPPER][X], bounds[UPPER][Y]);
 				GeometryManager::ObjectId objectId =
-						geoMgr.addRectangle(geoCellLayerId, GeometryManager::Box(p0, p1), createGeoReference(instance));
+						geoMgr.addRectangle(geoCellLayerId, GeometryManager::Box(p0, p1), createGeoReference(instance), orientation);
 				const Color rgb = graphics->getCellColor(instance);
 				geoMgr.setObjectFillColor(objectId,rgb);
 			} // end if-else
@@ -1393,20 +1424,29 @@ void PhysicalCanvasGL::populateGeometryManager() {
 		
 		for (Rsyn::PhysicalWire phWire : phNet.allWires()) {
 			for (Rsyn::PhysicalWireSegment phWireSegment : phWire.allSegments()) {
-				if (phWireSegment.getNumPoints() < 2)
-					continue;
-								
-				const std::vector<DBUxy> &points = phWireSegment.allSegmentPoints();
-				Rsyn::PhysicalLayer phLayer = phWireSegment.getLayer();
-				const DBU width = phLayer.getWidth();
-				const GeometryManager::LayerId layerId =
-					techLayerIds[std::min(phLayer.getIndex(), (int) techLayerIds.size() - 1)];
-				geoMgr.addPath(layerId, points, width, createGeoReference(net), groupId);
 
-				if (phWireSegment.hasVia()) {
-					Rsyn::PhysicalVia phVia = phWireSegment.getVia();
+				const std::vector<Rsyn::PhysicalRoutingPoint> & routingPts = phWireSegment.allRoutingPoints();
+				if (phWireSegment.getNumRoutingPoints() > 1) {					
+					std::vector<DBUxy> points;
+					points.reserve(routingPts.size());
+					for (Rsyn::PhysicalRoutingPoint phRoutingPt : routingPts) {
+						points.push_back(phRoutingPt.getPosition());
+					} // end for
 
-					const DBUxy pos = points.back();
+					Rsyn::PhysicalLayer phLayer = phWireSegment.getLayer();
+					const DBU width = phLayer.getWidth();
+					const GeometryManager::LayerId layerId =
+						techLayerIds[std::min(phLayer.getIndex(), (int) techLayerIds.size() - 1)];
+					geoMgr.addPath(layerId, points, width, createGeoReference(net), groupId);
+				} // end if
+
+				for (Rsyn::PhysicalRoutingPoint phRoutingPt : routingPts) {
+					if (!phRoutingPt.hasVia())
+						continue;
+
+					Rsyn::PhysicalVia phVia = phRoutingPt.getVia();
+
+					const DBUxy pos = phRoutingPt.getPosition();
 
 					for (Rsyn::PhysicalViaLayer phViaLayer : phVia.allLayers()) {
 						Rsyn::PhysicalLayer phLayer = phViaLayer.getLayer();
@@ -1415,15 +1455,16 @@ void PhysicalCanvasGL::populateGeometryManager() {
 							bounds.translate(pos);
 
 							const GeometryManager::LayerId layerId =
-									techLayerIds[std::min(phLayer.getIndex(), (int) techLayerIds.size() - 1)];
+								techLayerIds[std::min(phLayer.getIndex(), (int) techLayerIds.size() - 1)];
 
 							GeometryManager::Point p0(bounds[LOWER][X], bounds[LOWER][Y]);
 							GeometryManager::Point p1(bounds[UPPER][X], bounds[UPPER][Y]);
-							geoMgr.addRectangle(layerId, GeometryManager::Box(p0, p1), createGeoReference(net), groupId);
+							geoMgr.addRectangle(layerId, GeometryManager::Box(p0, p1), createGeoReference(net), 
+									GeometryManager::BOX_ORIENTATION_INVALID, groupId);
 
 							// Stripe Lines
 							if (phLayer.getType() == Rsyn::ROUTING) {
-								const DBU width = static_cast<DBU>(bounds.computeLength(X) / 2.0);
+								const DBU width = static_cast<DBU> (bounds.computeLength(X) / 2.0);
 								std::vector<DBUxy> points(2);
 								points[0] = DBUxy(pos[X], bounds[LOWER][Y]);
 								points[1] = DBUxy(pos[X], bounds[UPPER][Y]);
@@ -1479,7 +1520,9 @@ void PhysicalCanvasGL::populateGeometryManager() {
 			continue;
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
 		Rsyn::PhysicalCell phCell = phDesign.getPhysicalCell(cell);
+		Rsyn::PhysicalTransform transform = phCell.getTransform();
 		const DBUxy displacement = phCell.getPosition();
+
 		for (Rsyn::Pin pin : instance.allPins()) {
 			if (pin.isPort())
 				continue;
@@ -1491,25 +1534,55 @@ void PhysicalCanvasGL::populateGeometryManager() {
 
 			for (Rsyn::PhysicalPinGeometry phPinPort : phLibPin.allPinGeometries()) {
 				Rsyn::PhysicalPinLayer phPinLayer = phPinPort.getPinLayer();
-				for (const Rsyn::PhysicalPolygon &polygon : phPinLayer.allPolygons()) {
-					std::vector<DBUxy> points;
-					for (auto it1 = boost::begin(boost::geometry::exterior_ring(polygon));
+				if (phPinLayer.hasPolygonBounds()) {
+					for (const Rsyn::PhysicalPolygon &polygon : phPinLayer.allPolygons()) {
+						std::vector<DBUxy> points;
+						for (auto it1 = boost::begin(boost::geometry::exterior_ring(polygon));
 							it1 != boost::end(boost::geometry::exterior_ring(polygon)); ++it1) {
-						const Rsyn::PhysicalPolygonPoint &p = *it1;
-						points.push_back(DBUxy(p.get<0>(), p.get<1>()));
+							const Rsyn::PhysicalPolygonPoint &p = *it1;
+							points.push_back(transform.apply(
+								p.get<0>() + displacement.x, p.get<1>() + displacement.y));
+						} // end for
+						geoMgr.addPolygon(geoPinsLayerId, points, float2(0, 0), createGeoReference(pin));
 					} // end for
-					geoMgr.addPolygon(geoPinsLayerId, points, float2(displacement), createGeoReference(pin));
-				} // end for
+				} // end if
+				if (phPinLayer.hasRectangleBounds()) {
+					for (Bounds bounds : phPinLayer.allBounds()) {
+						bounds.translate(displacement);
+						bounds = transform.apply(bounds);
+						GeometryManager::Point p0(bounds[LOWER][X], bounds[LOWER][Y]);
+						GeometryManager::Point p1(bounds[UPPER][X], bounds[UPPER][Y]);
+						geoMgr.addRectangle(geoPinsLayerId, GeometryManager::Box(p0, p1), createGeoReference(pin));
+					} // end for
+				} // end if
 			} // end for
 		} // end for
 	} // end if
+	
+	//
+	// Ports
+	//
+	
+//	for (Rsyn::Instance instance : module.allInstances()) {
+//		if (instance.getType() != Rsyn::CELL)
+//			continue;
+//		Rsyn::Port port = instance.asPort(); 
+//		Rsyn::PhysicalPort phPort = phDesign.getPhysicalPort(port);
+//		const DBUxy &pos = phPort.getPosition();
+//		
+//	}
+	
 } // end method
 
 // -----------------------------------------------------------------------------
 
 void PhysicalCanvasGL::prepareRenderingTexture() {
+	if (!clsRenderingToTextureEnabled || clsRenderingToTextureNotSupported) {
+		return;
+	} // end if
+
 	// Clean up
-	if (clsRenderingToTextureEnabled) {
+	if (clsRenderingToTextureInitialized) {
 		glDeleteFramebuffers(1, &fboId);
 		glDeleteRenderbuffers(1, &rboColorId);
 		glDeleteRenderbuffers(1, &rboDepthId);
@@ -1542,10 +1615,10 @@ void PhysicalCanvasGL::prepareRenderingTexture() {
 
 		GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 		if (status != GL_FRAMEBUFFER_COMPLETE) {
-			clsRenderingToTextureEnabled = false;
+			clsRenderingToTextureNotSupported = true;
 			msgNoRenderToTexture.print();
 		} else {
-			clsRenderingToTextureEnabled = true;
+			clsRenderingToTextureNotSupported = false;
 		} // end else
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1591,13 +1664,6 @@ void PhysicalCanvasGL::prepareRenderingTexture() {
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-		// If not render buffer is available use old inverted colors as a
-		// workaround.
-		if (clsRenderingToTextureEnabled) {
-		//glLogicOp(GL_INVERT);
-		//glEnable(GL_COLOR_LOGIC_OP);
-		}
-
 		// Make back buffer the current buffer.
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -1606,6 +1672,7 @@ void PhysicalCanvasGL::prepareRenderingTexture() {
 		//std::exit(1);
 	} // end else
 
+	clsRenderingToTextureInitialized = true;
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -1630,7 +1697,7 @@ void PhysicalCanvasGL::swapBuffers() {
 // -----------------------------------------------------------------------------
 
 void PhysicalCanvasGL::saveRendering() {
-	if (!clsRenderingToTextureEnabled)
+	if (!clsRenderingToTextureEnabled || clsRenderingToTextureNotSupported)
 		return;
 
 	// std::cout << "SAVE *****" << std::endl;
@@ -1649,7 +1716,7 @@ void PhysicalCanvasGL::saveRendering() {
 // -----------------------------------------------------------------------------
 
 void PhysicalCanvasGL::restoreRendering() {
-	if (!clsRenderingToTextureEnabled)
+	if (!clsRenderingToTextureEnabled || clsRenderingToTextureNotSupported)
 		return;
 
 	glDisable(GL_DEPTH_TEST);

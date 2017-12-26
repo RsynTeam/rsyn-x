@@ -45,7 +45,7 @@ private:
 	bool clsViewInstances_Cells = true;
 	bool clsViewInstances_Macros = true;
 	bool clsViewInstances_Ports = true;
-	bool clsViewInstances_Pins = false;
+	bool clsViewInstances_Pins = true;
 
 	bool clsViewFloorplan = false;
 	bool clsViewFloorplan_Rows = true;
@@ -55,7 +55,7 @@ private:
 	bool clsViewFloorplan_Blockages = false;
 	bool clsViewFloorplan_Regions = false;
 
-	bool clsViewRouting = false;
+	bool clsViewRouting = true;
 
 	GeometryManager * geoMgr = nullptr;
 	GLUtriangulatorObj *tess;

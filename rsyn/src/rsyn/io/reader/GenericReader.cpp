@@ -192,7 +192,7 @@ void GenericReader::populateDesign() {
 	else Reader::populateRsyn(lefDescriptor, defDescriptor, design);
 
 	Json physicalDesignConfiguration;
-	physicalDesignConfiguration["clsEnableMergeRectangles"] = true;
+	physicalDesignConfiguration["clsEnableMergeRectangles"] = false;
 	physicalDesignConfiguration["clsEnableNetPinBoundaries"] = true;
 	physicalDesignConfiguration["clsEnableRowSegments"] = true;
 	session.startService("rsyn.physical", physicalDesignConfiguration);

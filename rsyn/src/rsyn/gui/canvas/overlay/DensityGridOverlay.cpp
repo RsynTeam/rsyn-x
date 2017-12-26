@@ -165,7 +165,7 @@ void DensityGridOverlay::renderGrid(PhysicalCanvasGL * canvas) {
 	glBegin(GL_QUADS);
 
 	double layer = PhysicalCanvasGL::LAYER_GRID;
-	glColor3ub(0, 0, 0);
+	glColor3ub(255, 255, 255);
 	const unsigned numRows = grid.getNumRows();
 	const unsigned numCols = grid.getNumCols();
 	

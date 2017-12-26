@@ -13,13 +13,6 @@
  * limitations under the License.
  */
  
-/*
- * Session.cpp
- *
- *  Created on: May 8, 2015
- *      Author: jucemar
- */
-
 #include <thread>
 #include <iosfwd>
 #include <mutex>
@@ -119,7 +112,10 @@ void Session::evaluateString(const std::string &str) {
 // -----------------------------------------------------------------------------
 
 void Session::evaluateFile(const std::string &filename) {
+	const std::string path = boost::filesystem::path(filename).parent_path().string();
+	addPath(path, true);
 	sessionData->clsCommandManager.evaluateFile(filename);
+	removePath(path);
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -223,7 +219,8 @@ void Session::registerDefaultCommands() {
 		registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string format = command.getParam("format");
 			Json options = command.getParam("options");
-			options["globalPlacementOnly"] = getSessionVariableAsBool("globalPlacementOnly", false);
+			if (getSessionVariableAsBool("globalPlacementOnly", false))
+				options["globalPlacementOnly"] = true;
 			options["path"] = command.getPath();
 
 			runReader(format, options);
@@ -293,6 +290,61 @@ void Session::registerDefaultCommands() {
 			} // end if-else 
 		});
 	} // end block
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void Session::addPath(const std::string &path, const bool prepend) {
+	if (prepend) {
+		sessionData->clsPaths.push_front(path);
+	} else {
+		sessionData->clsPaths.push_back(path);
+	} // end else
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void Session::removePath(const std::string &path) {
+	sessionData->clsPaths.remove(path);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+std::string Session::mergePathAndFileName(const std::string &path, const std::string &fileName) {
+	const char separator = boost::filesystem::path::preferred_separator;
+	if (!path.empty() &&  (path.back() != separator && path.back() != '/')) {
+		return path + separator + fileName;
+	} else {
+		return path + fileName;
+	} // end else
+} // end method
+
+// -----------------------------------------------------------------------------
+
+std::string Session::findFile(const std::string fileName, const std::string extraPath) {
+	// Check if the file exists without any path.
+	if (boost::filesystem::exists(fileName)) {
+		return fileName;
+	} // end if
+
+	// Check if the file exists in the extra path.
+	if (!extraPath.empty()) {
+		const std::string fullFileName = mergePathAndFileName(extraPath, fileName);
+		if (boost::filesystem::exists(fullFileName)) {
+			return fullFileName;
+		} // end if
+	} // end if
+
+	// Check if the file exists in the paths.
+	for (const std::string &path : sessionData->clsPaths) {
+		const std::string fullFileName = mergePathAndFileName(path, fileName);
+		if (boost::filesystem::exists(fullFileName)) {
+			return fullFileName;
+		} // end if
+	} // end for
+
+	// File not found.
+	return "";
 } // end method
 
 } /* namespace Rsyn */

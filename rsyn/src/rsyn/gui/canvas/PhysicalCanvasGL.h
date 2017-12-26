@@ -280,6 +280,7 @@ private:
 
 public:
 	PhysicalCanvasGL(wxWindow* parent);
+	~PhysicalCanvasGL();
 
 	virtual void onRender(wxPaintEvent& evt);
 	virtual void onResized(wxSizeEvent& evt);
@@ -434,7 +435,7 @@ private:
 
 	void prepareGeometryManager();
 	void prepareRenderingTexture();
-
+	
 	void populateGeometryManager();
 
 	void swapBuffers();
@@ -445,7 +446,9 @@ private:
 	GLuint rboColorId = 0;
 	GLuint rboDepthId = 0;
 	GLuint fboId = 0;
-	bool clsRenderingToTextureEnabled = false;
+	bool clsRenderingToTextureEnabled = true;
+	bool clsRenderingToTextureNotSupported = false;
+	bool clsRenderingToTextureInitialized = false;
 	bool clsRepopulateGeometryManager = true;
 public:
 

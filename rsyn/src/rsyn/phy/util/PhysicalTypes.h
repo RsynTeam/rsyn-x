@@ -179,30 +179,31 @@ enum PhysicalMacroBlockClass : std::int8_t {
 //!        Rotate by 90deg clockwise to get E, S and W, flip to get FN, FE, 
 //!        FS and FW. (think of a dial).		
 //!        Source: http://vlsicad.ucsd.edu/GSRC/bookshelf/Slots/Placement/plFormats.html
+//! @note  This orientations are compatible with LEF/DEF and OpenAccess.
 
 enum PhysicalOrientation : std::int8_t {
 	/*! \brief Only used for Rsyn internal control.*/
 	ORIENTATION_INVALID = -1,
+	
+	//! @brief North Orientation (R0)
+	ORIENTATION_N,
+	//! @brief South orientation (R180)
+	ORIENTATION_S,
+	//! @brief West orientation (R90)
+	ORIENTATION_W,
+	//! @brief East orientation  (R270)
+	ORIENTATION_E,
+	//! @brief Flipped-North orientation (MY)
+	ORIENTATION_FN,
+	//! @brief Flipped-South orientation (MX)
+	ORIENTATION_FS,
+	//! @brief Flipped-West orientation (MX90)
+	ORIENTATION_FW,
+	//! @brief Flipped-East orientation (MY90)
+	ORIENTATION_FE,
 
-	//! @brief North Orientation
-	ORIENTATION_N = 0,
-	//! @brief East orientation 
-	ORIENTATION_E = 1,
-	//! @brief South orientation 
-	ORIENTATION_S = 2,
-	//! @brief West orientation 
-	ORIENTATION_W = 3,
-
-	//! @brief Flipped-North orientation 
-	ORIENTATION_FN = 4,
-	//! @brief Flipped-East orientation 
-	ORIENTATION_FE = 5,
-	//! @brief Flipped-South orientation 
-	ORIENTATION_FS = 6,
-	//! @brief Flipped-West orientation 
-	ORIENTATION_FW = 7,
-	/*! \brief Only used for Rsyn internal control.*/
-	NUM_PHY_ORIENTATION = 8
+	//! @brief Number of orientations
+	NUM_PHY_ORIENTATION
 }; // end enum
 
 // -----------------------------------------------------------------------------

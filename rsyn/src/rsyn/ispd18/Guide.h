@@ -20,31 +20,48 @@
  */
 
 /* 
- * File:   PhysicalNetData.h
+ * File:   Guide.h
  * Author: jucemar
  *
- * Created on 15 de Setembro de 2016, 19:15
+ * Created on 21 de Dezembro de 2016, 17:58
  */
 
-#ifndef PHYSICALDESIGN_PHYSICALNETDATA_H
-#define PHYSICALDESIGN_PHYSICALNETDATA_H
+#ifndef ISPD18_GUIDE
+#define ISPD18_GUIDE
+
+#include <vector>
+#include "rsyn/phy/PhysicalDesign.h"
 
 namespace Rsyn {
 
-class PhysicalNetData {
-public:
+class LayerGuide {
+	friend class RoutingGuide;
+	friend class NetGuide;
+protected:
+	Rsyn::PhysicalLayer  clsPhLayer;
 	Bounds clsBounds;
-	Rsyn::Pin clsBoundPins[2][2];
-	std::vector<Rsyn::PhysicalWire> clsWires;
-	PhysicalNetData() {
-		clsBoundPins[LOWER][X] = nullptr;
-		clsBoundPins[LOWER][Y] = nullptr;
-		clsBoundPins[UPPER][X] = nullptr;
-		clsBoundPins[UPPER][Y] = nullptr;
-	} // end constructor 
+public:
+	LayerGuide() = default;
+	const Bounds & getBounds() const { 
+		return clsBounds;
+	} // end method 
+	Rsyn::PhysicalLayer getLayer() const {
+		return clsPhLayer;
+	} // end method 
 }; // end class
 
-} // end class 
+class NetGuide {
+	friend class RoutingGuide;
+protected:
+	std::vector<LayerGuide> clsLayerGuides;
+public:
+	NetGuide() = default;
+	const std::vector<LayerGuide> & allLayerGuides() const { 
+		return clsLayerGuides;
+	} // end method 
+}; // end class 
 
-#endif /* PHYSICALDESIGN_PHYSICALNETDATA_H */
+} // end namespace 
 
+
+#endif /* ISPD18_ROUTINGGUIDE */

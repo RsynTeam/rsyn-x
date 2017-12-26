@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -21,24 +20,43 @@
  */
 
 /* 
- * File:   PhysicalViaInstanceData.h
+ * File:   RoutingGuide.h
  * Author: jucemar
  *
- * Created on 15 de Maio de 2017, 12:42
+ * Created on 21 de Dezembro de 2016, 17:47
  */
 
-#ifndef PHYSICALVIAINSTANCEDATA_H
-#define PHYSICALVIAINSTANCEDATA_H
+#ifndef ISPD18_ROUTINGGUIDE
+#define ISPD18_ROUTINGGUIDE
 
-namespace Rsyn{
+#include "rsyn/session/Service.h"
+#include "rsyn/session/Session.h"
+#include "rsyn/ispd18/Guide.h"
+#include "rsyn/io/parser/guide-ispd18/GuideDescriptor.h"
 
-class PhysicalViaInstanceData {
+namespace Rsyn {
+
+class RoutingGuide : public Rsyn::Service {
+protected:
+	Rsyn::Session clsSession;
+	Rsyn::Design clsDesign;
+	Rsyn::Module clsModule;
+	Rsyn::PhysicalDesign clsPhDesign;
+	Rsyn::Attribute<Rsyn::Net, Rsyn::NetGuide> clsGuides;
+	bool clsInitialized  = false;
 public:
-	Rsyn::PhysicalVia clsPhysicalVia;
-	DBUxy clsPos;
+	RoutingGuide() = default;
+	void start(const Rsyn::Json &params);
+	void stop();
+	
+	void loadGuides(const GuideDscp & dscp);
+	
+	const NetGuide & getGuide(Rsyn::Net net) const {
+		return clsGuides[net];
+	}
 }; // end class 
 
 } // end namespace 
 
-#endif /* PHYSICALVIAINSTANCEDATA_H */
 
+#endif /* ISPD18_ROUTINGGUIDE */

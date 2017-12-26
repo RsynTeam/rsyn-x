@@ -70,6 +70,14 @@ public:
 		PATH
 	}; // end enum
 
+	enum BoxOrientation {
+		BOX_ORIENTATION_INVALID,
+		BOX_ORIENTATION_SW,
+		BOX_ORIENTATION_SE,
+		BOX_ORIENTATION_NE,
+		BOX_ORIENTATION_NW
+	};
+
 	GeometryManager();
 
 	void reset();
@@ -86,7 +94,7 @@ public:
 	GroupId createGroup();
 	void addObjectToGroup(const ObjectId objectId, const GroupId groupId);
 
-	ObjectId addRectangle(const LayerId layerId, const Box &box, void * data = nullptr, const GroupId groupId = INVALID_GROUP_ID);
+	ObjectId addRectangle(const LayerId layerId, const Box &box, void * data = nullptr, const BoxOrientation orientation = BOX_ORIENTATION_INVALID, const GroupId groupId = INVALID_GROUP_ID);
 	ObjectId addPolygon(const LayerId layerId, const std::vector<DBUxy> &points, const float2 displacement, void * data = nullptr, const GroupId groupId = INVALID_GROUP_ID);
 	ObjectId addPath(const LayerId layerId, const std::vector<DBUxy> &points, const float thickness, void * data = nullptr, const GroupId groupId = INVALID_GROUP_ID);
 
@@ -160,20 +168,24 @@ private:
 
 		bool hasFillColor : 1;
 		bool hasLineColor : 1;
+		BoxOrientation orientation : 3;
 
 		Color fillColor;
 		Color lineColor;
 
-		// TODO: Maybe replace this by an OpenGL genlist (seeglGenLists).
+		// TODO: memory optimization... Only store this when the object is a
+		// polygon.
 		std::vector<std::tuple<GLenum, int>> tessellationType;
 		std::vector<float2> tessellationPoints;
+		std::vector<DBUxy> pathPoints;
 
 		// Client data.
 		void * data = nullptr;
 
 		Object() :
 				hasFillColor(false),
-				hasLineColor(false) {}
+				hasLineColor(false),
+				orientation(BOX_ORIENTATION_INVALID) {}
 	}; // end struct
 
 	struct Layer {
@@ -198,6 +210,8 @@ private:
 
 	GLUtriangulatorObj *tobj = nullptr;
 
+	mutable ObjectId previousFocusedObjectId = INVALID_OBJECT_ID;
+
 	mutable Color defaultColor;
 
 	Object &getObject(const ObjectId &objectId) { 
@@ -216,6 +230,8 @@ private:
 		return layers[layerId];
 	} // end method
 
+	void renderFocusedObject_Core(const ObjectId &objectId) const;
+
 public:
 	LineStippleMask getLayerLinePattern (const LayerId &layerId) const {
 		return layers[layerId].linePattern;
@@ -232,6 +248,10 @@ public:
 	Color getLayerFillColor (const LayerId &layerId) const {
 		return layers[layerId].fillColor;
 	} // end method
+	
+	float getLayerZ(const LayerId &layerId) const {
+		return layers[layerId].z;
+	}
 	
 private:
 	void resortLayers();

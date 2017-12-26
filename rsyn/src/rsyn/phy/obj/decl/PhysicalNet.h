@@ -66,8 +66,6 @@ public:
 	//! @brief Returns a reference to a vector that stores routed net wires.
 	const std::vector<Rsyn::PhysicalWire> & allWires() const;
 	
-	//! @brief Returns a constant reference to a vector that stores Instance of vias associated to the net.
-	const std::deque<Rsyn::PhysicalViaInstance> & allVias() const;
 }; // end class 
 
 } // end namespace 

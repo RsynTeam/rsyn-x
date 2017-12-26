@@ -27,7 +27,7 @@ int CanvasGL::CANVAS_GL_ARGS[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SI
 // -----------------------------------------------------------------------------
 
 CanvasGL::CanvasGL(wxWindow* parent) :
-	wxGLCanvas(parent, wxID_ANY, CANVAS_GL_ARGS, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE) 
+	wxGLCanvas(parent, wxID_ANY, CANVAS_GL_ARGS, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE | wxWANTS_CHARS)
 {	
 	
 	Connect( wxEVT_MOTION, wxMouseEventHandler(CanvasGL::onMouseMoved), NULL, this );
@@ -143,11 +143,13 @@ void CanvasGL::onMouseLeaveWindow(wxMouseEvent& event) {
 // -----------------------------------------------------------------------------
 
 void CanvasGL::onKeyPressed(wxKeyEvent& event) {
+	event.Skip();
 } // end method
 
 // -----------------------------------------------------------------------------
 
 void CanvasGL::onKeyReleased(wxKeyEvent& event) {
+	event.Skip();
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -335,7 +337,7 @@ void CanvasGL::adjustAspectRatio() {
 void CanvasGL::prepare2DViewport(const int width, const int height, const bool clear) {
 	wxGLCanvas::SetCurrent(*clsContext);
 	
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // white background
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glDisable(GL_TEXTURE_2D); // textures
 	glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_BLEND);

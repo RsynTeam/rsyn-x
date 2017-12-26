@@ -13,6 +13,8 @@
  * limitations under the License.
  */
  
+// Source: https://forums.wxwidgets.org/viewtopic.php?t=6379
+
 #ifndef PROPAGATION_HANDLER_H
 #define PROPAGATION_HANDLER_H
 

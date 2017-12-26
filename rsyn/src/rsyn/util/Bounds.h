@@ -87,7 +87,15 @@ public:
 	DBU getCoordinate(const Boundary bound, const Dimension dim ) const { return (*this)[bound][dim]; }
 	DBUxy getCoordinate(const Boundary bound ) const { return (*this)[bound]; }
 
-	bool overlap( const Bounds &rect ) const {
+	DBU getX() const { return (*this)[LOWER][X]; }
+	DBU getY() const { return (*this)[LOWER][Y]; }
+	DBU getWidth() const { return computeLength(X); }
+	DBU getHeight() const { return computeLength(Y); }
+
+	DBUxy getLower() const { return (*this)[LOWER]; }
+	DBUxy getUpper() const { return (*this)[UPPER]; }
+
+	bool overlap(const Bounds &rect) const {
 		const DBU dx = std::max( (*this)[LOWER][X], rect[LOWER][X] ) - std::min( (*this)[UPPER][X], rect[UPPER][X] );
 		const DBU dy = std::max( (*this)[LOWER][Y], rect[LOWER][Y] ) - std::min( (*this)[UPPER][Y], rect[UPPER][Y] );
 
@@ -97,7 +105,7 @@ public:
 	// Returns the rectangle formed by the intersection of this and other 
 	// rectangle. If they don't overlap returns a degenerated rectangle (zero
 	// area) at half way between the two rectangles.
-	Bounds overlapRectangle( const Bounds &rect ) const {
+	Bounds overlapRectangle(const Bounds &rect) const {
 		const DBU dx = std::max( (*this)[LOWER][X], rect[LOWER][X] ) - std::min( (*this)[UPPER][X], rect[UPPER][X] );
 		const DBU dy = std::max( (*this)[LOWER][Y], rect[LOWER][Y] ) - std::min( (*this)[UPPER][Y], rect[UPPER][Y] );
 

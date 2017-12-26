@@ -636,27 +636,15 @@ void PhysicalDesign::addPhysicalNet(const DefNetDscp & netDscp) {
 		for (const DefWireSegmentDscp & segmentDscp : wireDscp.clsWireSegments) {
 			phWire->clsWireSegments.push_back(PhysicalWireSegment(new PhysicalWireSegmentData()));
 			PhysicalWireSegment phWireSegment = phWire->clsWireSegments.back();
-			phWireSegment->clsPoints = segmentDscp.clsPoints;
 			phWireSegment->clsNew = segmentDscp.clsNew;
 			phWireSegment->clsPhysicalLayer = getPhysicalLayerByName(segmentDscp.clsLayerName);
-			if (segmentDscp.clsHasVia) {
-				phWireSegment->clsPhysicalVia = getPhysicalViaByName(segmentDscp.clsViaName);
-				PhysicalViaInstance phViaInst = PhysicalViaInstance(new PhysicalViaInstanceData());
-				phViaInst->clsPhysicalVia = phWireSegment->clsPhysicalVia;
-				phViaInst->clsPos = phWireSegment->clsPoints.back();
-				netData.clsViaInstances.push_back(phViaInst);
-			} // end if 
-			if (segmentDscp.clsHasRectangle) {
-				phWireSegment->clsHasRectangle = true;
-				phWireSegment->clsRectangle = segmentDscp.clsRect;
-			} // end if
 
 			for (const DefRoutingPointDscp & routingPoint : segmentDscp.clsRoutingPoints) {
 				phWireSegment->clsRoutingPoints.push_back(PhysicalRoutingPoint(new PhysicalRoutingPointData()));
 				PhysicalRoutingPoint phPoint = phWireSegment->clsRoutingPoints.back();
-				phPoint->clsExtension = routingPoint.clsExtension;
+				DBU ext = routingPoint.clsExtension;
+				phPoint->clsExtension = ext > 0 ? ext : phWireSegment->clsPhysicalLayer->clsWidth / 2;
 				phPoint->clsPos = routingPoint.clsPos;
-				phPoint->clsExtension = routingPoint.clsExtension;
 				phPoint->clsOrientation = getPhysicalOrientation(routingPoint.clsOrientation);
 				if (routingPoint.clsHasVia)
 					phPoint->clsVia = getPhysicalViaByName(routingPoint.clsViaName);
@@ -666,39 +654,6 @@ void PhysicalDesign::addPhysicalNet(const DefNetDscp & netDscp) {
 					phPoint->clsHasRectangle = true;
 				} // end if 
 			} // end for 
-
-			// Adjust path point according to extensions and direction.
-			if (segmentDscp.clsPoints.size() >= 2) {
-				const DBU extensionBegin = segmentDscp.clsExtensionBegin >= 0 ?
-					segmentDscp.clsExtensionBegin : phWireSegment->clsPhysicalLayer->clsWidth / 2; // TODO: non-default rule
-				if (extensionBegin > 0) {
-					const int x0 = segmentDscp.clsPoints[0].x;
-					const int y0 = segmentDscp.clsPoints[0].y;
-					const int x1 = segmentDscp.clsPoints[1].x;
-					const int y1 = segmentDscp.clsPoints[1].y;
-
-					const int dx = x0 == x1 ? 0 : (x1 > x0 ? -1 : +1);
-					const int dy = y0 == y1 ? 0 : (y1 > y0 ? -1 : +1);
-					phWireSegment->clsPoints[0].x += dx*extensionBegin;
-					phWireSegment->clsPoints[0].y += dy*extensionBegin;
-				} // end if
-
-				const DBU extensionEnd = segmentDscp.clsExtensionEnd >= 0 ?
-					segmentDscp.clsExtensionEnd : phWireSegment->clsPhysicalLayer->clsWidth / 2; // TODO: non-default rule
-				if (extensionEnd > 0) {
-					const int k = (int) segmentDscp.clsPoints.size() - 1;
-
-					const int x0 = segmentDscp.clsPoints[k - 1].x;
-					const int y0 = segmentDscp.clsPoints[k - 1].y;
-					const int x1 = segmentDscp.clsPoints[k].x;
-					const int y1 = segmentDscp.clsPoints[k].y;
-
-					const int dx = x0 == x1 ? 0 : (x1 > x0 ? +1 : -1);
-					const int dy = y0 == y1 ? 0 : (y1 > y0 ? +1 : -1);
-					phWireSegment->clsPoints[k].x += dx*extensionEnd;
-					phWireSegment->clsPoints[k].y += dy*extensionEnd;
-				} // end if
-			} // end if
 		} // end for 
 	} // end for
 } // end method 
