@@ -1,0 +1,7 @@
+build
+
+ide/netbeans/*
+ide/netbeans/nbproject/private
+!ide/netbeans/nbproject/
+!ide/netbeans/Makefile
+

@@ -1,0 +1,1 @@
+../script/debug/comp.sh
