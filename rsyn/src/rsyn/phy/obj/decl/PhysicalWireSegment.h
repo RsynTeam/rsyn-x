@@ -34,6 +34,14 @@ public:
 	PhysicalWireSegment(std::nullptr_t) : Proxy(nullptr) {
 	}
 
+	//! @brief Returns the start point of this wire segment taking into account
+	//! routing point extension.
+	DBUxy getSourcePosition() const;
+
+	//! @brief Returns the end point of this wire segment taking into account
+	//! routing point extension.
+	DBUxy getTargetPosition() const;
+
 	//! @brief Returns routed wire width segment. It is valid only for special nets.
 	//! @warning Regular wire segments must get wire width from layer. 
 	DBU getRoutedWidth() const;
@@ -44,7 +52,7 @@ public:
 	//! @brief Returns number of points in segment (clsPoints.size())
 	const std::size_t getNumRoutingPoints() const;
 	const std::vector<PhysicalRoutingPoint> & allRoutingPoints() const;
-	
+
 }; // end class 
 
 } // end namespace 

@@ -35,10 +35,12 @@ class PhysicalWireSegmentData {
 public:
 	Rsyn::PhysicalLayer clsPhysicalLayer;
 	std::vector<PhysicalRoutingPoint> clsRoutingPoints;
+	DBUxy clsSourcePosition;
+	DBUxy clsTargetPosition;
 	DBU clsRoutedWidth = 0;
 	bool clsNew : 1;
 	
-	PhysicalWireSegmentData() {
+	PhysicalWireSegmentData() : clsSourcePosition(0, 0), clsTargetPosition(0, 0) {
 		clsNew = false;
 	} // end constructor 
 }; // end class 

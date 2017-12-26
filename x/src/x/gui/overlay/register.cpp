@@ -21,10 +21,6 @@
 // name, name is the overlay label and visibility is the initial visibility
 // state of the overlay.
 
-#include "rsyn/gui/canvas/overlay/Layout.h"
-#include "rsyn/gui/canvas/overlay/DensityGridOverlay.h"
-#include "rsyn/gui/canvas/overlay/RoutingGuidesOverlay.h"
-
 #include "x/gui/overlay/Jezz.h"
 #include "x/gui/overlay/Abu.h"
 #include "x/gui/overlay/OverlapRemoverOverlay.h"
@@ -33,13 +29,9 @@
 // Overlays
 namespace Rsyn {
 static Startup registerOverlays([]{
-	MainFrame::registerOverlay<LayoutOverlay>("Layout", true);
-	MainFrame::registerOverlay<DensityGridOverlay>("Density Grid");
-
 	MainFrame::registerOverlay<JezzOverlay>("Jezz");
 	MainFrame::registerOverlay<AbuOverlay>("Abu");
 	MainFrame::registerOverlay<OverlapRemoverOverlay>("Macro Overlap");
 	MainFrame::registerOverlay<RoutingEstimatorOverlay>("Routing Estimation");
-	MainFrame::registerOverlay<RoutingGuidesOverlay>("Routing guide");
 });
 } // end namespace

@@ -13,21 +13,19 @@
  * limitations under the License.
  */
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   PhysicalWireSegment.h
- * Author: jucemar
- *
- * Created on 13 de Maio de 2017, 16:01
- */
-
-
 namespace Rsyn {
+
+inline DBUxy PhysicalWireSegment::getSourcePosition() const {
+	return data->clsSourcePosition;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBUxy PhysicalWireSegment::getTargetPosition() const {
+	return data->clsTargetPosition;
+} // end method
+
+// -----------------------------------------------------------------------------
 
 inline DBU PhysicalWireSegment::getRoutedWidth() const {
 	return data->clsRoutedWidth;

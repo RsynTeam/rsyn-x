@@ -13,19 +13,6 @@
  * limitations under the License.
  */
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   PhysicalDesign.h
- * Author: jucemar
- *
- * Created on 12 de Setembro de 2016, 20:05
- */
-
 #ifndef PHYSICALDESIGN_PHYSICALDESIGN_H
 #define PHYSICALDESIGN_PHYSICALDESIGN_H
 
@@ -299,6 +286,9 @@ protected:
 	//! @warning works only for rectangles 
 	void mergeBounds(const std::vector<Bounds> & source, std::vector<Bounds> & target, const Dimension dim = X);
 
+	//! @brief Returns the extended position of a point in a wire segment.
+	DBUxy getExtendedPosition(const DBUxy p0, const DBUxy p1, const DBU extension) const;
+
 private:
 	//! @brief Returns the Rsyn::PhysicalRow unique identifier.
 	PhysicalIndex getId(Rsyn::PhysicalRow phRow) const;
@@ -308,6 +298,10 @@ private:
 
 	//! @brief Returns the Rsyn::PhysicalSpacing unique identifier.
 	PhysicalIndex getId(Rsyn::PhysicalSpacing spacing) const;
+
+	//! @brief Post-processing for wire segments. Currently it sets the start
+	//! and end point positions for segments taking into account extensions.
+	void postProcessWireSegment(Rsyn::PhysicalWireSegment phWireSegment);
 
 public:
 	//! @details Creates the physical object to handle the physical object extensions.

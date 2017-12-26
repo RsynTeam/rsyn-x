@@ -66,6 +66,27 @@ public:
 	bool hasVia() const;
 }; // end class 
 
+// -----------------------------------------------------------------------------
+
+class PhysicalRoutingPointPair {
+friend class PhysicalWireSegment;
+public:
+
+	PhysicalRoutingPoint getSource() const {return clsSourcePoint;}
+	PhysicalRoutingPoint getTarget() const {return clsTargetPoint;}
+
+	DBUxy getExtendedSourcePosition() const {return clsExtendedSourcePosition;}
+	DBUxy getExtendedTargetPosition() const {return clsExtendedTargetPosition;}
+
+private:
+	
+	PhysicalRoutingPoint clsSourcePoint;
+	PhysicalRoutingPoint clsTargetPoint;
+
+	DBUxy clsExtendedSourcePosition;
+	DBUxy clsExtendedTargetPosition;
+}; // end class
+
 } // end namespace 
 
 #endif /* PHYSICALDESIGN_PHYSICALROUTINGPOINT_H */

@@ -652,9 +652,11 @@ void PhysicalDesign::addPhysicalNet(const DefNetDscp & netDscp) {
 				if (routingPoint.clsHasRectangle) {
 					phPoint->clsRectangle = routingPoint.clsRect;
 					phPoint->clsHasRectangle = true;
-				} // end if 
-			} // end for 
-		} // end for 
+				} // end if
+			} // end for
+
+			postProcessWireSegment(phWireSegment);
+		} // end for
 	} // end for
 } // end method 
 
@@ -696,7 +698,6 @@ void PhysicalDesign::addWireSegment(const DefWireSegmentDscp & segmentDscp, Phys
 		PhysicalRoutingPoint phPoint = phWireSegment->clsRoutingPoints.back();
 		phPoint->clsExtension = routingPoint.clsExtension;
 		phPoint->clsPos = routingPoint.clsPos;
-		phPoint->clsExtension = routingPoint.clsExtension;
 		phPoint->clsOrientation = getPhysicalOrientation(routingPoint.clsOrientation);
 		if (routingPoint.clsHasVia)
 			phPoint->clsVia = getPhysicalViaByName(routingPoint.clsViaName);
@@ -705,7 +706,9 @@ void PhysicalDesign::addWireSegment(const DefWireSegmentDscp & segmentDscp, Phys
 			phPoint->clsRectangle = routingPoint.clsRect;
 			phPoint->clsHasRectangle = true;
 		} // end if 
-	} // end for 
+	} // end for
+
+	postProcessWireSegment(phWireSegment);
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -857,4 +860,63 @@ void PhysicalDesign::mergeBounds(const std::vector<Bounds> & source,
 } // end method 
 
 // -----------------------------------------------------------------------------
+
+void PhysicalDesign::postProcessWireSegment(Rsyn::PhysicalWireSegment phWireSegment) {
+	const int numRoutingPoints = phWireSegment->clsRoutingPoints.size();
+
+	if (numRoutingPoints > 0) {
+		phWireSegment->clsSourcePosition = phWireSegment->clsRoutingPoints.front().getPosition();
+		phWireSegment->clsTargetPosition = phWireSegment->clsRoutingPoints.back().getPosition();
+	} // end if
+
+	if (numRoutingPoints >= 2) {
+		DBUxy p0;
+		DBUxy p1;
+		DBU extension;
+
+		p0 = phWireSegment->clsRoutingPoints[0].getPosition();
+		p1 = phWireSegment->clsRoutingPoints[1].getPosition();
+		extension =  phWireSegment->clsRoutingPoints[0].getExtension();
+		phWireSegment->clsSourcePosition = getExtendedPosition(p0, p1, extension);
+
+		p0 = phWireSegment->clsRoutingPoints[numRoutingPoints - 1].getPosition();
+		p1 = phWireSegment->clsRoutingPoints[numRoutingPoints - 2].getPosition();
+		extension =  phWireSegment->clsRoutingPoints[numRoutingPoints - 1].getExtension();
+		phWireSegment->clsTargetPosition = getExtendedPosition(p0, p1, extension);
+	} // end if
+} // end method
+
+// -----------------------------------------------------------------------------
+
+DBUxy PhysicalDesign::getExtendedPosition(const DBUxy p0, const DBUxy p1, const DBU extension) const {
+	DBUxy pos = p0;
+
+	const DBUxy d = p1 - p0;
+	const bool horizontal = d.x != 0;
+	const bool vertical = d.y != 0;
+	if (horizontal && !vertical) {
+		// Horizontal
+		if (d.x > 0) {
+			// p0.x < p1.x
+			pos.x -= extension;
+		} else {
+			// p0.x > p1.x
+			pos.x += extension;
+		} // end else
+	} else if (vertical && !horizontal) {
+		// Vertical
+		if (d.y > 0) {
+			// p0.y < p1.y
+			pos.y -= extension;
+		} else {
+			// p0.y > p1.y
+			pos.y += extension;
+		} // end else
+	} // end else-if
+
+	return pos;
+} // end method
+
+// -----------------------------------------------------------------------------
+
 } // end namespace 

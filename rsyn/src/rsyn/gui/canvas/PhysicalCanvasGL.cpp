@@ -1425,14 +1425,19 @@ void PhysicalCanvasGL::populateGeometryManager() {
 		for (Rsyn::PhysicalWire phWire : phNet.allWires()) {
 			for (Rsyn::PhysicalWireSegment phWireSegment : phWire.allSegments()) {
 
-				const std::vector<Rsyn::PhysicalRoutingPoint> & routingPts = phWireSegment.allRoutingPoints();
-				if (phWireSegment.getNumRoutingPoints() > 1) {					
-					std::vector<DBUxy> points;
-					points.reserve(routingPts.size());
-					for (Rsyn::PhysicalRoutingPoint phRoutingPt : routingPts) {
-						points.push_back(phRoutingPt.getPosition());
-					} // end for
+				const int numRoutingPoint = phWireSegment.getNumRoutingPoints();
 
+				const std::vector<Rsyn::PhysicalRoutingPoint> & routingPts = phWireSegment.allRoutingPoints();
+				if (numRoutingPoint >= 2) {
+					std::vector<DBUxy> points;
+					points.reserve(numRoutingPoint);
+
+					points.push_back(phWireSegment.getSourcePosition());
+					for (int i = 1; i < numRoutingPoint - 1; i++) {
+						points.push_back(routingPts[i].getPosition());
+					} // end for
+					points.push_back(phWireSegment.getTargetPosition());
+					
 					Rsyn::PhysicalLayer phLayer = phWireSegment.getLayer();
 					const DBU width = phLayer.getWidth();
 					const GeometryManager::LayerId layerId =
