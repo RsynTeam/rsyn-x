@@ -70,7 +70,7 @@ void JezzOverlay::renderNodes(PhysicalCanvasGL * canvas) {
 	// Draw outlines.
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glBegin(GL_QUADS);
-	glColor3ub(0, 0, 0);
+	glColor3ub(255, 255, 255);
 
 	for (Jezz::JezzNode * jezzNode : jezz->allNodes()) {
 		DBU xmin;
