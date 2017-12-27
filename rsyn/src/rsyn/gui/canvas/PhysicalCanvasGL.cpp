@@ -65,6 +65,7 @@ const float PhysicalCanvasGL::LAYER_FOREGROUND	= 1.0f;
 // -----------------------------------------------------------------------------
 
 PhysicalCanvasGL::PhysicalCanvasGL(wxWindow* parent) : CanvasGL(parent) {
+	clsLevelOfDetail = LEVEL_OF_DETAIL_HIGH;
 	reset();
 } // end constructor
 
@@ -1068,6 +1069,27 @@ void PhysicalCanvasGL::renderBlockages() {
 	// To be updated after new blockage infrastructure implementation... 
 } // end method
 
+// -----------------------------------------------------------------------------
+
+void PhysicalCanvasGL::updateLevelOfDetail() {
+	const float w = getSpaceWidth();
+	const float h = getSpaceHeight();
+	const float d = std::max(w, h);
+
+	const float rowHeight = phDesign.getRowHeight();
+	const float numVisiableRows = d / rowHeight;
+
+	if (numVisiableRows < 25) {
+		clsLevelOfDetail = LEVEL_OF_DETAIL_EXTRA_HIGH;
+	} else if (numVisiableRows < 50) {
+		clsLevelOfDetail = LEVEL_OF_DETAIL_HIGH;
+	} else if (numVisiableRows < 100) {
+		clsLevelOfDetail = LEVEL_OF_DETAIL_MEDIUM;
+	} else {
+		clsLevelOfDetail = LEVEL_OF_DETAIL_LOW;
+	} // end else
+} // end method
+
 // ----------------------------------------------------------------------------- 
 
 void PhysicalCanvasGL::render(const int width, const int height) {
@@ -1080,6 +1102,8 @@ void PhysicalCanvasGL::render(const int width, const int height) {
 		populateGeometryManager();
 
 	prepare2DViewport(width, height);
+
+	updateLevelOfDetail();
 		
 	if (clsViewCoreBounds) renderCoreBounds();
 		

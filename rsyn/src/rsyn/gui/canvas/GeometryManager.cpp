@@ -586,7 +586,6 @@ GeometryManager::renderRectangleOutline(const Layer &layer, const Object &object
 		glVertex3f(x0, y0, layer.z);
 		glVertex3f(x1, y1, layer.z);
 		glEnd();
-
 	} // end if
 
 	if (object.hasLineColor) {

@@ -47,6 +47,15 @@ BEGIN_DECLARE_EVENT_TYPES()
 
 // -----------------------------------------------------------------------------
 
+enum LevelOfDetail {
+	LEVEL_OF_DETAIL_LOW,
+	LEVEL_OF_DETAIL_MEDIUM,
+	LEVEL_OF_DETAIL_HIGH,
+	LEVEL_OF_DETAIL_EXTRA_HIGH
+}; // end enum
+
+// -----------------------------------------------------------------------------
+
 class PhysicalCanvasGL;
 
 class CanvasOverlay {
@@ -114,7 +123,10 @@ private:
 
 	std::vector<CanvasOverlayConfiguration> clsOverlays;
 	std::map<std::string, int> clsOverlayMapping;
-	
+
+	// Level of detail for rendering.
+	LevelOfDetail clsLevelOfDetail;
+
 	// Enable info canvas. TODO: Remove these variable as this should be guessed
 	// by accessing some session method.
 	bool clsEnableLegalizerInfo;
@@ -260,6 +272,8 @@ private:
 	
 	void drawArrow( const float x0, const float y0, const float x1, const float y1, const float z );
 	void drawPin(Rsyn::Pin pin);
+
+	void updateLevelOfDetail();
 	
 	void render(const int width = 0, const int height = 0);
 	void renderTimerInfo();
@@ -353,6 +367,7 @@ public:
 	// Gets.
 	Rsyn::Cell getSelectedCell() { return clsSelectedCell; }
 	int getSelectedBin() const {return clsSelectedBinIndex; }
+	LevelOfDetail getLevelOfDetail() const {return clsLevelOfDetail;}
 
 	// Paths
 	void storePaths(const Rsyn::TimingMode mode, const 

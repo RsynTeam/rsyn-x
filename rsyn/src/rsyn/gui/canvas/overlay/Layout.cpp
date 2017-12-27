@@ -216,8 +216,16 @@ void LayoutOverlay::render(PhysicalCanvasGL * canvas) {
 	renderBlockages(canvas);
 	renderRegions(canvas);
 
+	std::set<std::string> layers;
+	if (canvas->getLevelOfDetail() < LEVEL_OF_DETAIL_MEDIUM) {
+		if (clsViewInstances_Pins) 
+			layers.insert("pins");
+	} // end if
+
+	showGeoLayers(false, layers);
 	geoMgr->render();
 	geoMgr->renderHighlightedObjects();
+	showGeoLayers(true, layers);
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -262,7 +270,6 @@ void LayoutOverlay::config(const nlohmann::json &params) {
 		if (geoMgr) {
 			geoMgr->setLayerVisibility(layer.getName(), !clsViewRouting? false : clsViewLayer[layer.getIndex()]);
 		} // end if
-
 
 		// Setting tracks
 		if (layer.getType() == Rsyn::ROUTING) {
@@ -573,3 +580,11 @@ void LayoutOverlay::renderRegions(PhysicalCanvasGL* canvas) {
 	} // end for
 	glEnd();
 }  // end method
+
+// -----------------------------------------------------------------------------
+
+void LayoutOverlay::showGeoLayers(const bool visible, const std::set<std::string> &layers) {
+	for (const std::string &layer : layers) {
+		geoMgr->setLayerVisibility(layer, visible);
+	} // end method
+} // end method

@@ -68,6 +68,8 @@ private:
 	void renderBlockages(PhysicalCanvasGL * canvas);
 	void renderRegions(PhysicalCanvasGL * canvas);
 
+	void showGeoLayers(const bool visible, const std::set<std::string> &layers);
+
 	////////////////////////////////////////////////////////////////////////////
 	// Experimental
 	////////////////////////////////////////////////////////////////////////////
@@ -75,51 +77,7 @@ private:
 	std::vector<bool> clsViewLayer;
 	std::vector<bool> clsViewTrackLayer;
 	std::vector<bool> clsViewBlockageLayer;
-	
-	
-	class Layer {
-	private:
-		Color clsFillColor;
-		Color clsBorderColor;
-		FillStippleMask clsStippleMask;
-
-		float clsZ;
-		int clsLayerId;
-		string clsName;
-
-		bool clsVisible;
-	public:
-
-		Layer() { clsVisible = true; clsZ = 0; }
-
-		bool isVisible() const { return clsVisible; }
-
-		float getZ()const {return clsZ;}
-		FillStippleMask getStippleMask()const{ return clsStippleMask; }
-		Color getFillColor() const { return clsFillColor; }
-		Color getBorderColor() const { return clsBorderColor; }
-		const string &getName() const { return clsName; }
-
-		void setZ(const float z) {clsZ = z;}
-		void setFillColor(unsigned char r, unsigned char g, unsigned char b) {
-			setFillColor(Color( r, g, b));
-		} // end method
-		void setFillColor(const Color c) { clsFillColor = c; }
-		void setBorderColor(unsigned char r, unsigned char g, unsigned char b) {
-			setBorderColor(Color( r, g, b));
-		} // end method
-		void setBorderColor(const Color c) { clsBorderColor = c; }
-
-		void configure( const string name, const int layerId, const Color &fillColor, const Color &borderColor, const FillStippleMask stippleMask, const float z = 0) {
-			clsName = name;
-			clsLayerId = layerId;
-			clsFillColor = fillColor;
-			clsBorderColor = borderColor;
-			clsStippleMask = stippleMask;
-			clsZ = z;
-		} // end method
-	}; // end class
-
+		
 public:
 	
 	LayoutOverlay();
