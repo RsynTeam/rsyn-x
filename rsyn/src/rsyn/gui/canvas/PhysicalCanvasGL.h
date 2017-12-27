@@ -164,8 +164,8 @@ private:
 	
 	std::vector<int> techLayerIds;
 	
-	// We currently support up to 11 tech layer styles
-	std::array<FillStippleMask, 11> techLayerMasks {{
+	// We currently support up to 16 tech layer styles
+	std::array<FillStippleMask, 16> techLayerMasks {{
 		STIPPLE_MASK_DIAGONAL_DOWN_1,
 		STIPPLE_MASK_DIAGONAL_UP_1,
 		STIPPLE_MASK_DIAGONAL_DOWN_2,
@@ -176,10 +176,15 @@ private:
 		STIPPLE_MASK_DIAGONAL_UP_4,
 		STIPPLE_MASK_DIAGONAL_DOWN_5,
 		STIPPLE_MASK_DIAGONAL_UP_5,
-		STIPPLE_MASK_CROSS
+		STIPPLE_MASK_CROSS,
+		STIPPLE_MASK_CHESS,
+		STIPPLE_MASK_YACIF2,
+		STIPPLE_MASK_YACIF3,
+		STIPPLE_MASK_YACIF4,
+		STIPPLE_MASK_YACIF5
 	}}; 
 	
-	std::array<Color, 12> techLayerColors {{
+	std::array<Color, 16> techLayerColors {{
 		//Color(  0,   0,   0), // BLACK
 		Color(  0,   0, 255), // BLUE
 		Color(255,   0,   0), // RED
@@ -191,7 +196,12 @@ private:
 		Color(230,   0, 230), // PINK 
 		Color(  0, 230, 230), // CYAN
 		Color( 75,   0, 130), // INDIGO
-		Color(128,   0, 128) // PURPLE
+		Color(128,   0, 128), // PURPLE
+		Color( 64, 224, 208), // TURQUOISE
+		Color(255, 165,   0), // ORANGE
+		Color(  0,   0, 128), // NAVY
+		Color(139,   0, 139), // DARK MAGENTA 
+		Color(  0, 139, 139)  // DARK CYAN
 	}};	
 
 public:
