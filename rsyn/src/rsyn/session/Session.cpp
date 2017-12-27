@@ -37,7 +37,7 @@ SessionData * Session::sessionData = nullptr;
 // -----------------------------------------------------------------------------
 
 void Session::init() {
-	if (isInitialized())
+	if (checkInitialized())
 		return;
 
 #ifdef __APPLE__
@@ -75,6 +75,8 @@ void Session::init() {
 	// Initialize logger
 	const bool enableLog = Environment::getBoolean( "ENABLE_LOG", false );
 	sessionData->logger = ( enableLog ) ? ( new Logger() ) : ( nullptr );
+
+	checkInitialized(true);
 } // end constructor 
 
 ////////////////////////////////////////////////////////////////////////////////

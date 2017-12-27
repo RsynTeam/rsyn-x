@@ -6,11 +6,22 @@ In this page, you find instruction on how to use Rsyn for ISPD18 Detailed Routin
 ## Binary
 TODO
 
-## Source Code
+## Getting Started
 
+### Source Code
+
+```cpp
 git clone https://github.com/rsyn/rsyn-x.git
+```
 
-## Compiling Rsyn using Cmake
+### Dependencies
+
+```cpp
+cd rsyn-x/ispd18
+./script/install-dependencies.sh
+```
+
+### Compiling Rsyn using Cmake
 
 ```cpp
 cd rsyn-x/ispd18

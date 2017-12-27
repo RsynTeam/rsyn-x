@@ -146,16 +146,15 @@ public:
 	
 	static void init();
 
-	//! @note If I understood the C++ standard correctly, all static variables
-	//!       are first zero-initialized and then all constructors, if any, are
-	//!       called. In that case, it is safe to check if the session was
-	//!       already initialized by checking if the session data pointer is
-	//!       null as it would be zero-initialized before any more sophisticated
-	//!       initialization (e.g. constructor) is called. Hopefully this is the
-	//!       case and we don't have any risk of falling into the "static
-	//!       variable order initialization fiasco".
-	static bool isInitialized() {
-		return sessionData;
+	//! @note To prevent "static variable order initialization fiasco", the
+	//        static variable signaling that the engine was initialized is
+	//        stored inside this function. In this way, we can guarantee it will
+	//        be initialized to false before being used.
+	static bool checkInitialized(const bool markAsInitialized = false) {
+		static bool sessionInitialized = false;
+		if (markAsInitialized)
+			sessionInitialized = true;
+		return sessionInitialized;
 	} // end method
 
 private:
@@ -505,7 +504,7 @@ public:
 class Startup {
 public:
 	Startup(std::function<void()> f) {
-		if (!Session::isInitialized())
+		if (!Session::checkInitialized())
 			Session::init();
 		f();
 	} // end constructor

@@ -87,7 +87,8 @@ int main(int argc, char *argv[]) {
 		desc.add_options()
 				("script", value<std::string>(&optScript), "The script to run at startup.")
 				("interactive", "Does not exit after running the script.")
-				("no-gui", "The graphics user interface.");
+				("gui", "Start graphics user interface.");
+				("no-gui", "Do not start graphics user interface.");
 
 		variables_map vm;
         store (command_line_parser(argc, argv).options(desc)
