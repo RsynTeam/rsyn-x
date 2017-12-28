@@ -51,3 +51,8 @@ Select file "rsyn-x/ispd18/sample/ispd18_sample/ispd18_sample.rsyn"
 
 ![Rsyn](https://github.com/rsyn/rsyn-x/blob/master/ispd18/media/rsyn-screenshot-01.png)
 
+## Routing Guides
+
+See ExampleService::doSomething() to check how to access routing guides from the code.
+
+

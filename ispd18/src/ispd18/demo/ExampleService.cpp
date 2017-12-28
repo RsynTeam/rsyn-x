@@ -16,6 +16,7 @@
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/session/Session.h"
 #include "rsyn/phy/PhysicalService.h"
+#include "rsyn/ispd18/RoutingGuide.h"
 #include "ispd18/demo/ExampleService.h"
 
 // -----------------------------------------------------------------------------
@@ -26,10 +27,10 @@ void ExampleService::start(const Rsyn::Json &params) {
 	design = session.getDesign();
 	module = design.getTopModule();
 
-	Rsyn::PhysicalService *physical = session.getService("rsyn.physical");
+	physicalService = session.getService("rsyn.physical");
+	guideService = session.getService("rsyn.routingGuide");
 
-	Rsyn::PhysicalDesign phDesign;
-	phDesign = physical->getPhysicalDesign();
+	physicalDesign = physicalService->getPhysicalDesign();
 
 	{ // helloWorld command
 		ScriptParsing::CommandDescriptor dscp;
@@ -61,6 +62,43 @@ void ExampleService::stop() {
 
 // -----------------------------------------------------------------------------
 
-void ExampleService::doNothing() {
-	std::cout << "Doing nothing...\n";
+void ExampleService::doSomething() {
+	const int N = 10;
+	
+	int counter;
+
+	// Traverse nets and their routing guides.
+	std::cout << "Nets:\n"; 
+	counter = 0;
+	for (Rsyn::Net net : module.allNets()) {
+		std::cout << net.getName() << "\n";
+
+		const Rsyn::NetGuide &netGuide = guideService->getGuide(net);
+		for (const Rsyn::LayerGuide &layerGuide : netGuide.allLayerGuides()) {
+			std::cout << "  " << layerGuide.getBounds() << " " << layerGuide.getLayer().getName() << "\n";
+		} // end for
+
+		if (++counter >= N) {
+			break;
+		} // end if
+	} // end if
+
+	// Traverse cells and print their width and height.
+	std::cout << "Cells:\n";
+	counter = 0;
+	for (Rsyn::Instance instance : module.allInstances()) {
+		if (instance.getType() != Rsyn::CELL)
+			continue;
+
+		Rsyn::Cell cell = instance.asCell();
+		Rsyn::PhysicalCell physicalCell = physicalDesign.getPhysicalCell(cell);
+
+		std::cout << cell.getName() << " (" << physicalCell.getWidth() << ", "
+				<< physicalCell.getHeight() << ")\n";
+
+		if (++counter >= N) {
+			break;
+		} // end if
+	} // end for
+
 } // end method

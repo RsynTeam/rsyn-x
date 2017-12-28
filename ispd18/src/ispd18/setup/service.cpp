@@ -25,7 +25,7 @@
 
 // Registration
 namespace Rsyn {
-static Startup registerMessages([]{
+static Startup registerServices([]{
 	Rsyn::Session session;
 	session.registerService<ExampleService>("example.service");
 });

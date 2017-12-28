@@ -26,8 +26,14 @@ bool ExampleProcess::run(const Rsyn::Json &params) {
 	msg.replace("label", "world");
 	msg.print();
 
+	// Start service if not running yet.
+	if (!session.isServiceRunning("example.service")) {
+		session.startService("example.service");
+	} // end if
+
+	// Get the service and do something.
 	ExampleService *service = session.getService("example.service");
-	service->doNothing();
+	service->doSomething();
 
 	return true;
 } // end method

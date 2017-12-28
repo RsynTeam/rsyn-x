@@ -24,6 +24,8 @@
 
 namespace Rsyn {
 class Session;
+class PhysicalService;
+class RoutingGuide;
 };
 
 class ExampleService : public Rsyn::Service {
@@ -32,12 +34,17 @@ public:
 	virtual void start(const Rsyn::Json &params);
 	virtual void stop();
 
-	void doNothing();
+	void doSomething();
 
 private:
 
 	Rsyn::Design design;
 	Rsyn::Module module; // top module
+
+	Rsyn::PhysicalDesign physicalDesign;
+
+	Rsyn::PhysicalService *physicalService = nullptr;
+	Rsyn::RoutingGuide *guideService = nullptr;
 
 }; // end class
 
