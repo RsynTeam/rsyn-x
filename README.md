@@ -45,6 +45,14 @@ for (Rsyn::Net net : module.allNets()) {
 Rsyn::Net newNet = module.createNet();
 attr[newNet] = computeSomething(net);
 ```
+
+#### Supported Compilers and Operating Systems: 
+
+| Compiler        | Operating System             | 
+|-----------------|------------------------------|
+| GCC 5.4.0       | Ubuntu 16.04.3 LTS           | 
+| GCC 7.2.0       | Ubuntu 17.10                 |
+
 ## Index
 
 - [Reference](#reference)
