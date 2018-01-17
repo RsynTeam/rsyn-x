@@ -13,12 +13,12 @@
  * limitations under the License.
  */
  
-#ifndef RSYN_OBSERVER_H
-#define RSYN_OBSERVER_H
+#ifndef RSYN_DESIGN_OBSERVER_H
+#define RSYN_DESIGN_OBSERVER_H
 
 namespace Rsyn {
 
-class Observer {
+class DesignObserver {
 friend class Rsyn::Design;
 private:
 
@@ -55,12 +55,12 @@ public:
 	onPrePinDisconnect(Rsyn::Pin pin) {}
 
 	virtual
-	~Observer() {
+	~DesignObserver() {
 		if (observedDesign)
 			observedDesign.unregisterObserver(this);
 	} // end destructor
 
-};
+}; // end class
 
 } // end namespace
 

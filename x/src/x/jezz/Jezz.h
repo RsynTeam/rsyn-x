@@ -28,8 +28,8 @@
  * limitations under the License.
  */
  
-#ifndef JEZZ_H
-#define JEZZ_H
+#ifndef RSYN_JEZZ_H
+#define RSYN_JEZZ_H
 
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/phy/PhysicalDesign.h"
@@ -55,7 +55,7 @@ namespace Rsyn {
 class PhysicalService;
 }
 
-class Jezz : public Rsyn::Service, public Rsyn::Observer, public Rsyn::PhysicalObserver {
+class Jezz : public Rsyn::Service, public Rsyn::DesignObserver, public Rsyn::PhysicalObserver {
 public:
 	
 	typedef	std::function<void(Rsyn::Cell cell, const DBU x, const DBU y)> UpdatePositionCallback;
@@ -98,9 +98,6 @@ private:
 	// Circuitry
 	Rsyn::Design clsDesign;
 	Rsyn::Module clsModule;
-
-	// Services
-	Rsyn::PhysicalService * clsPhysical = nullptr;
 
 	// Event handlers
 	Rsyn::PhysicalDesign::PostInstanceMovedCallbackHandler clsPostInstanceMovedCallbackHandler;	

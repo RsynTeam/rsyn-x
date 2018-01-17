@@ -21,7 +21,7 @@
 
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/session/Session.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 
 #include "rsyn/model/routing/RCTree.h"
 
@@ -48,7 +48,6 @@ private:
 	Rsyn::Module module;
 	Rsyn::PhysicalDesign phDesign;
 	Rsyn::Timer *timer;
-	Rsyn::PhysicalService *physical;
 	Rsyn::RoutingEstimator *routingEstimator;
 	RelaxedPinPosition * relaxedPinPos;
 	

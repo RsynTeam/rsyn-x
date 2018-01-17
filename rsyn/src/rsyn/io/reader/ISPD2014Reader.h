@@ -31,7 +31,7 @@ public:
 	ISPD2014Reader() {}
 	ISPD2014Reader(const ISPD2014Reader& orig) {}
 	virtual ~ISPD2014Reader() {}
-	void load(const Json &params);
+	virtual bool load(const Rsyn::Json &params) override;
 
 }; // end class 
 

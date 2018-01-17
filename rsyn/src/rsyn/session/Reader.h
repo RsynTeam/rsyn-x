@@ -29,17 +29,17 @@
 #ifndef RSYN_READER_H
 #define RSYN_READER_H
 
-#include "rsyn/3rdparty/json/json.hpp"
+#include "rsyn/util/Json.h"
 #include "rsyn/io/reader/PopulateRsyn.h"
 
 namespace Rsyn {
 
 class Session;
-typedef nlohmann::json Json;
+
 
 class Reader : public PopulateRsyn {
 public:
-	virtual void load(const Json &params) = 0;
+	virtual bool load(const Rsyn::Json &params) = 0;
 }; // end class
 
 } // end namespace

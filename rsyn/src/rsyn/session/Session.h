@@ -13,13 +13,6 @@
  * limitations under the License.
  */
  
-/*
- * Session.h
- *
- *  Created on: May 8, 2015
- *      Author: jucemar
- */
-
 #ifndef RSYN_SESSION_H
 #define RSYN_SESSION_H
 
@@ -30,7 +23,7 @@
 #include "rsyn/session/Reader.h"
 #include "rsyn/session/Message.h"
 
-#include "rsyn/3rdparty/json/json.hpp"
+#include "rsyn/util/Json.h"
 
 // To be spun off as a 3rd party...
 #include "rsyn/io/parser/script/ScriptCommand.h"
@@ -39,15 +32,11 @@
 #include "rsyn/util/Logger.h"
 #include "rsyn/util/Units.h"
 
+#include "SessionObserver.h"
+
 namespace Rsyn {
 
-typedef nlohmann::json Json;
-
-enum GraphicsEvent {
-	GRAPHICS_EVENT_DESIGN_LOADED,
-	GRAPHICS_EVENT_REFRESH,
-	GRAPHICS_EVENT_UPDATE_OVERLAY_LIST
-}; // end enum
+class PhysicalDesign;
 
 typedef std::function<Service *()> ServiceInstantiatonFunction;
 typedef std::function<Process *()> ProcessInstantiatonFunction;
@@ -64,7 +53,7 @@ struct SessionData {
 	// Session Variables
 	////////////////////////////////////////////////////////////////////////////
 	
-	std::map<std::string, Json> clsSessionVariables;
+	std::map<std::string, Rsyn::Json> clsSessionVariables;
 
 	////////////////////////////////////////////////////////////////////////////
 	// Message System
@@ -95,15 +84,22 @@ struct SessionData {
 	std::unordered_map<std::string, ReaderInstantiatonFunction> clsReaders;
 
 	////////////////////////////////////////////////////////////////////////////
+	// Observers
+	////////////////////////////////////////////////////////////////////////////
+
+	std::array<std::list<SessionObserver *>, NUM_SESSION_EVENTS> observers;
+	bool clsDesignLoaded = false;
+	
+	////////////////////////////////////////////////////////////////////////////
 	// Design
 	////////////////////////////////////////////////////////////////////////////
 
 	Rsyn::Design clsDesign;
-	Rsyn::Module clsModule;
 		
 	////////////////////////////////////////////////////////////////////////////
 	// Logger
 	////////////////////////////////////////////////////////////////////////////
+	// @todo remove
 	Logger* logger;
 	
 	////////////////////////////////////////////////////////////////////////////
@@ -116,8 +112,6 @@ struct SessionData {
 	// Script
 	////////////////////////////////////////////////////////////////////////////
 	ScriptParsing::CommandManager clsCommandManager;
-	
-	std::function<void(const GraphicsEvent event)> clsGraphicsCallback = nullptr;
 
 	////////////////////////////////////////////////////////////////////////////
 	// Misc
@@ -167,7 +161,7 @@ private:
 
 public:
 
-	static void setSessionVariable(const std::string &name, const Json &value) {
+	static void setSessionVariable(const std::string &name, const Rsyn::Json &value) {
 		sessionData->clsSessionVariables[name] = value;
 	} // end method
 
@@ -195,7 +189,7 @@ public:
 		return (it != sessionData->clsSessionVariables.end())? it->second.get<std::string>() : defaultValue;
 	} // end method
 
-	static const Json getSessionVariableAsJson(const std::string &name, const Json &defaultValue = {}) {
+	static const Rsyn::Json getSessionVariableAsJson(const std::string &name, const Rsyn::Json &defaultValue = {}) {
 		auto it = sessionData->clsSessionVariables.find(name);
 		return (it != sessionData->clsSessionVariables.end())? it->second : defaultValue;
 	} // end method
@@ -249,27 +243,7 @@ public:
 	} // end method
 	
 	// Start a service.
-	static bool startService(const std::string &name, const Json &params = {}) {
-		auto it = sessionData->clsServiceInstanciationFunctions.find(name);
-		if (it == sessionData->clsServiceInstanciationFunctions.end()) {
-			std::cout << "ERROR: Service '" << name << "' was not "
-					"registered.\n";
-			std::exit(1);
-			return false;
-		} else {
-			Service * service = getServiceInternal(name);
-			if (!service) {
-				service = it->second();
-				service->start(params);
-				sessionData->clsRunningServices[name] = service;
-				postGraphicsEvent(GRAPHICS_EVENT_UPDATE_OVERLAY_LIST);
-				return true;
-			} else {
-				std::cout << "WARNING: Service '" << name << "' is already running.\n";
-				return false;
-			} // end else
-		} // end else
-	} // end method
+	static bool startService(const std::string &name, const Rsyn::Json &params = {}, const bool dontErrorOut = false);
 	
 	// Gets a running service.
 	static ServiceHandler getService(const std::string &name,
@@ -281,7 +255,13 @@ public:
 		} // end if
 		return ServiceHandler(service);
 	} // end method
-	
+
+	// Checks if a service is registered.
+	static bool isServiceRegistered(const std::string &name) {
+		auto it = sessionData->clsServiceInstanciationFunctions.find(name);
+		return  (it != sessionData->clsServiceInstanciationFunctions.end());
+	} // end method
+
 	// Checks if a service is running.
 	static bool isServiceRunning(const std::string &name) {
 		return getServiceInternal(name) != nullptr;
@@ -348,21 +328,8 @@ public:
 	} // end method
 	
 	// Run an optimizer.
-	static bool runProcess(const std::string &name, const Json &params = {}) {
-		bool result = false;
-		
-		auto it = sessionData->clsProcesses.find(name);
-		if (it == sessionData->clsProcesses.end()) {
-			std::cout << "ERROR: Process '" << name << "' was not "
-					"registered.\n";
-		} else {
-			std::unique_ptr<Process> opto(it->second());
-			result = opto->run(params);
-		} // end else
-		
-		return result;
-	} // end method
-		
+	static bool runProcess(const std::string &name, const Rsyn::Json &params = {});
+
 	////////////////////////////////////////////////////////////////////////////
 	// Reader
 	////////////////////////////////////////////////////////////////////////////
@@ -399,17 +366,7 @@ public:
 	} // end method
 	
 	// Run an loader.
-	static void runReader(const std::string &name, const Json &params = {}) {
-		auto it = sessionData->clsReaders.find(name);
-		if (it == sessionData->clsReaders.end()) {
-			std::cout << "ERROR: Reader '" << name << "' was not "
-					"registered.\n";
-		} else {
-			std::unique_ptr<Reader> opto(it->second());
-			opto->load(params);
-			postGraphicsEvent(GRAPHICS_EVENT_DESIGN_LOADED);
-		} // end else
-	} // end method
+	static void runReader(const std::string &name, const Rsyn::Json &params = {});
 
 	////////////////////////////////////////////////////////////////////////////
 	// Messages
@@ -427,7 +384,9 @@ public:
 	// Misc
 	////////////////////////////////////////////////////////////////////////////
 
-	static Rsyn::Design getDesign() { return sessionData->clsDesign; }
+	static Rsyn::Design getDesign();
+	static Rsyn::Module getTopModule();
+	static Rsyn::PhysicalDesign getPhysicalDesign();
 
 	static const std::string &getInstallationPath() { return sessionData->clsInstallationPath; }
 
@@ -452,18 +411,28 @@ public:
 	} // end method
 
 	////////////////////////////////////////////////////////////////////////////
-	// Graphics
+	// Observer
 	////////////////////////////////////////////////////////////////////////////
 public:
 
-	static void registerGraphicsCallback(const std::function<void(const GraphicsEvent event)> &callback) {
-		sessionData->clsGraphicsCallback = callback;
-	} // end method
+	//! @brief Registers an observer to be notified about changes in the
+	//!        session.
+	template<class T>
+	static void
+	registerObserver(T *observer);
 
-	static void postGraphicsEvent(const GraphicsEvent event) {
-		if (sessionData->clsGraphicsCallback)
-			sessionData->clsGraphicsCallback(event);
-	} // end method
+	//! @brief Unregisters an observer so it will no longer receives
+	//!        notifications about changes in the session.
+	static void
+	unregisterObserver(SessionObserver *observer);
+
+	//! @brief Returns true if the design was already loaded.
+	static bool
+	isDesignLoaded();
+
+	//! @brief Notify session observers that the design has been loaded.
+	static void
+	notifyDesignLoaded();
 
 	////////////////////////////////////////////////////////////////////////////
 	// Utilities
@@ -484,6 +453,25 @@ public:
 	std::string findFile(const std::string fileName, const std::string extraPath = "");
 	
 }; // end class
+
+// -----------------------------------------------------------------------------
+
+template<class T>
+inline
+void
+Session::registerObserver(T *observer) {
+	static_assert(std::is_base_of<SessionObserver, T>::value,
+			"Unable to register class as observer. "
+			"The observer class must inherit from Rsyn::Observer.");
+
+	// Check if the observer implements (overwrites) the event callbacks if so
+	// register it to receive notifications of the respective event.
+
+	if (typeid(&SessionObserver::onDesignLoaded) != typeid(&T::onDesignLoaded)) {
+		sessionData->observers[EVENT_DESIGN_LOADED].push_back(observer);
+	} // end if
+
+} // end method
 
 ////////////////////////////////////////////////////////////////////////////////
 // Startup

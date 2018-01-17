@@ -33,7 +33,7 @@ namespace Rsyn {
 
 class PhysicalTrackData : public PhysicalObject {
 public:
-	Dimension clsDirection = X;
+	PhysicalTrackDirection clsDirection = PhysicalTrackDirection::INVALID_PHY_TRACK_DIRECTION;
 	DBU clsLocation = 0;
 	DBU clsSpace = 0;
 	int clsNumTracks = 0;

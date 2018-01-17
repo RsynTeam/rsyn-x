@@ -35,7 +35,7 @@
 #include "rsyn/io/parser/spef/SPEFControlParser.h"
 #include "rsyn/io/parser/verilog/SimplifiedVerilogReader.h"
 
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/io/Graphics.h"
 #include "rsyn/model/routing/DefaultRoutingEstimationModel.h"
@@ -48,7 +48,7 @@
 
 namespace Rsyn {
 
-void ICCAD15Reader::load(const Json &options) {
+bool ICCAD15Reader::load(const Rsyn::Json &options) {
 	this->session = session;
 	const bool globalPlacementOnly = options.value("globalPlacementOnly", false);
 
@@ -77,6 +77,8 @@ void ICCAD15Reader::load(const Json &options) {
 
 		openBenchmarkFromICCAD15();
 	} // end else
+
+	return true;
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -171,14 +173,13 @@ void ICCAD15Reader::openBenchmarkFromICCAD15()  {
 	watchScenario.finish();
 
 	Stepwatch watchPopulateLayers("Initializing Physical Layer");
-	Json phDesignJason;
+	Rsyn::Json phDesignJason;
 	if (ENABLE_RECTANGLE_MERGE) {
 		phDesignJason["clsEnableMergeRectangles"] = true;
 	}// end if 
 	phDesignJason["clsContestMode"] = "ICCAD15";
 	session.startService("rsyn.physical", phDesignJason);	
-	Rsyn::PhysicalService * phService = session.getService("rsyn.physical");
-	Rsyn::PhysicalDesign clsPhysicalDesign = phService->getPhysicalDesign();
+	Rsyn::PhysicalDesign clsPhysicalDesign = session.getPhysicalDesign();
 	clsPhysicalDesign.loadLibrary(lefDscp);
 	clsPhysicalDesign.loadDesign(defDscp);
 	clsPhysicalDesign.updateAllNetBounds(false);	
@@ -284,13 +285,12 @@ void ICCAD15Reader::openBenchmarkFromICCAD15ForGlobalPlacementOnly() {
 	clsModule = clsDesign.getTopModule();
 	Stepwatch watchPopulateLayers("Initializing Physical Layer");
 	
-	Json phDesignJason;
+	Rsyn::Json phDesignJason;
 	phDesignJason["clsEnableMergeRectangles"] = true;
 	phDesignJason["clsEnableNetPinBoundaries"] = true;
 	phDesignJason["clsEnableRowSegments"] = true;
 	session.startService("rsyn.physical", phDesignJason);		
-	Rsyn::PhysicalService * phService = session.getService("rsyn.physical");
-	Rsyn::PhysicalDesign clsPhysicalDesign = phService->getPhysicalDesign();
+	Rsyn::PhysicalDesign clsPhysicalDesign = session.getPhysicalDesign();
 	clsPhysicalDesign.loadLibrary(lefDscp);
 	clsPhysicalDesign.loadDesign(defDscp);
 	clsPhysicalDesign.updateAllNetBounds(false);

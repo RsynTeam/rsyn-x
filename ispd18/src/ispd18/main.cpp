@@ -23,8 +23,11 @@
 #include "rsyn/shell/Shell.h"
 
 #ifndef RSYN_NO_GUI
-#include "rsyn/gui/App.h"
+#include <QApplication>
+#include "rsyn/qt/MainWindow.h"
 #endif
+
+#include "rsyn/util/StreamLogger.h"
 
 // -----------------------------------------------------------------------------
 
@@ -47,7 +50,8 @@ int main(int argc, char *argv[]) {
 	// Rsyn
 	//
 
-	Rsyn::Session::init();
+	Rsyn::StreamLogger::get()->capture(std::cout);
+	//Rsyn::StreamLogger::get()->capture(std::cerr);
 
 	// Source: http://patorjk.com/software/taag/#p=display&f=Big&t=Rsyn
 	std::cout << "\n"; // skipping the terminal line
@@ -104,7 +108,20 @@ int main(int argc, char *argv[]) {
 		} else {
 			// User interface mode...
 			#ifndef RSYN_NO_GUI
-				MyApp::Init(optGui, optScript);
+				Q_INIT_RESOURCE(images);
+
+				QApplication app(argc, argv);
+				#ifdef __APPLE__
+					setlocale(LC_ALL, "en_US.UTF-8");
+				#else
+					std::setlocale(LC_ALL, "en_US.UTF-8");
+				#endif
+				app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
+
+				Rsyn::MainWindow window;
+				window.show();
+
+				return app.exec();
 			#else
 				std::cout << "Rsyn was compiled without GUI...\n";
 			#endif

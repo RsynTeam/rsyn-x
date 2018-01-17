@@ -12,7 +12,7 @@
  */
 
 #include "rsyn/session/Session.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/3rdparty/flute/flute.h"
 #include "rsyn/util/Stopwatch.h"
 #include <algorithm>
@@ -24,16 +24,15 @@ namespace Rsyn {
 RsttRoutingEstimatorModel::RsttRoutingEstimatorModel() {
 }
 
-void RsttRoutingEstimatorModel::start(const Json &params) {
+void RsttRoutingEstimatorModel::start(const Rsyn::Json &params) {
 	Rsyn::Session session;
 
 	design = session.getDesign();
 	module = design.getTopModule();
 
-	clsPhysical = session.getService("rsyn.physical");
 	clsScenario = session.getService("rsyn.scenario");
 
-	clsPhysicalDesign = clsPhysical->getPhysicalDesign();
+	clsPhysicalDesign = session.getPhysicalDesign();
 	clsNetsTopologys = design.createAttribute(Rsyn::RoutingTopologyDescriptor<int>());
 	//Flute::readLUT();
 	std::cout << "It's running \n";

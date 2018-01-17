@@ -40,8 +40,7 @@ bool OverlapRemover::run(const Rsyn::Json& params) {
 	clsDesign = session.getDesign();
 	clsModule = session.getDesign().getTopModule();
 	clsTimer = session.getService("rsyn.timer");
-	clsPhysical = session.getService("rsyn.physical");
-	clsPhysicalDesign = clsPhysical->getPhysicalDesign();
+	clsPhysicalDesign = session.getPhysicalDesign();
 	clsInfrastructure = session.getService("ufrgs.ispd16.infra");
 	clsLibCharacterizer = session.getService("rsyn.libraryCharacterizer");
 	clsBlockageControl = session.getService("ufrgs.blockageControl");

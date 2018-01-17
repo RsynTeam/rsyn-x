@@ -29,7 +29,7 @@ using std::set;
 using std::string;
 
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/session/Session.h"
 #include "rsyn/model/timing/Timer.h"
 #include "x/opto/ufrgs/ispd16/ABU.h"
@@ -74,7 +74,6 @@ private:
 
 	// Services
 	Rsyn::Timer * clsTimer = nullptr;
-	Rsyn::PhysicalService * clsPhysical = nullptr;
 	ABU clsABU;
 	const Rsyn::LibraryCharacterizer * clsLibraryCharacterizer = nullptr;
  	BlockageControl * clsBlockageControl = nullptr;

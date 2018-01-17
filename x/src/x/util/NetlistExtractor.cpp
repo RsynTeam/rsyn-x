@@ -27,7 +27,7 @@
  */
 
 #include "NetlistExtractor.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/phy/util/PhysicalTypes.h"
 
 #include <fstream>
@@ -41,9 +41,8 @@ void NetlistExtractor::start(const Rsyn::Json &params) {
 	Rsyn::Session session;
 
 	clsDesign = session.getDesign();
-	clsModule = clsDesign.getTopModule();
-	Rsyn::PhysicalService* physicalService = session.getService("rsyn.physical");
-	clsPhysicalDesign = physicalService->getPhysicalDesign();
+	clsModule = session.getTopModule();
+	clsPhysicalDesign = session.getPhysicalDesign();
 	
 	if (!params.count("spiceFile")) {
 		std::cout << "[ERROR] No spice file specified..\n";

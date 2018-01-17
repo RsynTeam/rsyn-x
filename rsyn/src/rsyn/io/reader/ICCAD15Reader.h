@@ -82,7 +82,7 @@ public:
 	ICCAD15Reader()=default;
 	ICCAD15Reader(const ICCAD15Reader& orig)=delete;
 	virtual ~ICCAD15Reader()=default;
-	void load(const Json &params);
+	virtual bool load(const Rsyn::Json &params) override;
 
 protected:
 	void parseConfigFileICCAD15(boost::filesystem::path & path);

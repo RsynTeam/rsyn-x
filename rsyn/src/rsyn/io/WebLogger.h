@@ -26,7 +26,7 @@ private:
 	std::ofstream clsContent;
 public:
 
-	virtual void start(const Json &params);
+	virtual void start(const Rsyn::Json &params);
 	virtual void stop();
 
 	// Render a pure html string. No escaping is performed.
@@ -42,7 +42,7 @@ public:
 	void renderText(const std::string &text);
 
 	// Render a chart using Chart.js.
-	void renderChart(const Json &params);
+	void renderChart(const Rsyn::Json &params);
 
 	// Escape string.
 	std::string escape(const std::string &str) const;

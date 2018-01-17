@@ -29,9 +29,8 @@ bool AbuReduction::run(const Rsyn::Json &params) {
 	this->design = session.getDesign();
 	this->timer = session.getService("rsyn.timer");
 	this->routingEstimator = session.getService("rsyn.routingEstimator");
-	this->module = design.getTopModule();
-	this->physical = session.getService("rsyn.physical");
-	this->phDesign = physical->getPhysicalDesign();
+	this->module = session.getTopModule();
+	this->phDesign = session.getPhysicalDesign();
 
 	if (infra->getAbu() > 0) {
 		double previousABU;

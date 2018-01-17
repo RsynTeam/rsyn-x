@@ -31,7 +31,6 @@
 
 #include "rsyn/session/Session.h"
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/phy/PhysicalService.h"
 #include "rsyn/util/Stepwatch.h"
 #include "rsyn/phy/PhysicalDesign.h"
 #include "x/util/BlockageControl.h"
@@ -53,7 +52,6 @@ private:
 	Rsyn::Design clsDesign;
 	Rsyn::Module clsModule;
 	Rsyn::Timer *clsTimer;
-	Rsyn::PhysicalService* clsPhysical;
 	Rsyn::PhysicalDesign clsPhysicalDesign;
 	Infrastructure* clsInfrastructure;
 	const Rsyn::LibraryCharacterizer* clsLibCharacterizer;

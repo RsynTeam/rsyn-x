@@ -29,7 +29,7 @@
 #include "rsyn/model/library/LibraryCharacterizer.h"
 #include "rsyn/model/routing/RoutingEstimator.h"
 
-#include "rsyn/3rdparty/json/json.hpp"
+#include "rsyn/util/Json.h"
 
 #include "rsyn/util/Matrix.h"
 #include "rsyn/util/AsciiProgressBar.h"
@@ -88,8 +88,7 @@ void Infrastructure::start(const Rsyn::Json &params) {
 	}
 	clsMaxDisplacement = params.value("maxDisplacement", defaultMaxDisplacement);
 	
-	Rsyn::PhysicalService *physicalService = session.getService("rsyn.physical");
-	Rsyn::PhysicalDesign physicalDesign = physicalService->getPhysicalDesign();
+	Rsyn::PhysicalDesign physicalDesign = session.getPhysicalDesign();
 	initAbu(physicalDesign, 
 			clsDesign.getTopModule(), 
 			clsTargetUtilization);
@@ -163,7 +162,6 @@ void Infrastructure::init() {
 	Rsyn::Session session;
 
 	// Services.
-	clsPhysical = session.getService("rsyn.physical");
 	clsTimer = session.getService("rsyn.timer");
 	clsLibraryCharacterizer = session.getService("rsyn.libraryCharacterizer");
 	clsRoutingEstimator = session.getService("rsyn.routingEstimator");
@@ -172,9 +170,9 @@ void Infrastructure::init() {
 	clsBlockageControl = nullptr;
 
 	// Circuitry.
-	clsPhysicalDesign = clsPhysical->getPhysicalDesign();
+	clsPhysicalDesign = session.getPhysicalDesign();
 	clsDesign = session.getDesign();
-	clsModule = clsDesign.getTopModule();
+	clsModule = session.getTopModule();
 	
 	// Initial values.
 	clsTDPQualityScore = 0;

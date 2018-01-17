@@ -21,7 +21,7 @@
  */
 
 #include "RoutingGuide.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 
 namespace Rsyn {
 
@@ -29,11 +29,11 @@ void RoutingGuide::start(const Rsyn::Json &params) {
 	if(clsInitialized)
 		return;
 	clsDesign = clsSession.getDesign();
-	clsModule = clsDesign.getTopModule();
+	clsModule = clsSession.getTopModule();
+	clsPhDesign = clsSession.getPhysicalDesign();
+
 	clsGuides = clsDesign.createAttribute();
-	
-	Rsyn::PhysicalService* phService = clsSession.getService("rsyn.physical");
-	clsPhDesign = phService->getPhysicalDesign();
+
 	clsInitialized = true;
 } // end method
 

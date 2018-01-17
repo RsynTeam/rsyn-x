@@ -14,7 +14,7 @@
 #ifndef RSTTROUTINGESTIMATORMODEL_H
 #define RSTTROUTINGESTIMATORMODEL_H
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/session/Service.h"
 #include "rsyn/session/Session.h"
@@ -47,7 +47,7 @@ namespace Rsyn {
         typedef boost::geometry::model::d2::point_xy<DBU> Point;
         typedef boost::geometry::model::segment<Point> Segment;
 
-        void start(const Json &params);
+        void start(const Rsyn::Json &params);
 
         void stop() {
         }
@@ -70,7 +70,6 @@ namespace Rsyn {
 
         // Services
         Scenario * clsScenario = nullptr;
-        PhysicalService * clsPhysical = nullptr;
 
         void reportWirelengthNets();
 

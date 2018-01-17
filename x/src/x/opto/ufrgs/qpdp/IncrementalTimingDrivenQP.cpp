@@ -38,8 +38,7 @@ void IncrementalTimingDrivenQP::setSession(Rsyn::Session ptr) {
 	module = design.getTopModule();
 	mapCellToIndex = design.createAttribute();
 	delayRatio = design.createAttribute();
-	physical = session.getService("rsyn.physical");
-	phDesign = physical->getPhysicalDesign();
+	phDesign = session.getPhysicalDesign();
 	
 	for (Rsyn::Instance instance : module.allInstances()) {
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
@@ -1700,8 +1699,7 @@ bool IncrementalTimingDrivenQP::run(const Rsyn::Json& params) {
 	mapCellToIndex = design.createAttribute();
 	delayRatio = design.createAttribute();
 	infra = session.getService("ufrgs.ispd16.infra");
-	physical = session.getService("rsyn.physical");
-	phDesign = physical->getPhysicalDesign();
+	phDesign = session.getPhysicalDesign();
 	
 	for (Rsyn::Instance instance : module.allInstances()) {
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell

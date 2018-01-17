@@ -27,12 +27,6 @@
 
 namespace Rsyn {
 
-inline PhysicalPinLayer PhysicalPinGeometry::getPinLayer() const {
-	return data->clsLayer;
-} // end method 
-
-// -----------------------------------------------------------------------------
-
 inline PhysicalPinGeometryClass PhysicalPinGeometry::getPinGeometryClass() const {
 	return data->clsPinPortClass;
 } // end method 
@@ -40,7 +34,19 @@ inline PhysicalPinGeometryClass PhysicalPinGeometry::getPinGeometryClass() const
 // -----------------------------------------------------------------------------
 
 inline bool PhysicalPinGeometry::hasPinLayer() const {
-	return data->clsLayer != nullptr;
+	return !data->clsPinLayers.empty();
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline std::size_t PhysicalPinGeometry::getNumPinLayers() const{
+	return data->clsPinLayers.size();
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline const std::vector<Rsyn::PhysicalPinLayer> &  PhysicalPinGeometry::allPinLayers() const {
+	return data->clsPinLayers;
 } // end method 
 
 // -----------------------------------------------------------------------------

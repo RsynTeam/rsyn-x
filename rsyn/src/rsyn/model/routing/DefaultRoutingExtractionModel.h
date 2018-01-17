@@ -32,7 +32,7 @@ namespace Rsyn {
 class DefaultRoutingExtractionModel : public RoutingExtractionModel, public Service {
 public:
 
-	virtual void start(const Json &params) override;
+	virtual void start(const Rsyn::Json &params) override;
 	virtual void stop() override;
 
 	void initialize(

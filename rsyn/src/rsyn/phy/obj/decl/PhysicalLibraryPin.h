@@ -42,6 +42,8 @@ public:
 	//! @brief Constructs a Rsyn::PhysicalLibraryPin object with a null pointer to Rsyn::PhysicalLibraryPinData.
 	PhysicalLibraryPin(std::nullptr_t) : Proxy(nullptr) {}
 
+	//! @brief REturns the physical library cell of this pin.
+	PhysicalLibraryCell getPhysicalLibraryCell() const;
 	//! @brief Returns the pin rectangular boundaries defined at 2015 ICCAD contest.
 	Bounds getICCADBounds();
 	//! @brief Returns the pin rectangular boundaries reference defined at 2015 ICCAD contest.
@@ -58,7 +60,8 @@ public:
 	bool isEmptyPinGeometries() const;
 	//! @brief Returns an enum indicating the pin direction. 
 	PhysicalPinDirection getPinDirection() const;
-	
+	//! @brief Returns an enum of PhysicalPinUse that gives the PhysicalPin usage type.
+	PhysicalPinUse getUse() const;
 }; // end class  
 
 } // end namespace 

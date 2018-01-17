@@ -30,10 +30,9 @@ bool Balancing::run(const Rsyn::Json &params) {
 	this->design = session.getDesign();
 	this->timer = session.getService("rsyn.timer");
 	this->libc = session.getService("rsyn.libraryCharacterizer");
-	this->module = design.getTopModule();
-	this->physical = session.getService("rsyn.physical");
+	this->module = session.getTopModule();
 	this->routingEstimator = session.getService("rsyn.routingEstimator");
-	this->phDesign = physical->getPhysicalDesign();
+	this->phDesign = session.getPhysicalDesign();
 	
 	if (params["type"] == "cell-steiner") {
 		runCellFixSteiner();

@@ -28,9 +28,8 @@ bool QuadraticPlacementExample::run(const Rsyn::Json &params) {
 	this->infra = session.getService("ufrgs.ispd16.infra");
 	this->design = session.getDesign();
 	this->timer = session.getService("rsyn.timer");
-	this->module = design.getTopModule();
-	this->physical = session.getService("rsyn.ohysical");
-	this->phDesign = physical->getPhysicalDesign();
+	this->module = session.getTopModule();
+	this->phDesign = session.getPhysicalDesign();
 	
 	//Jucemar Monteiro 2017/02/24
 	// Removed relaxed pin position of the PhysicalService 

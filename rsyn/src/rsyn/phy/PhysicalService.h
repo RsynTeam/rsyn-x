@@ -21,7 +21,7 @@
 
 namespace Rsyn {
 
-class PhysicalService : public Rsyn::Service, public Observer {
+class PhysicalService : public Rsyn::Service, public DesignObserver {
 private:
 	
 	Rsyn::PhysicalDesign clsPhysicalDesign;
@@ -34,7 +34,7 @@ public:
 	  \param  const Rsyn::Json &params
 	  \return void 
 	 */
-	virtual void start(const Json &params);
+	virtual void start(const Rsyn::Json &params);
 	
 	/*!
 	  stop method to the Rsyn::PhysicalDesign service

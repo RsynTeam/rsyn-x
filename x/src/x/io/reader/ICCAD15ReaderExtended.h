@@ -53,7 +53,7 @@ public:
 	ICCAD15ReaderExtended() {}
 	ICCAD15ReaderExtended(const ICCAD15ReaderExtended& orig) {}
 	virtual ~ICCAD15ReaderExtended() {}
-	void load(const Rsyn::Json &params);
+	virtual bool load(const Rsyn::Json &params) override;
 
 protected:
 

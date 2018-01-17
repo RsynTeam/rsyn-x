@@ -47,7 +47,6 @@ private:
 
 	// Services
 	Timer * clsTimer;
-	Rsyn::PhysicalService * clsPhysical;
 	const LibraryCharacterizer * clsLibraryCharacterizer;
 	RoutingEstimator * clsRoutingEstimator;	
 		
@@ -64,7 +63,7 @@ private:
 
 public:
 
-	virtual void start(const Json &params);
+	virtual void start(const Rsyn::Json &params);
 	virtual void stop();	
 	
 	// Objects

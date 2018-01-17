@@ -21,7 +21,7 @@
 #include "rsyn/core/Rsyn.h"
 #include "x/math/lnalg/scrm.h"
 #include "x/math/lnalg/lnalg.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/model/timing/Timer.h"
 
 namespace ICCAD15 {
@@ -40,7 +40,6 @@ private:
 	Rsyn::PhysicalDesign phDesign;
 	Rsyn::Timer *timer;
 	Rsyn::RoutingEstimator *routingEstimator;
-	Rsyn::PhysicalService *physical;
 	const Rsyn::LibraryCharacterizer *libc;
 	
 	bool debugMode;

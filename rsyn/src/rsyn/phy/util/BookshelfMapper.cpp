@@ -221,8 +221,10 @@ void BookshelfMapper::mapLefCells(const BookshelfDscp & dscp, LefDscp & lef) {
 			lefPin.clsHasPort = true;
 			lefPin.clsPorts.push_back(LefPortDscp());
 			LefPortDscp & port = lefPin.clsPorts.back();
-			port.clsMetalName = "metal1";
-			port.clsBounds.push_back(lefPin.clsBounds);
+			port.clsLefPortGeoDscp.push_back(LefPortGeometryDscp());
+			LefPortGeometryDscp & geoDscp = port.clsLefPortGeoDscp.back();
+			geoDscp.clsMetalName = "metal1";
+			geoDscp.clsBounds.push_back(lefPin.clsBounds);
 		} // end for 
 	} // end for 
 } // end method 

@@ -17,7 +17,7 @@
 #define BALANCING_OPTO_H
 
 #include "rsyn/session/Session.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "x/infra/iccad15/utilICCAD15.h"
 namespace Rsyn {
 class LibraryCharacterizer;
@@ -37,7 +37,6 @@ private:
 	Rsyn::Module module;
 	Rsyn::PhysicalDesign phDesign;
 	Rsyn::Timer *timer;
-	Rsyn::PhysicalService * physical;
 	Rsyn::RoutingEstimator * routingEstimator;
 	const Rsyn::LibraryCharacterizer * libc;
 	

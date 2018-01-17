@@ -28,16 +28,15 @@
 
 #include "BlockageControl.h"
 #include "rsyn/util/Stepwatch.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 
 namespace ICCAD15 {
 
 void BlockageControl::start(const Rsyn::Json &params) {
 	Rsyn::Session session;
 
-	clsModule = session.getDesign().getTopModule();
-	Rsyn::PhysicalService* service = session.getService("rsyn.physical");
-	clsPhysicalDesign = service->getPhysicalDesign();
+	clsModule = session.getTopModule();
+	clsPhysicalDesign = session.getPhysicalDesign();
 	clsPhysicalModule = clsPhysicalDesign.getPhysicalModule(clsModule);
 	
 	// params.value() did not work here... don't know why...

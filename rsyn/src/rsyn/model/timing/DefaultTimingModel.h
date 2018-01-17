@@ -30,7 +30,7 @@ class Timer;
 class DefaultTimingModel : public TimingModel, public Service, public Rsyn::PhysicalObserver {
 public:
 
-	virtual void start(const Json &params) override;
+	virtual void start(const Rsyn::Json &params) override;
 	virtual void stop() override;
 	
 	virtual void

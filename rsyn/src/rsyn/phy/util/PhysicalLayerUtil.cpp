@@ -248,6 +248,62 @@ std::string getPhysicalDesignModeType(const Rsyn::PhysicalDesignMode type) {
 
 // -----------------------------------------------------------------------------
 
+//! Converts Physical Pin Use type from string to enum, respectively.
+
+Rsyn::PhysicalPinUse getPhysicalPinUseType(const std::string & type) {
+	if (type.compare("SIGNAL") == 0) return PhysicalPinUse::PIN_USE_SIGNAL;
+	if (type.compare("ANALOG") == 0) return PhysicalPinUse::PIN_USE_ANALOG;
+	if (type.compare("POWER") == 0) return PhysicalPinUse::PIN_USE_POWER;
+	if (type.compare("GROUND") == 0) return PhysicalPinUse::PIN_USE_GROUND;
+	if (type.compare("CLOCK") == 0) return PhysicalPinUse::PIN_USE_CLOCK;
+	return PhysicalPinUse::PIN_INVALID_USE;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+//! Converts Physical Pin Use type from enum to string, respectively.
+
+std::string getPhysicalPinUseType(const Rsyn::PhysicalPinUse type) {
+	switch (type) {
+		case PhysicalPinUse::PIN_USE_SIGNAL: return "SIGNAL";
+		case PhysicalPinUse::PIN_USE_ANALOG: return "ANALOG";
+		case PhysicalPinUse::PIN_USE_POWER: return "POWER";
+		case PhysicalPinUse::PIN_USE_GROUND: return "GROUND";
+		case PhysicalPinUse::PIN_USE_CLOCK: return "CLOCK";
+		default: return Rsyn::getPhysicalInvalidName();
+	} // end switch 
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+Rsyn::PhysicalTrackDirection getPhysicalTrackDirectionDEF(const std::string & type) {
+	if (type.compare("X") == 0) return Rsyn::PhysicalTrackDirection::TRACK_VERTICAL;
+	if (type.compare("Y") == 0) return Rsyn::PhysicalTrackDirection::TRACK_HORIZONTAL;
+	return Rsyn::PhysicalTrackDirection::INVALID_PHY_TRACK_DIRECTION;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+std::string getPhysicalTrackDirectionDEF(const Rsyn::PhysicalTrackDirection type) {
+	switch (type) {
+		case PhysicalTrackDirection::TRACK_VERTICAL: return "X";
+		case PhysicalTrackDirection::TRACK_HORIZONTAL: return "Y";
+		default: return Rsyn::getPhysicalInvalidName();
+	} // end switch 
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+std::string getPhysicalTrackDirection(const Rsyn::PhysicalTrackDirection type) {
+	switch (type) {
+		case PhysicalTrackDirection::TRACK_VERTICAL: return "HORIZONTAL";
+		case PhysicalTrackDirection::TRACK_HORIZONTAL: return "VERTICAL";
+		default: return Rsyn::getPhysicalInvalidName();
+	} // end switch 
+} // end method 
+
+// -----------------------------------------------------------------------------
+
 std::string getPhysicalGeneratedNamePrefix() {
 	return GEN_NAME;
 } // end method 

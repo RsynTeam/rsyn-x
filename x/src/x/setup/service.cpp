@@ -29,7 +29,7 @@
 
 // Registration
 namespace Rsyn {
-static Startup registerMessages([]{
+static Startup registerServices([]{
 	Rsyn::Session session;
 
 	session.registerService<Jezz>("rsyn.jezz");
@@ -38,5 +38,6 @@ static Startup registerMessages([]{
 	session.registerService<ICCAD15::BlockageControl>("ufrgs.blockageControl");
 
 	session.registerService<NetlistExtractor>("rsyn.netlistExtractor");
-});} // end namespace
+});
+} // end namespace
 

@@ -50,7 +50,7 @@ public:
 	ICCAD17Reader() = default;
 	ICCAD17Reader(const ICCAD17Reader& orig) = delete;
 	virtual ~ICCAD17Reader() = default;
-	void load(const Json &params);
+	virtual bool load(const Rsyn::Json &params) override;
 protected:
 	void parseConstraints(const std::string & filename);
 }; // end class 

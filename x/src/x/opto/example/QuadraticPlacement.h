@@ -23,7 +23,7 @@
 #include "x/math/lnalg/scrm.h"
 #include "x/infra/iccad15/Infrastructure.h"
 #include "rsyn/session/Session.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "x/opto/ufrgs/qpdp/RelaxedPinPosition.h"
 
 
@@ -37,7 +37,6 @@ private:
 	Rsyn::Module module;
 	Rsyn::PhysicalDesign phDesign;
 	Rsyn::Timer *timer;	
-	Rsyn::PhysicalService *physical;
 	ICCAD15::RelaxedPinPosition * clsRelaxedPinPos;
 	
 	// These methods are intended as examples of how to build the quadratic

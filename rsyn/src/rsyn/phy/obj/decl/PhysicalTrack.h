@@ -50,7 +50,7 @@ public:
 	PhysicalTrack(std::nullptr_t) : Proxy(nullptr) {
 	}
 	
-	Dimension getDirection() const;
+	PhysicalTrackDirection getDirection() const;
 	DBU getLocation() const;
 	DBU getSpace() const;
 	int getNumberOfTracks() const;

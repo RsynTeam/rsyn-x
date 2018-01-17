@@ -30,14 +30,14 @@
 #include "rsyn/io/parser/lef_def/LEFControlParser.h"
 #include "rsyn/io/parser/lef_def/DEFControlParser.h"
 
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/util/Stepwatch.h"
 #include "rsyn/io/Graphics.h"
 
 namespace Rsyn {
 
-void ICCAD17Reader::load(const Json &options) {
+bool ICCAD17Reader::load(const Rsyn::Json &options) {
 	this->session = session;
 	clsDesign = session.getDesign();
 	clsModule = clsDesign.getTopModule();
@@ -88,8 +88,7 @@ void ICCAD17Reader::load(const Json &options) {
 
 	Stepwatch watchPhysical("Initializing Physical Layer");
 	session.startService("rsyn.physical");	
-	Rsyn::PhysicalService * phService = session.getService("rsyn.physical");
-	Rsyn::PhysicalDesign clsPhysicalDesign = phService->getPhysicalDesign();
+	Rsyn::PhysicalDesign clsPhysicalDesign = session.getPhysicalDesign();
 	clsPhysicalDesign.loadLibrary(lefDscp);
 	clsPhysicalDesign.loadDesign(defDscp);
 	clsPhysicalDesign.updateAllNetBounds(false);	
@@ -101,6 +100,8 @@ void ICCAD17Reader::load(const Json &options) {
 	session.startService("rsyn.graphics", {});
 	Rsyn::Graphics * graphics = session.getService("rsyn.graphics");
 	graphics->coloringByCellType();
+
+	return true;
 } // end method 
 
 // -----------------------------------------------------------------------------

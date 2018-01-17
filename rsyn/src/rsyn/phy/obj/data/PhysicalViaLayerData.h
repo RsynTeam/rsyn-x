@@ -35,6 +35,7 @@ class PhysicalViaLayerData {
 public:
 	Rsyn::PhysicalLayer clsLayer;
 	std::vector<Bounds> clsBounds;
+	Rsyn::PhysicalVia clsPhVia;
 }; // end class 
 
 } // end namespace 

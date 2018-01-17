@@ -190,10 +190,11 @@ int lefMacroCB(lefrCallbackType_e c, lefiMacro* macro, lefiUserData ud) {
 
 // -----------------------------------------------------------------------------
 int numWarningsInoutPins = 0;
+
 int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
 	// Skip power and ground pins...
-	if (strcmp(pin->use(), "GROUND") == 0) return 0;
-	if (strcmp(pin->use(), "POWER") == 0) return 0;
+	//if (strcmp(pin->use(), "GROUND") == 0) return 0;
+	//if (strcmp(pin->use(), "POWER") == 0) return 0;
 
 	LefDscp & dscp = getLibraryFromUserData(ud);
 	LefMacroDscp & lefMacro = dscp.clsLefMacroDscps.back();
@@ -202,18 +203,19 @@ int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
 
 	lefPin.clsPinName = pin->name();
 	lefPin.clsPinDirection = pin->direction();
-	
+	lefPin.clsPinUse = pin->use();
+
 	// WORKORUND to support inout data pin
-	if(lefPin.clsPinDirection.compare("INOUT") == 0 ) {
+	if (lefPin.clsPinDirection.compare("INOUT") == 0) {
 		lefPin.clsPinDirection = "OUTPUT";
-		if(numWarningsInoutPins < 10)
-			std::cout<<"WARNING: Unsupported INOUT direction in data pin. "
-				<<lefPin.clsPinName<<". Pin direction is replaced to "<<lefPin.clsPinDirection
-				<<" [LEF CONTROL PARSER]\n";
+		if (numWarningsInoutPins < 10)
+			std::cout << "WARNING: Unsupported INOUT direction in data pin. "
+			<< lefPin.clsPinName << ". Pin direction is replaced to " << lefPin.clsPinDirection
+			<< " [LEF CONTROL PARSER]\n";
 		numWarningsInoutPins++;
 	} // end if 
 	// END WORKORUND to support inout data pin
-	
+
 	lefPin.clsHasPort = pin->numPorts() > 0;
 
 	if (lefPin.clsHasPort)
@@ -222,31 +224,45 @@ int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
 	for (int j = 0; j < pin->numPorts(); j++) {
 		const lefiGeometries* geometry = pin->port(j);
 		lefPin.clsPorts.push_back(LefPortDscp());
-		for (int i = 0; i < geometry->numItems(); i++) {
-			LefPortDscp & lefPort = lefPin.clsPorts.back();
-			if (geometry->itemType(i) == lefiGeomLayerE)
-				lefPort.clsMetalName = geometry->lefiGeometries::getLayer(i);
-			else if (geometry->itemType(i) == lefiGeomRectE) {
 
-				const lefiGeomRect* rect = geometry->getRect(i);
-				lefPort.clsBounds.resize(lefPort.clsBounds.size() + 1);
-				DoubleRectangle &bound = lefPort.clsBounds.back();
-				bound.updatePoints(rect->xl, rect->yl, rect->xh, rect->yh);
-			} else if (geometry->itemType(i) == lefiGeomPolygonE) {
-				const lefiGeomPolygon * poly = geometry->lefiGeometries::getPolygon(i);
-				lefPort.clsLefPolygonDscp.push_back(LefPolygonDscp());
-				LefPolygonDscp & polyDscp = lefPort.clsLefPolygonDscp.back();
-				polyDscp.clsPolygonPoints.resize(poly->numPoints,
-					double2(std::numeric_limits<double>::infinity(),
-					std::numeric_limits<double>::infinity()));
-				for (int i = 0; i < poly->numPoints; i++) {
-					double2 & pt = polyDscp.clsPolygonPoints[i];
-					pt[X] = poly->x[i];
-					pt[Y] = poly->y[i];
-				} // end for 
-			} else {
-				std::cout << "WARNING: function " << __func__ << " does not supports pin geometry type in the LEF Parser Control.\n";
-			} // end else-if 
+		LefPortDscp & lefPort = lefPin.clsPorts.back();
+		int numGeo = geometry->numItems();
+		lefPort.clsLefPortGeoDscp.reserve(numGeo);
+		LefPortGeometryDscp * geoDscp = nullptr;
+		for (int i = 0; i < numGeo; i++) {
+
+			lefiGeomEnum geoType = geometry->itemType(i);
+			lefiGeomRect* rect;
+			DoubleRectangle * bound;
+			lefiGeomPolygon * poly;
+			LefPolygonDscp * polyDscp;
+			double2 * point;
+			switch (geoType) {
+				case lefiGeomLayerE:
+					lefPort.clsLefPortGeoDscp.push_back(LefPortGeometryDscp());
+					geoDscp = &lefPort.clsLefPortGeoDscp.back();
+					geoDscp->clsMetalName = geometry->lefiGeometries::getLayer(i);
+					break;
+				case lefiGeomRectE:
+					rect = geometry->getRect(i);
+					geoDscp->clsBounds.resize(geoDscp->clsBounds.size() + 1);
+					bound = &geoDscp->clsBounds.back();
+					bound->updatePoints(rect->xl, rect->yl, rect->xh, rect->yh);
+					break;
+				case lefiGeomPolygonE:
+					poly = geometry->lefiGeometries::getPolygon(i);
+					polyDscp->clsPolygonPoints.resize(poly->numPoints,
+						double2(std::numeric_limits<double>::infinity(),
+						std::numeric_limits<double>::infinity()));
+					for (int k = 0; k < poly->numPoints; k++) {
+						point = &polyDscp->clsPolygonPoints[k];
+						point->set(poly->x[k], poly->y[k]);
+					} // end for 
+					break;
+				default:
+					std::cout << "WARNING: function " << __func__ << " does not supports pin geometry type in the LEF Parser Control.\n";
+					break;
+			} // end switch 
 		} // end for
 	} // end for 
 	return 0;
@@ -333,7 +349,7 @@ int lefLayerCB(lefrCallbackType_e c, lefiLayer* layer, lefiUserData ud) {
 	if (layer->lefiLayer::hasSpacingNumber()) {
 		int numSpacing = layer->lefiLayer::numSpacing();
 		lefLayer.clsSpacingRules.resize(numSpacing);
-		for(int i = 0; i < numSpacing; ++i){
+		for (int i = 0; i < numSpacing; ++i) {
 			LefSpacingRuleDscp & spcRule = lefLayer.clsSpacingRules[i];
 			spcRule.clsSpacing = layer->lefiLayer::spacing(i);
 			spcRule.clsEOL = layer->lefiLayer::spacingEolWidth(i);

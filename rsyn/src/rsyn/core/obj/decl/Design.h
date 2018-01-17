@@ -203,7 +203,7 @@ public:
 	//! @brief Unregisters an observer so it will no longer receives
 	//!        notifications about changes in the netlist.
 	void
-	unregisterObserver(Observer *observer);
+	unregisterObserver(DesignObserver *observer);
 	
 	////////////////////////////////////////////////////////////////////////////
 	// Searching

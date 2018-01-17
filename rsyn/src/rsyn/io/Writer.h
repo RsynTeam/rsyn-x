@@ -40,13 +40,12 @@ private:
 	Rsyn::PhysicalDesign clsPhysicalDesign;
 
 	// Services
-	Rsyn::PhysicalService * clsPhysical = nullptr;
 	Timer * clsTimer = nullptr;
 	RoutingEstimator * clsRoutingEstimator = nullptr;
 
 public:
 
-	virtual void start(const Json &params);
+	virtual void start(const Rsyn::Json &params);
 	virtual void stop();
 
 public:

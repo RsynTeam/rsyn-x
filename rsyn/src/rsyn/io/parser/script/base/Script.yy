@@ -12,7 +12,7 @@
 
    #include "../ScriptCommand.h"
    using ScriptParsing::ParsedParamValue;
-   using ScriptParsing::Json;
+   using Rsyn::Json;
 
 // The following definitions is missing when "%locations" isn't used
 # ifndef YY_NULLPTR

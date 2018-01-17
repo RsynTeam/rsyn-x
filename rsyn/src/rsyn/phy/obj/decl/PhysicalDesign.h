@@ -60,11 +60,11 @@ public:
 	void loadDesign(const DefDscp & design);
 
 	//! @brief	Initializes the Rsyn::PhysicalDesignData, the attributes to the Rsyn::Design elements and control parameters.
-	//! @param	Json &params may be: 1) "clsEnablePhysicalPins" true enables Rsyn::PhysicalPin, 
+	//! @param	Rsyn::Json &params may be: 1) "clsEnablePhysicalPins" true enables Rsyn::PhysicalPin, 
 	//! 2) "clsEnableMergeRectangles" true enables merging rectangle bounds to be merged. It does not work to bounds defined as polygon, and 
 	//! 3) "clsEnableNetPinBoundaries" true enables storing the pins (Rsyn::Pin) that defines the Bound box boundaries of the nets.
 	//! 4) "clsContestMode" {NONE, ICCAD15} enables legacy support to the contest benchmark.
-	void initPhysicalDesign(Rsyn::Design dsg, const Json &params = {});
+	void initPhysicalDesign(Rsyn::Design dsg, const Rsyn::Json &params = {});
 
 	//! @brief	Setting the net clock. Otherwise, it is defined as nullptr.
 	void setClockNet(Rsyn::Net net);
@@ -244,7 +244,7 @@ protected:
 	//! @brief initializes the Rsyn::PhysicalSite objects into Rsyn::PhysicalDesign.
 	void addPhysicalSite(const LefSiteDscp & site);
 	//! @brief initializes the Rsyn::PhysicalLayer objects into Rsyn::PhysicalDesign.
-	void addPhysicalLayer(const LefLayerDscp& layer);
+	Rsyn::PhysicalLayerData * addPhysicalLayer(const LefLayerDscp& layer, Rsyn::PhysicalLayerData * lower);
 	//! @brief initializes the Rsyn::PhysicalVia objects into Rsyn::PhysicalDesign.
 	void addPhysicalVia(const LefViaDscp & via);
 	//! @brief initializes the Rsyn::PhysicalLibraryCell objects into Rsyn::PhysicalDesign.
@@ -264,7 +264,9 @@ protected:
 	void addPhysicalGroup(const DefGroupDscp& defGroup);
 	//! @brief Initializes Rsyn::PhysicalNetObject into Ryn::PhysicalDesign.
 	//! @warning Only initializes routed wires.
+public: // Temporary for the contest debug
 	void addPhysicalNet(const DefNetDscp & netDscp);
+protected:
 	//! @brief Initializes Rsyn::PhysicalSpecialNet into Ryn::PhysicalDesign.
 	void addPhysicalSpecialNet(const DefSpecialNetDscp & specialNet);
 	//! @brief Initializes Rsyn::PhysicalWire object

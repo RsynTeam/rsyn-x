@@ -18,31 +18,68 @@
 #include "rsyn/session/Session.h"
 
 // Services
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/model/timing/Timer.h"
 #include "rsyn/util/Colorize.h"
 #include "rsyn/util/Environment.h"
 
 namespace Rsyn {
 
-void Graphics::start(const Json &params) {
+const std::array<Color, NUM_CANVAS_THEMES> Graphics::clsBackgroundColor {{
+	Color(255, 255, 255),
+	Color(0, 0, 0)
+}}; // end array
+
+const std::array<RenderingStyle, NUM_CANVAS_THEMES> Graphics::clsInstanceColor {{
+	{Color( 22,  99, 222), LINE_STIPPLE_SOLID, STIPPLE_MASK_EMPTY},
+	{Color(  0, 210, 210), LINE_STIPPLE_SOLID, STIPPLE_MASK_EMPTY}
+}}; // end array
+
+const std::array<RenderingStyle, NUM_CANVAS_THEMES> Graphics::clsHighlightColor {{
+	{Color(  0,   0,   0), LINE_STIPPLE_DASHED, STIPPLE_MASK_EMPTY},
+	{Color(255, 255, 255), LINE_STIPPLE_DASHED, STIPPLE_MASK_EMPTY}
+}}; // end array
+
+const std::array<RenderingStyle, NUM_CANVAS_THEMES> Graphics::clsSelectionColor {{
+	{Color(255, 204, 0), LINE_STIPPLE_DASHED, STIPPLE_MASK_EMPTY},
+	{Color(255, 204, 0), LINE_STIPPLE_DASHED, STIPPLE_MASK_EMPTY}
+}}; // end array
+
+// We currently support up to 16 tech layer styles
+const std::array<RenderingStyle, 16> Graphics::techLayerMasks {{
+	{Color(  0,   0, 255), LINE_STIPPLE_SOLID, STIPPLE_MASK_DIAGONAL_DOWN_1},
+	{Color(255,   0,   0), LINE_STIPPLE_SOLID, STIPPLE_MASK_DIAGONAL_UP_1},
+	{Color(  0, 255,   0), LINE_STIPPLE_SOLID, STIPPLE_MASK_DIAGONAL_DOWN_2},
+	{Color(230, 230,   0), LINE_STIPPLE_SOLID, STIPPLE_MASK_DIAGONAL_UP_2},
+	{Color( 42,  42, 165), LINE_STIPPLE_SOLID, STIPPLE_MASK_DIAGONAL_DOWN_3},
+	{Color(165,  42,  42), LINE_STIPPLE_SOLID, STIPPLE_MASK_DIAGONAL_UP_3},
+	{Color( 42, 165,  42), LINE_STIPPLE_SOLID, STIPPLE_MASK_DIAGONAL_DOWN_4},
+	{Color(230,   0, 230), LINE_STIPPLE_SOLID, STIPPLE_MASK_DIAGONAL_UP_4},
+	{Color(  0, 230, 230), LINE_STIPPLE_SOLID, STIPPLE_MASK_DIAGONAL_DOWN_5},
+	{Color( 75,   0, 130), LINE_STIPPLE_SOLID, STIPPLE_MASK_DIAGONAL_UP_5},
+	{Color(128,   0, 128), LINE_STIPPLE_SOLID, STIPPLE_MASK_CROSS},
+	{Color( 64, 224, 208), LINE_STIPPLE_SOLID, STIPPLE_MASK_CHESS},
+	{Color(255, 165,   0), LINE_STIPPLE_SOLID, STIPPLE_MASK_YACIF2},
+	{Color(  0,   0, 128), LINE_STIPPLE_SOLID, STIPPLE_MASK_YACIF3},
+	{Color(139,   0, 139), LINE_STIPPLE_SOLID, STIPPLE_MASK_YACIF4},
+	{Color(  0, 139, 139), LINE_STIPPLE_SOLID, STIPPLE_MASK_YACIF5}
+}}; // end array
+
+// -----------------------------------------------------------------------------
+
+void Graphics::start(const Rsyn::Json &params) {
 	Rsyn::Session session;
 	
-	// Jucemar - 2017/03/25 -> Physical variable are initialized only when physical service was started.
-	// It avoids crashes when a design without physical data is loaded. 
-	if (session.isServiceRunning("rsyn.physical")) {
-		clsPhysical = session.getService("rsyn.physical");
-		clsPhysicalDesign = clsPhysical->getPhysicalDesign();
-	} // end if 
+	clsPhysicalDesign = session.getPhysicalDesign();
 	
 	clsTimer = session.getService("rsyn.timer", Rsyn::SERVICE_OPTIONAL);
 	clsDesign = session.getDesign();
-	clsModule = clsDesign.getTopModule();	
+	clsModule = session.getTopModule();
 	
-	clsColorCells = clsDesign.createAttribute();
+	clsInstanceColors = clsDesign.createAttribute();
 	
 	clsDesign.registerObserver(this);
-	
+
 	{ // colorInstances
 		ScriptParsing::CommandDescriptor dscp;
 		dscp.setName("colorInstancesBySlack");
@@ -124,7 +161,7 @@ void Graphics::stop() {
 // -----------------------------------------------------------------------------
 
 void Graphics::onPostInstanceCreate(Rsyn::Instance instance) {
-	Color& color = clsColorCells[instance.asCell()]; // TODO: hack, assuming that the instance is a cell
+	Color& color = clsInstanceColors[instance.asCell()]; // TODO: hack, assuming that the instance is a cell
 	color.r = 0;
 	color.g = 0;
 	color.b = (unsigned) (127 + 128 * (rand() / float(RAND_MAX)));
@@ -132,44 +169,9 @@ void Graphics::onPostInstanceCreate(Rsyn::Instance instance) {
 
 // -----------------------------------------------------------------------------
 
-Rsyn::Instance Graphics::searchCellAt(const DBU x, const DBU y) {
-	Rsyn::Instance c = nullptr;
-
-	// Jucemar - 2017/03/25 -> Physical variable are initialized only when physical service was started.
-	// It avoids crashes when a design without physical data is loaded. 
-	if(!clsPhysical)
-		return c;
-	
-	for (Rsyn::Instance cell : clsModule.allInstances()) {
-		if(cell.getType() != Rsyn::CELL ) {
-			std::cout<<"TODO "<<__func__<<" "<<cell.getName()<<" is not Rsyn::CELL type\n";
-			continue;
-		}
-		PhysicalCell ph = clsPhysicalDesign.getPhysicalCell(cell.asCell());
-		if (!ph.hasLayerBounds()) {
-			const Bounds &bound = ph.getBounds();
-			if (bound.inside(x, y))
-				c = cell;
-		} else {
-			Rsyn::PhysicalLibraryCell phLibCell = clsPhysicalDesign.getPhysicalLibraryCell(cell.asCell());
-			for (const Bounds & obs : phLibCell.allLayerObstacles()) {
-				Bounds bounds = obs;
-				DBUxy lower = obs.getCoordinate(LOWER);
-				bounds.moveTo(ph.getPosition() + lower);
-				if (bounds.inside(x, y))
-					c = cell;
-			} // end for 
-		}// end if 
-	} // end for
-	
-	return c;
-} // end method
-
-// -----------------------------------------------------------------------------
-
 void Graphics::coloringRandomBlue() {
 	for (Rsyn::Instance instance : clsModule.allInstances()) {
-		Color & color = clsColorCells[instance];
+		Color & color = clsInstanceColors[instance];
 		if (instance.isSequential()){
 			color.r = 255;
 			color.g = 20;
@@ -195,7 +197,7 @@ void Graphics::coloringRandomBlue() {
 void Graphics::coloringRandomGray() {
 	for (Rsyn::Instance instance : clsModule.allInstances()) {
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
-		Color & color = clsColorCells[cell];
+		Color & color = clsInstanceColors[cell];
 
 		if (instance.isFixed()) {
 			color.r = 0;
@@ -217,7 +219,7 @@ void Graphics::coloringByCellType() {
 	
 	for (Rsyn::Instance instance : clsModule.allInstances()) {
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
-		Color & color = clsColorCells[cell];
+		Color & color = clsInstanceColors[cell];
 
 		if (isScenarioRunning && instance.isLCB()) {
 			color.r = 3;
@@ -255,7 +257,7 @@ void Graphics::coloringColorful() {
 
 	for (Rsyn::Instance instance : clsModule.allInstances()) {
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
-		Color &color = clsColorCells[cell];
+		Color &color = clsInstanceColors[cell];
 		Rsyn::PhysicalCell phCell = clsPhysicalDesign.getPhysicalCell(cell);	
 		if (isScenarioRunning && cell.isSequential()) {
 			color.setRGB(255, 20, 147);
@@ -274,7 +276,7 @@ void Graphics::coloringGray() {
 	const static Color gray(230, 230, 230);
 	for (Rsyn::Instance instance : clsModule.allInstances()) {
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
-		Color & color = clsColorCells[cell];
+		Color & color = clsInstanceColors[cell];
 		color = gray;
 	} // end for
 } // end method
@@ -286,7 +288,7 @@ void Graphics::coloringSlack(TimingMode mode) {
 	//TODO use getCriticaly 
 	for (Rsyn::Instance instance : clsModule.allInstances()) {
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
-		Color & color = clsColorCells[cell];
+		Color & color = clsInstanceColors[cell];
 		color.setRGB(noSlackColor);
 	} // end for 
 
@@ -305,7 +307,7 @@ void Graphics::coloringSlack(TimingMode mode) {
 		if(critically == 0) 
 			continue;
 		
-		Color & color = clsColorCells[cell];
+		Color & color = clsInstanceColors[cell];
 			
 		int r, g, b;
 		Colorize::colorTemperature(critically, r, g, b);
@@ -322,7 +324,7 @@ void Graphics::coloringCriticality(const TimingMode mode, const double threshold
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
 		const double criticality = clsTimer->getCellCriticality(cell, mode);
 
-		Color &color = clsColorCells[cell];
+		Color &color = clsInstanceColors[cell];
 		if (criticality > 0 && criticality >= threshold) {
 			int r, g, b;
 			Colorize::colorTemperature(criticality, r, g, b);
@@ -350,7 +352,7 @@ void Graphics::coloringRelativity(const TimingMode mode) {
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
 		const double relativity = clsTimer->getCellRelativity(cell, mode);
 
-		Color &color = clsColorCells[cell];
+		Color &color = clsInstanceColors[cell];
 		if (relativity >= 1) {
 			// Weight in the range: [0.5, 1]
 			const double weight = ((relativity - 1)/(maxRelativity - 1) + 1.0)/2.0; 
@@ -373,7 +375,7 @@ void Graphics::coloringCentrality(const TimingMode mode, const double threshold)
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
 		const double centrality = clsTimer->getCellCentrality(cell, mode);
 
-		Color &color = clsColorCells[cell];
+		Color &color = clsInstanceColors[cell];
 		if (!FloatingPoint::approximatelyZero(centrality) && centrality >= threshold) {
 			int r, g, b;
 			Colorize::colorTemperature(centrality, r, g, b);
@@ -406,7 +408,7 @@ void Graphics::coloringCriticalPath(const TimingMode mode, const bool showNeighb
 		Rsyn::Cell cell  = pin.getInstance().asCell();
 		
 		if (alreadyColored.find(cell) == alreadyColored.end()) {
-			Color &color = clsColorCells[cell];
+			Color &color = clsInstanceColors[cell];
 			color = colorCritical;
 			alreadyColored.insert(cell);
 		} // end if
@@ -419,7 +421,7 @@ void Graphics::coloringCriticalPath(const TimingMode mode, const bool showNeighb
 						Rsyn::Cell netCell  = netPin.getInstance().asCell();
 
 						if (alreadyColored.find(netCell) == alreadyColored.end()) {
-							Color &color = clsColorCells[netCell];
+							Color &color = clsInstanceColors[netCell];
 							color = colorNeighbor;
 							// Don't insert the net cell in the already colored
 							// cells as the critical color must have precedence.
@@ -438,7 +440,7 @@ void Graphics::coloringQDPMoved() {
 
 	// Jucemar - 2017/03/25 -> Physical variable are initialized only when physical service was started.
 	// It avoids crashes when a design without physical data is loaded. 
-	if(!clsPhysical)
+	if(!clsPhysicalDesign)
 		return;
 	
 	for (Rsyn::Instance instance : clsModule.allInstances()) {
@@ -456,12 +458,12 @@ void Graphics::coloringQDPMoved() {
 		double criticality = wns / clsTimer->getWns( LATE );
 		
 		if (hpwl == 0) {
-			Color & color = clsColorCells[cell];
+			Color & color = clsInstanceColors[cell];
 			color.setRGB(noColor);
 		} else {
 			int r, g, b;
 			Colorize::colorTemperature(criticality, r, g, b);
-			Color & color = clsColorCells[cell];
+			Color & color = clsInstanceColors[cell];
 			color.setRGB(r, g, b);
 		} // end if-else
 	} // end for

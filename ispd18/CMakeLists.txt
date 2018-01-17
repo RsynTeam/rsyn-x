@@ -38,14 +38,12 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(PATH_RSYN ${CMAKE_CURRENT_SOURCE_DIR}/../rsyn)
 set(PATH_ISPD18 ${CMAKE_CURRENT_SOURCE_DIR})
+set(PATH_QT ${CMAKE_CURRENT_SOURCE_DIR}/../rsyn/src/rsyn/qt)
 
 ######################
 # Check Dependencies #
 ######################
 find_package(Boost COMPONENTS system filesystem program_options REQUIRED)
-find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
-find_package(wxWidgets COMPONENTS core base gl propgrid REQUIRED)
 find_package(PNG REQUIRED)
 
 # OpenMP (not working)
@@ -58,6 +56,12 @@ find_package(PNG REQUIRED)
 
 # OpenMP (work around)
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fopenmp")
+
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5PrintSupport REQUIRED)
+find_package(Qt5OpenGL REQUIRED)
+
+#find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 
 ###############
 # Source Code #
@@ -73,6 +77,29 @@ file(GLOB_RECURSE SRC_FILES_ISPD18
     ${PATH_ISPD18}/src/*.c)
 
 set(SRC_FILES ${SRC_FILES_RSYN} ${SRC_FILES_ISPD18})
+
+#####################
+# Qt Pre-Processing #
+#####################
+
+file(GLOB_RECURSE UI_FILES
+    ${PATH_QT}/ui/*.ui)
+
+file(GLOB_RECURSE QRC_FILES
+    ${PATH_QT}/resource/*.qrc)
+
+# Generate code from ui files
+qt5_wrap_ui(UI_HEADERS ${UI_FILES})
+
+# Generate rules for building source files from the resources
+qt5_add_resources(QRCS ${QRC_FILES})
+
+# Tell CMake to create the executable
+list(APPEND SRC_FILES ${UI_HEADERS})
+list(APPEND SRC_FILES ${QRCS})
+list(APPEND SRC_FILES ${GUI_FILES})
+
+#message(STATUS ${SRC_FILES})
 
 #################
 # Library Paths #
@@ -108,7 +135,6 @@ target_include_directories(rsyn PUBLIC "${PATH_ISPD18}/include")
 # Compiler Flags #
 ##################
 
-target_compile_options(rsyn PUBLIC "-O3")
 target_compile_options(rsyn PUBLIC "-Wno-unused-result -Wno-format -Wno-return-type -Wno-unused-local-typedefs")
 
 #################
@@ -118,18 +144,6 @@ target_compile_options(rsyn PUBLIC "-Wno-unused-result -Wno-format -Wno-return-t
 target_link_libraries(rsyn lef)
 target_link_libraries(rsyn def)
 
-# OpenGL
-include_directories(${OPENGL_INCLUDE_DIR})
-target_link_libraries(rsyn ${OPENGL_gl_LIBRARY})
-target_link_libraries(rsyn ${OPENGL_glu_LIBRARY})
-
-# GLEW
-target_include_directories(rsyn PUBLIC ${GLEW_INCLUDE_DIRS})
-target_link_libraries(rsyn ${GLEW_LIBRARIES})
-
-# wxWidgets
-include(${wxWidgets_USE_FILE})
-target_link_libraries(rsyn ${wxWidgets_LIBRARIES})
 
 # Boost   
 target_include_directories(rsyn PUBLIC ${Boost_INCLUDE_DIR})
@@ -139,3 +153,7 @@ target_link_libraries(rsyn ${Boost_LIBRARIES})
 target_include_directories(rsyn PUBLIC ${PNG_INCLUDE_DIR})
 target_link_libraries(rsyn ${PNG_LIBRARY})
 
+# Qt5 Widgets for linking
+target_link_libraries(rsyn Qt5::Widgets)
+target_link_libraries(rsyn Qt5::PrintSupport)
+target_link_libraries(rsyn Qt5::OpenGL)

@@ -33,7 +33,7 @@ namespace Rsyn {
 class DefaultRoutingEstimationModel : public RoutingEstimationModel, public Service {
 public:
 
-	virtual void start(const Json &params) override;
+	virtual void start(const Rsyn::Json &params) override;
 	virtual void stop() override;
 	
 private:
@@ -45,7 +45,6 @@ private:
 
 	// Services
 	Scenario * clsScenario = nullptr;
-	Rsyn::PhysicalService * clsPhysical = nullptr;
 
 	// Config
 	static const bool ENABLE_DO_NOT_USE_FLUTE_FOR_2_PIN_NETS;

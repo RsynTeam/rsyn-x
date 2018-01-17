@@ -37,6 +37,12 @@ inline Rsyn::Instance PhysicalInstance::getInstance() const {
 
 // -----------------------------------------------------------------------------
 
+inline const std::string &PhysicalInstance::getName() const {
+	return data? data->clsInstance.getName() : NullName;
+} // end method
+
+// -----------------------------------------------------------------------------
+
 inline DBU PhysicalInstance::getArea() const {
 	return data->clsBounds.computeArea();
 } // end method 

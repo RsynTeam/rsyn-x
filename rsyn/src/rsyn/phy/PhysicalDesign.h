@@ -13,19 +13,6 @@
  * limitations under the License.
  */
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   PhysicalDesign.h
- * Author: jucemar
- *
- * Created on 12 de Setembro de 2016, 20:09
- */
-
 #ifndef PHYSICALDESIGN_PHYSICALDESIGN__H
 #define PHYSICALDESIGN_PHYSICALDESIGN__H
 
@@ -51,15 +38,13 @@
 #include "rsyn/phy/util/PhysicalUtil.h"
 #include "rsyn/phy/util/PhysicalTransform.h"
 #include "rsyn/util/Exception.h"
-#include "rsyn/3rdparty/json/json.hpp"
+#include "rsyn/util/Json.h"
 
 namespace Rsyn {
 
 // std::numeric_limts<PhysicalIndex>::max() reserved to invalid initialization object.
 typedef std::uint32_t PhysicalIndex;
 static PhysicalIndex INVALID_PHYSICAL_INDEX = std::numeric_limits<PhysicalIndex>::max();
-
-typedef nlohmann::json Json;
 
 // Boost Polygon typedef 
 namespace boostGeometry = boost::geometry;
@@ -226,9 +211,6 @@ class PhysicalObserver;
 #include "rsyn/phy/obj/impl/PhysicalSpecialNet.h"
 #include "rsyn/phy/obj/impl/PhysicalTrack.h"
 #include "rsyn/phy/obj/impl/PhysicalDesign.h"
-
-
-
 
 #endif /* PHYSICALDESIGN_PHYSICALDESIGN__H */
 

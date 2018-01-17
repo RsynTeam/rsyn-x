@@ -34,10 +34,13 @@ namespace Rsyn {
 class PhysicalLibraryPinData {
 public:
 	Bounds clsLayerBound; // The layer bound is defined by one of the layer.
+	PhysicalLibraryCell clsLibraryCell;
+	PhysicalPinUse clsUse = PIN_INVALID_USE;
 	PhysicalPinDirection clsDirection = PIN_INVALID_DIRECTION;
 	// A pin may have several ports. However, each port is weakly connected to other. 
 	// It is assumed that they have high resistance among them. 
 	std::vector<PhysicalPinGeometry> clsPhysicalPinGeometries;
+	
 	PhysicalLibraryPinData() = default;
 }; // class 
 

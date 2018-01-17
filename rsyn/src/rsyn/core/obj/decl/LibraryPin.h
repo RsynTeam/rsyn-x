@@ -46,6 +46,9 @@ public:
 	//! @brief Returns the name of this library pin.
 	const std::string &getName() const;
 
+	//! @brief Returns the names of this library cell and pin .
+	std::string getHierarchicalName(const std::string & separator = ":") const;
+	
 	//! @brief Returns the direction name of this library pin.
 	const std::string &getDirectionName() const;
 

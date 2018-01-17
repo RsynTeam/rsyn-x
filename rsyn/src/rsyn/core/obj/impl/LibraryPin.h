@@ -40,6 +40,14 @@ LibraryPin::getName() const {
 // -----------------------------------------------------------------------------
 
 inline
+std::string
+LibraryPin::getHierarchicalName(const std::string & separator) const {
+	return data ? data->lcell.getName() + separator + data->name : NullName;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline
 const std::string &
 LibraryPin::getDirectionName() const {
 	return Global::getDirectionName(getDirection());

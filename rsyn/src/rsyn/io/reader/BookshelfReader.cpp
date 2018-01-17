@@ -34,7 +34,7 @@
 #include "rsyn/phy/util/BookshelfDscp.h"
 #include "rsyn/phy/util/BookshelfMapper.h"
 
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/io/Graphics.h"
 
@@ -42,7 +42,7 @@
 
 namespace  Rsyn {
 
-void BookshelfReader::load(const Json &params) {
+bool BookshelfReader::load(const Rsyn::Json &params) {
 	path = params.value("path", "");
 	optionTargetUtilization = params.value("targetUtilization", 0.9);
 	optionBenchmark = params.value("config", "");
@@ -87,12 +87,11 @@ void BookshelfReader::load(const Json &params) {
 	watchRsyn.finish();	
 
 	Stepwatch watchPopulateLayers("Initializing Physical Layer");
-	Json phDesignJason;
+	Rsyn::Json phDesignJason;
 	phDesignJason["clsEnableNetPinBoundaries"] = true;
 	phDesignJason["clsEnableRowSegments"] = true;
-	session.startService("rsyn.physical", phDesignJason);		
-	Rsyn::PhysicalService * phService = session.getService("rsyn.physical");
-	Rsyn::PhysicalDesign clsPhysicalDesign = phService->getPhysicalDesign();
+	session.startService("rsyn.physical", phDesignJason);	
+	Rsyn::PhysicalDesign clsPhysicalDesign = session.getPhysicalDesign();
 	clsPhysicalDesign.loadLibrary(lefDscp);
 	clsPhysicalDesign.loadDesign(defDscp);
 	clsPhysicalDesign.updateAllNetBounds(false);
@@ -103,6 +102,8 @@ void BookshelfReader::load(const Json &params) {
 	graphics->coloringByCellType();
 
 	session.startService("rsyn.writer", {});
+
+	return true;
 } // end method 
 
 } // end namespace 

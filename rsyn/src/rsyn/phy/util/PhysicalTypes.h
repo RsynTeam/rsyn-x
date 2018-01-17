@@ -106,6 +106,21 @@ enum PhysicalLayerDirection : std::int8_t {
 
 // -----------------------------------------------------------------------------
 
+enum PhysicalTrackDirection : std::int8_t {
+	/*! \brief Only used for Rsyn internal control.*/
+	INVALID_PHY_TRACK_DIRECTION = -1,
+	//! @brief track direction is defined as vertical.
+	//! TRACK_VERTICAL is equal to X direction defined in DEF file.
+	TRACK_VERTICAL = 0,
+	//! @brief track direction is defined as horizontal.
+	//! TRACK_HORIZONTAL is equal to Y direction defined in DEF file.
+	TRACK_HORIZONTAL = 1,
+	/*! \brief Only used for Rsyn internal control.*/
+	NUM_PHY_TRACK_DIRECTION = 2
+};
+
+// -----------------------------------------------------------------------------
+
 //! @brief Class types of the sites.
 
 enum PhysicalSiteClass : std::int8_t {
@@ -132,7 +147,28 @@ enum PhysicalPinDirection : std::int8_t {
 	PIN_OUTPUT = 1,
 	//! @brief Only used for Rsyn internal control.
 	NUM_PHY_PIN_DIRECTION = 2
-};
+}; // end enum 
+
+// -----------------------------------------------------------------------------
+
+//! @brief Pin use type
+
+enum PhysicalPinUse : std::int8_t {
+	//! @brief Only used for Rsyn internal control.
+	PIN_INVALID_USE = -1,
+	//! @brief Pin use is signal type. 
+	PIN_USE_SIGNAL = 0,
+	//! @brief Pin use is analog type.
+	PIN_USE_ANALOG = 1,
+	//! @brief Pin use is power type.
+	PIN_USE_POWER = 2,
+	//! @brief Pin use is ground type.
+	PIN_USE_GROUND = 3,
+	//! @brief Pin use is clock type.
+	PIN_USE_CLOCK = 4,
+	//! @brief Only used for Rsyn internal control.
+	NUM_PHY_PIN_USE = 5
+}; // end enum 
 
 // -----------------------------------------------------------------------------
 

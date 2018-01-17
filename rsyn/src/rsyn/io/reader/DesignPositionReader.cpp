@@ -12,19 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   DesignPositionReader.cpp
- * Author: jucemar
- * 
- * Created on 20 de Fevereiro de 2017, 19:12
- */
 
 #include "DesignPositionReader.h"
 
@@ -35,22 +22,20 @@
 #include "rsyn/phy/util/BookshelfDscp.h"
 #include "rsyn/phy/util/BookshelfMapper.h"
 
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/phy/PhysicalDesign.h"
 
 #include "rsyn/util/Stepwatch.h"
 
 namespace Rsyn {
 
-void DesignPositionReader::load(const Json & config ) {
+bool DesignPositionReader::load(const Rsyn::Json & config) {
 	
 	this->session = session;
 	std::string path = config.value("path", "");
 	clsDesign = session.getDesign();
-	clsModule = clsDesign.getTopModule();
-	
-	Rsyn::PhysicalService * phService = session.getService("rsyn.physical");
-	clsPhysicalDesign = phService->getPhysicalDesign();
+	clsModule = session.getTopModule();
+	clsPhysicalDesign = session.getPhysicalDesign();
 	
 	std::string ext = boost::filesystem::extension(path);
 	
@@ -70,8 +55,7 @@ void DesignPositionReader::openDef(std::string & path) {
 	DEFControlParser defParser;
 	DefDscp defDscp;
 	defParser.parseDEF(path, defDscp);
-	Rsyn::PhysicalService * phService = session.getService("rsyn.physical");
-	Rsyn::PhysicalDesign clsPhysicalDesign = phService->getPhysicalDesign();
+	Rsyn::PhysicalDesign clsPhysicalDesign = session.getPhysicalDesign();
 
 	for (const DefComponentDscp &component : defDscp.clsComps) {
 		Rsyn::Cell cell = clsDesign.findCellByName(component.clsName);

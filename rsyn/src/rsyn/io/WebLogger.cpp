@@ -27,7 +27,7 @@
 namespace Rsyn {
 
 void
-WebLogger::start(const Json &params) {
+WebLogger::start(const Rsyn::Json &params) {
 	Rsyn::Session session;
 
 	try {
@@ -95,8 +95,8 @@ WebLogger::renderText(const std::string &text) {
 // -----------------------------------------------------------------------------
 
 void
-WebLogger::renderChart(const Json &params) {
-	Json json = params;
+WebLogger::renderChart(const Rsyn::Json &params) {
+	Rsyn::Json json = params;
 	json["options"] = {{"responsive", false}};
 
     const boost::uuids::uuid uuid = boost::uuids::random_generator()();

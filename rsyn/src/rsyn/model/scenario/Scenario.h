@@ -24,12 +24,12 @@
 
 namespace Rsyn {
 
-class Scenario : public Service, public Observer {
+class Scenario : public Service, public DesignObserver {
 
 public:
 	Scenario();
 
-	virtual void start(const Json &params);
+	virtual void start(const Rsyn::Json &params);
 
 	virtual void stop() override {
 	} // end method

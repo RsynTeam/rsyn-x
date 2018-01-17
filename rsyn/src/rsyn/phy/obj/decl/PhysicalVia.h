@@ -55,7 +55,7 @@ public:
 	const std::string & getName() const;
 
 	//! @brief Returns a vector reference to via layers. 
-	const std::vector<Rsyn::PhysicalViaLayer> & allLayers() const;
+	const std::vector<Rsyn::PhysicalViaLayer> & allViaLayers() const;
 
 	//! @brief Returns number of via layers;
 	std::size_t getNumLayers() const;

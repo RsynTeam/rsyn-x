@@ -24,7 +24,7 @@ const bool DefaultRoutingExtractionModel::ENABLE_LONG_WIRE_SLICING = true;
 // -----------------------------------------------------------------------------
 
 void
-DefaultRoutingExtractionModel::start(const Json &params) {
+DefaultRoutingExtractionModel::start(const Rsyn::Json &params) {
 	Rsyn::Session session;
 	
 	design = session.getDesign();

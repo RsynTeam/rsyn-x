@@ -16,12 +16,12 @@
 #include "DefaultTimingModel.h"
 
 #include "rsyn/session/Session.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/model/timing/Timer.h"
 
 namespace Rsyn {
 
-void DefaultTimingModel::start(const Json &params) {
+void DefaultTimingModel::start(const Rsyn::Json &params) {
 	Rsyn::Session session;
 	
 	clsDesign = session.getDesign();
@@ -32,11 +32,11 @@ void DefaultTimingModel::start(const Json &params) {
 
 	// TODO: Maybe we should not do this here as this create a soft dependency
 	// to physical layer
-	Rsyn::PhysicalService *physical =
-		session.getService("rsyn.physical", Rsyn::SERVICE_OPTIONAL);
-	if (physical) {
-		Rsyn::PhysicalDesign phDesign;
-		phDesign = physical->getPhysicalDesign();
+
+	// TODO: Maybe we should not do this here as this create a soft dependency
+	// to physical layer
+	Rsyn::PhysicalDesign phDesign = session.getPhysicalDesign();
+	if (phDesign) {
 		phDesign.registerObserver(this);
 	} // end if
 } // end method

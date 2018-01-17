@@ -41,7 +41,7 @@
 
 namespace Rsyn {
 
-void SizingISPDReader::load(const Json & config ) {
+bool SizingISPDReader::load(const Rsyn::Json & config) {
 	std::string path = config.value("path", "");
 	std::string optionBenchmark = config.value("name", "");
 	std::string optionLibrary = config.value("library", "");
@@ -172,6 +172,8 @@ void SizingISPDReader::load(const Json & config ) {
 	timer->dumpTiming("dump-rsyn.txt");
 	std::cout << "WNS: " << timer->getWns(LATE) << "\n";
 	std::cout << "TNS: " << timer->getTns(LATE) << "\n";
+
+	return true;
 } // end method
 
 } // end namespace 

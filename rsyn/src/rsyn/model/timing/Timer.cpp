@@ -102,7 +102,7 @@ Timer::TM_MODE_WORST_REQUIRED[NUM_TIMING_MODES] = {
 
 // -----------------------------------------------------------------------------
 
-void Timer::start(const Json &params) {
+void Timer::start(const Rsyn::Json &params) {
 	Rsyn::Session session;
 
 	{ // updateTiming

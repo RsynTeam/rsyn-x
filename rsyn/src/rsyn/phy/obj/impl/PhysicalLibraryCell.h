@@ -45,6 +45,12 @@ inline DBU PhysicalLibraryCell::getLength(const Dimension dim) const {
 
 // -----------------------------------------------------------------------------
 
+inline Bounds PhysicalLibraryCell::getBounds() const {
+	return Bounds(0, 0, getWidth(), getHeight());
+} // end method
+
+// -----------------------------------------------------------------------------
+
 inline bool PhysicalLibraryCell::isMacroBlock() const {
 	return data->clsMacroClass == MACRO_BLOCK;
 } // end  method 
@@ -104,6 +110,12 @@ inline std::size_t PhysicalLibraryCell::getNumPhysicalCellLayerBoundaries() cons
 inline PhysicalObstacle PhysicalLibraryCell::getLayerObstacles() const {
 	return data->clsObs[data->clsLayerBoundIndex];
 } // end  method 
+
+// -----------------------------------------------------------------------------
+
+inline PhysicalTransform PhysicalLibraryCell::getTransform(const Rsyn::PhysicalOrientation &orientation) const {
+	return PhysicalTransform(getBounds(), orientation);
+} // end method
 
 //-----------------------------------------------------------------------------
 

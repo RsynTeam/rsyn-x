@@ -16,12 +16,12 @@
 #ifndef RSYN_SERVICE_H
 #define RSYN_SERVICE_H
 
-#include "rsyn/3rdparty/json/json.hpp"
+#include "rsyn/util/Json.h"
 
 namespace Rsyn {
 
 class Session;
-typedef nlohmann::json Json;
+
 
 enum ServiceRequestType {
 	SERVICE_OPTIONAL,
@@ -30,7 +30,7 @@ enum ServiceRequestType {
 
 class Service {
 public:
-	virtual void start(const Json &params) = 0;
+	virtual void start(const Rsyn::Json &params) = 0;
 	virtual void stop() = 0;
 }; // end class
 

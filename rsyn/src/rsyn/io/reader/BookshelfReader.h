@@ -47,7 +47,7 @@ public:
 	BookshelfReader() {}
 	BookshelfReader(const BookshelfReader& orig) {}
 	virtual ~BookshelfReader() {}
-	void load(const Json &params);
+	virtual bool load(const Rsyn::Json &params) override;
 }; // end class 
 
 } // end namespace 

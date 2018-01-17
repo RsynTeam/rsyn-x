@@ -276,7 +276,7 @@ inline Rsyn::PhysicalCell PhysicalDesign::getPhysicalCell(Rsyn::Cell cell) const
 
 inline Rsyn::PhysicalCell PhysicalDesign::getPhysicalCell(Rsyn::Pin pin) const {
 	Rsyn::Instance instance = pin.getInstance();
-	return getPhysicalCell(instance.asCell());
+	return instance.getType() == Rsyn::CELL? getPhysicalCell(instance.asCell()) : nullptr;
 } // end method 
 
 // -----------------------------------------------------------------------------

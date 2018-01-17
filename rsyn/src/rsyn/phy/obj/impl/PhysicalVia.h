@@ -35,7 +35,7 @@ inline const std::string & PhysicalVia::getName() const {
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<Rsyn::PhysicalViaLayer> & PhysicalVia::allLayers() const {
+inline const std::vector<Rsyn::PhysicalViaLayer> & PhysicalVia::allViaLayers() const {
 	return data->clsViaLayers;
 } // end method 
 

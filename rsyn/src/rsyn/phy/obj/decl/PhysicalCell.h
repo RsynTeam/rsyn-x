@@ -40,6 +40,8 @@ public:
 	PhysicalCell() : PhysicalInstance(nullptr) {}
 	PhysicalCell(std::nullptr_t): PhysicalInstance(nullptr)   {} 
 
+	//! @brief Returns the cell associated to this physical cell.
+	Rsyn::Cell getCell() const;
 	//! @brief Returns true if cell is fixed. Otherwise, returns false.
 	bool isFixed() const;
 	//! @brief Returns true if cell is MACRO type. Otherwise, returns false.
@@ -85,7 +87,9 @@ public:
 	//! @brief Returns a transformation that allows one to transform the
 	//! coordinates from the library cell space to the cell space. The
 	//! transformation accounts for translation and the orientation of the cell.
-	PhysicalTransform getTransform() const;
+	//! @param origin If set to true, the transform is created w.r.t (0, 0) and
+	//! not the current cell position.
+	PhysicalTransform getTransform(const bool origin = false) const;
 	//! @brief Returns true if the cell boundaries is defined by a PhysicalLayer. Otherwise, returns false.
 	//! @details Cell boundaries may be defined by some PhysicalLayer instead of rectangular Bounds.
 	//! In the 2015 ICCAD contest, some macro have their boundaries defined by metal1 layer.

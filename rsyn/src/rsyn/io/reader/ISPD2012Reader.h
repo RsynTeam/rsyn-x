@@ -31,7 +31,7 @@
 
 #include "rsyn/session/Session.h"
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/3rdparty/json/json.hpp"
+#include "rsyn/util/Json.h"
 
 namespace Rsyn {
 
@@ -45,7 +45,7 @@ public:
 	ISPD2012Reader() {}
 	ISPD2012Reader(const ISPD2012Reader& orig) {}
 	virtual ~ISPD2012Reader() {}
-	void load(const Json &params);
+	virtual bool load(const Rsyn::Json &params) override;
 
 }; // end class 
 

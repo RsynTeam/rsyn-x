@@ -34,11 +34,10 @@ void QpdpB2B::init(Rsyn::Session ptr) {
 	session = ptr;
 	infra = session.getService("ufrgs.ispd16.infra");
 	timer = session.getService("rsyn.timer");
-	physical = session.getService("rsyn.physical");
 	routingEstimator = session.getService("rsyn.routingEstimator");
 	design = session.getDesign();
-	module = design.getTopModule();
-	phDesign = physical->getPhysicalDesign();
+	module = session.getTopModule();
+	phDesign = session.getPhysicalDesign();
 	
 	//Jucemar Monteiro 2017/02/24
 	// Removed relaxed pin position of the PhysicalService 

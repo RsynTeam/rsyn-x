@@ -85,4 +85,18 @@ inline int PhysicalLayer::getRelativeIndex() const {
 	return data->clsRelativeIndex;
 } // end method 
 
+// -----------------------------------------------------------------------------
+
+inline Rsyn::PhysicalLayer PhysicalLayer::getPhysicalLayerLower() const {
+	return Rsyn::PhysicalLayer(data->clsLower);
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline Rsyn::PhysicalLayer PhysicalLayer::getPhysicalLayerUpper() const {
+	return Rsyn::PhysicalLayer(data->clsUpper);
+} // end method 
+
+// -----------------------------------------------------------------------------
+
 } // end namespace 

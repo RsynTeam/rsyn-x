@@ -17,7 +17,7 @@
 #define ABU_REDUCTION_OPTO_H
 
 #include "rsyn/session/Session.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/model/timing/types.h"
 
 namespace Rsyn {
@@ -38,7 +38,6 @@ private:
 	Rsyn::PhysicalDesign phDesign;
 	Rsyn::Timer *timer;
 	Rsyn::RoutingEstimator *routingEstimator;
-	Rsyn::PhysicalService *physical;
 
 	std::vector<std::tuple<Rsyn::Cell, std::tuple<Number, int>>> clsABUViolationCells;
 	void computeABUVioaltionCells( const double alpha = 0);

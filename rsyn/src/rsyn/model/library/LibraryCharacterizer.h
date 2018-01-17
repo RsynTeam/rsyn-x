@@ -156,7 +156,7 @@ private:
 	
 public:
 
-	virtual void start(const Json &params);
+	virtual void start(const Rsyn::Json &params);
 	virtual void stop();
 
 	void runLibraryAnalysis(Rsyn::Design design, TimingModel * timingModel);

@@ -898,44 +898,44 @@ template<class T>
 inline
 void
 Design::registerObserver(T *observer) {
-	static_assert(std::is_base_of<Observer, T>::value,
+	static_assert(std::is_base_of<DesignObserver, T>::value,
 			"Unable to register class as observer. "
 			"The observer class must inherit from Rsyn::Observer.");
 
-	observer->Observer::observedDesign = Design(data);
+	observer->DesignObserver::observedDesign = Design(data);
 	
 	// Check if the observer implements (overwrites) the event callbacks if so
 	// register it to receive notifications of the respective event.
 
-	if (typeid(&Observer::onDesignDestruction) != typeid(&T::onDesignDestruction)) {
+	if (typeid(&DesignObserver::onDesignDestruction) != typeid(&T::onDesignDestruction)) {
 		data->observers[EVENT_DESTRUCTION].push_back(observer);
 	} // end if
 
-	if (typeid(&Observer::onPostInstanceCreate) != typeid(&T::onPostInstanceCreate)) {
+	if (typeid(&DesignObserver::onPostInstanceCreate) != typeid(&T::onPostInstanceCreate)) {
 		data->observers[EVENT_POST_INSTANCE_CREATE].push_back(observer);
 	} // end if
 
-	if (typeid(&Observer::onPreInstanceRemove) != typeid(&T::onPreInstanceRemove)) {
+	if (typeid(&DesignObserver::onPreInstanceRemove) != typeid(&T::onPreInstanceRemove)) {
 		data->observers[EVENT_PRE_INSTANCE_REMOVE].push_back(observer);
 	} // end if
 
-	if (typeid(&Observer::onPostNetCreate) != typeid(&T::onPostNetCreate)) {
+	if (typeid(&DesignObserver::onPostNetCreate) != typeid(&T::onPostNetCreate)) {
 		data->observers[EVENT_POST_NET_CREATE].push_back(observer);
 	} // end if
 
-	if (typeid(&Observer::onPreNetRemove) != typeid(&T::onPreNetRemove)) {
+	if (typeid(&DesignObserver::onPreNetRemove) != typeid(&T::onPreNetRemove)) {
 		data->observers[EVENT_PRE_NET_REMOVE].push_back(observer);
 	} // end if
 
-	if (typeid(&Observer::onPostCellRemap) != typeid(&T::onPostCellRemap)) {
+	if (typeid(&DesignObserver::onPostCellRemap) != typeid(&T::onPostCellRemap)) {
 		data->observers[EVENT_POST_CELL_REMAP].push_back(observer);
 	} // end if
 
-	if (typeid(&Observer::onPostPinConnect) != typeid(&T::onPostPinConnect)) {
+	if (typeid(&DesignObserver::onPostPinConnect) != typeid(&T::onPostPinConnect)) {
 		data->observers[EVENT_POST_PIN_CONNECT].push_back(observer);
 	} // end if
 
-	if (typeid(&Observer::onPrePinDisconnect) != typeid(&T::onPrePinDisconnect)) {
+	if (typeid(&DesignObserver::onPrePinDisconnect) != typeid(&T::onPrePinDisconnect)) {
 		data->observers[EVENT_PRE_PIN_DISCONNECT].push_back(observer);
 	} // end if	
 	
@@ -945,11 +945,11 @@ Design::registerObserver(T *observer) {
 
 inline
 void
-Design::unregisterObserver(Observer *observer) {
-	for (int i = 0; i < NUM_EVENTS; i++) {
+Design::unregisterObserver(DesignObserver *observer) {
+	for (int i = 0; i < NUM_DESIGN_EVENTS; i++) {
 		data->observers[i].remove(observer);
 	} // end for
-	observer->Observer::observedDesign = nullptr;
+	observer->DesignObserver::observedDesign = nullptr;
 } // end method
 
 ////////////////////////////////////////////////////////////////////////////////

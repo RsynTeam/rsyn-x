@@ -22,23 +22,22 @@
 #include "rsyn/io/legacy/Legacy.h"
 
 // Services
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/model/timing/Timer.h"
 #include "rsyn/model/routing/RoutingEstimator.h"
 
 #include "rsyn/io/parser/lef_def/DEFControlParser.h"
 namespace Rsyn {
 
-void Writer::start(const Json &params) {
+void Writer::start(const Rsyn::Json &params) {
 	Rsyn::Session session;
 
-	clsPhysical = session.getService("rsyn.physical");
 	clsTimer = session.getService("rsyn.timer", Rsyn::SERVICE_OPTIONAL);
 	clsRoutingEstimator = session.getService("rsyn.routingEstimator", Rsyn::SERVICE_OPTIONAL);
 
 	clsDesign = session.getDesign();
-	clsModule = clsDesign.getTopModule();
-	clsPhysicalDesign = clsPhysical->getPhysicalDesign();
+	clsModule = session.getTopModule();
+	clsPhysicalDesign = session.getPhysicalDesign();
 
 	{ // writeDEF
 		ScriptParsing::CommandDescriptor dscp;
@@ -254,7 +253,7 @@ void Writer::writeFullDEF(string filename) {
 	for(Rsyn::PhysicalTrack phTrack : clsPhysicalDesign.allPhysicalTracks()){
 		def.clsTracks.push_back(DefTrackDscp());
 		DefTrackDscp & defTrack = def.clsTracks.back();
-		defTrack.clsDirection = getDimension(phTrack.getDirection());
+		defTrack.clsDirection = Rsyn::getPhysicalTrackDirectionDEF(phTrack.getDirection());
 		defTrack.clsLocation = phTrack.getLocation();
 		defTrack.clsSpace = phTrack.getSpace();
 		int numLayers = phTrack.getNumberOfLayers();
@@ -665,7 +664,7 @@ void Writer::writePlacedBookshelf(const std::string & path) {
 void Writer::writeSPEFFile(ostream &out, bool onlyFixed) {
 	std::time_t result = std::time(nullptr);
 
-	/* TODO - Receive the head as Json parameters */
+	/* TODO - Receive the head as Rsyn::Json parameters */
 	out << "*SPEF \"" << "IEEE 1481-1998" << "\"\n";
 	out << "*DESIGN \"" << clsDesign.getName() << "\"\n";
 	out << "*DATE \"" << std::asctime(std::localtime(&result)) << "\"";

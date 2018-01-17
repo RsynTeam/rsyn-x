@@ -28,7 +28,7 @@
 
 namespace Rsyn {
 
-inline Dimension PhysicalTrack::getDirection() const {
+inline PhysicalTrackDirection PhysicalTrack::getDirection() const {
 	return data->clsDirection;
 } // end method 
 

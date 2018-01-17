@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef RSYN_ISPD2018READER_H
-#define RSYN_ISPD2018READER_H
+#ifndef RSYN_ISPD2018_READER_H
+#define RSYN_ISPD2018_READER_H
 
 #include "rsyn/session/Session.h"
 
@@ -25,7 +25,7 @@ class RoutingGuide;
 class ISPD2018Reader : public Reader {
 public:
 	ISPD2018Reader() = default;
-	void load(const Json& params) override;
+	virtual bool load(const Rsyn::Json& params) override;
 	
 private:
 	Session session;

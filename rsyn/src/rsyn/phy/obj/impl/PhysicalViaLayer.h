@@ -45,5 +45,12 @@ inline std::size_t PhysicalViaLayer::getNumBounds() const {
 } // end method 
 
 // -----------------------------------------------------------------------------
+
+inline Rsyn::PhysicalVia PhysicalViaLayer::getVia() const {
+	return data->clsPhVia;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
 } // end namespace 
 

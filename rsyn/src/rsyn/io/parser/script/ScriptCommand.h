@@ -22,7 +22,7 @@
 #include <exception>
 
 #include "rsyn/io/parser/script/ScriptReader.h"
-#include "rsyn/3rdparty/json/json.hpp"
+#include "rsyn/util/Json.h"
 
 namespace Rsyn {
 class Engine;
@@ -33,8 +33,6 @@ class ScriptReader;
 }
 
 namespace ScriptParsing {
-
-typedef nlohmann::json Json;
 
 class ParsedCommand;
 class CommandDescriptor;
@@ -126,7 +124,7 @@ public:
 class ParsedParamValue {
 private:
 	ParsedParamType clsType;
-	Json clsValue;
+	Rsyn::Json clsValue;
 
 public:
 
@@ -135,10 +133,10 @@ public:
 	ParsedParamValue(const int value) { clsType = PARSED_PARAM_TYPE_INTEGER; clsValue = value; }
 	ParsedParamValue(const float value) { clsType = PARSED_PARAM_TYPE_FLOAT; clsValue = value; }
 	ParsedParamValue(const std::string &value) { clsType = PARSED_PARAM_TYPE_STRING; clsValue = value; }
-	ParsedParamValue(const Json &value) { clsType = PARSED_PARAM_TYPE_JSON; clsValue = value; }
+	ParsedParamValue(const Rsyn::Json &value) { clsType = PARSED_PARAM_TYPE_JSON; clsValue = value; }
 	
 	ParsedParamType getType() const { return clsType; }
-	Json getValue() const { return clsValue; }
+	Rsyn::Json getValue() const { return clsValue; }
 }; // end class
 
 // -----------------------------------------------------------------------------
@@ -207,14 +205,14 @@ class ParsedParam {
 friend class ParsedCommand;
 friend class Command;
 private:
-	Json clsJson;
+	Rsyn::Json clsJson;
 	ParsedParamType clsType;
 	int clsPosition;
 	std::string clsName;	
 
 	ParsedParam() : clsPosition(-1), clsType(PARSED_PARAM_TYPE_NULL) {}
 	
-	const Json &
+	const Rsyn::Json &
 	getValue() const {
 		return clsJson;
 	} // end method
@@ -291,7 +289,7 @@ public:
 		(getType() == PARSED_PARAM_TYPE_INTEGER && (asInteger() == 0 || asInteger() == 1)); 
 	} // end method
 	
-	// Checks whether or not this param is a Json.
+	// Checks whether or not this param is a Rsyn::Json.
 	bool isJson() const {
 		return 
 		getType() == PARSED_PARAM_TYPE_JSON; 
@@ -341,9 +339,9 @@ public:
 		return clsJson.get<float>(); 
 	} // end method
 	
-	// Cast this param as a Json objects. If the cast is not possible, raises 
+	// Cast this param as a Rsyn::Json objects. If the cast is not possible, raises 
 	// an exception.
-	Json asJson() const { 
+	Rsyn::Json asJson() const { 
 		if (!isJson())
 			throw InvalidParamTypeException();				
 		return clsJson; 
@@ -481,7 +479,7 @@ private:
 	ParamSpec clsSpec;
 	int clsPosition;
 	std::string clsDescription;
-	Json clsDefaultValue;
+	Rsyn::Json clsDefaultValue;
 	
 	template<typename T> 
 	bool parseDefaultValue_Generic(const std::string &value) {
@@ -538,8 +536,8 @@ private:
 			break;
 		case PARAM_TYPE_JSON:
 			if (value == "") {
-				// Json parse fails for empty string, but an empty
-			    // string should be considered as a null Json.
+				// Rsyn::Json parse fails for empty string, but an empty
+			    // string should be considered as a null Rsyn::Json.
 				success = true;
 			} else {
 				success = parseDefaultValue_Json(value);
@@ -580,7 +578,7 @@ public:
 		return clsDescription;
 	} // end method
 	
-	const Json &
+	const Rsyn::Json &
 	getDefaultValue() const {
 		return clsDefaultValue;
 	} // end method
@@ -615,9 +613,9 @@ public:
 		case PARAM_TYPE_STRING:
 			return !param.isNull();
 		case PARAM_TYPE_JSON:
-			// Note: All basic types can be parsed as a Json. I'm not sure
-			// if the actual Json standard consider that, for instance, a
-			// boolean is a valid Json, but our Json type allows that.
+			// Note: All basic types can be parsed as a Rsyn::Json. I'm not sure
+			// if the actual Rsyn::Json standard consider that, for instance, a
+			// boolean is a valid Rsyn::Json, but our Rsyn::Json type allows that.
 			return true;
 		default:
 			assert(false);
@@ -865,7 +863,7 @@ friend class Command;
 private:
 	std::string clsName;
 	ParamType clsType;
-	Json clsValue;
+	Rsyn::Json clsValue;
 	bool clsUserSpecified;
 	
 	void copyFromDescriptor(const ParamDescriptor &dscp) {
@@ -874,7 +872,7 @@ private:
 		clsValue = dscp.getDefaultValue();
 	} // end method
 	
-	void copyValue(const Json &value)  {
+	void copyValue(const Rsyn::Json &value)  {
 		clsValue = value;
 	} // end method
 	
@@ -905,7 +903,7 @@ public:
 			clsValue.dump();
 	} // end operator
 	
-	operator Json() const {
+	operator Rsyn::Json() const {
 		return clsValue;
 	} // end operator
 	

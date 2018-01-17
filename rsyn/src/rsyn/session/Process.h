@@ -16,16 +16,16 @@
 #ifndef RSYN_PROCESS_H
 #define RSYN_PROCESS_H
 
-#include "rsyn/3rdparty/json/json.hpp"
+#include "rsyn/util/Json.h"
 
 namespace Rsyn {
 
 class Session;
-typedef nlohmann::json Json;
+
 
 class Process {
 public:
-	virtual bool run(const Json &params) = 0;
+	virtual bool run(const Rsyn::Json &params) = 0;
 }; // end class
 
 } // end namespace

@@ -15,7 +15,7 @@
 
 #include "ISPD2018Reader.h"
 #include "rsyn/util/Stepwatch.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/ispd18/Guide.h"
 #include "rsyn/ispd18/RoutingGuide.h"
@@ -26,30 +26,31 @@
 
 namespace Rsyn {
 	
-void ISPD2018Reader::load(const Json& params) {
+bool ISPD2018Reader::load(const Rsyn::Json& params) {
 	Rsyn::Session session;
 
 	std::string path = params.value("path", "");
 				
 	if (!params.count("lefFile")) {
 		std::cout << "[ERROR] LEF file not specified...\n";
-		return;
+		return false;
 	} // end if
 	lefFile = session.findFile(params.value("lefFile", ""), path);
 	
 	if (!params.count("defFile")) {
 		std::cout << "[ERROR] DEF file not specified...\n";
-		return;
+		return false;
 	} // end if
 	defFile = session.findFile(params.value("defFile", ""), path);
 	
 	if (!params.count("guideFile")) {
 		std::cout << "[ERROR] Guide file not specified...\n";
-		return;
+		return false;
 	} // end if
 	guideFile = session.findFile(params.value("guideFile", ""), path);
 	
 	parsingFlow();
+	return true;
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -97,13 +98,12 @@ void ISPD2018Reader::populateDesign() {
 
 	Reader::populateRsyn(lefDescriptor, defDescriptor, design);
 
-	Json physicalDesignConfiguration;
+	Rsyn::Json physicalDesignConfiguration;
 	physicalDesignConfiguration["clsEnableMergeRectangles"] = true;
 	physicalDesignConfiguration["clsEnableNetPinBoundaries"] = true;
 	physicalDesignConfiguration["clsEnableRowSegments"] = true;
 	session.startService("rsyn.physical", physicalDesignConfiguration);
-	Rsyn::PhysicalService* phService = session.getService("rsyn.physical");
-	Rsyn::PhysicalDesign physicalDesign = phService->getPhysicalDesign();
+	Rsyn::PhysicalDesign physicalDesign = session.getPhysicalDesign();
 	physicalDesign.loadLibrary(lefDescriptor);
 	physicalDesign.loadDesign(defDescriptor);
 	physicalDesign.updateAllNetBounds(false);

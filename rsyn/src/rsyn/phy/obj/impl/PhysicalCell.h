@@ -23,6 +23,12 @@ namespace Rsyn {
 
 // -----------------------------------------------------------------------------
 
+inline Rsyn::Cell PhysicalCell::getCell() const {
+	return data->clsInstance.asCell();
+} // end method
+
+// -----------------------------------------------------------------------------
+
 inline bool PhysicalCell::isFixed() const {
 	return data->clsInstance.isFixed();
 } // end method
@@ -117,8 +123,14 @@ inline PhysicalOrientation PhysicalCell::getOrientation() const {
 
 // -----------------------------------------------------------------------------
 
-inline PhysicalTransform PhysicalCell::getTransform() const {
-	return PhysicalTransform(getBounds(), getOrientation());
+inline PhysicalTransform PhysicalCell::getTransform(const bool origin) const {
+	if (origin) {
+		Bounds bounds = getBounds();
+		bounds.translate(-bounds.getLower());
+		return PhysicalTransform(bounds, getOrientation());
+	} else {
+		return PhysicalTransform(getBounds(), getOrientation());
+	} // end else
 } // end method
 
 // -----------------------------------------------------------------------------

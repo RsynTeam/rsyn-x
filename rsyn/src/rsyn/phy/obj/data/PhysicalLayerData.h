@@ -43,6 +43,8 @@ public:
 	Rsyn::PhysicalLayerType clsType = INVALID_PHY_LAYER_TYPE;
 	Rsyn::PhysicalLayerDirection clsDirection = INVALID_PHY_LAYER_DIRECTION;
 	std::string clsName = Rsyn::getPhysicalInvalidName();
+	Rsyn::PhysicalLayerData * clsLower = nullptr;
+	Rsyn::PhysicalLayerData * clsUpper = nullptr;
 	std::vector<Rsyn::PhysicalSpacingRule> clsSpacing;
 	PhysicalLayerData() = default;
 }; // end class 

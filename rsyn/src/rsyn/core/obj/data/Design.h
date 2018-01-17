@@ -40,7 +40,7 @@ struct DesignData {
 	std::array<LibraryCell, NUM_SIGNAL_DIRECTIONS> portLibraryCells;
 	std::set<Cell> ports[NUM_SIGNAL_DIRECTIONS];
 	
-	std::array<int, NUM_INSTANCE_TYPES>  instanceCount;
+	std::array<int, NUM_INSTANCE_TYPES> instanceCount;
 	
 	std::vector<Pin> structuralStartpoints;
 	std::vector<Pin> structuralEndpoints;	
@@ -52,16 +52,10 @@ struct DesignData {
 	// Used for some netlist traversing (e.g. update topological ordering)...
 	int sign;	
 	
-	////////////////////////////////////////////////////////////////////////////
-	// Observerss
-	////////////////////////////////////////////////////////////////////////////
-
-	std::array<std::list<Observer *>, NUM_EVENTS> observers;
+	// Observers
+	std::array<std::list<DesignObserver *>, NUM_DESIGN_EVENTS> observers;
 	
-	////////////////////////////////////////////////////////////////////////////
 	// Constructor
-	////////////////////////////////////////////////////////////////////////////	
-	
 	DesignData() :
 		initialized(false),
 		dirty(false),

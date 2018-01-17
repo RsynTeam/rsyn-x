@@ -17,13 +17,13 @@
 #include "rsyn/model/routing/DefaultRoutingEstimationModel.h"
 #include "rsyn/model/routing/DefaultRoutingExtractionModel.h"
 #include "rsyn/session/Session.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 
 namespace Rsyn {
 
 // -----------------------------------------------------------------------------
 
-void RoutingEstimator::start(const Json &params) {
+void RoutingEstimator::start(const Rsyn::Json &params) {
 	Rsyn::Session session;
 
 	design = session.getDesign();
@@ -38,20 +38,14 @@ void RoutingEstimator::start(const Json &params) {
 
 	// TODO: Maybe we should not do this here as this create a soft dependency
 	// to physical layer
-	Rsyn::PhysicalService *physical =
-			session.getService("rsyn.physical", Rsyn::SERVICE_OPTIONAL);
-	
-	if (physical) {
-		Rsyn::PhysicalDesign phDesign;
-		phDesign = physical->getPhysicalDesign();
+	Rsyn::PhysicalDesign phDesign = session.getPhysicalDesign();
+	if (phDesign) {
 		// Observe changes in the physical design
 		phDesign.registerObserver(this);
 	} // end if
 
 	// Observe changes in the netlist.
 	design.registerObserver(this);
-	
-	
 	
 	{ // updateRoutingEstimation
 		ScriptParsing::CommandDescriptor dscp;

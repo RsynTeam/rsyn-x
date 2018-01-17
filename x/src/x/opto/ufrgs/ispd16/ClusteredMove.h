@@ -17,7 +17,7 @@
 #define CLUSTERED_MOVE_OPTO_H
 
 #include "rsyn/session/Session.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/model/timing/types.h"
 
 namespace Rsyn {
@@ -36,7 +36,6 @@ private:
 	Rsyn::Module module;
 	Rsyn::PhysicalDesign phDesign;
 	Rsyn::Timer *timer;
-	Rsyn::PhysicalService* physical;
 	
 	Rsyn::Attribute<Rsyn::Instance, bool> moved;
 	

@@ -32,7 +32,7 @@
 #include "rsyn/session/Service.h"
 #include "rsyn/model/congestion/DensityGrid/DensityGrid.h"
 #include "rsyn/phy/PhysicalDesign.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 
 namespace Rsyn {
 
@@ -42,7 +42,7 @@ private:
 public:
 
 	DensityGridService () {}
-	virtual void start(const Json &params) override;
+	virtual void start(const Rsyn::Json &params) override;
 	virtual void stop() override;
 
 	Rsyn::DensityGrid getDensityGrid() { return clsDensityGrid; }

@@ -14,16 +14,14 @@
  */
 
 #include "PhysicalDesignEx.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include <iostream>
 
 // initializing an process 
 
 bool PhysicalDesignExample::run(const Rsyn::Json &params) {
-	// Getting physical service. The object which has the reference to physical design
-	Rsyn::PhysicalService * phService = clsSession.getService("rsyn.physical");
 	// Getting physical design object reference
-	clsPhDesign = phService->getPhysicalDesign();
+	clsPhDesign = clsSession.getPhysicalDesign();
 	// Getting design reference (netlist)
 	clsDesign = clsSession.getDesign();
 	// Getting top module reference

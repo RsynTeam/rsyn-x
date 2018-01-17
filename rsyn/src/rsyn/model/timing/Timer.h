@@ -57,7 +57,7 @@ class Scenario;
 // Static Timing Analysis
 ////////////////////////////////////////////////////////////////////////////////
 
-class Timer : public Service, public Rsyn::Observer {
+class Timer : public Service, public Rsyn::DesignObserver {
 public:
 
 	enum InputDriverDelayMode {
@@ -84,7 +84,7 @@ private:
 	
 public:
 	
-	virtual void start(const Json &params) override;
+	virtual void start(const Rsyn::Json &params) override;
 	virtual void stop() override;
 
 	virtual void

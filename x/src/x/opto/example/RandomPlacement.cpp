@@ -26,11 +26,10 @@ bool RandomPlacementExample::run(const Rsyn::Json &params) {
 	this->session = session;
 	
 	this->timer = session.getService("rsyn.timer");
-	this->physical = session.getService("rsyn.physical");
 	
 	this->design = session.getDesign();
-	this->module = design.getTopModule();
-	this->phDesign = physical->getPhysicalDesign();
+	this->module = session.getTopModule();
+	this->phDesign = session.getPhysicalDesign();
 	
 	runRandomPlacement();
 

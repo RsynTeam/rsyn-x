@@ -13,19 +13,6 @@
  * limitations under the License.
  */
  
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   ICCAD15Reader.cpp
- * Author: jucemar
- * 
- * Created on 20 de Fevereiro de 2017, 18:59
- */
-
 #include "ICCAD15ReaderExtended.h"
 
 #include "rsyn/io/reader/ICCAD15Reader.h"
@@ -36,11 +23,11 @@
 #include "x/infra/iccad15/Infrastructure.h"
 #include "x/infra/iccad15/utilICCAD15.h"
 
-#include "rsyn/3rdparty/json/json.hpp"
+#include "rsyn/util/Json.h"
 
 namespace ICCAD15 {
 
-void ICCAD15ReaderExtended::load(const Rsyn::Json &params) {
+bool ICCAD15ReaderExtended::load(const Rsyn::Json &params) {
 	Rsyn::ICCAD15Reader::load(params);
 
 	const bool globalPlacementOnly = params.value("globalPlacementOnly", false);
@@ -49,13 +36,14 @@ void ICCAD15ReaderExtended::load(const Rsyn::Json &params) {
 	} else {
 		openBenchmarkFromICCAD15();
 	} // end else
+
+	return true;
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-void ICCAD15ReaderExtended::openBenchmarkFromICCAD15()  {
-	Rsyn::PhysicalService *physicalService = session.getService("rsyn.physical");
-	Rsyn::PhysicalDesign physicalDesign = physicalService->getPhysicalDesign();
+void ICCAD15ReaderExtended::openBenchmarkFromICCAD15() {
+	Rsyn::PhysicalDesign physicalDesign = session.getPhysicalDesign();
 
 	Stepwatch watchJezz("Starting Jezz");
 	session.startService("rsyn.jezz", {});

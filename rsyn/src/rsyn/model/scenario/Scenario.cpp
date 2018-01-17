@@ -18,7 +18,7 @@
 
 namespace Rsyn {
 
-void Scenario::start(const Json &params) {
+void Scenario::start(const Rsyn::Json &params) {
 	Rsyn::Session session;
 	Rsyn::Design design = session.getDesign();
 

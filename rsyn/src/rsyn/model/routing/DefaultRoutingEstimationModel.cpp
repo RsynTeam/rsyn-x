@@ -16,7 +16,7 @@
 #include <random>
 
 #include "rsyn/session/Session.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/3rdparty/flute/flute.h"
 #include "rsyn/util/Stopwatch.h"
 
@@ -32,16 +32,15 @@ const bool DefaultRoutingEstimationModel::ENABLE_DO_NOT_USE_FLUTE_FOR_2_PIN_NETS
 // -----------------------------------------------------------------------------
 
 void
-DefaultRoutingEstimationModel::start(const Json &params) {
+DefaultRoutingEstimationModel::start(const Rsyn::Json &params) {
 	Rsyn::Session session;
 	
 	design = session.getDesign();
 	module = design.getTopModule();
 
-	clsPhysical = session.getService("rsyn.physical");
 	clsScenario = session.getService("rsyn.scenario");
 
-	clsPhysicalDesign = clsPhysical->getPhysicalDesign();
+	clsPhysicalDesign = session.getPhysicalDesign();
 
 	Flute::readLUT();
 } // end method

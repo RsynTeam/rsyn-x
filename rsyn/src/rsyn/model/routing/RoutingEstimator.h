@@ -31,7 +31,7 @@ namespace Rsyn {
 
 class Session;
 
-class RoutingEstimator : public Service, public Rsyn::Observer, public Rsyn::PhysicalObserver {
+class RoutingEstimator : public Service, public Rsyn::DesignObserver, public Rsyn::PhysicalObserver {
 private:
 
 	// Indicates what type of update is required for a net. Add in order of 
@@ -89,7 +89,7 @@ private:
 	
 public:
 	
-	virtual void start(const Json &params);
+	virtual void start(const Rsyn::Json &params);
 	virtual void stop();
 
 	void setRoutingEstimationModel(RoutingEstimationModel *model) { routingEstimationModel = model; }

@@ -21,6 +21,14 @@
 
 namespace Rsyn {
 
+// -----------------------------------------------------------------------------
+
+inline PhysicalLibraryCell PhysicalLibraryPin::getPhysicalLibraryCell() const {
+	return data->clsLibraryCell;
+} // end method
+
+// -----------------------------------------------------------------------------
+
 inline Bounds PhysicalLibraryPin::getICCADBounds() {
 	return data->clsLayerBound;
 } // end method 
@@ -65,6 +73,12 @@ inline bool PhysicalLibraryPin::isEmptyPinGeometries() const {
 
 inline PhysicalPinDirection PhysicalLibraryPin::getPinDirection() const {
 	return data->clsDirection;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline PhysicalPinUse PhysicalLibraryPin::getUse () const {
+	return data->clsUse;
 } // end method 
 
 // -----------------------------------------------------------------------------

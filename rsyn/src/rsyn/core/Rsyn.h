@@ -83,7 +83,7 @@ class Design;
 class AttributeInitializer;
 template<typename DefaultValueType> class AttributeInitializerWithDefaultValue;
 
-class Observer;
+class DesignObserver;
 
 template<class Object, class Reference, unsigned int CHUNK_SIZE> class GenericListCollection;
 template<class Reference, unsigned int CHUNK_SIZE> class GenericReferenceListCollection;
@@ -250,7 +250,13 @@ enum NetTypeTag {
 // Events
 // =============================================================================
 
-enum EventType {
+enum SessionEventType {
+	EVENT_DESIGN_LOADED,
+
+	NUM_SESSION_EVENTS
+}; // end enum
+
+enum DesignEventType {
 	EVENT_DESTRUCTION,
 	EVENT_POST_INSTANCE_CREATE,
 	EVENT_PRE_INSTANCE_REMOVE,
@@ -260,7 +266,7 @@ enum EventType {
 	EVENT_POST_PIN_CONNECT,
 	EVENT_PRE_PIN_DISCONNECT,
 
-	NUM_EVENTS
+	NUM_DESIGN_EVENTS
 }; // end enum
 
 // =============================================================================

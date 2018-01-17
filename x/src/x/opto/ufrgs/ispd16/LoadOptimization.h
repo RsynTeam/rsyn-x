@@ -17,7 +17,7 @@
 #define LOAD_OPTO_H
 
 #include "rsyn/session/Session.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 
 namespace Rsyn {
 class Timer;
@@ -36,7 +36,6 @@ private:
 	Rsyn::Module module;
 	Rsyn::PhysicalDesign phDesign;
 	Rsyn::Timer *timer;
-	Rsyn::PhysicalService *physical;
 	Rsyn::RoutingEstimator *routingEstimator;
 	
 	void runMoveNonCriticalSinksOfCriticalNetsToSteinerPoint(const bool dontMoveFlopsAndLCBs);

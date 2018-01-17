@@ -17,7 +17,7 @@
 #define ICCAD15_EARLY_OPTO_H
 
 #include "rsyn/session/Session.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 
 namespace Rsyn {
 class LibraryCharacterizer;
@@ -38,7 +38,6 @@ private:
 	Rsyn::PhysicalDesign phDesign;
 	Rsyn::Timer *timer;
 	Rsyn::RoutingEstimator *routingEstimator;
-	Rsyn::PhysicalService *physical;
 	const Rsyn::LibraryCharacterizer * libc;
 
 	void stepSkewOptimization();

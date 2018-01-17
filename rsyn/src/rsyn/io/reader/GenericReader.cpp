@@ -24,7 +24,7 @@
 #include "rsyn/model/routing/DefaultRoutingEstimationModel.h"
 #include "rsyn/model/routing/DefaultRoutingExtractionModel.h"
 #include "rsyn/model/library/LibraryCharacterizer.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/util/Stepwatch.h"
 #include "rsyn/model/timing/Timer.h"
@@ -32,7 +32,7 @@
 
 namespace Rsyn {
 
-void GenericReader::load(const Json& params) {
+bool GenericReader::load(const Rsyn::Json& params) {
 	std::string path = params.value("path", "");
 		
 	if (path.back() != '/')
@@ -40,11 +40,11 @@ void GenericReader::load(const Json& params) {
 
 	if (!params.count("lefFiles")) {
 		std::cout << "[ERROR] at least one LEF file must be specified...\n";
-		return;
+		return false;
 	} // end if
 
 	if (params["lefFiles"].is_array()) {
-		const Json fileList = params["lefFiles"];
+		const Rsyn::Json fileList = params["lefFiles"];
 		for (const std::string file : fileList) {
 			lefFiles.push_back(path + std::string(file));
 		} // end for
@@ -54,11 +54,11 @@ void GenericReader::load(const Json& params) {
 
 	if (!params.count("defFiles")) {
 		std::cout << "[ERROR] at least one DEF file must be specified...\n";
-		return;
+		return false;
 	} // end if
 
 	if (params["defFiles"].is_array()) {
-		const Json fileList = params["defFiles"];
+		const Rsyn::Json fileList = params["defFiles"];
 		for (const std::string file : fileList) {
 			defFiles.push_back(path + file);
 		} // end for
@@ -104,8 +104,7 @@ void GenericReader::load(const Json& params) {
 	this->session = session;
 
 	parsingFlow();
-
-
+	return true;
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -191,13 +190,12 @@ void GenericReader::populateDesign() {
 		Reader::populateRsyn(lefDescriptor, defDescriptor, verilogDescriptor, design);
 	else Reader::populateRsyn(lefDescriptor, defDescriptor, design);
 
-	Json physicalDesignConfiguration;
+	Rsyn::Json physicalDesignConfiguration;
 	physicalDesignConfiguration["clsEnableMergeRectangles"] = false;
 	physicalDesignConfiguration["clsEnableNetPinBoundaries"] = true;
 	physicalDesignConfiguration["clsEnableRowSegments"] = true;
 	session.startService("rsyn.physical", physicalDesignConfiguration);
-	Rsyn::PhysicalService* phService = session.getService("rsyn.physical");
-	Rsyn::PhysicalDesign physicalDesign = phService->getPhysicalDesign();
+	Rsyn::PhysicalDesign physicalDesign = session.getPhysicalDesign();
 	physicalDesign.loadLibrary(lefDescriptor);
 	physicalDesign.loadDesign(defDescriptor);
 	physicalDesign.updateAllNetBounds(false);
@@ -374,7 +372,7 @@ void GenericReader::initializeAuxiliarInfrastructure() {
 //	
 //	// Start physical design...
 //	Stepwatch watchPopulateLayers("Initializing Physical Layer");
-//	Json physicalDesignConfiguratioon;
+//	Rsyn::Json physicalDesignConfiguratioon;
 //	physicalDesignConfiguratioon["clsEnableMergeRectangles"] = true;
 //	physicalDesignConfiguratioon["clsEnableNetPinBoundaries"] = true;
 //	physicalDesignConfiguratioon["clsEnableRowSegments"] = true;

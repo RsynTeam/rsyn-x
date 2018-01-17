@@ -20,7 +20,7 @@
 #include "rsyn/session/Session.h"
 
 // Services
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/model/timing/Timer.h"
 #include "rsyn/model/library/LibraryCharacterizer.h"
 #include "rsyn/model/routing/RoutingEstimator.h"
@@ -28,17 +28,16 @@
 
 namespace Rsyn {
 
-void Report::start(const Json &params) {
+void Report::start(const Rsyn::Json &params) {
 	Rsyn::Session session;
 	
-	clsPhysical = session.getService("rsyn.physical");
 	clsTimer = session.getService("rsyn.timer");
 	clsLibraryCharacterizer = session.getService("rsyn.libraryCharacterizer");
 	clsRoutingEstimator = session.getService("rsyn.routingEstimator");
 	
 	clsDesign = session.getDesign();
-	clsModule = clsDesign.getTopModule();	
-	clsPhysicalDesign = clsPhysical->getPhysicalDesign();
+	clsModule = session.getTopModule();
+	clsPhysicalDesign = session.getPhysicalDesign();
 	
 	////////////////////////////////////////////////////////////////////////////
 	// Register commands 

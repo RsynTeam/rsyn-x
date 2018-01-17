@@ -54,13 +54,18 @@ public:
 
 // -----------------------------------------------------------------------------
 
-//! Descriptor for LEF Port
-
-class LefPortDscp {
+class LefPortGeometryDscp {
 public:
 	std::string clsMetalName = INVALID_LEF_NAME;
 	std::vector<DoubleRectangle> clsBounds;
 	std::vector<LefPolygonDscp> clsLefPolygonDscp;
+}; // end class 
+
+//! Descriptor for LEF Port
+
+class LefPortDscp {
+public:
+	std::vector<LefPortGeometryDscp> clsLefPortGeoDscp;
 	LefPortDscp() = default;
 }; // end class 
 
@@ -73,6 +78,7 @@ public:
 	bool clsHasPort = false;
 	std::string clsPinName = INVALID_LEF_NAME;
 	std::string clsPinDirection = INVALID_LEF_NAME;
+	std::string clsPinUse = INVALID_LEF_NAME;
 	DoubleRectangle clsBounds;
 	std::vector<LefPortDscp> clsPorts;
 	LefPinDscp() = default;

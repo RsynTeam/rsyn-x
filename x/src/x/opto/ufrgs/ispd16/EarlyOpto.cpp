@@ -33,9 +33,8 @@ bool EarlyOpto::run(const Rsyn::Json &params) {
 	this->timer = session.getService("rsyn.timer");
 	this->routingEstimator = session.getService("rsyn.routingEstimator");
 	this->libc = session.getService("rsyn.libraryCharacterizer");
-	this->module = design.getTopModule();
-	this->physical = session.getService("rsyn.physical");
-	this->phDesign = physical->getPhysicalDesign();
+	this->module = session.getTopModule();
+	this->phDesign = session.getPhysicalDesign();
 
 	// Define a small clock uncertainty to account for the small mismatches
 	// between our built-in timer and ui-timer. In this way our optimization

@@ -22,7 +22,7 @@
 #include "rsyn/util/Stepwatch.h"
 #include <boost/algorithm/string.hpp>
 
-#include "rsyn/3rdparty/json/json.hpp"
+#include "rsyn/util/Json.h"
 
 #include <cstdio>
 

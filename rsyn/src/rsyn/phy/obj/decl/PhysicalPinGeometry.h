@@ -43,14 +43,17 @@ public:
 	//! @brief Constructs a Rsyn::PhysicalPinGeometry object with a null pointer to Rsyn::PhysicalPinGeometryData.
 	PhysicalPinGeometry(std::nullptr_t) : Proxy(nullptr) {}
 	
-	//! @brief Returns the PhysicalPinLayer associated to the PhysicalPinGeometry.
-	Rsyn::PhysicalPinLayer getPinLayer() const;
 	//! @brief Returns the PhysicalPinGeometryClass type of the PhysicalPinLayer.
 	//! @details A PhysicalPinGeometryClass may be: 1) PINGEOMETRYCLASS_NONE (default), 2) PINGEOMETRYCLASS_CORE, or PINGEOMETRYCLASS_BUMP.
 	Rsyn::PhysicalPinGeometryClass getPinGeometryClass() const;
 	//! @brief Returns true if a PhysicalPinLayer was associated to the PhysicalPinGeometry. 
 	//! Otherwise, returns false.
 	bool hasPinLayer() const ;
+	
+	//! @brief Returns the number if pin layers
+	std::size_t getNumPinLayers() const;
+	//! @brief Returns the PhysicalPinLayers associated to the PhysicalPinGeometry.
+	const std::vector<Rsyn::PhysicalPinLayer> & allPinLayers() const;
 }; // end class 
 
 } // end namespace 

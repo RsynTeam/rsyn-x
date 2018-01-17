@@ -23,7 +23,7 @@
 
 #include "DensityGridService.h"
 #include "rsyn/session/Session.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 
 namespace Rsyn {
 
@@ -37,8 +37,7 @@ void DensityGridService::start(const Rsyn::Json &params) {
 		return;
 	} // end if 
 
-	Rsyn::PhysicalService * ph = session.getService("rsyn.physical");
-	Rsyn::PhysicalDesign phDsg = ph->getPhysicalDesign();
+	Rsyn::PhysicalDesign phDsg = session.getPhysicalDesign();
 	Rsyn::Design dsg = session.getDesign();
 	Rsyn::Module module = dsg.getTopModule();
 	double targetUtil = 0.0;

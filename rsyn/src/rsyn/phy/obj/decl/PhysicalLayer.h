@@ -70,6 +70,9 @@ public:
 	//! @brief Returns the relative layer index w.r.t. the layers of same type.
 	int getRelativeIndex() const;
 	
+	Rsyn::PhysicalLayer getPhysicalLayerLower() const;
+	Rsyn::PhysicalLayer getPhysicalLayerUpper() const;
+	
 }; // end class 
 
 } // end namespace 

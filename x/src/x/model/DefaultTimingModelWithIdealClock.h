@@ -31,7 +31,7 @@
 
 #include "rsyn/model/timing/TimingModel.h"
 #include "rsyn/model/timing/DefaultTimingModel.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 
 namespace ICCAD15 {
 
@@ -45,8 +45,7 @@ public:
 	void start(const Rsyn::Json &params) {
 		Rsyn::Session session;
 		
-		Rsyn::PhysicalService *physical = session.getService("rsyn.physical");
-		clsPhysicalDesign = physical->getPhysicalDesign();
+		clsPhysicalDesign = session.getPhysicalDesign();
 		session.startService("rsyn.defaultTimingModel", {});
 		Rsyn::DefaultTimingModel* timingModel = session.getService("rsyn.defaultTimingModel");
 		clsDefaultTimingModel = timingModel;

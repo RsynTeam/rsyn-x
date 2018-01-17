@@ -20,7 +20,8 @@
 
 #include "Session.h"
 
-#include "rsyn/3rdparty/json/json.hpp"
+#include "rsyn/util/Json.h"
+#include "rsyn/phy/PhysicalService.h"
 #include "rsyn/util/Environment.h"
 
 namespace Rsyn {
@@ -77,11 +78,32 @@ void Session::init() {
 	sessionData->logger = ( enableLog ) ? ( new Logger() ) : ( nullptr );
 
 	checkInitialized(true);
-} // end constructor 
+} // end constructor
 
-////////////////////////////////////////////////////////////////////////////////
-// Message
-////////////////////////////////////////////////////////////////////////////////
+// -----------------------------------------------------------------------------
+
+Rsyn::Design Session::getDesign() {
+	return sessionData->clsDesign;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+Rsyn::Module Session::getTopModule() {
+	return getDesign().getTopModule();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+Rsyn::PhysicalDesign Session::getPhysicalDesign() {
+	if (isServiceRunning("rsyn.physical")) {
+		PhysicalService *service = getService("rsyn.physical");
+		return service->getPhysicalDesign();
+	} else {
+		return nullptr;
+	} // end else
+} // end method
+
+// -----------------------------------------------------------------------------
 
 void Session::registerMessage(const std::string& label, const MessageLevel& level, const std::string& title, const std::string& msg) {
 	sessionData->clsMessageManager.registerMessage(label, level, title, msg);
@@ -93,10 +115,8 @@ Message Session::getMessage(const std::string &label) {
 	return sessionData->clsMessageManager.getMessage(label);
 } // end method
 
-////////////////////////////////////////////////////////////////////////////////
-// Script
-////////////////////////////////////////////////////////////////////////////////
-		
+// -----------------------------------------------------------------------------
+
 void Session::registerCommand(const ScriptParsing::CommandDescriptor &dscp, const CommandHandler handler) {
 	dscp.check();
 
@@ -173,7 +193,7 @@ void Session::registerDefaultCommands() {
 
 		registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string name = command.getParam("name");
-			const Json params = command.getParam("params");
+			const Rsyn::Json params = command.getParam("params");
 			runProcess(name, params);			
 		});
 	} // end block
@@ -197,7 +217,7 @@ void Session::registerDefaultCommands() {
 
 		registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string name = command.getParam("name");
-			const Json value = command.getParam("value");
+			const Rsyn::Json value = command.getParam("value");
 			setSessionVariable(name, value);
 		});
 	} // end block
@@ -220,7 +240,7 @@ void Session::registerDefaultCommands() {
 		);
 		registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string format = command.getParam("format");
-			Json options = command.getParam("options");
+			Rsyn::Json options = command.getParam("options");
 			if (getSessionVariableAsBool("globalPlacementOnly", false))
 				options["globalPlacementOnly"] = true;
 			options["path"] = command.getPath();
@@ -265,7 +285,7 @@ void Session::registerDefaultCommands() {
 
 		registerCommand(dscp, [&](const ScriptParsing::Command &command) {
 			const std::string name = command.getParam("name");
-			const Json params = command.getParam("params");
+			const Rsyn::Json params = command.getParam("params");
 			startService(name, params);
 		});
 	} // end block
@@ -348,5 +368,104 @@ std::string Session::findFile(const std::string fileName, const std::string extr
 	// File not found.
 	return "";
 } // end method
+
+// -----------------------------------------------------------------------------
+
+void
+Session::unregisterObserver(SessionObserver *observer) {
+	for (int i = 0; i < NUM_SESSION_EVENTS; i++) {
+		sessionData->observers[i].remove(observer);
+	} // end for
+} // end method
+
+// -----------------------------------------------------------------------------
+
+bool
+Session::isDesignLoaded() {
+	return sessionData->clsDesignLoaded;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void
+Session::notifyDesignLoaded() {
+	sessionData->clsDesignLoaded = true;
+
+	// Start some default services.
+	startService("rsyn.graphics", {}, false);
+
+	// Notify observers.
+	for (SessionObserver *observer : sessionData->observers[EVENT_DESIGN_LOADED]) {
+		observer->onDesignLoaded();
+	} // end for
+} // end methods
+
+// -----------------------------------------------------------------------------
+
+void
+Session::runReader(const std::string &name, const Rsyn::Json &params) {
+	if (isDesignLoaded()) {
+		std::cout << "ERROR: Sorry, currently only one reader can be called per session.\n";
+		return;
+	} // end method
+
+	auto it = sessionData->clsReaders.find(name);
+	if (it == sessionData->clsReaders.end()) {
+		std::cout << "ERROR: Reader '" << name << "' was not "
+				"registered.\n";
+	} else {
+		std::unique_ptr<Reader> reader(it->second());
+		if (reader->load(params)) {
+			notifyDesignLoaded();
+		} // end if
+	} // end else
+} // end method
+
+// -----------------------------------------------------------------------------
+
+bool
+Session::runProcess(const std::string &name, const Rsyn::Json &params) {
+	bool result = false;
+
+	auto it = sessionData->clsProcesses.find(name);
+	if (it == sessionData->clsProcesses.end()) {
+		std::cout << "ERROR: Process '" << name << "' was not "
+				"registered.\n";
+	} else {
+		std::unique_ptr<Process> opto(it->second());
+		result = opto->run(params);
+	} // end else
+
+	return result;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+bool
+Session::startService(const std::string &name, const Rsyn::Json &params, const bool dontErrorOut) {
+	auto it = sessionData->clsServiceInstanciationFunctions.find(name);
+	if (it == sessionData->clsServiceInstanciationFunctions.end()) {
+		if (!dontErrorOut) {
+			std::cout << "ERROR: Service '" << name << "' was not "
+					"registered.\n";
+			std::exit(1);
+		} // end if
+		return false;
+	} else {
+		Service * service = getServiceInternal(name);
+		if (!service) {
+			service = it->second();
+			service->start(params);
+			sessionData->clsRunningServices[name] = service;
+			return true;
+		} else {
+			if (!dontErrorOut) {
+				std::cout << "WARNING: Service '" << name << "' is already running.\n";
+			} // end if
+			return false;
+		} // end else
+	} // end else
+} // end method
+
 
 } /* namespace Rsyn */

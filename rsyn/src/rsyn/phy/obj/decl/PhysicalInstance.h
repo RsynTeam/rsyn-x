@@ -43,6 +43,8 @@ public:
 	
 	//! @brief Returns the Instance associated to PhysicalInstance 
 	Rsyn::Instance getInstance() const;
+	//! @brief Returns the name of this instance.
+	const std::string &getName() const;
 	//! @brief Returns the instance area in DBU.
 	DBU getArea() const;
 	//! @brief Returns the central point of the PhysicalInstance boundaries.

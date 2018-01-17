@@ -33,7 +33,7 @@
 #include <limits>
 #include "Jezz.h"
 #include "rsyn/session/Session.h"
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/util/Bounds.h"
 #include "rsyn/util/StreamStateSaver.h"
 #include "rsyn/util/Stepwatch.h"
@@ -61,11 +61,9 @@ Jezz::Jezz() {
 void Jezz::start(const Rsyn::Json &params) {
 	Rsyn::Session session;
 
-	clsPhysical = session.getService("rsyn.physical");
-
 	clsDesign = session.getDesign();
-	clsModule = clsDesign.getTopModule();
-	clsPhysicalDesign = clsPhysical->getPhysicalDesign();
+	clsModule = session.getTopModule();
+	clsPhysicalDesign = session.getPhysicalDesign();
 
 	// Observer changes in cell positions (i.e. from GUI).
 	clsPostInstanceMovedCallbackHandler =

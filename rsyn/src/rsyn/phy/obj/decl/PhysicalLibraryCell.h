@@ -50,7 +50,9 @@ public:
 	//! @brief Returns a DBU type that represents the PhysicalLibraryCell height.
 	DBU getHeight() const;
 	//! @brief Returns a DBU type that represents the PhysicalLibraryCell length in Dimension parameter dim.
-	DBU getLength(const Dimension dim) const ;
+	DBU getLength(const Dimension dim) const;
+	//! @brief Returns the library cell bounds.
+	Bounds getBounds() const;
 	//! @brief Returns true if the PhysicalLibraryCell is the Macro (enum MACRO_BLOCK) type.
 	bool isMacroBlock() const;
 	//! @brief Returns true if the PhysicalLibraryCell has defined rectangular obstacle Bounds.
@@ -78,6 +80,9 @@ public:
 	//! i.e., the PhysicalLibaryCellboundaries are defined by metal1 boundaries. 
 	//! @warning This method affects 2015 ICCAD contest benchmark.
 	Rsyn::PhysicalObstacle getLayerObstacles() const;
+	//! @brief Returns a transformation that allows one to transform the
+	//! coordinates according to a cell orientation.
+	PhysicalTransform getTransform(const Rsyn::PhysicalOrientation &orientation) const;
 	//! @brief Returns a constant reference vector to all Bounds that defines the cell boundary for 2015 ICCAD contest benchmark.
 	//! @details In 2015 ICCAD contest, the boundaries for some macros are defined by one of the PhysicalLayer, 
 	//! i.e., the PhysicalLibaryCellboundaries are defined by metal1 boundaries. 

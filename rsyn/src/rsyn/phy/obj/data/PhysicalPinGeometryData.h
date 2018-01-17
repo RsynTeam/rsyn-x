@@ -35,8 +35,8 @@ class PhysicalPinGeometryData : public PhysicalObject {
 public:
 	//! @brief An enum PhysicalPinGeometryClass that determines the class of the PhysicalPinGeometry object.
 	PhysicalPinGeometryClass clsPinPortClass = PINGEOMETRYCLASS_NONE;
-	//! @brief The PhysicalPinLayer associated to the PhysicalPinGeometry.
-	PhysicalPinLayer clsLayer;
+	//! @brief PhysicalPinLayers associated to the PhysicalPinGeometry.
+	std::vector<PhysicalPinLayer> clsPinLayers;
 	//! @brief Default constructor.
 	//! @details Users do not have access to this constructor. The reference to 
 	//! PhysicalPinGeometryData is a protected variable in PhysicalPinGeometry.

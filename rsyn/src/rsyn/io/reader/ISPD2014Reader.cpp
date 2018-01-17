@@ -18,7 +18,7 @@
 #include "rsyn/io/parser/lef_def/DEFControlParser.h"
 #include "rsyn/io/parser/verilog/SimplifiedVerilogReader.h"
 
-#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/io/Graphics.h"
 
@@ -26,7 +26,7 @@
 
 namespace Rsyn {
 
-void ISPD2014Reader::load(const Json & config) {
+bool ISPD2014Reader::load(const Rsyn::Json & config) {
 	Stepwatch openIspd14("Opening benchmark of ISPD 2014");
 	
 	this->session =  session;
@@ -83,13 +83,12 @@ void ISPD2014Reader::load(const Json & config) {
 	clsModule = clsDesign.getTopModule();
 	Stepwatch watchPopulateLayers("Initializing Physical Layer");
 	
-	Json phDesignJason;
+	Rsyn::Json phDesignJason;
 	phDesignJason["clsEnableMergeRectangles"] = true;
 	phDesignJason["clsEnableNetPinBoundaries"] = true;
 	phDesignJason["clsEnableRowSegments"] = true;
-	session.startService("rsyn.physical", phDesignJason);		
-	Rsyn::PhysicalService * phService = session.getService("rsyn.physical");
-	Rsyn::PhysicalDesign clsPhysicalDesign = phService->getPhysicalDesign();
+	session.startService("rsyn.physical", phDesignJason);	
+	Rsyn::PhysicalDesign clsPhysicalDesign = session.getPhysicalDesign();
 	clsPhysicalDesign.loadLibrary(lefDscp);
 	clsPhysicalDesign.loadDesign(defDscp);
 	clsPhysicalDesign.updateAllNetBounds(false);
@@ -99,6 +98,8 @@ void ISPD2014Reader::load(const Json & config) {
 	Graphics * graphics = session.getService("rsyn.graphics");
 	graphics->coloringByCellType();
 	openIspd14.finish();
+
+	return true;
 } // end method 
 
 } // end namespace 

@@ -87,6 +87,19 @@ Rsyn::PhysicalDesignMode getPhysicalDesignModeType(const std::string & type);
 //! Converts Physical Design Mode type from enum to string, respectively.
 std::string getPhysicalDesignModeType(const Rsyn::PhysicalDesignMode type);
 
+//! Converts Physical Pin Use type from string to enum, respectively.
+Rsyn::PhysicalPinUse getPhysicalPinUseType(const std::string & type);
+
+//! Converts Physical Pin Use type from enum to string, respectively.
+std::string getPhysicalPinUseType(const Rsyn::PhysicalPinUse type);
+
+Rsyn::PhysicalTrackDirection getPhysicalTrackDirectionDEF(const std::string & type);
+
+std::string getPhysicalTrackDirectionDEF(const Rsyn::PhysicalTrackDirection type);
+
+std::string getPhysicalTrackDirection(const Rsyn::PhysicalTrackDirection type);
+
+
 //! Returns a prefix key word to generated names.
 std::string getPhysicalGeneratedNamePrefix();
 
@@ -178,6 +191,23 @@ inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalPinGeomet
 
 inline std::ostream& operator<<(std::ostream& out, const Rsyn::RegionType type) {
 	return out << getPhysicalRegionType(type);
+} // end operator overloading 
+
+// -----------------------------------------------------------------------------
+
+
+//! Overloads operator << to Physical Pin Use type.
+
+inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalPinUse type) {
+	return out << getPhysicalPinUseType(type);
+} // end operator overloading 
+
+// -----------------------------------------------------------------------------
+
+//! Overloads operator << to Physical Track direction.
+
+inline std::ostream& operator<<(std::ostream& out, const Rsyn::PhysicalTrackDirection type) {
+	return out << getPhysicalTrackDirection(type);
 } // end operator overloading 
 
 // -----------------------------------------------------------------------------

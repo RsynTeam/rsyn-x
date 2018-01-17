@@ -4,26 +4,23 @@
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
             <name>Rsyn-ISPD18</name>
-            <make-project-type>0</make-project-type>
             <c-extensions>c</c-extensions>
             <cpp-extensions>cc,cpp</cpp-extensions>
             <header-extensions>h,hh,hpp</header-extensions>
             <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects/>
             <sourceRootList>
-                <sourceRootElem>../../src</sourceRootElem>
-                <sourceRootElem>../../include</sourceRootElem>
-                <sourceRootElem>../../../rsyn/src</sourceRootElem>
-                <sourceRootElem>../../../rsyn/include</sourceRootElem>
+                <sourceRootElem>../../../rsyn/src/rsyn</sourceRootElem>
+                <sourceRootElem>../../src/ispd18</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
-                    <name>Release</name>
-                    <type>1</type>
+                    <name>Debug</name>
+                    <type>0</type>
                 </confElem>
                 <confElem>
-                    <name>Debug</name>
-                    <type>1</type>
+                    <name>Release</name>
+                    <type>0</type>
                 </confElem>
             </confList>
             <formatting>

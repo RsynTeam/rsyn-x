@@ -56,6 +56,7 @@ public:
 	const std::vector<Bounds> & allBounds() const;
 	//! @brief Returns number of Boundaries.
 	std::size_t getNumBounds() const;
+	Rsyn::PhysicalVia getVia() const;
 }; // end class 
 
 

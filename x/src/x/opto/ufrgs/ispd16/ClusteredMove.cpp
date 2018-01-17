@@ -27,9 +27,8 @@ bool ClusteredMove::run(const Rsyn::Json &params) {
 	this->infra = session.getService("ufrgs.ispd16.infra");
 	this->design = session.getDesign();
 	this->timer = session.getService("rsyn.timer");
-	this->module = design.getTopModule();
-	this->physical = session.getService("rsyn.physical");
-	this->phDesign = physical->getPhysicalDesign();
+	this->module = session.getTopModule();
+	this->phDesign = session.getPhysicalDesign();
 	
 	moved = design.createAttribute();
 	

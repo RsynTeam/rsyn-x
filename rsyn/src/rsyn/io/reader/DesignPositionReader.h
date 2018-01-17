@@ -46,7 +46,7 @@ public:
 	DesignPositionReader() {}
 	DesignPositionReader(const DesignPositionReader& orig) {}
 	virtual ~DesignPositionReader() {}
-	void load(const Json &params);
+	virtual bool load(const Rsyn::Json &params) override;
 protected:
 	void openDef(std::string & path);
 	void openBookshelf(std::string & path);
