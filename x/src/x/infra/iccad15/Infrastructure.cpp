@@ -789,7 +789,7 @@ bool Infrastructure::moveCell(Rsyn::PhysicalCell physicalCell, const DBU x, cons
 					physicalCell,
 					boundedx,
 					boundedy,
-					physicalCell.getLength(X) * multiplier,
+					physicalCell.getSize(X) * multiplier,
 					getMaxDisplacement(),
 					resultX,
 					resultY);
@@ -804,7 +804,7 @@ bool Infrastructure::moveCell(Rsyn::PhysicalCell physicalCell, const DBU x, cons
 					physicalCell,
 					boundedx,
 					boundedy,
-					physicalCell.getLength(X) * MULTIPLIERS[K-1],
+					physicalCell.getSize(X) * MULTIPLIERS[K-1],
 					getMaxDisplacement(),
 					resultX,
 					resultY);
@@ -877,7 +877,7 @@ bool Infrastructure::moveCell(Rsyn::PhysicalCell physicalCell, const DBU x, cons
 			// Note it's only necessary to "dirty" cells by hand because we
 			// explicitly asked "placeCell" to not notify observer.
 			// Don't notify Jezz as it was already updated.
-			clsPhysicalDesign.notifyObservers(physicalCell, clsJezz->getPostInstanceMovedCallbackHandler());
+			clsPhysicalDesign.notifyInstancePlaced(physicalCell.getInstance(), clsJezz);
 		} // end if
 	} // end else
 	
@@ -1163,6 +1163,7 @@ double Infrastructure::computeCost(Rsyn::Cell cell, const Rsyn::TimingMode mode,
 			return computeCost_LocalDelay(cell, mode);
 		default:
 			assert(false);
+			return 0;
 	} // end switch
 } // end method
 

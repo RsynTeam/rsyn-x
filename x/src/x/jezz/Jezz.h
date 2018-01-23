@@ -55,7 +55,7 @@ namespace Rsyn {
 class PhysicalService;
 }
 
-class Jezz : public Rsyn::Service, public Rsyn::DesignObserver, public Rsyn::PhysicalObserver {
+class Jezz : public Rsyn::Service, public Rsyn::DesignObserver {
 public:
 	
 	typedef	std::function<void(Rsyn::Cell cell, const DBU x, const DBU y)> UpdatePositionCallback;
@@ -82,14 +82,9 @@ public:
 	onPostCellRemap(Rsyn::Cell cell, Rsyn::LibraryCell oldLibraryCell) override;
 	virtual void 
 	onPostInstanceCreate(Rsyn::Instance instance) override;
-
 	virtual void
-	onPostMovedInstance(Rsyn::PhysicalInstance phInstance) override;
+	onPostInstancePlacementChange(Rsyn::Instance instance) override;
 	
-	const Rsyn::PhysicalDesign::PostInstanceMovedCallbackHandler &getPostInstanceMovedCallbackHandler() const {
-		return clsPostInstanceMovedCallbackHandler;
-	} // end method
-
 private:
 
 	// Physical layer
@@ -98,10 +93,7 @@ private:
 	// Circuitry
 	Rsyn::Design clsDesign;
 	Rsyn::Module clsModule;
-
-	// Event handlers
-	Rsyn::PhysicalDesign::PostInstanceMovedCallbackHandler clsPostInstanceMovedCallbackHandler;	
-
+	
 	// Indicates whether or not Jezz was already initialized.
 	bool clsInitialized;
 

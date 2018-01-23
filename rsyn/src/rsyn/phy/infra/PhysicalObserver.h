@@ -13,19 +13,12 @@
  * limitations under the License.
  */
 
-/* 
- * File:   PhysicalObserver.h
- * Author: jucemar
- *
- * Created on 2 de Julho de 2017, 13:53
- */
-
-#ifndef RSYN_PHYSICALOBSERVER_H
-#define RSYN_PHYSICALOBSERVER_H
+#ifndef RSYN_PHYSICAL_OBSERVER_H
+#define RSYN_PHYSICAL_OBSERVER_H
 
 namespace Rsyn {
 
-class PhysicalObserver {
+class PhysicalDesignObserver {
 friend class Rsyn::PhysicalDesign;
 private:
 	PhysicalDesign clsPhDesign;
@@ -40,21 +33,15 @@ public:
 	onPhysicalDesignDestruction() {}
 
 	virtual void
-	onPostCellRemap(Rsyn::Cell cell, Rsyn::LibraryCell oldLibraryCell) {}
-	
-	virtual void
-	onPreMovedInstance(Rsyn::Instance ) {}
-	
-	virtual void
-	onPostMovedInstance(Rsyn::PhysicalInstance ) {}
+	onPostNetRoutingChange(Rsyn::PhysicalNet physicalNet);
 	
 	virtual
-	~PhysicalObserver() {
+	~PhysicalDesignObserver() {
 		if (clsPhDesign)
 			clsPhDesign.unregisterObserver(this);
 	} // end destructor
 
-};
+}; // end class
 
 } // end namespace
 

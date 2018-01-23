@@ -31,7 +31,7 @@ Design::create(const std::string &name) {
 	data->name = name;
 	
 	// If no top is specified, just create an empty top for the design.
-	createModule(nullptr, "__root");	
+	data->topModule = createModule(nullptr, "__root");
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -39,7 +39,7 @@ Design::create(const std::string &name) {
 inline
 Module 
 Design::getTopModule() {
-	return Module(&data->instances.get(0)->value); // TODO: awful
+	return data->topModule;
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -464,6 +464,7 @@ Design::createModule(const LibraryModule lmoudle, const std::string &name) {
 	
 	// Initializes cell.
 	instance->id = data->instances.lastId();
+	instance->type = Rsyn::MODULE;
 	instance->design = *this;
 	instance->lcell = nullptr;
 	instance->moduleData = new ModuleData;
@@ -938,7 +939,11 @@ Design::registerObserver(T *observer) {
 	if (typeid(&DesignObserver::onPrePinDisconnect) != typeid(&T::onPrePinDisconnect)) {
 		data->observers[EVENT_PRE_PIN_DISCONNECT].push_back(observer);
 	} // end if	
-	
+
+	if (typeid (&DesignObserver::onPostInstancePlacementChange) != typeid (&T::onPostInstancePlacementChange)) {
+		data->observers[EVENT_POST_INSTANCE_PLACEMENT_CHANGE].push_back(observer);
+	} // end if
+
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -950,6 +955,18 @@ Design::unregisterObserver(DesignObserver *observer) {
 		data->observers[i].remove(observer);
 	} // end for
 	observer->DesignObserver::observedDesign = nullptr;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline
+void
+Design::notifyInstancePlaced(Rsyn::Instance instance, Rsyn::DesignObserver *ignoreObserver) {
+	for (DesignObserver * observer : data->observers[EVENT_POST_INSTANCE_PLACEMENT_CHANGE]) {
+		if (observer != ignoreObserver) {
+			observer->onPostInstancePlacementChange(instance);
+		} // end if
+	} // end for
 } // end method
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -970,7 +987,6 @@ AttributeInitializerWithDefaultValue<DefaultValueType>
 Design::createAttribute(const DefaultValueType &defaultValue) {
 	return AttributeInitializerWithDefaultValue<DefaultValueType>(*this, defaultValue); 
 } // end method
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tags

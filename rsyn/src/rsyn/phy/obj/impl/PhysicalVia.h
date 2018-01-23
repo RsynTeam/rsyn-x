@@ -53,6 +53,25 @@ inline bool PhysicalVia::isDesignVia() const {
 
 // -----------------------------------------------------------------------------
 
+inline Rsyn::PhysicalViaLayer PhysicalVia::getTopLayer() const {
+	return data->clsTopRoutingLayer;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline Rsyn::PhysicalViaLayer PhysicalVia::getCutLayer() const {
+	return data->clsCutLayer;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline Rsyn::PhysicalViaLayer PhysicalVia::getBottomLayer() const {
+	return data->clsBottomRoutingLayer;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+
 
 } // end namespace 
 

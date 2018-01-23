@@ -112,6 +112,7 @@ public:
 			return "json";
 		default:
 			assert(false);
+			return "";
 		} // end switch
 	} // end switch	
 }; // end class

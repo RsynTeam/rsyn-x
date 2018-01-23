@@ -30,11 +30,18 @@ namespace Rsyn {
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<Rsyn::PhysicalWireSegment> & PhysicalWire::allSegments() const {
+inline const std::vector<Rsyn::PhysicalWireSegment> & PhysicalWire::allWireSegments() const {
 	return data->clsWireSegments;
 } // end method 
 
 // -----------------------------------------------------------------------------
+
+inline std::size_t PhysicalWire::getNumWireSegments() const {
+		return data->clsWireSegments.size();
+} // end method 
+
+// -----------------------------------------------------------------------------
+
 
 } // end namespace 
 

@@ -1,8 +1,8 @@
 #ifndef RSYN_QT_GRAPHICS_VIEW_H
 #define RSYN_QT_GRAPHICS_VIEW_H
 
-#include <QFrame>
 #include <QGraphicsView>
+#include <QPixmap>
 
 #include "rsyn/io/Graphics.h"
 #include "rsyn/phy/PhysicalDesign.h"
@@ -21,22 +21,40 @@ class HighlightOverlay; // **temp**
 class GraphicsView : public QGraphicsView {
     Q_OBJECT
 public:
-    GraphicsView(GraphicsViewport *v);
+    GraphicsView(QWidget *parent = 0);
 	~GraphicsView();
 
 	void init();
 
-	virtual void drawBackground(QPainter *painter, const QRectF &rect);
-    virtual void drawForeground(QPainter *painter, const QRectF &rect);
+	virtual void drawBackground(QPainter *painter, const QRectF &rect) override;
+    virtual void drawForeground(QPainter *painter, const QRectF &rect) override;
     virtual void drawItems(QPainter *painter, int numItems,
                            QGraphicsItem *items[],
-                           const QStyleOptionGraphicsItem options[]);
+                           const QStyleOptionGraphicsItem options[]) override;
 
+	virtual void paintEvent(QPaintEvent *event) override;
+
+	qreal getNumVisibleRowsInViewport() const;
+
+	qreal getZoom() const;
+	qreal getSceneWidth() const;
+	qreal getSceneHeight() const;
+
+    void zoomIn(int level = 1);
+    void zoomOut(int level = 1);
+
+	void resetView();
+    void togglePointerMode(const bool enable);
+    void toggleOpenGL(const bool enable);
+    void toggleAntialiasing(const bool enable);
+    void print();
+
+	bool isInitialized() const {return initialized;}
 
 	//! @brief Returns the level of detail (lod), in number of physical rows, to
 	//! be used to draw objects. An lod = 10, means that current 10 rows fit in
 	//! the viewport.
-	float getLevelOfDetail() const;
+	float getNumExposedRows() const;
 
 	//! @brief Gets the current visibility of an object.
 	bool getVisibility(const std::string &key) const {
@@ -66,12 +84,6 @@ public:
 	//! the position, (dx, dy), of the object that will be draw, in order to
 	//! make the fill pattern invariant with the object's position.
 	QBrush getStippleBrush(const FillStippleMask &mask, const qreal dx, const qreal dy) const;
-
-	//! @brief Updates the transformation matrix of the view.
-	void updateViewMatrix(const QMatrix &matrix, const bool combine = false) {
-		setMatrix(matrix, combine);
-		invertedTransform = transform().inverted();
-	} // end method
 
 	//! @brief Register an observer to get notified about graphics events.
 	void registerObserver(GraphicsObserver *observer) {
@@ -112,11 +124,41 @@ protected:
 
 	virtual void enterEvent(QEvent *event) override;
 	virtual void leaveEvent(QEvent *event) override;
+
+	virtual void resizeEvent(QResizeEvent * event) override;
 private:
 
 	QPainterPath traceNet(Rsyn::Net net, const bool includePins);
 
-    GraphicsViewport *viewContainer;
+	void updateAdjustedSceneRect();
+
+	//! @brief Updates the transformation matrix of the view.
+	void updateViewMatrix();
+
+	//! @brief Updates the rendering cache.
+	void updateRenderingCache();
+
+	int rederingCacheSign = 0;
+
+	//! @brief Indicates whether or not this graphics view was already
+	//! initialized.
+	bool initialized = false;
+
+	// Cached rendering.
+	QPixmap cachedRendering;
+
+	// Current zoom.
+	qreal zoomScaling;
+
+	// The bounds of the scene (user space) adjusted to the aspect ratio of the
+	// viewport. When zoom = 1, it means the adjustedSceneRect fits exactly
+	// into the viewport.
+	QRectF adjustedSceneRect;
+
+	// The scaling required to map user coordinates to viewport coordinates.
+	qreal sceneToViewportScalingFactor;
+	qreal rowHeight;
+
 	QTransform invertedTransform;
 
 	std::map<std::string, bool> clsVisibility;
@@ -131,6 +173,7 @@ private:
 	Rsyn::Graphics *rsynGraphics = nullptr;
 
 	QStatusBar *statusBar = nullptr;
+
 }; // end method
 
 // -----------------------------------------------------------------------------

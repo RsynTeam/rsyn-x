@@ -17,7 +17,6 @@
 #include "rsyn/model/routing/DefaultRoutingEstimationModel.h"
 #include "rsyn/model/routing/DefaultRoutingExtractionModel.h"
 #include "rsyn/session/Session.h"
-#include "rsyn/phy/PhysicalDesign.h"
 
 namespace Rsyn {
 
@@ -29,22 +28,14 @@ void RoutingEstimator::start(const Rsyn::Json &params) {
 	design = session.getDesign();
 	module = design.getTopModule();
 
-	clsScenario = session.getService("rsyn.scenario");;
+	clsScenario = session.getService("rsyn.scenario");
 
 	clsTotalWirelength = 0.0;
 	clsRoutingNets = design.createAttribute();
 
 	clsFullUpdateAlreadyPerformed = false;
 
-	// TODO: Maybe we should not do this here as this create a soft dependency
-	// to physical layer
-	Rsyn::PhysicalDesign phDesign = session.getPhysicalDesign();
-	if (phDesign) {
-		// Observe changes in the physical design
-		phDesign.registerObserver(this);
-	} // end if
-
-	// Observe changes in the netlist.
+	// Observe changes in the design.
 	design.registerObserver(this);
 	
 	{ // updateRoutingEstimation
@@ -111,8 +102,8 @@ void RoutingEstimator::onPostCellRemap(Rsyn::Cell cell, Rsyn::LibraryCell oldLib
 
 // -----------------------------------------------------------------------------
 
-void RoutingEstimator::onPostMovedInstance(Rsyn::PhysicalInstance phInstance) {
-	dirtyInstance(phInstance.getInstance(), NET_UPDATE_TYPE_FULL);
+void RoutingEstimator::onPostInstancePlacementChange(Rsyn::Instance instance) {
+	dirtyInstance(instance, NET_UPDATE_TYPE_FULL);
 } // end method
 
 // -----------------------------------------------------------------------------

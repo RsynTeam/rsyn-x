@@ -452,6 +452,120 @@ Instance::isMacroBlock() const {
 	return data->tag.block;
 } // end method
 
+// -----------------------------------------------------------------------------
+
+inline DBU Instance::getX() const {
+	return getPosition(X);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBU Instance::getY() const {
+	return getPosition(Y);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBU Instance::getHeight() const {
+	return data->clsBounds.computeLength(Y);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBU Instance::getWidth() const {
+	return data->clsBounds.computeLength(X);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBUxy Instance::getSize() const {
+	return DBUxy(getWidth(), getHeight());
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBU Instance::getSize(const Dimension dimension) const {
+	return data->clsBounds.computeLength(dimension);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBUxy Instance::getPosition() const {
+	if (isPort())
+		return data->clsPortPos;
+	return data->clsBounds[LOWER];
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBU Instance::getPosition(const Dimension dim) const {
+	if (isPort())
+		return data->clsPortPos[dim];
+	return data->clsBounds[LOWER][dim];
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBUxy Instance::getCoordinate(const Boundary bound) const {
+	if (isPort())
+		return getPosition();
+	return data->clsBounds[bound];
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBU Instance::getCoordinate(const Boundary bound, const Dimension dim) const {
+	if (isPort())
+		getPosition(dim);
+	return data->clsBounds[bound][dim];
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBU Instance::getArea() const {
+	return data->clsBounds.computeArea();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBUxy Instance::getCenter() const {
+	if (isPort())
+		return getPosition();
+	return getBounds().computeCenter();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBU Instance::getCenter(const Dimension dim) const {
+	if (isPort())
+		return getPosition(dim);
+	return getBounds().computeCenter(dim);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline const Bounds &Instance::getBounds() const {
+	return data->clsBounds;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline PhysicalOrientation Instance::getOrientation() const {
+	return data->clsOrientation;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline PhysicalTransform Instance::getTransform(const bool origin) const {
+	if (origin) {
+		Bounds bounds = getBounds();
+		bounds.translate(-bounds.getLower());
+		return PhysicalTransform(bounds, getOrientation());
+	} else {
+		return PhysicalTransform(getBounds(), getOrientation());
+	} // end else
+} // end method
+
 // =============================================================================
 // Tag
 // =============================================================================

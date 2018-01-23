@@ -64,8 +64,20 @@ inline Rsyn::Pin PhysicalNet::getPinBoundary(const Boundary bound, const Dimensi
 
 // -----------------------------------------------------------------------------
 
+inline PhysicalRouting &PhysicalNet::getRouting() {
+	return data->clsRouting;
+} // end method
+
+// -----------------------------------------------------------------------------
+
 inline const std::vector<Rsyn::PhysicalWire> & PhysicalNet::allWires() const {
 	return data->clsWires;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline std::size_t PhysicalNet::getNumWires() const {
+	return data->clsWires.size();
 } // end method 
 
 // -----------------------------------------------------------------------------

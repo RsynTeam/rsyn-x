@@ -76,7 +76,9 @@ struct TimingPin {
 		switch (mode) {
 			case LATE : return (state[LATE ].q - state[LATE ].a).getMin();
 			case EARLY: return (state[EARLY].a - state[EARLY].q).getMin();
-			default: assert(false);
+			default:
+				assert(false);
+				return 0;
 		} // end switch
 	} // end method
 
@@ -84,7 +86,9 @@ struct TimingPin {
 		switch (mode) {
 			case LATE : return state[LATE ].q[transition] - state[LATE ].a[transition];
 			case EARLY: return state[EARLY].a[transition] - state[EARLY].q[transition];
-			default: assert(false);
+			default:
+				assert(false);
+				return 0;
 		} // end switch
 	} // end method
 
@@ -92,7 +96,9 @@ struct TimingPin {
 		switch (mode) {
 			case LATE : return state[LATE ].q - state[LATE ].a;
 			case EARLY: return state[EARLY].a - state[EARLY].q;
-			default: assert(false);
+			default: 
+				assert(false);
+				return EdgeArray<Number>(0, 0);
 		} // end switch
 	} // end method	
 	

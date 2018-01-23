@@ -185,12 +185,14 @@ public:
 	Rsyn::EdgeArray<Number>
 	getSetupTime(Rsyn::SandboxPin data) const {
 		assert(false);
+		return Rsyn::EdgeArray<Number>(0, 0);
 	} // end method
 
 	virtual
 	Rsyn::EdgeArray<Number>
 	getHoldTime(Rsyn::SandboxPin data) const {
 		assert(false);
+		return Rsyn::EdgeArray<Number>(0, 0);
 	} // end method
 
 }; // end class

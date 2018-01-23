@@ -69,6 +69,12 @@ inline DBUxy PhysicalLayer::getPitch() const {
 
 // -----------------------------------------------------------------------------
 
+inline std::size_t PhysicalLayer::getNumSpacingRule() const {
+	return data->clsSpacing.size();
+} // end method 
+
+// -----------------------------------------------------------------------------
+
 inline const std::vector<Rsyn::PhysicalSpacingRule> & PhysicalLayer::allSpacingRule() const {
 	return data->clsSpacing;
 } // end method 

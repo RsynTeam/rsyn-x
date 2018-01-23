@@ -35,6 +35,9 @@ class PhysicalViaData : public PhysicalObject {
 public:
 	std::string clsName;
 	std::vector<Rsyn::PhysicalViaLayer> clsViaLayers;
+	Rsyn::PhysicalViaLayer clsTopRoutingLayer;
+	Rsyn::PhysicalViaLayer clsCutLayer;
+	Rsyn::PhysicalViaLayer clsBottomRoutingLayer;
 	bool clsDesignVia = false;
 	PhysicalViaData() = default;
 }; // end class 

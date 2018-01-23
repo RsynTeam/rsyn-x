@@ -31,7 +31,7 @@ namespace Rsyn {
 
 class Session;
 
-class RoutingEstimator : public Service, public Rsyn::DesignObserver, public Rsyn::PhysicalObserver {
+class RoutingEstimator : public Service, public Rsyn::DesignObserver {
 private:
 
 	// Indicates what type of update is required for a net. Add in order of 
@@ -105,7 +105,7 @@ public:
 	onPostCellRemap(Rsyn::Cell cell, Rsyn::LibraryCell oldLibraryCell) override;
 	
 	virtual void
-	onPostMovedInstance(Rsyn::PhysicalInstance phInstance) override;
+	onPostInstancePlacementChange(Rsyn::Instance instance) override;
 	
 	Number getLocalWireResPerUnitLength() const { return routingExtractionModel->getLocalWireResPerUnitLength(); }
 	Number getLocalWireCapPerUnitLength() const { return routingExtractionModel->getLocalWireCapPerUnitLength(); }

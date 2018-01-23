@@ -54,6 +54,12 @@ public:
 	virtual void
 	onPrePinDisconnect(Rsyn::Pin pin) {}
 
+	virtual void
+	onPreMovedInstance(Rsyn::Instance) {}
+
+	virtual void
+	onPostInstancePlacementChange(Rsyn::Instance) {}
+
 	virtual
 	~DesignObserver() {
 		if (observedDesign)

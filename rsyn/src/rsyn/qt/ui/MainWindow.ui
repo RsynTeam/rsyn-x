@@ -81,6 +81,16 @@
              <item row="0" column="0">
               <layout class="QVBoxLayout" name="verticalLayout_5">
                <item>
+                <widget class="QLineEdit" name="txtSearch">
+                 <property name="placeholderText">
+                  <string>Search</string>
+                 </property>
+                 <property name="clearButtonEnabled">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <widget class="QTreeWidget" name="treeWidgetDesignProperties">
                  <property name="horizontalScrollBarPolicy">
                   <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -927,8 +937,8 @@
    <slot>onChangeLayerVisibility(QTreeWidgetItem*,int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1118</x>
-     <y>401</y>
+     <x>1072</x>
+     <y>255</y>
     </hint>
     <hint type="destinationlabel">
      <x>639</x>
@@ -943,12 +953,28 @@
    <slot>onUnselectAllRoutingLayers()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1186</x>
-     <y>530</y>
+     <x>1090</x>
+     <y>291</y>
     </hint>
     <hint type="destinationlabel">
      <x>1115</x>
      <y>-28</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtSearch</sender>
+   <signal>returnPressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onSearch()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1114</x>
+     <y>131</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>639</x>
+     <y>359</y>
     </hint>
    </hints>
   </connection>
@@ -975,5 +1001,6 @@
   <slot>onExit()</slot>
   <slot>onChangeLayerVisibility(QTreeWidgetItem*,int)</slot>
   <slot>onUnselectAllRoutingLayers()</slot>
+  <slot>onSearch()</slot>
  </slots>
 </ui>

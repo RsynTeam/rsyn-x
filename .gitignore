@@ -10,9 +10,7 @@ Thumbs.db
 
 # Ignore most of contents of private folder
 # -----------------------------------------
-private/*
-!private/CMakeLists.txt
-!private/cmake
+build/*
 
 x/ide/netbeans/*
 x/ide/netbeans/nbproject/private

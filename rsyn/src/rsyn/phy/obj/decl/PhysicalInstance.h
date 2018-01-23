@@ -50,7 +50,7 @@ public:
 	//! @brief Returns the central point of the PhysicalInstance boundaries.
 	DBUxy getCenter() const;
 	//! @brief Returns the central position of the PhysicalInstance boundaries for the given dimension.
-	DBU getCenter(const Dimension dim ) const;
+	DBU getCenter(const Dimension dim) const;
 	//! @brief Returns the x position of the instance.
 	DBU getX() const;
 	//! @brief Returns the y position of the instance.
@@ -60,7 +60,7 @@ public:
 	//! @brief Returns the Instance width. It is the length of PhysicalInstance boundaries is X dimension.
 	DBU getWidth() const;
 	//! @brief Returns the length of PhysicalInstance boundaries for given dimension
-	DBU getLength (const Dimension dimension ) const;
+	DBU getSize(const Dimension dimension) const;
 	//! @brief Returns the length of PhysicalInstance boundaries. 
 	//! In X is the length for abscissa (width) while in Y is the length for ordinate (height).
 	DBUxy getSize() const;
@@ -73,6 +73,8 @@ public:
 	DBUxy getCoordinate(const Boundary bound) const;
 	//! @brief Returns the PhysicalInstance point for the given boundary (LOWER or UPPER) and dimension (X or Y).
 	DBU getCoordinate(const Boundary bound, const Dimension dim) const;
+	//! @brief Returns the orientation of the cell.
+	PhysicalOrientation getOrientation() const;
 	//! @brief Returns the bound box Bounds that defines the limits of PhysicalInstance.
 	const Bounds &getBounds() const;
 	

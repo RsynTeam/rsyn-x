@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef PHYSICALDESIGN_PHYSICALDESIGN__H
-#define PHYSICALDESIGN_PHYSICALDESIGN__H
+#ifndef RSYN_PHYSICAL_DESIGN_H
+#define RSYN_PHYSICAL_DESIGN_H
 
 #include <string>
 #include <vector>
@@ -51,12 +51,13 @@ namespace boostGeometry = boost::geometry;
 typedef boostGeometry::model::point<DBU, 2, boostGeometry::cs::cartesian> PhysicalPolygonPoint;
 // The first type is the polygon point definition. The second type disable clockwise direction of polygon. 
 // The third type disable include again at polygon end the first point. Polygon is open. 
-typedef boostGeometry::model::polygon<PhysicalPolygonPoint, false, false> PhysicalPolygon; 
+typedef boostGeometry::model::polygon<PhysicalPolygonPoint, false, false> PhysicalPolygon;
 
 class PhysicalObject;
 
 class PhysicalRoutingPointData;
 class PhysicalDieData;
+class PhysicalGCellData;
 class PhysicalLayerData;
 class PhysicalSpacingData;
 class PhysicalSpacingRuleData;
@@ -83,6 +84,7 @@ class PhysicalDesignData;
 
 class PhysicalRoutingPoint;
 class PhysicalDie;
+class PhysicalGCell;
 class PhysicalLayer;
 class PhysicalSpacing;
 class PhysicalSpacingRule;
@@ -110,19 +112,19 @@ class PhysicalSpecialNet;
 class PhysicalTrack;
 class PhysicalDesign;
 
-
 class PhysicalAttributeInitializer;
 template<typename DefaultPhysicalValueType>
 class PhysicalAttributeInitializerWithDefaultValue;
 
-class PhysicalObserver;
+class PhysicalDesignObserver;
+class PhysicalRouting;
 
 } // end namespace 
-
 
 // Object's Declarations (Proxies)
 #include "rsyn/phy/obj/decl/PhysicalRoutingPoint.h"
 #include "rsyn/phy/obj/decl/PhysicalDie.h"
+#include "rsyn/phy/obj/decl/PhysicalGCell.h"
 #include "rsyn/phy/obj/decl/PhysicalLayer.h"
 #include "rsyn/phy/obj/decl/PhysicalSpacing.h"
 #include "rsyn/phy/obj/decl/PhysicalSpacingRule.h"
@@ -150,10 +152,14 @@ class PhysicalObserver;
 #include "rsyn/phy/obj/decl/PhysicalTrack.h"
 #include "rsyn/phy/obj/decl/PhysicalDesign.h"
 
+// Routing
+#include "rsyn/phy/PhysicalRouting.h"
+
 // Object's Data
 #include "rsyn/phy/obj/data/PhysicalObject.h"
 #include "rsyn/phy/obj/data/PhysicalRoutingPointData.h"
 #include "rsyn/phy/obj/data/PhysicalDieData.h"
+#include "rsyn/phy/obj/data/PhysicalGCellData.h"
 #include "rsyn/phy/obj/data/PhysicalLayerData.h"
 #include "rsyn/phy/obj/data/PhysicalSpacingData.h"
 #include "rsyn/phy/obj/data/PhysicalSpacingRuleData.h"
@@ -186,6 +192,7 @@ class PhysicalObserver;
 #include "rsyn/phy/obj/impl/PhysicalRoutingPoint.h"
 #include "rsyn/phy/obj/impl/PhysicalLayer.h"
 #include "rsyn/phy/obj/impl/PhysicalDie.h"
+#include "rsyn/phy/obj/impl/PhysicalGCell.h"
 #include "rsyn/phy/obj/impl/PhysicalSpacing.h"
 #include "rsyn/phy/obj/impl/PhysicalSpacingRule.h"
 #include "rsyn/phy/obj/impl/PhysicalSite.h"

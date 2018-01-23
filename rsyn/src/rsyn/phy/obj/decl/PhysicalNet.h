@@ -13,12 +13,6 @@
  * limitations under the License.
  */
  
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /* 
  * File:   PhysicalNet.h
  * Author: jucemar
@@ -26,9 +20,8 @@
  * Created on 15 de Setembro de 2016, 19:16
  */
 
-#ifndef PHYSICALDESIGN_PHYSICALNET_H
-#define PHYSICALDESIGN_PHYSICALNET_H
-
+#ifndef RSYN_PHYSICAL_NET_H
+#define RSYN_PHYSICAL_NET_H
 
 namespace Rsyn { 
 
@@ -62,13 +55,16 @@ public:
 	//! @brief Return the PhysicalPin object that determines the boundary of PhysicalNet 
 	//! in one of its demensions.
 	Rsyn::Pin getPinBoundary(const Boundary bound, const Dimension dim) const;
-	
+	//! @brief Return the physical routing of this net.
+	PhysicalRouting &getRouting();
+
 	//! @brief Returns a reference to a vector that stores routed net wires.
 	const std::vector<Rsyn::PhysicalWire> & allWires() const;
 	
+	// !@brief Returns the number of wires.
+	std::size_t getNumWires() const;
 }; // end class 
 
 } // end namespace 
 
-#endif /* PHYSICALDESIGN_PHYSICALNET_H */
-
+#endif

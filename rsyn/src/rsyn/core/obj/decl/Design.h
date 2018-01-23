@@ -204,7 +204,14 @@ public:
 	//!        notifications about changes in the netlist.
 	void
 	unregisterObserver(DesignObserver *observer);
-	
+
+	//! @brief Notifies about a change in an instance placement. Usually this
+	//! does not need to be done manually, but notification can be turned off
+	//! and then observer must be manually notified.
+	//! @todo Return also the old position.
+	void
+	notifyInstancePlaced(Rsyn::Instance instance, Rsyn::DesignObserver *ignoreObserver = nullptr);
+
 	////////////////////////////////////////////////////////////////////////////
 	// Searching
 	////////////////////////////////////////////////////////////////////////////	

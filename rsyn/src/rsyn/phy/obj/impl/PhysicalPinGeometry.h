@@ -51,4 +51,21 @@ inline const std::vector<Rsyn::PhysicalPinLayer> &  PhysicalPinGeometry::allPinL
 
 // -----------------------------------------------------------------------------
 
+inline Rsyn::PhysicalPinLayer PhysicalPinGeometry::getLowerPinLayer() const {
+	if(data->clsPinLayers.empty())
+		return Rsyn::PhysicalPinLayer(nullptr);
+	return data->clsPinLayers.front();
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline Rsyn::PhysicalPinLayer PhysicalPinGeometry::getUpperPinLayer() const {
+	if(data->clsPinLayers.empty())
+		return Rsyn::PhysicalPinLayer(nullptr);
+	return data->clsPinLayers.back();
+
+} // end method 
+
+// -----------------------------------------------------------------------------
+
 } // end namespace 

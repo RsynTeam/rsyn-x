@@ -1,5 +1,4 @@
 #include "GraphicsView.h"
-#include "GraphicsViewport.h"
 
 #include "rsyn/qt/overlay/highlight/HighlightOverlay.h"
 #include "rsyn/qt/overlay/instance/CellItem.h"
@@ -10,6 +9,7 @@
 
 #include "rsyn/session/Session.h"
 #include "rsyn/phy/PhysicalDesign.h"
+#include "rsyn/util/Stepwatch.h"
 
 #include <QPrinter>
 #include <QPrintDialog>
@@ -29,10 +29,32 @@
 
 namespace Rsyn {
 
+static const bool DebugRendering = false;
+
 // -----------------------------------------------------------------------------
 
-GraphicsView::GraphicsView(GraphicsViewport *v) :
-		QGraphicsView(), viewContainer(v) {
+GraphicsView::GraphicsView(QWidget *parent) :
+		QGraphicsView(parent),
+		zoomScaling(1),
+		sceneToViewportScalingFactor(0),
+		rowHeight(0),
+		initialized(false)
+{
+
+    setRenderHint(QPainter::Antialiasing, false);
+    setDragMode(QGraphicsView::RubberBandDrag);
+    setOptimizationFlags(
+			QGraphicsView::DontSavePainterState |
+			QGraphicsView::DontAdjustForAntialiasing);
+	setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+	setCacheMode(QGraphicsView::CacheBackground);
+    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+
+	if (DebugRendering) {
+		setOptimizationFlag(QGraphicsView::IndirectPainting, true);
+	} // end if
+
+    updateViewMatrix();
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -49,9 +71,178 @@ GraphicsView::~GraphicsView() {
 
 void
 GraphicsView::init() {
+	updateAdjustedSceneRect();
+	resetView();
+
 	Rsyn::Session session;
-	physicalDesign = session.getPhysicalDesign();
 	rsynGraphics = session.getService("rsyn.graphics");
+
+	physicalDesign = session.getPhysicalDesign();
+	rowHeight = physicalDesign.getRowHeight();
+
+	initialized = true;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void
+GraphicsView::updateAdjustedSceneRect() {
+	const QRectF &sceneRect = scene()->sceneRect();
+	adjustedSceneRect = sceneRect;
+
+	const qreal gap = std::min(sceneRect.width(), sceneRect.height()) * 0.01;
+	adjustedSceneRect.adjust(-gap, -gap, +gap, +gap);
+
+	// Adjust scene view to match viewport dimensions.
+	const qreal w = width();
+	const qreal W = adjustedSceneRect.width();
+	const qreal h = height();
+	const qreal H = adjustedSceneRect.height();
+
+	const qreal scalingW = w / W;
+	const qreal scalingH = h / H;
+	sceneToViewportScalingFactor = std::min(scalingW, scalingH);
+
+	if (scalingW < scalingH) {
+		const qreal adjustedHeight = h / scalingW;
+		const qreal d = (adjustedHeight - H) / 2;
+		const qreal y0 = adjustedSceneRect.bottom();
+		const qreal y1 = adjustedSceneRect.top();
+		adjustedSceneRect.setBottom(y0 - d);
+		adjustedSceneRect.setTop(y1 + d);
+	} else {
+		const qreal adjustedWidth = w / scalingH;
+		const qreal d = (adjustedWidth - W) / 2;
+		const qreal x0 = adjustedSceneRect.left();
+		const qreal x1 = adjustedSceneRect.right();
+		adjustedSceneRect.setLeft(x0 - d);
+		adjustedSceneRect.setRight(x1 + d);
+	} // end else
+
+	//std::cout << "w: " << (sceneToViewportScalingFactor * adjustedSceneRect.width()) << " = " << width() << "\n";
+	//std::cout << "h: " << (sceneToViewportScalingFactor * adjustedSceneRect.height()) << " = " << height() << "\n";
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void
+GraphicsView::updateViewMatrix() {
+    const qreal scaling = sceneToViewportScalingFactor*getZoom();
+
+	QMatrix mtx;
+	mtx.translate(0, rect().bottom());
+	mtx.scale(scaling, -scaling);
+	setMatrix(mtx);
+	invertedTransform = transform().inverted();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void
+GraphicsView::updateRenderingCache() {
+	cachedRendering = grab();
+	//cachedRendering.save("test.png");
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void
+GraphicsView::resetView() {
+	zoomScaling = 1;
+    updateViewMatrix();
+
+    ensureVisible(QRectF(0, 0, 0, 0));
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void
+GraphicsView::togglePointerMode(const bool enable) {
+    setDragMode(enable
+			? QGraphicsView::RubberBandDrag
+			: QGraphicsView::ScrollHandDrag);
+    setInteractive(enable);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void
+GraphicsView::toggleOpenGL(const bool enable) {
+#ifndef QT_NO_OPENGL
+    setViewport(enable ?
+		new QGLWidget(QGLFormat(QGL::SampleBuffers)) : new QWidget);
+#endif
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void
+GraphicsView::toggleAntialiasing(const bool enable) {
+    setRenderHint(QPainter::Antialiasing, enable);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void
+GraphicsView::print() {
+#if !defined(QT_NO_PRINTER) && !defined(QT_NO_PRINTDIALOG)
+    QPrinter printer;
+    QPrintDialog dialog(&printer, this);
+    if (dialog.exec() == QDialog::Accepted) {
+        QPainter painter(&printer);
+        render(&painter);
+    }
+#endif
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void
+GraphicsView::zoomIn(int level) {
+    zoomScaling *= std::pow(2, level);
+	updateViewMatrix();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void
+GraphicsView::zoomOut(int level) {
+    zoomScaling /= std::pow(2, level);
+	updateViewMatrix();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+qreal
+GraphicsView::getZoom() const {
+	return zoomScaling;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+qreal
+GraphicsView::getSceneWidth() const {
+	return adjustedSceneRect.width() / getZoom();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+qreal
+GraphicsView::getSceneHeight() const {
+	return adjustedSceneRect.height() / getZoom();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void
+GraphicsView::resizeEvent(QResizeEvent * event) {
+	if (!isInitialized())
+		return;
+
+	setUpdatesEnabled(false);
+	updateAdjustedSceneRect();
+	updateViewMatrix();
+	setUpdatesEnabled(true);
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -74,7 +265,23 @@ void
 GraphicsView::drawItems(QPainter *painter, int numItems,
 					   QGraphicsItem *items[],
 					   const QStyleOptionGraphicsItem options[]) {
+	//Stepwatch watch("Debug rendering #items=" + std::to_string(numItems));
 	QGraphicsView::drawItems(painter, numItems, items, options);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void
+GraphicsView::paintEvent(QPaintEvent *event) {
+	{
+		//Stepwatch watch("Rendering");
+		QGraphicsView::paintEvent(event);
+	}
+
+	{
+		//Stepwatch watch("Caching");
+		//updateRenderingCache();
+	}
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -84,13 +291,13 @@ void
 GraphicsView::wheelEvent(QWheelEvent *e) {
     if (e->modifiers() & Qt::ControlModifier) {
         if (e->delta() > 0)
-            viewContainer->zoomIn(1);
+            zoomIn(1);
         else
-            viewContainer->zoomOut(1);
+            zoomOut(1);
 		e->accept();
 	} else {
 		QGraphicsView::wheelEvent(e);
-    }
+    } // end else
 } // end method
 #endif
 
@@ -215,8 +422,8 @@ GraphicsView::leaveEvent(QEvent *event) {
 // -----------------------------------------------------------------------------
 
 float
-GraphicsView::getLevelOfDetail() const {
-	return viewContainer->getNumVisibleRowsInViewport();
+GraphicsView::getNumExposedRows() const {
+	return std::max(getSceneWidth(), getSceneHeight()) / rowHeight;
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -277,7 +484,7 @@ GraphicsView::traceNet(Rsyn::Net net, const bool includePins) {
 
 	Rsyn::PhysicalNet phNet = physicalDesign.getPhysicalNet(net);
 	for (Rsyn::PhysicalWire phWire : phNet.allWires()) {
-		for (Rsyn::PhysicalWireSegment phWireSegment : phWire.allSegments()) {
+		for (Rsyn::PhysicalWireSegment phWireSegment : phWire.allWireSegments()) {
 			if (phWireSegment.getNumRoutingPoints() < 2)
 				continue;
 
@@ -327,7 +534,7 @@ GraphicsView::traceNet(Rsyn::Net net, const bool includePins) {
 		} // end for
 	} // end if
 
-	return netShape.simplified();;
+	return netShape.simplified();
 } // end method
 
 } // end namespace

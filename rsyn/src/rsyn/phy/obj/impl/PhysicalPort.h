@@ -42,7 +42,7 @@ inline bool PhysicalPort::hasLayer() const {
 // -----------------------------------------------------------------------------
 
 inline PhysicalOrientation PhysicalPort::getOrientation() const {
-	return data->clsOrientation;
+	return getInstance().getOrientation();
 } // end method 
 
 // -----------------------------------------------------------------------------

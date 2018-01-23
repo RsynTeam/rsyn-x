@@ -12,6 +12,7 @@ namespace Rsyn {
 class RoutingGraphicsItem : public QGraphicsItem {
 public:
     RoutingGraphicsItem(Rsyn::Net net, Rsyn::PhysicalWireSegment phWireSegment);
+	RoutingGraphicsItem(Rsyn::Net net, const Rsyn::PhysicalRoutingWire &wire);
 
 	Rsyn::Net getNet() const {return clsNet;}
 

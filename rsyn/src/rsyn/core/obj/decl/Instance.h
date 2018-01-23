@@ -28,6 +28,10 @@ friend class Cell;
 friend class Port;
 friend class Module;
 
+// Temporary while we merge some physical data into the netlist (2018/01/17).
+friend class PhysicalDesign;
+friend class PhysicalService;
+
 private:
 	Instance(InstanceData * data) : Proxy(data) {}
 
@@ -205,6 +209,63 @@ public:
 	//! @note  This is a user-defined flag. If the flag was not set, an exception
 	//!        is raised.
 	bool isMacroBlock() const;
+
+	//! @brief Returns the x position of the instance.
+	DBU getX() const;
+
+	//! @brief Returns the y position of the instance.
+	DBU getY() const;
+
+	//! @brief Returns the Instance height. It is the length of PhysicalInstance boundaries is Y dimension.
+	DBU getHeight() const;
+
+	//! @brief Returns the Instance width. It is the length of PhysicalInstance boundaries is X dimension.
+	DBU getWidth() const;
+
+	//! @brief Returns the length of PhysicalInstance boundaries.
+	//! In X is the length for abscissa (width) while in Y is the length for ordinate (height).
+	DBUxy getSize() const;
+
+	//! @brief Returns the length of PhysicalInstance boundaries for given dimension
+	//! @todo Rename to getSize().
+	DBU getSize(const Dimension dimension) const;
+
+	//! @brief Returns the left-lower PhysicalInstance point that is defined as its position.
+	DBUxy getPosition() const;
+
+	//! @brief Returns the left-lower PhysicalInstance point for the given dimension
+	//! that is defined as its position.
+	DBU getPosition(const Dimension dim) const;
+
+	//! @brief Returns the PhysicalInstance point for the given boundary (LOWER or UPPER).
+	//! @todo remove
+	DBUxy getCoordinate(const Boundary bound) const;
+
+	//! @brief Returns the PhysicalInstance point for the given boundary (LOWER or UPPER) and dimension (X or Y).
+	//! @todo remove
+	DBU getCoordinate(const Boundary bound, const Dimension dim) const;
+
+	//! @brief Returns the length of PhysicalInstance boundaries for given dimension
+	DBU getArea() const;
+
+	//! @brief Returns the central point of the PhysicalInstance boundaries.
+	DBUxy getCenter() const;
+
+	//! @brief Returns the central position of the PhysicalInstance boundaries for the given dimension.
+	DBU getCenter(const Dimension dim) const;
+
+	//! @brief Returns the orientation of the cell.
+	PhysicalOrientation getOrientation() const;
+
+	//! @brief Returns a transformation that allows one to transform the
+	//! coordinates from the library cell space to the cell space. The
+	//! transformation accounts for translation and the orientation of the cell.
+	//! @param origin If set to true, the transform is created w.r.t (0, 0) and
+	//! not the current cell position.
+	PhysicalTransform getTransform(const bool origin = false) const;
+
+	//! @brief Returns the bound box Bounds that defines the limits of PhysicalInstance.
+	const Bounds &getBounds() const;
 
 }; // end class
 

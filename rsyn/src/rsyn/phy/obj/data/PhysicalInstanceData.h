@@ -37,11 +37,8 @@ public:
 	bool clsPlaced : 1;
 	bool clsPort : 1;
 	bool clsHasLayerBounds : 1; //  the bounds of a cell is defined by one of the layers. 
-	
-	Bounds clsBounds;
+
 	DBUxy clsInitialPos; // Initial position from global placement when in detailed placement has maximal displacement
-	DBUxy clsPortPos; // only for port to define position.
-	PhysicalOrientation clsOrientation = ORIENTATION_INVALID; 
 	PhysicalLayer clsPortLayer;
 	Rsyn::Instance clsInstance;
 
@@ -50,7 +47,6 @@ public:
 		clsPlaced = false;
 		clsPort = false;
 		clsHasLayerBounds = false;
-		clsPortPos.apply(std::numeric_limits<DBU>::max());
 	} // end constructor 
 }; // end class
 

@@ -133,34 +133,10 @@ public:
 	bool clsNew : 1;
 	std::vector<DefRoutingPointDscp> clsRoutingPoints;
 	DBU clsRoutedWidth = 0; // only valid to special nets.
-
 	
-	
-	// BEGIN ***************************************************************
-	// Deprecated -> to be removed from here
-	// They belong to routing point
-	std::string clsViaName = INVALID_DEF_NAME;
-	int clsExtensionBegin = -1;
-	int clsExtensionEnd = -1;
-	int clsMask = -1;
-	int clsWidth = 0;
-
-	bool clsHasVia : 1;
-	bool clsHasRectangle : 1;
-	/*
-	 * "RECT ( deltax1 deltay1 deltax2 deltay2 )
-	 * Indicates that a rectangle is created from the previous ( x y ) 
-	 * routing point using the delta values. The RECT values leave the 
-	 * current point and layer unchanged." Source: LEf/DEf Reference Manual 5.8
-	 */
-	Bounds clsRect;
-	std::vector<DBUxy> clsPoints;
-	// END *****************************************************************
 
 	DefWireSegmentDscp() {
 		clsNew = false;
-		clsHasVia = false;
-		clsHasRectangle = false;
 	} // end constructor 
 }; // end class 
 

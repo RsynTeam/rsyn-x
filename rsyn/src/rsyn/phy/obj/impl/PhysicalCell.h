@@ -117,20 +117,8 @@ inline DBU PhysicalCell::getDisplacementFromInitialPosition(const DBU pos, const
 
 // -----------------------------------------------------------------------------
 
-inline PhysicalOrientation PhysicalCell::getOrientation() const {
-	return data->clsOrientation;
-} // end method 
-
-// -----------------------------------------------------------------------------
-
 inline PhysicalTransform PhysicalCell::getTransform(const bool origin) const {
-	if (origin) {
-		Bounds bounds = getBounds();
-		bounds.translate(-bounds.getLower());
-		return PhysicalTransform(bounds, getOrientation());
-	} else {
-		return PhysicalTransform(getBounds(), getOrientation());
-	} // end else
+	return getInstance().getTransform(origin);
 } // end method
 
 // -----------------------------------------------------------------------------

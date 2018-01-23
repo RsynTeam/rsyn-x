@@ -45,7 +45,7 @@ bool OverlapRemover::run(const Rsyn::Json& params) {
 	clsLibCharacterizer = session.getService("rsyn.libraryCharacterizer");
 	clsBlockageControl = session.getService("ufrgs.blockageControl");
 	
-	M = clsPhysicalDesign.getPhysicalModule(clsModule).getLength(X);
+	M = clsPhysicalDesign.getPhysicalModule(clsModule).getSize(X);
 	minBlockArea = 5000.0 * clsPhysicalDesign.getRowHeight() * 
 		clsPhysicalDesign.getRowSiteWidth();
 	

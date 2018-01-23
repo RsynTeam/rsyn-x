@@ -192,6 +192,7 @@ int defRow(defrCallbackType_e type, defiRow* rowInfo, defiUserData userData) {
 	DefRowDscp &defRow = defDscp.clsRows.back();
 	defRow.clsName = rowInfo->name();
 	defRow.clsSite = rowInfo->macro();
+	defRow.clsOrientation = rowInfo->orientStr();
 	defRow.clsOrigin[X] = static_cast<DBU> (rowInfo->x());
 	defRow.clsOrigin[Y] = static_cast<DBU> (rowInfo->y());
 
@@ -310,7 +311,6 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 			int pathId = path->next();
 			bool newPath = false;
 			int x, y, extension;
-			bool firstPoint = true;
 			DefRoutingPointDscp * point;
 			while (pathId != DEFIPATH_DONE) {
 				switch (pathId) {
@@ -323,23 +323,15 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 						// END TODO 
 						break;
 					case DEFIPATH_MASK:
-						segmentDscp.clsMask = path->getMask();
+						std::cout << "TODO DEFIPATH_MASK at " << __func__ << "\n";
 						break;
 					case DEFIPATH_VIAMASK:
 						// TODO 
-						//path->getViaTopMask();
-						//path->getViaCutMask();
-						//path->getViaBottomMask();
 						std::cout << "TODO DEFIPATH_VIAMASK at " << __func__ << "\n";
 						break;
 					case DEFIPATH_VIA:
 						point->clsViaName = path->getVia();
 						point->clsHasVia = true;
-
-						// TODO -> Deprecated - Remove
-						segmentDscp.clsViaName = path->getVia();
-						segmentDscp.clsHasVia = true;
-						// END TODO 
 						break;
 					case DEFIPATH_VIAROTATION:
 						//TODO
@@ -355,13 +347,6 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 						point->clsRect[UPPER][X] = static_cast<DBU> (deltaxu);
 						point->clsRect[UPPER][Y] = static_cast<DBU> (deltayu);
 
-						// TODO -> Deprecated - Remove
-						segmentDscp.clsRect[LOWER][X] = static_cast<DBU> (deltaxl);
-						segmentDscp.clsRect[LOWER][Y] = static_cast<DBU> (deltayl);
-						segmentDscp.clsRect[UPPER][X] = static_cast<DBU> (deltaxu);
-						segmentDscp.clsRect[UPPER][Y] = static_cast<DBU> (deltayu);
-						segmentDscp.clsHasRectangle = true;
-						// END TODO 
 						break;
 					case DEFIPATH_VIRTUALPOINT:
 						//TODO
@@ -372,7 +357,7 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 						break;
 					case DEFIPATH_WIDTH:
 						// only for special nets
-						segmentDscp.clsWidth = path->getWidth();
+//						segmentDscp.clsWidth = path->getWidth();
 						break;
 					case DEFIPATH_POINT:
 						path->getPoint(&x, &y);
@@ -381,10 +366,6 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 						point->clsPos = DBUxy(static_cast<DBU> (x), static_cast<DBU> (y));
 						point->clsExtension = -1;
 
-						// TODO -> Deprecated - Remove
-						segmentDscp.clsPoints.push_back(DBUxy(static_cast<DBU> (x), static_cast<DBU> (y)));
-						firstPoint = false;
-						// END TODO 
 						break;
 					case DEFIPATH_FLUSHPOINT:
 						path->getFlushPoint(&x, &y, &extension);
@@ -392,15 +373,6 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 						point = &segmentDscp.clsRoutingPoints.back();
 						point->clsPos = DBUxy(static_cast<DBU> (x), static_cast<DBU> (y));
 						point->clsExtension = extension;
-
-						// TODO -> Deprecated - Remove
-						segmentDscp.clsPoints.push_back(DBUxy(static_cast<DBU> (x), static_cast<DBU> (y)));
-						if (firstPoint)
-							segmentDscp.clsExtensionBegin = extension;
-						else
-							segmentDscp.clsExtensionEnd = extension;
-						firstPoint = false;
-						// END TODO 
 						break;
 					case DEFIPATH_TAPER:
 						//std::string taper = "TAPER ";
@@ -858,15 +830,18 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 	status = defwNewLine();
 	CHECK_STATUS(status);
 	
+	
+	// Write components
 	int numComponents = defDscp.clsComps.size();
 	status = defwStartComponents(numComponents);
 	CHECK_STATUS(status);
 
 	for (const DefComponentDscp & comp : defDscp.clsComps) {
 		//int defwComponent(const char* name, const char* master, const char* eeq, const char* source, const char* status, int statusX, int statusY, int statusOrient, double weight, const char* region);
+		int orient = defOrient(comp.clsOrientation);
 		status = defwComponent(comp.clsName.c_str(), comp.clsMacroName.c_str(), 0, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL,
 			comp.clsIsFixed ? "FIXED" : comp.clsIsPlaced ? "PLACED" : "UNPLACED",
-			(int) comp.clsPos[X], (int) comp.clsPos[Y], 0, 0, NULL, 0, 0, 0, 0);
+			(int) comp.clsPos[X], (int) comp.clsPos[Y], orient, 0, NULL, 0, 0, 0, 0);
 		CHECK_STATUS(status);
 	} // end for 
 
@@ -876,6 +851,8 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 	status = defwNewLine();
 	CHECK_STATUS(status);
 
+	
+	// write ports
 	int numPins = defDscp.clsPorts.size();
 	status = defwStartPins(numPins);
 	CHECK_STATUS(status);
@@ -909,13 +886,66 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 	status = defwStartNets(numNets);
 	CHECK_STATUS(status);
 
+	
+	// write nets
 	for(const DefNetDscp & defNet : defDscp.clsNets) {
 		status = defwNet(defNet.clsName.c_str());
 		CHECK_STATUS(status);
+		// Writing Net connections
 		for(const DefNetConnection & defConn : defNet.clsConnections){
 			status = defwNetConnection(defConn.clsComponentName.c_str(), defConn.clsPinName.c_str(), 0);
 			CHECK_STATUS(status);
 		} // end for 
+		
+		bool routed = true;
+		defwNetPathStart("ROUTED");
+		for(const DefWireDscp & wire : defNet.clsWires) {
+				
+			for (const DefWireSegmentDscp & segment : wire.clsWireSegments) {
+				if (!routed) 
+					defwNetPathStart("NEW");
+				routed = false;
+				
+				bool hasVia = false;
+				std::string viaName;
+				bool hasRect = false;
+				Bounds rect;
+				
+				defwNetPathLayer(segment.clsLayerName.c_str(), 0, NULL);
+				double* x;
+				double* y;
+				int numPoints = segment.clsRoutingPoints.size();
+				x = (double*) malloc(sizeof (double)*numPoints);
+				y = (double*) malloc(sizeof (double)*numPoints);
+				std::vector<double2> pos;
+				pos.resize(numPoints);
+				for (int i = 0; i < numPoints; i++) {
+					const DefRoutingPointDscp & pt = segment.clsRoutingPoints[i];
+					pos[i].set(pt.clsPos[X], pt.clsPos[Y]);
+					x[i] = pos[i].x;
+					y[i] = pos[i].y;
+					if(pt.clsHasVia) {
+						hasVia = true;
+						viaName = pt.clsViaName;
+					}
+					if(pt.clsHasRectangle) {
+						hasRect = true;
+						rect = pt.clsRect;
+					}
+						
+				} // end for 
+				defwNetPathPoint(numPoints, x, y);
+				
+				free((double*) x);
+				free((double*) y);
+				if(hasVia)
+					defwNetPathViaWithOrient(viaName.c_str(), -1);
+				if(hasRect)
+					defwNetPathRect(rect[LOWER][X], rect[LOWER][Y], rect[UPPER][X], rect[UPPER][Y]);
+			}
+			
+		}
+		defwNetPathEnd();
 		status = defwNetEndOneNet();
 		CHECK_STATUS(status);
 	} // end for 

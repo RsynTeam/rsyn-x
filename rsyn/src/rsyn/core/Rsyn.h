@@ -33,9 +33,15 @@
 #include <cassert>
 #include <stdexcept>
 
+#include <rsyn/core/RsynTypes.h>
+
 #include <rsyn/core/infra/List.h>
 #include <rsyn/core/infra/RangeBasedLoop.h>
 #include <rsyn/core/infra/Exception.h>
+
+#include <rsyn/util/dbu.h>
+#include <rsyn/util/Bounds.h>
+#include <rsyn/phy/util/PhysicalTransform.h>
 
 #include <rsyn/util/Proxy.h>
 #include <rsyn/util/TristateFlag.h>
@@ -125,83 +131,6 @@ typedef CollectionOfGenericSuccessorPins<Pin, Net, Arc>
 typedef std::uint32_t Index;
 typedef int TopologicalIndex;
 
-enum ObjectType {
-	OBJECT_TYPE_INVALID = -1,
-
-	OBJECT_TYPE_NET,
-	OBJECT_TYPE_PIN,
-	OBJECT_TYPE_ARC,
-
-	OBJECT_TYPE_INSTANCE,
-	OBJECT_TYPE_CELL,
-	OBJECT_TYPE_PORT,
-	OBJECT_TYPE_MODULE,
-
-	OBJECT_TYPE_LIBRARY_PIN,
-	OBJECT_TYPE_LIBRARY_ARC,
-	OBJECT_TYPE_LIBRARY_CELL,
-
-	NUM_OBJECT_TYPES
-}; // end enum
-
-enum InstanceType {
-	UNKNOWN_INSTANCE_TYPE = 0,  // used in bit fields (needs to start at zero)
-	
-	CELL,
-	PORT,
-	MODULE,
-
-	NUM_INSTANCE_TYPES
-}; // end enum
-
-enum ArcType {
-	UNKNOWN_ARC_TYPE = 0, // used in bit fields (needs to start at zero)
-	
-	INSTANCE_ARC,
-	NET_ARC,
-
-	NUM_ARC_TYPES
-}; // end enum
-
-enum TraverseType {
-	INVALID_TRAVERSE_TYPE = -1,
-
-	FORWARD,  // from inputs to outputs (topological order)
-	BACKWARD, // from outputs to inputs (reverse topological order)
-
-	NUM_TRAVERSE_TYPES
-}; // end enum
-
-enum Direction { // TODO: Many rename to SignalDirection
-	UNKNOWN_DIRECTION  = 0, // used in bit fields (needs to start at zero)
-
-	IN = 1,
-	SINK = 1,
-
-	OUT = 2,
-	DRIVER = 2,
-
-	BIDIRECTIONAL = 3,
-
-	NUM_SIGNAL_DIRECTIONS
-}; // end enum
-
-// =============================================================================
-// Type Requests
-// =============================================================================
-
-enum BufferType {
-	NON_INVERTING,
-	INVERTING,
-	ANY_BUFFER_TYPE
-}; // end enum
-
-enum TieType {
-	TIE_LOW,
-	TIE_HIGH,
-	ANY_TIE_TYPE
-}; // end enum
-
 // =============================================================================
 // Tags
 // =============================================================================
@@ -265,6 +194,7 @@ enum DesignEventType {
 	EVENT_POST_CELL_REMAP,
 	EVENT_POST_PIN_CONNECT,
 	EVENT_PRE_PIN_DISCONNECT,
+	EVENT_POST_INSTANCE_PLACEMENT_CHANGE,
 
 	NUM_DESIGN_EVENTS
 }; // end enum

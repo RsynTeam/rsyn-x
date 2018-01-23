@@ -20,6 +20,8 @@ namespace Rsyn {
 TrackOverlay::TrackOverlay(QGraphicsItem *parent) :
 		GraphicsOverlay("Tracks", parent) {
 	setVisible(false);
+
+	setFlag(QGraphicsItem::ItemUsesExtendedStyleOption, true);
 } // end constructor
 
 // -----------------------------------------------------------------------------
@@ -78,6 +80,15 @@ TrackOverlay::onChangePhysicalLayerVisibility(const Rsyn::PhysicalLayer &layer, 
 
 void 
 TrackOverlay::paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) {
+	// TODO: Need a more efficient way to do this.
+	const Rsyn::GraphicsView *view = (Rsyn::GraphicsView *) scene()->views().first();
+	const qreal numExposedRows = view->getNumExposedRows();
+	if (numExposedRows > 10)
+		return; // don't draw anything if it is too far away
+
+	// @todo don't need to draw tracks outside the exposed rect
+	// const QRectF &exposedRect = item->exposedRect;
+
 	QPen pen;
 	pen.setWidth(0);
 	pen.setColor(Qt::gray);

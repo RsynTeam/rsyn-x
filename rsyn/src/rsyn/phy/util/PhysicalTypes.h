@@ -210,40 +210,6 @@ enum PhysicalMacroBlockClass : std::int8_t {
 
 // -----------------------------------------------------------------------------
 
-//! @brief Orientation based on compass rose.
-//! @details The default orientation is "vertically and face up" - N (North). 
-//!        Rotate by 90deg clockwise to get E, S and W, flip to get FN, FE, 
-//!        FS and FW. (think of a dial).		
-//!        Source: http://vlsicad.ucsd.edu/GSRC/bookshelf/Slots/Placement/plFormats.html
-//! @note  This orientations are compatible with LEF/DEF and OpenAccess.
-
-enum PhysicalOrientation : std::int8_t {
-	/*! \brief Only used for Rsyn internal control.*/
-	ORIENTATION_INVALID = -1,
-	
-	//! @brief North Orientation (R0)
-	ORIENTATION_N,
-	//! @brief South orientation (R180)
-	ORIENTATION_S,
-	//! @brief West orientation (R90)
-	ORIENTATION_W,
-	//! @brief East orientation  (R270)
-	ORIENTATION_E,
-	//! @brief Flipped-North orientation (MY)
-	ORIENTATION_FN,
-	//! @brief Flipped-South orientation (MX)
-	ORIENTATION_FS,
-	//! @brief Flipped-West orientation (MX90)
-	ORIENTATION_FW,
-	//! @brief Flipped-East orientation (MY90)
-	ORIENTATION_FE,
-
-	//! @brief Number of orientations
-	NUM_PHY_ORIENTATION
-}; // end enum
-
-// -----------------------------------------------------------------------------
-
 //! @brief Symmetry based on Cartesian coordinate system
 //! @details X and Y - allows flips around axis, ROT90 - allows any of 
 //!        rotations by 0, 90, 180 or 270 degrees.
@@ -278,6 +244,7 @@ enum PhysicalPinGeometryClass : std::int8_t {
 	NUM_PINGEOMETRYCLASS = 3
 }; // end enum 
 
+// -----------------------------------------------------------------------------
 
 //! @brief Region type for the Region object.
 
@@ -287,7 +254,10 @@ enum class RegionType : std::int8_t {
 	GUIDE = 1
 }; // end enum class 
 
-//! @brief Layout may be upload in physical design only for Floorplanning, Placement, CTS or Routing. It avoids loading unnecessary data.
+// -----------------------------------------------------------------------------
+
+//! @brief Layout may be upload in physical design only for Floorplanning,
+//! Placement, CTS or Routing. It avoids loading unnecessary data.
 
 enum class PhysicalDesignMode : std::int8_t {
 	INVALID = -1,
@@ -298,18 +268,27 @@ enum class PhysicalDesignMode : std::int8_t {
 	ROUTING = 4,
 }; // end enum class 
 
+// -----------------------------------------------------------------------------
+
+
+//! @brief Layout may be upload in physical design only for Floorplanning,
+//! Placement, CTS or Routing. It avoids loading unnecessary data.
+
+enum class PhysicalGCellDirection : std::int8_t {
+	INVALID = -1,
+	VERTICAL = 0,
+	HORIZONTAL = 1
+}; // end enum class 
+
+// -----------------------------------------------------------------------------
 
 
 enum PhysicalEventType {
 	PHYSICAL_EVENT_DESTRUCTION,
-	PHYSICAL_EVENT_CELL_REMAP,
-	//PHYSICAL_EVENT_POST_INSTANCE_CREATE,
-	//PHYSICAL_EVENT_PRE_INSTANCE_REMOVE,
-	PHYSICAL_EVENT_PRE_INSTANCE_MOVED,
-	PHYSICAL_EVENT_POS_INSTANCE_MOVED,
+	PHYSICAL_EVENT_POST_NET_ROUTING_CHANGE,
+
 	NUM_PHYSICAL_EVENTS
 }; // end enum
-
 
 } // end namespace 
 

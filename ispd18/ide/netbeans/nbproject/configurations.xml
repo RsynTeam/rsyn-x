@@ -1,42 +1,209 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
-    <logicalFolder name="debug"
-                   displayName="debug"
-                   projectFiles="true"
-                   root="../../build/debug">
-      <itemPath>../../build/debug/moc_GraphicsView.cpp</itemPath>
-      <itemPath>../../build/debug/moc_GraphicsViewport.cpp</itemPath>
-      <itemPath>../../build/debug/moc_MainWindow.cpp</itemPath>
-      <itemPath>../../build/debug/qrc_images.cpp</itemPath>
-      <itemPath>../../build/debug/rsyn_automoc.cpp</itemPath>
-    </logicalFolder>
     <df root="../../src/ispd18" name="0">
+      <df name="demo">
+        <in>ExampleProcess.cpp</in>
+        <in>ExampleService.cpp</in>
+      </df>
+      <df name="qt">
+        <df name="overlay">
+          <df name="example">
+            <in>ExampleOverlay.cpp</in>
+          </df>
+          <in>register.cpp</in>
+        </df>
+      </df>
     </df>
     <df root="../../../rsyn/src/rsyn" name="1">
+      <df name="3rdparty">
+        <df name="flute">
+          <in>flute.cpp</in>
+        </df>
+        <df name="parser">
+          <df name="liberty">
+            <in>PI.c</in>
+            <in>attr_lookup.c</in>
+            <in>group_lookup.c</in>
+            <in>liberty_front_lex.c</in>
+            <in>liberty_parser.c</in>
+            <in>libhash.c</in>
+            <in>libstrtab.c</in>
+            <in>mymalloc.c</in>
+            <in>syntax_checks.c</in>
+            <in>syntax_decls.c</in>
+            <in>token.c</in>
+          </df>
+        </df>
+      </df>
+      <df name="io">
+        <df name="image">
+          <in>DrawingBoard.cpp</in>
+          <in>SVGDrawingBoard.cpp</in>
+        </df>
+        <df name="parser">
+          <df name="bookshelf">
+            <in>BookshelfParser.cpp</in>
+          </df>
+          <df name="guide-ispd18">
+            <in>GuideParser.cpp</in>
+          </df>
+          <df name="lef_def">
+            <in>DEFControlParser.cpp</in>
+            <in>LEFControlParser.cpp</in>
+          </df>
+          <df name="liberty">
+            <in>LibertyControlParser.cpp</in>
+          </df>
+          <df name="operations">
+            <in>OperationsControlParser.cpp</in>
+          </df>
+          <df name="script">
+            <df name="base">
+              <in>Script.tab.cc</in>
+              <in>Script.yy.cc</in>
+            </df>
+            <in>ScriptReader.cpp</in>
+          </df>
+          <df name="sdc">
+            <in>SDCControlParser.cpp</in>
+          </df>
+          <df name="spef">
+            <in>SPEFControlParser.cpp</in>
+          </df>
+          <df name="verilog">
+            <df name="base">
+              <in>SimplifiedVerilog.tab.cc</in>
+              <in>SimplifiedVerilog.yy.cc</in>
+            </df>
+            <in>SimplifiedVerilogReader.cpp</in>
+          </df>
+          <in>parser_helper.cpp</in>
+        </df>
+        <df name="reader">
+          <in>BookshelfReader.cpp</in>
+          <in>DesignPositionReader.cpp</in>
+          <in>GenericReader.cpp</in>
+          <in>ICCAD15Reader.cpp</in>
+          <in>ICCAD17Reader.cpp</in>
+          <in>ISPD2012Reader.cpp</in>
+          <in>ISPD2014Reader.cpp</in>
+          <in>ISPD2018Reader.cpp</in>
+          <in>PopulateRsyn.cpp</in>
+          <in>SizingISPDReader.cpp</in>
+        </df>
+        <in>Graphics.cpp</in>
+        <in>Report.cpp</in>
+        <in>WebLogger.cpp</in>
+        <in>Writer.cpp</in>
+      </df>
+      <df name="ispd18">
+        <in>RoutingGuide.cpp</in>
+      </df>
+      <df name="model">
+        <df name="congestion">
+          <df name="DensityGrid">
+            <in>DensityGridService.cpp</in>
+          </df>
+        </df>
+        <df name="library">
+          <in>LibraryCharacterizer.cpp</in>
+        </df>
+        <df name="routing">
+          <in>DefaultRoutingEstimationModel.cpp</in>
+          <in>DefaultRoutingExtractionModel.cpp</in>
+          <in>RoutingEstimator.cpp</in>
+          <in>RsttRoutingEstimatorModel.cpp</in>
+        </df>
+        <df name="scenario">
+          <in>Scenario.cpp</in>
+        </df>
+        <df name="timing">
+          <in>DefaultTimingModel.cpp</in>
+          <in>SandboxTimer.cpp</in>
+          <in>Timer.cpp</in>
+        </df>
+      </df>
+      <df name="phy">
+        <df name="obj">
+          <df name="impl">
+            <in>PhysicalDesign.cpp</in>
+          </df>
+        </df>
+        <df name="util">
+          <in>BookshelfMapper.cpp</in>
+          <in>PhysicalLayerUtil.cpp</in>
+          <in>PhysicalTransform.cpp</in>
+        </df>
+        <in>PhysicalRouting.cpp</in>
+        <in>PhysicalService.cpp</in>
+      </df>
+      <df name="qt">
+        <df name="infra">
+          <in>GraphicsOverlay.cpp</in>
+          <in>PinMgr.cpp</in>
+        </df>
+        <df name="overlay">
+          <df name="floorplan">
+            <in>FloorplanOverlay.cpp</in>
+            <in>TrackOverlay.cpp</in>
+          </df>
+          <df name="highlight">
+            <in>HighlightOverlay.cpp</in>
+            <in>HoverItem.cpp</in>
+          </df>
+          <df name="instance">
+            <in>Celltem.cpp</in>
+            <in>InstanceOverlay.cpp</in>
+            <in>MacroItem.cpp</in>
+          </df>
+          <df name="routing">
+            <in>RoutingItem.cpp</in>
+            <in>RoutingOverlay.cpp</in>
+          </df>
+          <df name="routingGuide">
+            <in>RoutingGuideItem.cpp</in>
+            <in>RoutingGuideOverlay.cpp</in>
+          </df>
+        </df>
+        <in>GraphicsObserver.cpp</in>
+        <in>GraphicsScene.cpp</in>
+        <in>GraphicsStipple.cpp</in>
+        <in>GraphicsView.cpp</in>
+        <in>MainWindow.cpp</in>
+        <in>PropertyDialog.cpp</in>
+        <in>QtUtils.cpp</in>
+      </df>
+      <df name="session">
+        <in>Message.cpp</in>
+        <in>Session.cpp</in>
+        <in>SessionObserver.cpp</in>
+      </df>
+      <df name="shell">
+        <in>Shell.cpp</in>
+      </df>
+      <df name="util">
+        <in>Logger.cpp</in>
+        <in>RCTreeExtractor.cpp</in>
+        <in>Stepwatch.cpp</in>
+        <in>StreamLogger.cpp</in>
+      </df>
     </df>
     <logicalFolder name="rsyn-x" displayName="rsyn-x" projectFiles="true" root="..">
       <logicalFolder name="ispd18" displayName="ispd18" projectFiles="true">
         <logicalFolder name="build" displayName="build" projectFiles="true">
           <logicalFolder name="release" displayName="release" projectFiles="true">
+            <itemPath>../../build/release/moc_GraphicsView.cpp</itemPath>
+            <itemPath>../../build/release/moc_MainWindow.cpp</itemPath>
+            <itemPath>../../build/release/moc_PropertyDialog.cpp</itemPath>
             <itemPath>../../build/release/qrc_images.cpp</itemPath>
             <itemPath>../../build/release/rsyn_automoc.cpp</itemPath>
+            <itemPath>../../build/release/ui_MainWindow.h</itemPath>
+            <itemPath>../../build/release/ui_PropertyDialog.h</itemPath>
           </logicalFolder>
         </logicalFolder>
         <logicalFolder name="src" displayName="src" projectFiles="true">
           <logicalFolder name="ispd18" displayName="ispd18" projectFiles="true">
-            <logicalFolder name="demo" displayName="demo" projectFiles="true">
-              <itemPath>../../src/ispd18/demo/ExampleProcess.cpp</itemPath>
-              <itemPath>../../src/ispd18/demo/ExampleService.cpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="qt" displayName="qt" projectFiles="true">
-              <logicalFolder name="overlay" displayName="overlay" projectFiles="true">
-                <logicalFolder name="example" displayName="example" projectFiles="true">
-                  <itemPath>../../src/ispd18/qt/overlay/example/ExampleOverlay.cpp</itemPath>
-                </logicalFolder>
-                <itemPath>../../src/ispd18/qt/overlay/register.cpp</itemPath>
-              </logicalFolder>
-            </logicalFolder>
             <logicalFolder name="setup" displayName="setup" projectFiles="true">
               <itemPath>../../src/ispd18/setup/message.cpp</itemPath>
               <itemPath>../../src/ispd18/setup/process.cpp</itemPath>
@@ -50,187 +217,11 @@
       <logicalFolder name="rsyn" displayName="rsyn" projectFiles="true">
         <logicalFolder name="src" displayName="src" projectFiles="true">
           <logicalFolder name="rsyn" displayName="rsyn" projectFiles="true">
-            <logicalFolder name="3rdparty" displayName="3rdparty" projectFiles="true">
-              <logicalFolder name="flute" displayName="flute" projectFiles="true">
-                <itemPath>../../../rsyn/src/rsyn/3rdparty/flute/flute.cpp</itemPath>
-              </logicalFolder>
-              <logicalFolder name="parser" displayName="parser" projectFiles="true">
-                <logicalFolder name="liberty" displayName="liberty" projectFiles="true">
-                  <itemPath>../../../rsyn/src/rsyn/3rdparty/parser/liberty/PI.c</itemPath>
-                  <itemPath>../../../rsyn/src/rsyn/3rdparty/parser/liberty/attr_lookup.c</itemPath>
-                  <itemPath>../../../rsyn/src/rsyn/3rdparty/parser/liberty/group_lookup.c</itemPath>
-                  <itemPath>../../../rsyn/src/rsyn/3rdparty/parser/liberty/liberty_front_lex.c</itemPath>
-                  <itemPath>../../../rsyn/src/rsyn/3rdparty/parser/liberty/liberty_parser.c</itemPath>
-                  <itemPath>../../../rsyn/src/rsyn/3rdparty/parser/liberty/libhash.c</itemPath>
-                  <itemPath>../../../rsyn/src/rsyn/3rdparty/parser/liberty/libstrtab.c</itemPath>
-                  <itemPath>../../../rsyn/src/rsyn/3rdparty/parser/liberty/mymalloc.c</itemPath>
-                  <itemPath>../../../rsyn/src/rsyn/3rdparty/parser/liberty/syntax_checks.c</itemPath>
-                  <itemPath>../../../rsyn/src/rsyn/3rdparty/parser/liberty/syntax_decls.c</itemPath>
-                  <itemPath>../../../rsyn/src/rsyn/3rdparty/parser/liberty/token.c</itemPath>
-                </logicalFolder>
-              </logicalFolder>
-            </logicalFolder>
-            <logicalFolder name="io" displayName="io" projectFiles="true">
-              <logicalFolder name="image" displayName="image" projectFiles="true">
-                <itemPath>../../../rsyn/src/rsyn/io/image/DrawingBoard.cpp</itemPath>
-                <itemPath>../../../rsyn/src/rsyn/io/image/SVGDrawingBoard.cpp</itemPath>
-              </logicalFolder>
-              <logicalFolder name="parser" displayName="parser" projectFiles="true">
-                <logicalFolder name="bookshelf" displayName="bookshelf" projectFiles="true">
-                  <itemPath>../../../rsyn/src/rsyn/io/parser/bookshelf/BookshelfParser.cpp</itemPath>
-                </logicalFolder>
-                <logicalFolder name="guide-ispd18"
-                               displayName="guide-ispd18"
-                               projectFiles="true">
-                  <itemPath>../../../rsyn/src/rsyn/io/parser/guide-ispd18/GuideParser.cpp</itemPath>
-                </logicalFolder>
-                <logicalFolder name="lef_def" displayName="lef_def" projectFiles="true">
-                  <itemPath>../../../rsyn/src/rsyn/io/parser/lef_def/DEFControlParser.cpp</itemPath>
-                  <itemPath>../../../rsyn/src/rsyn/io/parser/lef_def/LEFControlParser.cpp</itemPath>
-                </logicalFolder>
-                <logicalFolder name="liberty" displayName="liberty" projectFiles="true">
-                  <itemPath>../../../rsyn/src/rsyn/io/parser/liberty/LibertyControlParser.cpp</itemPath>
-                </logicalFolder>
-                <logicalFolder name="operations" displayName="operations" projectFiles="true">
-                  <itemPath>../../../rsyn/src/rsyn/io/parser/operations/OperationsControlParser.cpp</itemPath>
-                </logicalFolder>
-                <logicalFolder name="script" displayName="script" projectFiles="true">
-                  <logicalFolder name="base" displayName="base" projectFiles="true">
-                    <itemPath>../../../rsyn/src/rsyn/io/parser/script/base/Script.tab.cc</itemPath>
-                    <itemPath>../../../rsyn/src/rsyn/io/parser/script/base/Script.yy.cc</itemPath>
-                  </logicalFolder>
-                  <itemPath>../../../rsyn/src/rsyn/io/parser/script/ScriptReader.cpp</itemPath>
-                </logicalFolder>
-                <logicalFolder name="sdc" displayName="sdc" projectFiles="true">
-                  <itemPath>../../../rsyn/src/rsyn/io/parser/sdc/SDCControlParser.cpp</itemPath>
-                </logicalFolder>
-                <logicalFolder name="spef" displayName="spef" projectFiles="true">
-                  <itemPath>../../../rsyn/src/rsyn/io/parser/spef/SPEFControlParser.cpp</itemPath>
-                </logicalFolder>
-                <logicalFolder name="verilog" displayName="verilog" projectFiles="true">
-                  <logicalFolder name="base" displayName="base" projectFiles="true">
-                    <itemPath>../../../rsyn/src/rsyn/io/parser/verilog/base/SimplifiedVerilog.tab.cc</itemPath>
-                    <itemPath>../../../rsyn/src/rsyn/io/parser/verilog/base/SimplifiedVerilog.yy.cc</itemPath>
-                  </logicalFolder>
-                  <itemPath>../../../rsyn/src/rsyn/io/parser/verilog/SimplifiedVerilogReader.cpp</itemPath>
-                </logicalFolder>
-                <itemPath>../../../rsyn/src/rsyn/io/parser/parser_helper.cpp</itemPath>
-              </logicalFolder>
-              <logicalFolder name="reader" displayName="reader" projectFiles="true">
-                <itemPath>../../../rsyn/src/rsyn/io/reader/BookshelfReader.cpp</itemPath>
-                <itemPath>../../../rsyn/src/rsyn/io/reader/DesignPositionReader.cpp</itemPath>
-                <itemPath>../../../rsyn/src/rsyn/io/reader/GenericReader.cpp</itemPath>
-                <itemPath>../../../rsyn/src/rsyn/io/reader/ICCAD15Reader.cpp</itemPath>
-                <itemPath>../../../rsyn/src/rsyn/io/reader/ICCAD17Reader.cpp</itemPath>
-                <itemPath>../../../rsyn/src/rsyn/io/reader/ISPD2012Reader.cpp</itemPath>
-                <itemPath>../../../rsyn/src/rsyn/io/reader/ISPD2014Reader.cpp</itemPath>
-                <itemPath>../../../rsyn/src/rsyn/io/reader/ISPD2018Reader.cpp</itemPath>
-                <itemPath>../../../rsyn/src/rsyn/io/reader/PopulateRsyn.cpp</itemPath>
-                <itemPath>../../../rsyn/src/rsyn/io/reader/SizingISPDReader.cpp</itemPath>
-              </logicalFolder>
-              <itemPath>../../../rsyn/src/rsyn/io/Graphics.cpp</itemPath>
-              <itemPath>../../../rsyn/src/rsyn/io/Report.cpp</itemPath>
-              <itemPath>../../../rsyn/src/rsyn/io/WebLogger.cpp</itemPath>
-              <itemPath>../../../rsyn/src/rsyn/io/Writer.cpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="ispd18" displayName="ispd18" projectFiles="true">
-              <itemPath>../../../rsyn/src/rsyn/ispd18/RoutingGuide.cpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="model" displayName="model" projectFiles="true">
-              <logicalFolder name="congestion" displayName="congestion" projectFiles="true">
-                <logicalFolder name="DensityGrid" displayName="DensityGrid" projectFiles="true">
-                  <itemPath>../../../rsyn/src/rsyn/model/congestion/DensityGrid/DensityGridService.cpp</itemPath>
-                </logicalFolder>
-              </logicalFolder>
-              <logicalFolder name="library" displayName="library" projectFiles="true">
-                <itemPath>../../../rsyn/src/rsyn/model/library/LibraryCharacterizer.cpp</itemPath>
-              </logicalFolder>
-              <logicalFolder name="routing" displayName="routing" projectFiles="true">
-                <itemPath>../../../rsyn/src/rsyn/model/routing/DefaultRoutingEstimationModel.cpp</itemPath>
-                <itemPath>../../../rsyn/src/rsyn/model/routing/DefaultRoutingExtractionModel.cpp</itemPath>
-                <itemPath>../../../rsyn/src/rsyn/model/routing/RoutingEstimator.cpp</itemPath>
-                <itemPath>../../../rsyn/src/rsyn/model/routing/RsttRoutingEstimatorModel.cpp</itemPath>
-              </logicalFolder>
-              <logicalFolder name="scenario" displayName="scenario" projectFiles="true">
-                <itemPath>../../../rsyn/src/rsyn/model/scenario/Scenario.cpp</itemPath>
-              </logicalFolder>
-              <logicalFolder name="timing" displayName="timing" projectFiles="true">
-                <itemPath>../../../rsyn/src/rsyn/model/timing/DefaultTimingModel.cpp</itemPath>
-                <itemPath>../../../rsyn/src/rsyn/model/timing/SandboxTimer.cpp</itemPath>
-                <itemPath>../../../rsyn/src/rsyn/model/timing/Timer.cpp</itemPath>
-              </logicalFolder>
-            </logicalFolder>
-            <logicalFolder name="phy" displayName="phy" projectFiles="true">
-              <logicalFolder name="obj" displayName="obj" projectFiles="true">
-                <logicalFolder name="impl" displayName="impl" projectFiles="true">
-                  <itemPath>../../../rsyn/src/rsyn/phy/obj/impl/PhysicalDesign.cpp</itemPath>
-                </logicalFolder>
-              </logicalFolder>
-              <logicalFolder name="util" displayName="util" projectFiles="true">
-                <itemPath>../../../rsyn/src/rsyn/phy/util/BookshelfMapper.cpp</itemPath>
-                <itemPath>../../../rsyn/src/rsyn/phy/util/PhysicalLayerUtil.cpp</itemPath>
-                <itemPath>../../../rsyn/src/rsyn/phy/util/PhysicalTransform.cpp</itemPath>
-              </logicalFolder>
-              <itemPath>../../../rsyn/src/rsyn/phy/PhysicalService.cpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="qt" displayName="qt" projectFiles="true">
-              <logicalFolder name="infra" displayName="infra" projectFiles="true">
-                <itemPath>../../../rsyn/src/rsyn/qt/infra/GraphicsOverlay.cpp</itemPath>
-                <itemPath>../../../rsyn/src/rsyn/qt/infra/PinMgr.cpp</itemPath>
-              </logicalFolder>
-              <logicalFolder name="overlay" displayName="overlay" projectFiles="true">
-                <logicalFolder name="floorplan" displayName="floorplan" projectFiles="true">
-                  <itemPath>../../../rsyn/src/rsyn/qt/overlay/floorplan/FloorplanOverlay.cpp</itemPath>
-                  <itemPath>../../../rsyn/src/rsyn/qt/overlay/floorplan/TrackOverlay.cpp</itemPath>
-                </logicalFolder>
-                <logicalFolder name="highlight" displayName="highlight" projectFiles="true">
-                  <itemPath>../../../rsyn/src/rsyn/qt/overlay/highlight/HighlightOverlay.cpp</itemPath>
-                </logicalFolder>
-                <logicalFolder name="instance" displayName="instance" projectFiles="true">
-                  <itemPath>../../../rsyn/src/rsyn/qt/overlay/instance/InstanceOverlay.cpp</itemPath>
-                  <itemPath>../../../rsyn/src/rsyn/qt/overlay/instance/MacroBlockItem.cpp</itemPath>
-                  <itemPath>../../../rsyn/src/rsyn/qt/overlay/instance/StandardCelltem.cpp</itemPath>
-                </logicalFolder>
-                <logicalFolder name="routing" displayName="routing" projectFiles="true">
-                  <itemPath>../../../rsyn/src/rsyn/qt/overlay/routing/RoutingItem.cpp</itemPath>
-                  <itemPath>../../../rsyn/src/rsyn/qt/overlay/routing/RoutingOverlay.cpp</itemPath>
-                </logicalFolder>
-                <logicalFolder name="routingGuide"
-                               displayName="routingGuide"
-                               projectFiles="true">
-                  <itemPath>../../../rsyn/src/rsyn/qt/overlay/routingGuide/RoutingGuideItem.cpp</itemPath>
-                  <itemPath>../../../rsyn/src/rsyn/qt/overlay/routingGuide/RoutingGuideOverlay.cpp</itemPath>
-                </logicalFolder>
-              </logicalFolder>
-              <itemPath>../../../rsyn/src/rsyn/qt/GraphicsObserver.cpp</itemPath>
-              <itemPath>../../../rsyn/src/rsyn/qt/GraphicsStipple.cpp</itemPath>
-              <itemPath>../../../rsyn/src/rsyn/qt/GraphicsView.cpp</itemPath>
-              <itemPath>../../../rsyn/src/rsyn/qt/GraphicsViewport.cpp</itemPath>
-              <itemPath>../../../rsyn/src/rsyn/qt/GraphicsViewport.h</itemPath>
-              <itemPath>../../../rsyn/src/rsyn/qt/MainWindow.cpp</itemPath>
-              <itemPath>../../../rsyn/src/rsyn/qt/MainWindow.h</itemPath>
-              <itemPath>../../../rsyn/src/rsyn/qt/PropertyDialog.cpp</itemPath>
-              <itemPath>../../../rsyn/src/rsyn/qt/QtUtils.cpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="session" displayName="session" projectFiles="true">
-              <itemPath>../../../rsyn/src/rsyn/session/Message.cpp</itemPath>
-              <itemPath>../../../rsyn/src/rsyn/session/Session.cpp</itemPath>
-              <itemPath>../../../rsyn/src/rsyn/session/SessionObserver.cpp</itemPath>
-            </logicalFolder>
             <logicalFolder name="setup" displayName="setup" projectFiles="true">
               <itemPath>../../../rsyn/src/rsyn/setup/message.cpp</itemPath>
               <itemPath>../../../rsyn/src/rsyn/setup/process.cpp</itemPath>
               <itemPath>../../../rsyn/src/rsyn/setup/reader.cpp</itemPath>
               <itemPath>../../../rsyn/src/rsyn/setup/service.cpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="shell" displayName="shell" projectFiles="true">
-              <itemPath>../../../rsyn/src/rsyn/shell/Shell.cpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="util" displayName="util" projectFiles="true">
-              <itemPath>../../../rsyn/src/rsyn/util/Logger.cpp</itemPath>
-              <itemPath>../../../rsyn/src/rsyn/util/RCTreeExtractor.cpp</itemPath>
-              <itemPath>../../../rsyn/src/rsyn/util/Stepwatch.cpp</itemPath>
-              <itemPath>../../../rsyn/src/rsyn/util/StreamLogger.cpp</itemPath>
             </logicalFolder>
           </logicalFolder>
         </logicalFolder>
@@ -257,10 +248,6 @@
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
-      <flagsDictionary>
-        <element flagsID="0" commonFlags="-fPIC"/>
-        <element flagsID="1" commonFlags="-fPIC -std=gnu++11"/>
-      </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
       <makefileType>
@@ -325,707 +312,6 @@
           <preBuildFirst>true</preBuildFirst>
         </preBuild>
       </makefileType>
-      <item path="../../../rsyn/src/rsyn/3rdparty/flute/flute.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/PI.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/attr_lookup.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/group_lookup.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/liberty_front_lex.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/liberty_parser.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/libhash.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/libstrtab.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/mymalloc.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/syntax_checks.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/syntax_decls.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/token.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/Graphics.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/Report.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/WebLogger.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/Writer.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/image/DrawingBoard.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/image/SVGDrawingBoard.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/parser/bookshelf/BookshelfParser.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/parser/guide-ispd18/GuideParser.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/parser/lef_def/DEFControlParser.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/parser/lef_def/LEFControlParser.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/parser/liberty/LibertyControlParser.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/parser/operations/OperationsControlParser.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/parser/parser_helper.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/parser/script/ScriptReader.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/parser/script/base/Script.tab.cc"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/parser/script/base/Script.yy.cc"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/parser/sdc/SDCControlParser.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/parser/spef/SPEFControlParser.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/parser/verilog/SimplifiedVerilogReader.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/parser/verilog/base/SimplifiedVerilog.tab.cc"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/parser/verilog/base/SimplifiedVerilog.yy.cc"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/reader/BookshelfReader.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/reader/DesignPositionReader.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/reader/GenericReader.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/reader/ICCAD15Reader.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/reader/ICCAD17Reader.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/reader/ISPD2012Reader.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/reader/ISPD2014Reader.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/reader/ISPD2018Reader.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/reader/PopulateRsyn.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/reader/SizingISPDReader.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/ispd18/RoutingGuide.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/model/congestion/DensityGrid/DensityGridService.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/model/library/LibraryCharacterizer.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/model/routing/DefaultRoutingEstimationModel.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/model/routing/DefaultRoutingExtractionModel.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/model/routing/RoutingEstimator.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/model/routing/RsttRoutingEstimatorModel.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/model/scenario/Scenario.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/model/timing/DefaultTimingModel.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/model/timing/SandboxTimer.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/model/timing/Timer.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/phy/PhysicalService.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/phy/obj/impl/PhysicalDesign.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/phy/util/BookshelfMapper.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/phy/util/PhysicalLayerUtil.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/phy/util/PhysicalTransform.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/GraphicsObserver.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/GraphicsStipple.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/GraphicsView.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/GraphicsViewport.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/MainWindow.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/PropertyDialog.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/QtUtils.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/infra/GraphicsOverlay.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/infra/PinMgr.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/floorplan/FloorplanOverlay.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/floorplan/TrackOverlay.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/highlight/HighlightOverlay.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/instance/InstanceOverlay.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/instance/MacroBlockItem.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/instance/StandardCelltem.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/routing/RoutingItem.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/routing/RoutingOverlay.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/routingGuide/RoutingGuideItem.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/routingGuide/RoutingGuideOverlay.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/session/Message.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/session/Session.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/session/SessionObserver.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/setup/message.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/setup/process.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/setup/reader.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/setup/service.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/shell/Shell.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/util/Logger.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/util/RCTreeExtractor.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/util/Stepwatch.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/util/StreamLogger.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../build/debug/moc_GraphicsView.cpp"
-            ex="true"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../build/debug/moc_GraphicsViewport.cpp"
-            ex="true"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../build/debug/moc_MainWindow.cpp"
-            ex="true"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../build/debug/qrc_images.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../build/debug/rsyn_automoc.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../src/ispd18/demo/ExampleProcess.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../src/ispd18/demo/ExampleService.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../src/ispd18/main.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../src/ispd18/qt/overlay/example/ExampleOverlay.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../src/ispd18/qt/overlay/register.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../src/ispd18/setup/message.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../src/ispd18/setup/process.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../src/ispd18/setup/reader.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../src/ispd18/setup/service.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
     </conf>
     <conf name="Release" type="0">
       <toolsSet>
@@ -1483,6 +769,13 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="../../../rsyn/src/rsyn/phy/PhysicalRouting.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="../../../rsyn/src/rsyn/phy/PhysicalService.cpp"
             ex="false"
             tool="1"
@@ -1525,6 +818,13 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="../../../rsyn/src/rsyn/qt/GraphicsScene.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="../../../rsyn/src/rsyn/qt/GraphicsStipple.cpp"
             ex="false"
             tool="1"
@@ -1533,13 +833,6 @@
         </ccTool>
       </item>
       <item path="../../../rsyn/src/rsyn/qt/GraphicsView.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/GraphicsViewport.cpp"
             ex="false"
             tool="1"
             flavor2="8">
@@ -1602,6 +895,20 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="../../../rsyn/src/rsyn/qt/overlay/highlight/HoverItem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="../../../rsyn/src/rsyn/qt/overlay/instance/Celltem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="../../../rsyn/src/rsyn/qt/overlay/instance/InstanceOverlay.cpp"
             ex="false"
             tool="1"
@@ -1609,14 +916,7 @@
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/instance/MacroBlockItem.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/instance/StandardCelltem.cpp"
+      <item path="../../../rsyn/src/rsyn/qt/overlay/instance/MacroItem.cpp"
             ex="false"
             tool="1"
             flavor2="8">
@@ -1734,6 +1034,21 @@
             flavor2="8">
         <ccTool flags="1">
         </ccTool>
+      </item>
+      <item path="../../build/release/moc_GraphicsView.cpp"
+            ex="true"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../build/release/moc_MainWindow.cpp"
+            ex="true"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../build/release/moc_PropertyDialog.cpp"
+            ex="true"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="../../build/release/qrc_images.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="1">

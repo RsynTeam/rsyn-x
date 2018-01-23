@@ -137,7 +137,7 @@ void PhysicalDesign::loadDesign(const DefDscp & design) {
 
 	//Initializing circuit rows and defining circuit bounds
 	Rsyn::PhysicalModule phModule = getPhysicalModule(data->clsModule);
-	Bounds & bounds = phModule->clsBounds;
+	Bounds & bounds = phModule->clsInstance->clsBounds;
 	bounds[LOWER].apply(+std::numeric_limits<DBU>::max());
 	bounds[UPPER].apply(-std::numeric_limits<DBU>::max());
 	data->clsPhysicalRows.reserve(design.clsRows.size()); // reserving space for rows
@@ -194,6 +194,10 @@ void PhysicalDesign::initPhysicalDesign(Rsyn::Design dsg, const Rsyn::Json &para
 	if (data->clsEnablePhysicalPins)
 		data->clsPhysicalPins = dsg.createAttribute();
 	data->clsPhysicalNets = dsg.createAttribute();
+
+	// Initialize data of top module.
+	PhysicalInstanceData &phTopModule = data->clsPhysicalInstances[dsg.getTopModule()];
+	phTopModule.clsInstance = dsg.getTopModule();
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -321,6 +325,8 @@ Rsyn::PhysicalLayerData * PhysicalDesign::addPhysicalLayer(const LefLayerDscp& l
 		lower->clsUpper = phLayer;
 		phLayer->clsLower = lower;
 	} // end if
+	if(phLayer->clsType == Rsyn::PhysicalLayerType::ROUTING)
+		data->clsPhysicalRoutingLayerIndeces.push_back(phLayer->id);
 	return phLayer;
 } // end method 
 
@@ -354,6 +360,24 @@ void PhysicalDesign::addPhysicalVia(const LefViaDscp & via) {
 			bds[UPPER][X] = static_cast<DBU> (std::round(doubleRect[UPPER][X]));
 			bds[UPPER][Y] = static_cast<DBU> (std::round(doubleRect[UPPER][Y]));
 		} // end for 
+		
+		// adding ordered physical layers of the via
+		if(phViaLayer->clsLayer.getType() == Rsyn::PhysicalLayerType::CUT) {
+			phVia->clsCutLayer = phViaLayer;
+		} else if(phViaLayer->clsLayer.getType() == Rsyn::PhysicalLayerType::ROUTING){
+			if(phVia->clsBottomRoutingLayer == nullptr) {
+				phVia->clsBottomRoutingLayer = phViaLayer;
+				phVia->clsTopRoutingLayer = phViaLayer;
+			} else {
+				Rsyn::PhysicalLayer layer = phViaLayer->clsLayer;
+				Rsyn::PhysicalLayer bottom = phVia->clsBottomRoutingLayer.getLayer();
+				if(layer.getIndex() < bottom.getIndex()) {
+					phVia->clsBottomRoutingLayer = phViaLayer;
+				} else {
+					phVia->clsTopRoutingLayer = phViaLayer;
+				} // end if-else 
+			} // end if-else 
+		} // end if-else 
 	} // end for 
 } // end method 
 
@@ -517,7 +541,14 @@ void PhysicalDesign::addPhysicalLibraryPin(Rsyn::LibraryCell libCell, const LefP
 				} // end for 
 			} // end if 
 		} //  end for 
-		
+		if(phPinPort.getNumPinLayers() > 1) {
+			std::sort(phPinPort->clsPinLayers.begin(), phPinPort->clsPinLayers.end(),
+				[](PhysicalPinLayer phPinLayer0, PhysicalPinLayer phPinLayer1) {
+					Rsyn::PhysicalLayer phLayer0 = phPinLayer0.getLayer();
+					Rsyn::PhysicalLayer phLayer1 = phPinLayer1.getLayer();
+					return phLayer0.getIndex() < phLayer1.getIndex();
+				}); // end sort 
+		} // end if 
 	} // end for 
 } // end method 
 
@@ -547,7 +578,7 @@ void PhysicalDesign::addPhysicalCell(Rsyn::Instance cell, const DefComponentDscp
 	if (cell.isMovable())
 		data->clsNumElements[PHYSICAL_MOVABLE]++;
 	physicalCell.clsHasLayerBounds = phLibCell.clsLayerBoundIndex > -1;
-	physicalCell.clsOrientation = getPhysicalOrientation(component.clsOrientation);
+	physicalCell.clsInstance->clsOrientation = getPhysicalOrientation(component.clsOrientation);
 
 	const DBU width = phLibCell.clsSize[X];
 	const DBU height = phLibCell.clsSize[Y];
@@ -556,7 +587,7 @@ void PhysicalDesign::addPhysicalCell(Rsyn::Instance cell, const DefComponentDscp
 	physicalCell.clsInitialPos = pos;
 	pos[X] += width;
 	pos[Y] += height;
-	physicalCell.clsBounds.updatePoints(physicalCell.clsInitialPos, pos);
+	physicalCell.clsInstance->clsBounds.updatePoints(physicalCell.clsInitialPos, pos);
 
 	DBU area = width * height;
 	if (physicalCell.clsBlock)
@@ -577,9 +608,9 @@ void PhysicalDesign::addPhysicalPort(Rsyn::Instance cell, const DefPortDscp& por
 	PhysicalInstanceData & physicalGate = data->clsPhysicalInstances[cell];
 	physicalGate.clsPortLayer = getPhysicalLayerByName(port.clsLayerName);
 	physicalGate.clsInstance = cell;
-	physicalGate.clsOrientation = getPhysicalOrientation(port.clsOrientation);
-	physicalGate.clsBounds = port.clsLayerBounds;
-	physicalGate.clsPortPos = port.clsPos;
+	physicalGate.clsInstance->clsOrientation = getPhysicalOrientation(port.clsOrientation);
+	physicalGate.clsInstance->clsBounds = port.clsLayerBounds;
+	physicalGate.clsInstance->clsPortPos = port.clsPos;
 	physicalGate.clsPort = true;
 	Rsyn::InstanceTag tag = data->clsDesign.getTag(cell);
 	// TODO Getting from port descriptor if it is fixed.
@@ -599,6 +630,7 @@ void PhysicalDesign::addPhysicalRow(const DefRowDscp& defRow) {
 	phRowData->id = data->clsPhysicalRows.lastId();
 	phRowData->clsRowName = defRow.clsName;
 	phRowData->clsPhysicalSite = phSite;
+	phRowData->clsSiteOrientation = Rsyn::getPhysicalOrientation(defRow.clsOrientation);
 	phRowData->clsOrigin = defRow.clsOrigin;
 	phRowData->clsStep[X] = phSite.getWidth();
 	phRowData->clsStep[Y] = phSite.getHeight();
@@ -609,7 +641,7 @@ void PhysicalDesign::addPhysicalRow(const DefRowDscp& defRow) {
 	phRowData->clsBounds[UPPER][X] = defRow.clsOrigin[X] + phRowData->getWidth();
 	phRowData->clsBounds[UPPER][Y] = defRow.clsOrigin[Y] + phRowData->getHeight();
 	Rsyn::PhysicalModule phModule = getPhysicalModule(data->clsModule);
-	Bounds & bounds = phModule->clsBounds;
+	Bounds & bounds = phModule->clsInstance->clsBounds;
 	bounds[LOWER] = min(bounds[LOWER], phRowData->clsBounds[LOWER]);
 	bounds[UPPER] = max(bounds[UPPER], phRowData->clsBounds[UPPER]);
 	data->clsTotalAreas[PHYSICAL_PLACEABLE] += phRowData->clsBounds.computeArea();
@@ -642,6 +674,8 @@ void PhysicalDesign::addPhysicalGroup(const DefGroupDscp& defGroup) {
 // -----------------------------------------------------------------------------
 
 void PhysicalDesign::addPhysicalNet(const DefNetDscp & netDscp) {
+	Rsyn::PhysicalRouting routing;
+
 	Rsyn::Net net = data->clsDesign.findNetByName(netDscp.clsName);
 	PhysicalNetData & netData = data->clsPhysicalNets[net];
 	netData.clsWires.reserve(netDscp.clsWires.size());
@@ -653,26 +687,52 @@ void PhysicalDesign::addPhysicalNet(const DefNetDscp & netDscp) {
 			phWire->clsWireSegments.push_back(PhysicalWireSegment(new PhysicalWireSegmentData()));
 			PhysicalWireSegment phWireSegment = phWire->clsWireSegments.back();
 			phWireSegment->clsNew = segmentDscp.clsNew;
-			phWireSegment->clsPhysicalLayer = getPhysicalLayerByName(segmentDscp.clsLayerName);
+
+			Rsyn::PhysicalLayer physicalLayer = getPhysicalLayerByName(segmentDscp.clsLayerName);
+			phWireSegment->clsPhysicalLayer = physicalLayer;
+
+			Rsyn::PhysicalRoutingWire wire;
+			wire.setLayer(physicalLayer);
+			if (!segmentDscp.clsRoutingPoints.empty()) {
+				const DBU sourceExtension = segmentDscp.clsRoutingPoints.front().clsExtension;
+				const DBU targetExtension = segmentDscp.clsRoutingPoints.back().clsExtension;
+				if (sourceExtension >= 0)
+					wire.setSourceExtension(sourceExtension);
+				if (targetExtension >= 0)
+					wire.setTargetExtension(targetExtension);
+			} // end if
+			if (segmentDscp.clsRoutedWidth > 0) {
+				wire.setWidth(segmentDscp.clsRoutedWidth);
+			} // end if
+			
 			for (const DefRoutingPointDscp & routingPoint : segmentDscp.clsRoutingPoints) {
 				phWireSegment->clsRoutingPoints.push_back(PhysicalRoutingPoint(new PhysicalRoutingPointData()));
+				wire.addRoutingPoint(routingPoint.clsPos);
 				PhysicalRoutingPoint phPoint = phWireSegment->clsRoutingPoints.back();
 				DBU ext = routingPoint.clsExtension;
 				phPoint->clsExtension = ext > 0 ? ext : phWireSegment->clsPhysicalLayer->clsWidth / 2;
 				phPoint->clsPos = routingPoint.clsPos;
 				phPoint->clsOrientation = getPhysicalOrientation(routingPoint.clsOrientation);
-				if (routingPoint.clsHasVia)
-					phPoint->clsVia = getPhysicalViaByName(routingPoint.clsViaName);
+				if (routingPoint.clsHasVia) {
+					Rsyn::PhysicalVia physicalVia = getPhysicalViaByName(routingPoint.clsViaName);
+					phPoint->clsVia = physicalVia;
+					routing.addVia(physicalVia, routingPoint.clsPos);
+				} // end if
 
 				if (routingPoint.clsHasRectangle) {
 					phPoint->clsRectangle = routingPoint.clsRect;
 					phPoint->clsHasRectangle = true;
+					routing.addRect(physicalLayer, routingPoint.clsRect);
 				} // end if
 			} // end for
+
+			routing.addWire(wire);
 
 			postProcessWireSegment(phWireSegment);
 		} // end for
 	} // end for
+
+	netData.clsRouting = routing;
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -762,6 +822,24 @@ void PhysicalDesign::addPhysicalDesignVia(const DefViaDscp & via) {
 		phLayer->clsPhVia = phVia;
 		phLayer->clsBounds.push_back(layerDscp.clsBounds);
 		phLayer->clsLayer = getPhysicalLayerByName(layerDscp.clsLayerName);
+		
+		// adding ordered physical layers of the via
+		if(phLayer->clsLayer.getType() == Rsyn::PhysicalLayerType::CUT) {
+			phVia->clsCutLayer = phLayer;
+		} else if(phLayer->clsLayer.getType() == Rsyn::PhysicalLayerType::ROUTING){
+			if(phVia->clsBottomRoutingLayer == nullptr) {
+				phVia->clsBottomRoutingLayer = phLayer;
+				phVia->clsTopRoutingLayer = phLayer;
+			} else {
+				Rsyn::PhysicalLayer layer = phLayer->clsLayer;
+				Rsyn::PhysicalLayer bottom = phVia->clsBottomRoutingLayer.getLayer();
+				if(layer.getIndex() < bottom.getIndex()) {
+					phVia->clsBottomRoutingLayer = phLayer;
+				} else {
+					phVia->clsTopRoutingLayer = phLayer;
+				} // end if-else 
+			} // end if-else 
+		} // end if-else 
 	} // end for 
 } // end method 
 
@@ -778,15 +856,52 @@ void PhysicalDesign::addPhysicalSpacing(const LefSpacingDscp & spacing) {
 
 // -----------------------------------------------------------------------------
 
+Rsyn::PhysicalLayer 
+PhysicalDesign::getPhysicalLayerByIndex(const int index) {
+	const int numLayers = data->clsPhysicalLayers.size();
+	if (index < 0 || index >= numLayers)
+		return PhysicalLayer(nullptr);
+	Element<PhysicalLayerData> * phLayerDataElement = data->clsPhysicalLayers.get(index);
+	return PhysicalLayer(&phLayerDataElement->value);
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+Rsyn::PhysicalLayer 
+PhysicalDesign::getPhysicalLayerByIndex(const Rsyn::PhysicalLayerType layerType, 
+	const int index) {
+	if(index < 0 )
+		return PhysicalLayer(nullptr);
+	int numLayers;
+	int layerId;
+	Element<PhysicalLayerData> * phLayerDataElement;
+	switch(layerType) {
+		case PhysicalLayerType::ROUTING : 
+			numLayers = data->clsPhysicalRoutingLayerIndeces.size();
+			if( index >= numLayers)
+				return PhysicalLayer(nullptr);
+			layerId = data->clsPhysicalRoutingLayerIndeces[index];
+			phLayerDataElement = data->clsPhysicalLayers.get(layerId);
+			return PhysicalLayer(&phLayerDataElement->value);
+			break;
+		default:
+			std::cout<<"TODO "<<layerType<<"\n";
+			return PhysicalLayer(nullptr);
+	} // end switch 
+	
+} // end method 
+
+// -----------------------------------------------------------------------------
+
 void PhysicalDesign::updatePhysicalCell(Rsyn::Cell cell) {
 	PhysicalInstanceData & phCell = data->clsPhysicalInstances[cell.asCell()];
 	PhysicalLibraryCellData &phLibCell = data->clsPhysicalLibraryCells[cell.asCell().getLibraryCell()]; // TODO: assuming instance is a cell
 
 	const DBU width = phLibCell.clsSize[X];
 	const DBU height = phLibCell.clsSize[Y];
-	const DBUxy pos = phCell.clsBounds[LOWER];
+	const DBUxy pos = phCell.clsInstance->clsBounds[LOWER];
 
-	DBU area = (width * height) - phCell.clsBounds.computeArea();
+	DBU area = (width * height) - phCell.clsInstance->clsBounds.computeArea();
 	if (phLibCell.clsMacroClass == Rsyn::MACRO_BLOCK)
 		data->clsTotalAreas[PHYSICAL_BLOCK] += area;
 	if (cell.isFixed()) {
@@ -798,14 +913,14 @@ void PhysicalDesign::updatePhysicalCell(Rsyn::Cell cell) {
 		data->clsTotalAreas[PHYSICAL_MOVABLE] += area;
 	} // end if-else 
 
-	phCell.clsBounds.updatePoints(pos, DBUxy(pos[X] + width, pos[Y] + height));
+	phCell.clsInstance->clsBounds.updatePoints(pos, DBUxy(pos[X] + width, pos[Y] + height));
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 void PhysicalDesign::removePhysicalCell(Rsyn::Cell cell) {
 	PhysicalInstanceData & physicalCell = data->clsPhysicalInstances[cell.asCell()];
-	DBU area = physicalCell.clsBounds.computeArea();
+	DBU area = physicalCell.clsInstance->clsBounds.computeArea();
 	if (physicalCell.clsBlock)
 		data->clsTotalAreas[PHYSICAL_BLOCK] -= area;
 	if (cell.isFixed()) {

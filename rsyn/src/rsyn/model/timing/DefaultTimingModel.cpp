@@ -16,7 +16,6 @@
 #include "DefaultTimingModel.h"
 
 #include "rsyn/session/Session.h"
-#include "rsyn/phy/PhysicalDesign.h"
 #include "rsyn/model/timing/Timer.h"
 
 namespace Rsyn {
@@ -30,15 +29,7 @@ void DefaultTimingModel::start(const Rsyn::Json &params) {
 	clsRoutingEstimator = session.getService("rsyn.routingEstimator");
 	clsTimer = session.getService("rsyn.timer");
 
-	// TODO: Maybe we should not do this here as this create a soft dependency
-	// to physical layer
-
-	// TODO: Maybe we should not do this here as this create a soft dependency
-	// to physical layer
-	Rsyn::PhysicalDesign phDesign = session.getPhysicalDesign();
-	if (phDesign) {
-		phDesign.registerObserver(this);
-	} // end if
+	clsDesign.registerObserver(this);
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -49,8 +40,8 @@ void DefaultTimingModel::stop() {
 
 // -----------------------------------------------------------------------------
 
-void DefaultTimingModel::onPostMovedInstance(Rsyn::PhysicalInstance phInstance) {
-	clsTimer->dirtyInstance(phInstance.getInstance());
+void DefaultTimingModel::onPostInstancePlacementChange(Rsyn::Instance instance) {
+	clsTimer->dirtyInstance(instance);
 } // end method
 
 // -----------------------------------------------------------------------------

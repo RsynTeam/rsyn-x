@@ -54,12 +54,16 @@ public:
 	Rsyn::PhysicalLayerDirection getDirection() const;
 	//! @brief Returns the layer width in DBU.
 	DBU getWidth() const;
+	//! @brief Returns the layer minimum width in DBU.
 	DBU getMinWidth() const;
+	//! @brief Returns the layer minimum area in DBU.
 	DBU getMinArea() const;
 	//! @brief Returns the layer pitch in DBU for given dimension.
 	DBU getPitch(const Dimension dim) const;
 	//! @brief Returns the layer pitch in DBU.
 	DBUxy getPitch() const;
+	//! @brief Returns the default spacing.
+	std::size_t getNumSpacingRule() const;
 	//! @brief Returns the layer spacing in DBU.
 	const std::vector<Rsyn::PhysicalSpacingRule> & allSpacingRule() const;
 	//! @brief Returns the layer index w.r.t to all physical layers. It starts

@@ -50,7 +50,10 @@ public:
 	}
 
 	//! @brief Returns a vector reference to path of the wire.
-	const std::vector<Rsyn::PhysicalWireSegment> & allSegments() const;
+	const std::vector<Rsyn::PhysicalWireSegment> & allWireSegments() const;
+	
+	//! @brief Returns the number of wire segments
+	std::size_t getNumWireSegments() const;
 }; // end class 
 
 } // end namespace 

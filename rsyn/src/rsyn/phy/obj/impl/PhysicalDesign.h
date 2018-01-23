@@ -13,12 +13,6 @@
  * limitations under the License.
  */
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace Rsyn {
 
 // -----------------------------------------------------------------------------
@@ -392,7 +386,7 @@ inline DBUxy PhysicalDesign::getPinPosition(Rsyn::Pin pin) const {
 // For pins of standard-cells, returns the cell position. For macro-blocks,
 // returns the pin position itself.
 
-inline DBUxy PhysicalDesign::getRelaxedPinPosition(Rsyn::Pin pin) const {
+ inline DBUxy PhysicalDesign::getRelaxedPinPosition(Rsyn::Pin pin) const {
 	// Position may be defined if the instance has info. 
 	// I'm assuming the instance doesn't know what is its position. 
 	DBUxy pos;
@@ -458,10 +452,8 @@ inline PhysicalIndex PhysicalDesign::getId(Rsyn::PhysicalSpacing spacing) const 
 	return spacing->id;
 } // end method
 
-// -----------------------------------------------------------------------------
-
 ////////////////////////////////////////////////////////////////////////////////
-// Misc
+// Placement
 ////////////////////////////////////////////////////////////////////////////////
 
 inline PhysicalAttributeInitializer PhysicalDesign::createPhysicalAttribute() {
@@ -476,7 +468,6 @@ PhysicalDesign::createPhysicalAttribute(const DefaultPhysicalValueType &defaultV
 	return PhysicalAttributeInitializerWithDefaultValue<DefaultPhysicalValueType>(*this, defaultValue);
 } // end method
 
-
 // -----------------------------------------------------------------------------
 
 // Caution when using dontNotifyObservers.
@@ -484,38 +475,16 @@ PhysicalDesign::createPhysicalAttribute(const DefaultPhysicalValueType &defaultV
 // not, recall to mark the cell as dirty.
 
 inline void PhysicalDesign::placeCell(Rsyn::PhysicalCell physicalCell, const DBU x, const DBU y, const bool dontNotifyObservers) {
-	DBUxy previousPos = physicalCell.getPosition();
-	const double preivousX = physicalCell.getCoordinate(LOWER, X);
-	const double preivousY = physicalCell.getCoordinate(LOWER, Y);
+	const bool moved = (x != physicalCell.getPosition(X)) ||
+			(y != physicalCell.getPosition(Y));
 
-	const bool moved = (x != physicalCell.getPosition(X)) || (y != physicalCell.getPosition(Y));
-
-	// Notify observers.
-	if (moved)
-		for (auto f : data->clsPhysicalObservers[PHYSICAL_EVENT_PRE_INSTANCE_MOVED])
-			f->onPreMovedInstance(physicalCell.getInstance());
-
-
-	physicalCell->clsBounds.moveTo(x, y);
-
-	
 	// Notify observers.
 	if (moved) {
-		for (auto f : data->clsPhysicalObservers[PHYSICAL_EVENT_POS_INSTANCE_MOVED]) {
-			f->onPostMovedInstance(physicalCell);
-		} // end for 
-	} // end if 
-	
-	// TODO REMOVE 
-	// Only notify observers if the instance actually moved. We noted that many
-	// times the cell end up in the exactly same position.
-	if (!dontNotifyObservers) {
-		if (preivousX != physicalCell.getCoordinate(LOWER, X) || preivousY != physicalCell.getCoordinate(LOWER, Y)) {
-			// Notify observers...
-			for (auto &f : data->callbackPostInstanceMoved)
-				std::get<1>(f) (physicalCell);
+		physicalCell->clsInstance->clsBounds.moveTo(x, y);
+		if (!dontNotifyObservers) {
+			data->clsDesign.notifyInstancePlaced(physicalCell.getInstance());
 		} // end if
-	} // end if	
+	} // end if 	
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -538,90 +507,56 @@ inline void PhysicalDesign::placeCell(Rsyn::Cell cell, const DBUxy pos, const bo
 
 // -----------------------------------------------------------------------------
 
-inline void PhysicalDesign::notifyObservers(Rsyn::PhysicalInstance instance) {
-	// Notify observers...
-	for (auto &f : data->callbackPostInstanceMoved)
-		std::get<1>(f) (instance);
-} // end method	
+inline void PhysicalDesign::notifyInstancePlaced(Rsyn::Instance instance, Rsyn::DesignObserver *ignoreObserver) {
+	data->clsDesign.notifyInstancePlaced(instance, ignoreObserver);
+} // end method
 
-// -----------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////////
+// Routing
+////////////////////////////////////////////////////////////////////////////////
 
-inline void PhysicalDesign::notifyObservers(Rsyn::PhysicalInstance instance, const PostInstanceMovedCallbackHandler &ignoreObserver) {
-	// Notify observers...
-	for (PostInstanceMovedCallbackHandler it = data->callbackPostInstanceMoved.begin();
-		it != data->callbackPostInstanceMoved.end(); it++) {
-		if (it != ignoreObserver) {
-			std::get<1>(*it)(instance);
-		} // end if
+inline void PhysicalDesign::setNetRouting(Rsyn::Net net, const PhysicalRouting &routing) {
+	Rsyn::PhysicalNet physicalNet = getPhysicalNet(net);
+	physicalNet->clsRouting = routing;
+
+	for (PhysicalDesignObserver * observer : data->clsPhysicalObservers[PHYSICAL_EVENT_POST_NET_ROUTING_CHANGE]) {
+		observer->onPostNetRoutingChange(physicalNet);
 	} // end for
 } // end method
-// -----------------------------------------------------------------------------
-
-inline PhysicalDesign::PostInstanceMovedCallbackHandler
-PhysicalDesign::addPostInstanceMovedCallback(const int priority, PostInstanceMovedCallback f) {
-
-	// We want to compare only the first element of the tuple. The default
-	// comparator tries to compare all elements.
-	auto comparator = [](
-		const std::tuple<int, PhysicalDesign::PostInstanceMovedCallback> &left,
-		const std::tuple<int, PhysicalDesign::PostInstanceMovedCallback> &right
-		) -> bool {
-			return std::get<0>(left) < std::get<0>(right);
-		};
-
-	data->callbackPostInstanceMoved.push_back(std::make_tuple(priority, f));
-	PhysicalDesign::PostInstanceMovedCallbackHandler handler = std::prev(
-		data->callbackPostInstanceMoved.end());
-	data->callbackPostInstanceMoved.sort(comparator);
-	return handler;
-} // end method
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
-// Events
+// Notification
 ////////////////////////////////////////////////////////////////////////////////
+
 
 template<class T>
 inline void PhysicalDesign::registerObserver(T *observer) {
-	static_assert(std::is_base_of<PhysicalObserver, T>::value,
+	static_assert(std::is_base_of<PhysicalDesignObserver, T>::value,
 		"Unable to register class as observer. "
 		"The observer class must inherit from Rsyn::PhysicalObserver.");
 
-	observer->PhysicalObserver::clsPhDesign = PhysicalDesign(data);
+	observer->PhysicalDesignObserver::clsPhDesign = PhysicalDesign(data);
 
 	// Check if the observer implements (overwrites) the event callbacks if so
 	// register it to receive notifications of the respective event.
 
-	if (typeid (&PhysicalObserver::onPhysicalDesignDestruction) != typeid (&T::onPhysicalDesignDestruction)) {
+	if (typeid (&PhysicalDesignObserver::onPhysicalDesignDestruction) != typeid (&T::onPhysicalDesignDestruction)) {
 		data->clsPhysicalObservers[PHYSICAL_EVENT_DESTRUCTION].push_back(observer);
 	} // end if
 
-	if (typeid (&PhysicalObserver::onPostCellRemap) != typeid (&T::onPostCellRemap)) {
-		data->clsPhysicalObservers[PHYSICAL_EVENT_CELL_REMAP].push_back(observer);
-	} // end if
-
-	if (typeid (&PhysicalObserver::onPostMovedInstance) != typeid (&T::onPostMovedInstance)) {
-		data->clsPhysicalObservers[PHYSICAL_EVENT_POS_INSTANCE_MOVED].push_back(observer);
-	} // end if
-	
-	if (typeid (&PhysicalObserver::onPreMovedInstance) != typeid (&T::onPreMovedInstance)) {
-		data->clsPhysicalObservers[PHYSICAL_EVENT_PRE_INSTANCE_MOVED].push_back(observer);
+	if (typeid (&PhysicalDesignObserver::onPostNetRoutingChange) != typeid (&T::onPostNetRoutingChange)) {
+		data->clsPhysicalObservers[PHYSICAL_EVENT_POST_NET_ROUTING_CHANGE] .push_back(observer);
 	} // end if
 
 } // end method
 
 // -----------------------------------------------------------------------------
 
-inline void PhysicalDesign::unregisterObserver(PhysicalObserver *observer) {
+inline void PhysicalDesign::unregisterObserver(PhysicalDesignObserver *observer) {
 	for (int i = 0; i < NUM_PHYSICAL_EVENTS; i++) {
 		data->clsPhysicalObservers[i].remove(observer);
 	} // end for
-	observer->PhysicalObserver::clsPhDesign = nullptr;
+	observer->PhysicalDesignObserver::clsPhDesign = nullptr;
 } // end method
-
-
-
-
 
 } // end namespace 

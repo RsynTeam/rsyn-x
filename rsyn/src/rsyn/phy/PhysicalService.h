@@ -28,23 +28,14 @@ private:
 	Rsyn::Design clsDesign;
 	
 public:
-	/*!
-	  start method to the Rsyn::PhysicalDesign service
-	  \param  Rsyn::Session session
-	  \param  const Rsyn::Json &params
-	  \return void 
-	 */
+	
+	//! @brief Start method to the Rsyn::PhysicalDesign service
 	virtual void start(const Rsyn::Json &params);
 	
-	/*!
-	  stop method to the Rsyn::PhysicalDesign service
-	 */
+	//! @brief Stop method to the Rsyn::PhysicalDesign service
 	virtual void stop();
 	
-	/*!
-	  Getting the Rsyn::PhysicalDesign object
-	  \return clsPhysicalDesign 
-	 */
+	//! @brief Getting the Rsyn::PhysicalDesign object.
 	Rsyn::PhysicalDesign getPhysicalDesign() { return clsPhysicalDesign; }
 	
 	// Events
@@ -57,5 +48,4 @@ public:
 
 } // end namespace
 
-#endif /* PHYSICALLAYER_H */
-
+#endif

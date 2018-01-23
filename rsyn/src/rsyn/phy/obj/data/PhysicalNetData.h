@@ -13,12 +13,6 @@
  * limitations under the License.
  */
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /* 
  * File:   PhysicalNetData.h
  * Author: jucemar
@@ -26,8 +20,8 @@
  * Created on 15 de Setembro de 2016, 19:15
  */
 
-#ifndef PHYSICALDESIGN_PHYSICALNETDATA_H
-#define PHYSICALDESIGN_PHYSICALNETDATA_H
+#ifndef RSYN_PHYSICAL_NET_DATA_H
+#define RSYN_PHYSICAL_NET_DATA_H
 
 namespace Rsyn {
 
@@ -36,6 +30,8 @@ public:
 	Bounds clsBounds;
 	Rsyn::Pin clsBoundPins[2][2];
 	std::vector<Rsyn::PhysicalWire> clsWires;
+	PhysicalRouting clsRouting;
+
 	PhysicalNetData() {
 		clsBoundPins[LOWER][X] = nullptr;
 		clsBoundPins[LOWER][Y] = nullptr;
@@ -46,5 +42,5 @@ public:
 
 } // end class 
 
-#endif /* PHYSICALDESIGN_PHYSICALNETDATA_H */
+#endif
 

@@ -9,7 +9,7 @@ void RoutingGuideItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* 
 
 	// TODO: Need a more efficient way to do this.
 	const GraphicsView *view = (GraphicsView *) scene()->views().first();
-	const qreal lod = view->getLevelOfDetail();
+	const qreal lod = view->getNumExposedRows();
 
 	// Pen
 	QPen pen;

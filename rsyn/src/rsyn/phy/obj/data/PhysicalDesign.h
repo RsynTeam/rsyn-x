@@ -13,21 +13,8 @@
  * limitations under the License.
  */
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   PhysicalDesignData.h
- * Author: jucemar
- *
- * Created on 12 de Setembro de 2016, 20:03
- */
-
-#ifndef PHYSICALDESIGN_PHYSICALDESIGNDATA_H
-#define PHYSICALDESIGN_PHYSICALDESIGNDATA_H
+#ifndef RSYN_PHYSICALDESIGN_PHYSICALDESIGNDATA_H
+#define RSYN_PHYSICALDESIGN_PHYSICALDESIGNDATA_H
 
 
 namespace Rsyn {
@@ -62,6 +49,7 @@ public:
 	//From LEF file
 	std::unordered_map<std::string, std::size_t> clsMapPhysicalLayers;
 	std::unordered_map<std::string, std::size_t> clsMapPhysicalVias;
+	std::vector<std::size_t> clsPhysicalRoutingLayerIndeces;
 	//std::vector<PhysicalSpacing> clsPhysicalSpacing;
 
 	Rsyn::PhysicalDieData clsPhysicalDie; // total area of the circuit including core bound. 
@@ -79,22 +67,15 @@ public:
 	bool clsEnableNetPinBoundaries : 1;
 
 	Rsyn::Net clsClkNet;
-
 	
 	// Physical design mode 
 	PhysicalDesignMode clsMode = PhysicalDesignMode::ALL;
-	
-	// Notifications
-	std::list<std::tuple<int, PhysicalDesign::PostInstanceMovedCallback>>
-	callbackPostInstanceMoved;
-	// todo physicalRow notification
-	
+		
 	////////////////////////////////////////////////////////////////////////////
 	// Observerss
 	////////////////////////////////////////////////////////////////////////////
 
-	std::array<std::list<PhysicalObserver *>, NUM_PHYSICAL_EVENTS> clsPhysicalObservers;
-	
+	std::array<std::list<PhysicalDesignObserver *>, NUM_PHYSICAL_EVENTS> clsPhysicalObservers;
 
 	PhysicalDesignData() : clsClkNet(nullptr), clsDesign(nullptr), clsModule(nullptr) {
 
@@ -117,5 +98,4 @@ public:
 
 } // end namespace
 
-#endif /* PHYSICALDESIGN_PHYSICALDESIGNDATA_H */
-
+#endif

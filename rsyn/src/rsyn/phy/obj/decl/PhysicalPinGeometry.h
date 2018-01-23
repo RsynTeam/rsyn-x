@@ -54,6 +54,14 @@ public:
 	std::size_t getNumPinLayers() const;
 	//! @brief Returns the PhysicalPinLayers associated to the PhysicalPinGeometry.
 	const std::vector<Rsyn::PhysicalPinLayer> & allPinLayers() const;
+	
+	//! @brief Returns the lower pin layer. It is sorted by physical layer.
+	//! If a pin layer is not defined, than returns a physical pin layer with nullptr data
+	Rsyn::PhysicalPinLayer getLowerPinLayer() const;
+	
+	//! @brief Returns the upper pin layer. It is sorted by physical layer.
+	//! If a pin layer is not defined, than returns a physical pin layer with nullptr data
+	Rsyn::PhysicalPinLayer getUpperPinLayer() const;
 }; // end class 
 
 } // end namespace 

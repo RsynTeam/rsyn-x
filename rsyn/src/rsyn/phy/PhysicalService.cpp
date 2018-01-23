@@ -50,8 +50,8 @@ void PhysicalService::onPostCellRemap(Rsyn::Cell cell, Rsyn::LibraryCell oldLibr
 	const DBU oldHeight = oldPhysicalLibraryCell.clsSize[Y];
 
 	// Update physical cell size.
-	physicalCell.clsBounds.setLength(X, newWidth);
-	physicalCell.clsBounds.setLength(Y, newHeight);
+	physicalCell.clsInstance->clsBounds.setLength(X, newWidth);
+	physicalCell.clsInstance->clsBounds.setLength(Y, newHeight);
 
 	// Update area.
 	const DBU oldArea = oldWidth * oldHeight;
@@ -100,7 +100,7 @@ void PhysicalService::onPostInstanceCreate(Rsyn::Instance instance) {
 	physicalCell.clsHasLayerBounds = false;
 	physicalCell.clsPlaced = true;
 	physicalCell.clsBlock = false;
-	physicalCell.clsOrientation = PhysicalOrientation::ORIENTATION_N;
+	physicalCell.clsInstance->clsOrientation = PhysicalOrientation::ORIENTATION_N;
 	
 	const DBUxy dieOrigin = data->clsPhysicalDie.clsBounds[LOWER];
 	physicalCell.clsInitialPos = DBUxy(dieOrigin);
@@ -108,7 +108,7 @@ void PhysicalService::onPostInstanceCreate(Rsyn::Instance instance) {
 	const DBU width = physicalLibraryCell.clsSize[X];
 	const DBU height = physicalLibraryCell.clsSize[Y];
 	
-	physicalCell.clsBounds.updatePoints(
+	physicalCell.clsInstance->clsBounds.updatePoints(
 		dieOrigin.x, dieOrigin.y, dieOrigin.x + width, dieOrigin.y + height);
 	
 	DBU area = width * height;

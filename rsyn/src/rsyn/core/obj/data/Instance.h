@@ -29,6 +29,7 @@ struct InstanceData : ObjectData {
 	std::vector<Arc> arcs;
 	
 	// Design (Cached)
+	// @todo Remove.
 	Design design;
 	
 	// The module where this instance is instantiated. If only null for the top
@@ -50,13 +51,21 @@ struct InstanceData : ObjectData {
 	// User tag
 	InstanceTagData tag;
 
+	// Physical information.
+	Bounds clsBounds;
+	PhysicalOrientation clsOrientation;
+	DBUxy clsPortPos; // only for port to define position. (@todo remove, use bounds instead).
+
 	// Constructor
 	InstanceData() : 
 		design(nullptr),
 		type(UNKNOWN_INSTANCE_TYPE),
 		parent(nullptr),
 		extra(nullptr),
-		mid(-1) {
+		mid(-1),
+		clsBounds(0, 0, 0, 0),
+		clsOrientation(ORIENTATION_INVALID), // @todo set to R0 by default
+		clsPortPos(0, 0) {
 	} // end constructor
 }; // end struct
 

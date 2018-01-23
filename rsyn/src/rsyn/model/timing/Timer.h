@@ -550,7 +550,9 @@ public:
 		switch (mode) {
 			case LATE : return required - arrival;
 			case EARLY: return arrival - required;
-			default: assert(false);
+			default: 
+				assert(false);
+				return 0;
 		} // end switch		
 	} // end method
 
@@ -1467,7 +1469,9 @@ public:
 			switch (mode) {
 				case EARLY: return arrival - required;
 				case LATE : return required - arrival;
-				default: assert(false);
+				default: 
+					assert(false);
+					return 0;
 			} // end switch
 		} // end method
 		

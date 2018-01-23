@@ -69,6 +69,50 @@ RoutingGraphicsItem::RoutingGraphicsItem(Rsyn::Net net, Rsyn::PhysicalWireSegmen
 
 // -----------------------------------------------------------------------------
 
+RoutingGraphicsItem::RoutingGraphicsItem(Rsyn::Net net, const Rsyn::PhysicalRoutingWire &wire) {
+    setZValue(Rsyn::GRAPHICS_LAYER_ROUTING);
+
+    setFlags(ItemIsSelectable);
+    setAcceptHoverEvents(false); // hover events handled in the view
+
+	qreal minx = +std::numeric_limits<qreal>::infinity();
+	qreal miny = +std::numeric_limits<qreal>::infinity();
+	qreal maxx = -std::numeric_limits<qreal>::infinity();
+	qreal maxy = -std::numeric_limits<qreal>::infinity();
+
+	Rsyn::PhysicalLayer phLayer = wire.getLayer();
+
+	std::vector<QPointF> outline;
+	if (wire.getNumPoints() >= 2) {
+		std::vector<DBUxy> points = wire.getPoints(true);
+		QtUtils::tracePathOutline(points, wire.getWidth()/2.0f, outline);
+	} // end if
+
+	if (!outline.empty()) {
+		for (const QPointF &p : outline) {
+			minx = std::min(minx, p.x());
+			miny = std::min(miny, p.y());
+			maxx = std::max(maxx, p.x());
+			maxy = std::max(maxy, p.y());
+			poly.append(p);
+		} // end for
+	} else {
+		minx = miny = maxx = maxy = 0;
+	} // end else
+
+	bbox.setCoords(minx, miny, maxx, maxy);
+
+	bbox.translate(-minx, -miny);
+	poly.translate(-minx, -miny);
+
+	clsRoutingLayerIndex = phLayer.getRelativeIndex();
+	clsNet = net;
+
+	setPos(minx, miny);
+} // end method
+
+// -----------------------------------------------------------------------------
+
 QRectF RoutingGraphicsItem::boundingRect() const {
     return bbox;
 } // end method
@@ -89,7 +133,7 @@ void RoutingGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsIte
 
 	// TODO: Need a more efficient way to do this.
 	const GraphicsView *view = (GraphicsView *) scene()->views().first();
-	const qreal lod = view->getLevelOfDetail();
+	const qreal lod = view->getNumExposedRows();
 
 	// Pen
 	QPen pen;
@@ -110,6 +154,9 @@ void RoutingGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsIte
 	QBrush brush = view->getStippleBrush(
 			view->getRoutingLayerStipple(clsRoutingLayerIndex), wt.dx(), wt.dy());
 	brush.setColor(view->getRoutingLayerColor(clsRoutingLayerIndex));
+
+	// @todo try this
+	// painter->setBrushOrigin(0, 0);
 
 	painter->setPen(pen);
 	painter->setBrush(brush);

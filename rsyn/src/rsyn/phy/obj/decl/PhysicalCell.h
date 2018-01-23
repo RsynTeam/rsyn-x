@@ -82,8 +82,6 @@ public:
 	DBU getDisplacementFromCurrentPosition(const DBU pos, const Dimension dim) const;
 	DBU getDisplacementFromInitialPosition(const DBUxy pos) const;
 	DBU getDisplacementFromInitialPosition(const DBU pos, const Dimension dim) const;
-	//! @brief Returns the orientation of the cell.
-	PhysicalOrientation getOrientation() const;
 	//! @brief Returns a transformation that allows one to transform the
 	//! coordinates from the library cell space to the cell space. The
 	//! transformation accounts for translation and the orientation of the cell.

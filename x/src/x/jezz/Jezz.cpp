@@ -65,25 +65,11 @@ void Jezz::start(const Rsyn::Json &params) {
 	clsModule = session.getTopModule();
 	clsPhysicalDesign = session.getPhysicalDesign();
 
-	// Observer changes in cell positions (i.e. from GUI).
-	clsPostInstanceMovedCallbackHandler =
-		clsPhysicalDesign.addPostInstanceMovedCallback(0, [&](Rsyn::PhysicalInstance physicalInstance) {
-			Rsyn::Instance instance = physicalInstance.getInstance();
-			if (instance.getType() == Rsyn::CELL) {
-				JezzNode *jezzNode = getJezzNode(instance);
-				if (jezzNode) {
-					const DBUxy position = physicalInstance.getPosition();
-						jezz_dp_RemoveNode(jezzNode);
-						jezz_dp_UpdateReferencePosition(jezzNode, position.x, position.y);
-				} // end if
-			} // end if
-		});
-
 	initJezz();
 
 	// Observe changes in the design.
 	clsDesign.registerObserver(this);
-	clsPhysicalDesign.registerObserver(this);
+
 	{ // Store solution
 		ScriptParsing::CommandDescriptor dscp;
 		dscp.setName("storeJezzSolution");
@@ -226,9 +212,7 @@ void Jezz::onPostInstanceCreate(Rsyn::Instance instance) {
 				rect[UPPER][X],
 				rect[UPPER][Y]
 				);
-		}
-
-
+		} // end else
 	} else {
 
 		const DBUxy lower = phCell.getCoordinate(LOWER);
@@ -245,8 +229,15 @@ void Jezz::onPostInstanceCreate(Rsyn::Instance instance) {
 
 // -----------------------------------------------------------------------------
 
-void Jezz::onPostMovedInstance(Rsyn::PhysicalInstance phInstance) {
-	// TODO 
+void Jezz::onPostInstancePlacementChange(Rsyn::Instance instance) {
+	if (instance.getType() == Rsyn::CELL) {
+		JezzNode *jezzNode = getJezzNode(instance);
+		if (jezzNode) {
+			const DBUxy position = instance.getPosition();
+				jezz_dp_RemoveNode(jezzNode);
+				jezz_dp_UpdateReferencePosition(jezzNode, position.x, position.y);
+		} // end if
+	} // end if
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -284,7 +275,7 @@ void Jezz::initJezz() {
 			// Update session.
 			if (x != physicalCell.getCoordinate(LOWER, X) || y != physicalCell.getCoordinate(LOWER, Y)) {
 				clsPhysicalDesign.placeCell(physicalCell, x, y, true);
-					clsPhysicalDesign.notifyObservers(physicalCell, clsPostInstanceMovedCallbackHandler);
+				clsPhysicalDesign.notifyInstancePlaced(physicalCell.getInstance(), this);
 			} // end if
 
 			// Set the reference cell position as the new legalized one.

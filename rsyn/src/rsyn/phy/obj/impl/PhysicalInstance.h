@@ -13,12 +13,6 @@
  * limitations under the License.
  */
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /* 
  * File:   PhysicalInstance.h
  * Author: jucemar
@@ -38,104 +32,98 @@ inline Rsyn::Instance PhysicalInstance::getInstance() const {
 // -----------------------------------------------------------------------------
 
 inline const std::string &PhysicalInstance::getName() const {
-	return data? data->clsInstance.getName() : NullName;
+	return data? getInstance().getName() : NullName;
 } // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalInstance::getArea() const {
-	return data->clsBounds.computeArea();
+	return getInstance().getArea();
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalInstance::getCenter() const {
-	if (data->clsPort)
-		return getPosition();
-	return data->clsBounds.computeCenter();
+	return getInstance().getCenter();
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalInstance::getCenter(const Dimension dim) const {
-	if (data->clsPort)
-		return getPosition(dim);
-	return data->clsBounds.computeCenter(dim);
+	return getInstance().getCenter(dim);
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalInstance::getX() const {
-	return getPosition(X);
+	return getInstance().getX();
 } // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalInstance::getY() const {
-	return getPosition(Y);
+	return getInstance().getY();
 } // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalInstance::getHeight() const {
-	return data->clsBounds.computeLength(Y);
+	return getInstance().getHeight();
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalInstance::getWidth() const {
-	return data->clsBounds.computeLength(X);
+	return getInstance().getWidth();
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-inline DBU PhysicalInstance::getLength(const Dimension dimension) const {
-	return data->clsBounds.computeLength(dimension);
+inline DBU PhysicalInstance::getSize(const Dimension dimension) const {
+	return getInstance().getSize(dimension);
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalInstance::getSize() const {
-	return DBUxy(getWidth(), getHeight());
-} // end method 
+	return getInstance().getSize();
+} // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalInstance::getPosition() const {
-	if (data->clsPort)
-		return data->clsPortPos;
-	return data->clsBounds[LOWER];
+	return getInstance().getPosition();
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalInstance::getPosition(const Dimension dim) const {
-	if (data->clsPort)
-		return data->clsPortPos[dim];
-	return data->clsBounds[LOWER][dim];
+	return getInstance().getPosition(dim);
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalInstance::getCoordinate(const Boundary bound) const {
-	if (data->clsPort)
-		return getPosition();
-	return data->clsBounds[bound];
+	return getInstance().getCoordinate(bound);
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalInstance::getCoordinate(const Boundary bound, const Dimension dim) const {
-	if (data->clsPort)
-		getPosition(dim);
-	return data->clsBounds[bound][dim];
+	return getInstance().getCoordinate(bound, dim);
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline const Bounds &PhysicalInstance::getBounds() const {
-	return data->clsBounds;
+	return getInstance().getBounds();
 } // end method 
+
+// -----------------------------------------------------------------------------
+
+inline PhysicalOrientation PhysicalInstance::getOrientation() const {
+	return getInstance().getOrientation();
+} // end method
 
 // -----------------------------------------------------------------------------
 

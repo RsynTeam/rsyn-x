@@ -92,6 +92,7 @@ bool InstanceOverlay::init(GraphicsView *view, std::vector<GraphicsLayerDescript
 				QGraphicsItem *item = clsInstanceMap[instance];
 				if (item) {
 					item->setSelected(true);
+					clsView->ensureVisible(item);
 				} // end if
 			} // end if
 		});

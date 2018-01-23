@@ -40,6 +40,12 @@ set(PATH_RSYN ${CMAKE_CURRENT_SOURCE_DIR}/../rsyn)
 set(PATH_ISPD18 ${CMAKE_CURRENT_SOURCE_DIR})
 set(PATH_QT ${CMAKE_CURRENT_SOURCE_DIR}/../rsyn/src/rsyn/qt)
 
+###################
+# Warnings/Errors #
+###################
+
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Werror=return-type")
+
 ######################
 # Check Dependencies #
 ######################

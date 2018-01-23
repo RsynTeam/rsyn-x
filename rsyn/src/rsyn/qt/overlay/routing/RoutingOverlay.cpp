@@ -45,17 +45,32 @@ bool RoutingOverlay::init(GraphicsView *view, std::vector<GraphicsLayerDescripto
 		addChild(graphicsOverlay);
 	} // end for
 
+	const bool useNewPhysicalRouting = false;
+
 	for (Rsyn::Net net : module.allNets()) {
 		Rsyn::PhysicalNet phNet = physicalDesign.getPhysicalNet(net);
-		for (Rsyn::PhysicalWire phWire : phNet.allWires()) {
-			for (Rsyn::PhysicalWireSegment phWireSegment : phWire.allSegments()) {
-				if (phWireSegment.getNumRoutingPoints() < 2)
+
+		if (useNewPhysicalRouting) {
+			const Rsyn::PhysicalRouting &routing = phNet.getRouting();
+			for (const Rsyn::PhysicalRoutingWire &wire : routing.allWires()) {
+				if (!wire.isValid())
 					continue;
-				
-				QGraphicsItem *item = new RoutingGraphicsItem(net, phWireSegment);
-				item->setParentItem(layers[phWireSegment.getLayer().getIndex()]);
+
+				QGraphicsItem *item = new RoutingGraphicsItem(net, wire);
+				item->setParentItem(layers[wire.getLayer().getIndex()]);
 			} // end for
-		} // end for
+		} else {
+		
+			for (Rsyn::PhysicalWire phWire : phNet.allWires()) {
+				for (Rsyn::PhysicalWireSegment phWireSegment : phWire.allWireSegments()) {
+					if (phWireSegment.getNumRoutingPoints() < 2)
+						continue;
+
+					QGraphicsItem *item = new RoutingGraphicsItem(net, phWireSegment);
+					item->setParentItem(layers[phWireSegment.getLayer().getIndex()]);
+				} // end for
+			} // end for
+		} // end else
 	} // end for
 
 	view->registerObserver(this);

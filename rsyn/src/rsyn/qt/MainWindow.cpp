@@ -20,7 +20,8 @@
 
 #include "MainWindow.h"
 #include "GraphicsStipple.h"
-#include "GraphicsViewport.h"
+#include "GraphicsScene.h"
+#include "GraphicsView.h"
 
 #include "rsyn/qt/overlay/routing/RoutingOverlay.h"
 #include "rsyn/qt/overlay/instance/InstanceOverlay.h"
@@ -65,7 +66,7 @@ static const int MAX_COMMAND_HISTORY_LENGTH = 100;
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
-		viewport(nullptr),
+		view(nullptr),
 		scene(nullptr)
 {
 	setupUi(this);
@@ -80,14 +81,13 @@ MainWindow::MainWindow(QWidget *parent) :
 	
 	txtCommand->installEventFilter(this);
 
-	scene = new QGraphicsScene(this);
+	scene = new GraphicsScene(this);
 
-	viewport = new GraphicsViewport("Canvas");
-    viewport->getView()->setScene(scene);
-	viewport->getView()->setStatusBar(statusBar());
-	viewport->window()->layout()->setMargin(0);
+	view = new GraphicsView(this);
+	view->setStatusBar(statusBar());
+	view->window()->layout()->setMargin(0);
 
-	gridLayout->addWidget(viewport, 0, 0, 1, 1);
+	gridLayout->addWidget(view, 0, 0, 1, 1);
 
 	createOverlays();
 	restoreCommandHistory();
@@ -184,8 +184,8 @@ MainWindow::populate() {
 
 	{ // Initialize view
 		Stepwatch watchOverlays("Initializing scene");
-		viewport->getView()->setScene(scene);
-		viewport->init();
+		view->setScene(scene);
+		view->init();
 	} // end block
 } // end method
 
@@ -324,7 +324,7 @@ MainWindow::createOverlays() {
 	clsOverlays.push_back(new RoutingGuideOverlay(nullptr));
 
 	// **temp**
-	viewport->getView()->setHighlightOverlay(
+	view->setHighlightOverlay(
 			(HighlightOverlay *) clsOverlays.front());
 
 	// Create user overlays.
@@ -341,7 +341,7 @@ MainWindow::createOverlays() {
 void 
 MainWindow::keyPressEvent(QKeyEvent * event) {
 	if (event->key() == Qt::Key_Control) {
-		//viewport->getView()->setDragMode(QGraphicsView::RubberBandDrag);
+		//viewport->setDragMode(QGraphicsView::RubberBandDrag);
 	}
 	QMainWindow::keyPressEvent(event);
 } // end method
@@ -351,7 +351,7 @@ MainWindow::keyPressEvent(QKeyEvent * event) {
 void 
 MainWindow::keyReleaseEvent(QKeyEvent * event) {
 	if (event->key() == Qt::Key_Control) {
-		//viewport->getView()->setDragMode(QGraphicsView::ScrollHandDrag);
+		//viewport->setDragMode(QGraphicsView::ScrollHandDrag);
 	} // end if
 	QMainWindow::keyReleaseEvent(event);
 } // end method
@@ -420,7 +420,7 @@ MainWindow::onChangeObjectVisibility(QTreeWidgetItem *item, int column) {
 		key += names[i];
 	} // end for
 
-	viewport->getView()->setVisibility(key, visible);
+	view->setVisibility(key, visible);
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -430,7 +430,7 @@ MainWindow::onChangeLayerVisibility(QTreeWidgetItem *item, int column) {
 	const std::string &layerName = item->text(0).toStdString();
 	const bool visible = item->checkState(1) == Qt::Checked;
 
-	viewport->getView()->setPhysicalLayerVisibility(layerName, visible);
+	view->setPhysicalLayerVisibility(layerName, visible);
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -447,24 +447,24 @@ MainWindow::onUnselectAllRoutingLayers() {
 
 void
 MainWindow::onZoomIn() {
-	if (viewport)
-		viewport->zoomIn();
+	if (view)
+		view->zoomIn();
 } // end method
 
 // -----------------------------------------------------------------------------
 
 void
 MainWindow::onZoomOut() {
-	if (viewport)
-		viewport->zoomOut();
+	if (view)
+		view->zoomOut();
 } // end method
 
 // -----------------------------------------------------------------------------
 
 void
 MainWindow::onZoomToFit() {
-	if (viewport)
-		viewport->resetView();
+	if (view)
+		view->resetView();
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -480,7 +480,7 @@ MainWindow::onSaveSnapshot() {
 	} // end if
 
 	if (!fileName.isEmpty()) {
-		QPixmap pixMap = viewport->grab();
+		QPixmap pixMap = view->grab();
 		pixMap.save(fileName);
 	} // end if
 } // end method
@@ -489,7 +489,7 @@ MainWindow::onSaveSnapshot() {
 
 void
 MainWindow::onToggleOpenGL(bool enable) {
-	viewport->toggleOpenGL(enable);
+	view->toggleOpenGL(enable);
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -544,6 +544,35 @@ MainWindow::onExecuteCommand() {
 	} // end catch
 
 	txtCommand->clear();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void
+MainWindow::onSearch() {
+	Rsyn::Session session;
+	Rsyn::Design design = session.getDesign();
+
+	const std::string objectName = txtSearch->text().toStdString();
+
+	bool success = false;
+
+	Rsyn::Instance instance = design.findInstanceByName(objectName);
+	if (instance) {
+		success = true;
+	} else {
+		Rsyn::Net net = design.findNetByName(objectName);
+		if (net) {
+			success = true;
+		} // end if
+	} // end else
+
+	if (success) {
+		std::cout << "TODO: Object '" << objectName << "' found.\n";
+		txtSearch->clear();
+	} else {
+		std::cout << "Object '" << objectName << "' not found.\n";
+	} // end else
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -679,10 +708,8 @@ void
 MainWindow::handleResults(const QString &) {
 	{ // @todo move to onDesignLoaded event...
 		Rsyn::Session session;
-		if (!viewport->isInitialized() && session.isDesignLoaded()) {
+		if (!view->isInitialized() && session.isDesignLoaded()) {
 			Rsyn::PhysicalDesign physicalDesign = session.getPhysicalDesign();
-
-			GraphicsView *view = viewport->getView();
 
 			view->setVisibility("Floorplan", true);
 			view->setVisibility("Instances", true);
@@ -709,7 +736,7 @@ MainWindow::handleResults(const QString &) {
 
 bool
 MainWindow::initOverlayRecursive(GraphicsOverlay *overlay, std::vector<GraphicsLayerDescriptor> &visibilityItems) {
-	bool success = overlay->init(viewport->getView(), visibilityItems);
+	bool success = overlay->init(view, visibilityItems);
 	for (GraphicsOverlay *child : overlay->allChildren()) {
 		std::vector<GraphicsLayerDescriptor> childVisibilityItems;
 		success &= initOverlayRecursive(child, childVisibilityItems);

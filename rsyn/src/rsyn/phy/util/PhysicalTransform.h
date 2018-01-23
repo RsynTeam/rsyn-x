@@ -16,7 +16,7 @@
 #ifndef RSYN_PHYSICAL_TRANSFORMATION_H
 #define RSYN_PHYSICAL_TRANSFORMATION_H
 
-#include "rsyn/phy/util/PhysicalTypes.h"
+#include "rsyn/core/RsynTypes.h"
 #include "rsyn/util/dbu.h"
 #include "rsyn/util/Bounds.h"
 

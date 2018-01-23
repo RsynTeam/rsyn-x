@@ -169,7 +169,7 @@ void Writer::writeFullDEF(string filename) {
 	int numCells = clsDesign.getNumInstances(Rsyn::CELL);
 	def.clsComps.reserve(numCells);
 	for (Rsyn::Instance instance : clsModule.allInstances()) {
-		if(instance.getType() != Rsyn::CELL)
+		if (instance.getType() != Rsyn::CELL)
 			continue;
 
 		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
@@ -208,6 +208,40 @@ void Writer::writeFullDEF(string filename) {
 			netConnection.clsComponentName = pin.getInstanceName();
 			netConnection.clsPinName = pin.getName();
 		} // end for
+		std::vector<DefWireDscp> & wires = defNet.clsWires;
+		Rsyn::PhysicalNet phNet = clsPhysicalDesign.getPhysicalNet(net);
+		wires.reserve(phNet.getNumWires());
+		for (Rsyn::PhysicalWire phWire : phNet.allWires()) {
+			wires.push_back(DefWireDscp());
+			DefWireDscp & wire = wires.back();
+			// wire.clsWireType // TODO
+			std::vector<DefWireSegmentDscp> & segments = wire.clsWireSegments;
+			segments.reserve(phWire.getNumWireSegments());
+			for (Rsyn::PhysicalWireSegment phSegment : phWire.allWireSegments()) {
+				segments.push_back(DefWireSegmentDscp());
+				DefWireSegmentDscp & segment = segments.back();
+				segment.clsLayerName = phSegment.getLayer().getName();
+				std::vector<DefRoutingPointDscp> & points = segment.clsRoutingPoints;
+				points.reserve(phSegment.getNumRoutingPoints());
+				for (Rsyn::PhysicalRoutingPoint phPoint : phSegment.allRoutingPoints()) {
+					points.push_back(DefRoutingPointDscp());
+					DefRoutingPointDscp & routing = points.back();
+					routing.clsPos = phPoint.getPosition();
+					if(phPoint.hasVia()) {
+						routing.clsHasVia = true;
+						Rsyn::PhysicalVia phVia = phPoint.getVia();
+						routing.clsViaName = phVia.getName();
+					}
+					if(phPoint.hasRectangle()) {
+						routing.clsHasRectangle = true;
+						routing.clsRect = phPoint.getRectangle();
+					}
+					if(phPoint.hasExtension()) {
+						routing.clsExtension = phPoint.getExtension();
+					}
+				}
+			}
+		}
 	} // end for
 
 
@@ -231,7 +265,7 @@ void Writer::writeFullDEF(string filename) {
 		defPort.clsPos = phPort.getPosition();
 
 	} // end for 
- 
+
 	int numRows = clsPhysicalDesign.getNumRows();
 	def.clsRows.reserve(numRows);
 	for (Rsyn::PhysicalRow phRow : clsPhysicalDesign.allPhysicalRows()) {
@@ -241,16 +275,16 @@ void Writer::writeFullDEF(string filename) {
 		defRow.clsSite = phRow.getSiteName();
 		defRow.clsOrigin = phRow.getOrigin();
 		defRow.clsStepX = phRow.getStep(X);
-		defRow.clsStepY = phRow.getStep(Y);
+		defRow.clsStepY = 0; //phRow.getStep(Y); // Assuming all Y steps are 0
 		defRow.clsNumX = phRow.getNumSites(X);
 		defRow.clsNumY = phRow.getNumSites(Y);
 		defRow.clsOrientation = Rsyn::getPhysicalOrientation(phRow.getSiteOrientation());
 	} // end for 
-	
+
 	// write def tracks 
 	int numTracks = clsPhysicalDesign.getNumPhysicalTracks();
 	def.clsTracks.reserve(numTracks);
-	for(Rsyn::PhysicalTrack phTrack : clsPhysicalDesign.allPhysicalTracks()){
+	for (Rsyn::PhysicalTrack phTrack : clsPhysicalDesign.allPhysicalTracks()) {
 		def.clsTracks.push_back(DefTrackDscp());
 		DefTrackDscp & defTrack = def.clsTracks.back();
 		defTrack.clsDirection = Rsyn::getPhysicalTrackDirectionDEF(phTrack.getDirection());
@@ -258,11 +292,11 @@ void Writer::writeFullDEF(string filename) {
 		defTrack.clsSpace = phTrack.getSpace();
 		int numLayers = phTrack.getNumberOfLayers();
 		defTrack.clsLayers.reserve(numLayers);
-		for(Rsyn::PhysicalLayer phLayer : phTrack.allLayers())
+		for (Rsyn::PhysicalLayer phLayer : phTrack.allLayers())
 			defTrack.clsLayers.push_back(phLayer.getName());
 		defTrack.clsNumTracks = phTrack.getNumberOfTracks();
 	} // end for 
-	
+
 	defParser.writeFullDEF(filename, def);
 } // end method
 

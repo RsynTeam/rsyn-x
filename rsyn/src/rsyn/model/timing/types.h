@@ -13,8 +13,8 @@
  * limitations under the License.
  */
  
-#ifndef RSYN_TYPES_H
-#define RSYN_TYPES_H
+#ifndef RSYN_TIMING_TYPES_H
+#define RSYN_TIMING_TYPES_H
 
 typedef float Number;
 

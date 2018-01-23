@@ -15,15 +15,11 @@
 #include "rsyn/util/dbu.h"
 #include "rsyn/util/float2.h"
 
-QT_BEGIN_NAMESPACE
-class QGraphicsScene;
-QT_END_NAMESPACE
-
 namespace Rsyn {
 class Graphics;
 
-class GraphicsViewport;
-class GraphicsOverlay;
+class GraphicsScene;
+class GraphicsView;
 class GraphicsOverlay;
 
 // -----------------------------------------------------------------------------
@@ -77,6 +73,7 @@ public slots:
 	void onToggleOpenGL(bool enable);
 	void onToggleConsole(bool enable);
 	void onExecuteCommand();
+	void onSearch();
 	void onRunFlow();
 	void onUpdateRoutingEstimation();
 	void onUpdateTiming();
@@ -108,8 +105,8 @@ private:
 	
 	Rsyn::Graphics *rsynGraphics = nullptr;
 
-    QGraphicsScene *scene = nullptr;
-	GraphicsViewport *viewport = nullptr;
+    GraphicsScene *scene = nullptr;
+	GraphicsView *view = nullptr;
 
 	std::vector<GraphicsOverlay *> clsOverlays;
 	std::vector<GraphicsLayerDescriptor> clsGraphicsLayerDescriptors;

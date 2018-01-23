@@ -18,6 +18,8 @@ namespace Rsyn {
 struct DesignData {  
 	std::string name;
 
+	Rsyn::Module topModule;
+
 	List<InstanceData> instances;
 	List<PinData> pins;
 	List<ArcData> arcs;

@@ -46,7 +46,9 @@ bool DesignPositionReader::load(const Rsyn::Json & config) {
 		openDef(path);
 	} else {
 		throw Exception("Invalid extension file in the path " + path);
-	} // end if-else 
+	} // end if-else
+
+	return true;
 } // end method 
 
 // -----------------------------------------------------------------------------

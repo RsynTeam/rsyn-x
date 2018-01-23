@@ -20,6 +20,7 @@
 
 #include <string>
 
+#include "rsyn/core/RsynTypes.h"
 #include "rsyn/phy/util/PhysicalTypes.h"
 
 namespace Rsyn {

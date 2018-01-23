@@ -188,6 +188,16 @@ public:
 
 	//! @brief	Returns the Rsyn::PhysicalLayer object associated to the parameter layer name.
 	Rsyn::PhysicalLayer getPhysicalLayerByName(const std::string & layerName);
+	
+	//! @brief	Returns the Rsyn::PhysicalLayer object associated to the parameter layer index.
+	//! @details	The index is a integer from 0 to less than the number of layers.
+	//!		If the the index number is outside of the ranger, than a null reference is returned. 
+	Rsyn::PhysicalLayer getPhysicalLayerByIndex(const int index);
+	
+	//! @brief	Returns the Rsyn::PhysicalLayer object associated to the parameter layer index.
+	//! @details	The index is a integer from 0 to less than the number of layers of the parameter type.
+	//!		If the the index number is outside of the ranger, than a null reference is returned. 
+	Rsyn::PhysicalLayer getPhysicalLayerByIndex(const Rsyn::PhysicalLayerType layerType, const int index);
 	//! @brief	Returns the Rsyn::PhysicalSite object associated to the parameter site name.
 	Rsyn::PhysicalSite getPhysicalSiteByName(const std::string &siteName);
 	//! @brief	Returns the Rsyn::PhysicalRegion object associated to the parameter region name.
@@ -346,31 +356,20 @@ public:
 	//! We can use it when you may expect the move to be rolled back, but it is
 	//! not, recall to mark the cell as dirty.
 	void placeCell(Rsyn::Cell cell, const DBUxy pos, const bool dontNotifyObservers = false);
-
+	
 	//! @brief Explicitly notify observer that a cell was moved. This is only necessary
 	//! if "dontNotifyObservers = true" in "placeCell" methods.
-	void notifyObservers(Rsyn::PhysicalInstance instance);
-	//! @brief Notify observers that a cell was moved. Ignores to notify the observers passed in the parameter. 
-	void notifyObservers(Rsyn::PhysicalInstance instance, const PostInstanceMovedCallbackHandler &ignoreObserver);
+	//! @todo Remove
+	void notifyInstancePlaced(Rsyn::Instance instance, Rsyn::DesignObserver *ignoreObserver = nullptr);
 
 	////////////////////////////////////////////////////////////////////////////
-	// Notification
-	////////////////////////////////////////////////////////////////////////////		
+	// Routing
+	////////////////////////////////////////////////////////////////////////////
 
-public:
+	void setNetRouting(Rsyn::Net net, const PhysicalRouting &routing);
 
-	//! @brief registers an instance to be called when some Rsyn::PhysicalInstance is moved.
-	PostInstanceMovedCallbackHandler
-	addPostInstanceMovedCallback(const int priority, PostInstanceMovedCallback f);
-
-	//! @todo 
-	void
-	deletePostInstanceMovedCallback(PostInstanceMovedCallbackHandler &handler);
-
-	
-	
-		////////////////////////////////////////////////////////////////////////////
-	// Events
+	////////////////////////////////////////////////////////////////////////////
+	// Notifications
 	////////////////////////////////////////////////////////////////////////////	
 public:
 
@@ -381,7 +380,7 @@ public:
 
 	//! @brief Unregisters an observer so it will no longer receives
 	//!        notifications about changes in the netlist.
-	void unregisterObserver(PhysicalObserver *observer);
+	void unregisterObserver(PhysicalDesignObserver *observer);
 	
 }; // end class 
 
