@@ -19,6 +19,7 @@
 namespace Rsyn {
 
 class GraphicsView;
+class GraphicsHoverItem;
 
 class HighlightOverlay : public GraphicsOverlay,  public GraphicsObserver {
 public:
@@ -37,24 +38,18 @@ public:
 	//! overlay.
 	virtual QPainterPath shape() const override {return QPainterPath();}
 	
-	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) override;
-
 	Rsyn::Pin getHoverPin() const {return clsHoverPin;}
 
-	void setHoverOutline(const QPainterPath &outline) {clsHoverOutline = outline; clsHovering = true;}
+	void setHoverOutline(const QPainterPath &outline);
 	void setHoverPin(Rsyn::Pin pin) {clsHoverPin = pin;}
 
-	void clearHover() {
-		clsHovering = false;
-		clsHoverPin = nullptr;
-	} // end method
-
+	void clearHover();
 private:
 
 	QRectF bounds;
 
 	bool clsHovering = false;
-	QPainterPath clsHoverOutline;
+	GraphicsHoverItem *clsHoverItem = nullptr;
 	Rsyn::Pin clsHoverPin;
 
 }; // end class

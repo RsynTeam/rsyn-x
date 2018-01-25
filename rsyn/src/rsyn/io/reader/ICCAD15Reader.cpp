@@ -53,26 +53,24 @@ bool ICCAD15Reader::load(const Rsyn::Json &options) {
 	const bool globalPlacementOnly = options.value("globalPlacementOnly", false);
 
 	std::string path = options.value("path", "");
-	std::string file = options.value("config", "");
-	optionSetting = options.value("parms", "");
+	std::string benchmark = options.value("config", "");
+	std::string params = options.value("parms", "ICCAD15.parm");
 	optionMaxDisplacement = options.value("maxDisplacement", 400);
 	optionTargetUtilization = options.value("targetUtilization", 0.85);
-	optionBenchmark = boost::filesystem::exists(file) ?
-		file : path + "/" + file;
-	optionSetting = boost::filesystem::exists(optionSetting) ?
-		optionSetting : path + "/" + optionSetting;
-	
+	optionBenchmark = session.findFile(benchmark, path);
+	optionSetting = session.findFile(params, path);
+
 	if (globalPlacementOnly) {
 		openBenchmarkFromICCAD15ForGlobalPlacementOnly();
 	} else {
-		if (boost::filesystem::is_directory(optionBenchmark) || !boost::filesystem::exists(optionBenchmark)) {
-			std::cout << "Error: File <design>.iccad2015 file not found: " << optionBenchmark << "\n";
-			std::exit(1);
+		if (optionBenchmark.empty()) {
+			std::cout << "Error: File <design>.iccad2015 file not found: '" << benchmark << "'\n";
+			return false;
 		} // end if
 
-		if (boost::filesystem::is_directory(optionSetting) || !boost::filesystem::exists(optionSetting)) {
-			std::cout << "Error: File ICCAD15.parm not found: " << optionSetting << "\n";
-			std::exit(1);
+		if (optionSetting.empty()) {
+			std::cout << "Error: File ICCAD15.parm not found: '" << params << "'\n";
+			return false;
 		} // end if
 
 		openBenchmarkFromICCAD15();

@@ -22,6 +22,8 @@
 #include "GraphicsStipple.h"
 #include "GraphicsScene.h"
 #include "GraphicsView.h"
+#include "GraphicsLayer.h"
+#include "GraphicsItem.h"
 
 #include "rsyn/qt/overlay/routing/RoutingOverlay.h"
 #include "rsyn/qt/overlay/instance/InstanceOverlay.h"
@@ -31,6 +33,8 @@
 
 #include "rsyn/qt/QtUtils.h"
 #include "rsyn/qt/infra/PinMgr.h"
+
+const bool UseAlternativeSceneMgr = false;
 
 // -----------------------------------------------------------------------------
 
@@ -165,15 +169,18 @@ MainWindow::populate() {
 	} // end block
 
 	{ // Initialize overlays
-		for (GraphicsOverlay *overlay : clsOverlays) {
-			Stepwatch watch("Initialize overlay " + overlay->getName());
-			clsGraphicsLayerDescriptors.clear();
-			const bool success = initOverlayRecursive(overlay, clsGraphicsLayerDescriptors);
-			if (success) {
-				scene->addItem(overlay);
-			} // end if
-		} // end method
-		
+		if (!UseAlternativeSceneMgr) {
+			for (GraphicsOverlay *overlay : clsOverlays) {
+				Stepwatch watch("Initialize overlay " + overlay->getName());
+				clsGraphicsLayerDescriptors.clear();
+				const bool success = initOverlayRecursive(overlay, clsGraphicsLayerDescriptors);
+				if (success) {
+					scene->addItem(overlay);
+				} // end if
+			} // end for
+		} else {
+			populateAlternative();
+		} // end else
 	} // end block
 
 	{ // Populate widgets
@@ -187,6 +194,59 @@ MainWindow::populate() {
 		view->setScene(scene);
 		view->init();
 	} // end block
+} // end method
+
+// -----------------------------------------------------------------------------
+
+class AlternativeCellGraphicsItem : public GraphicsItem  {
+public:
+
+	AlternativeCellGraphicsItem(Rsyn::Cell cell) : clsCell(cell) {
+	} // end constructor
+
+	virtual void render(QPainter *painter) {
+		painter->drawRect(clsCell.getX(), clsCell.getY(), clsCell.getWidth(), clsCell.getHeight());
+	} // end method
+
+	virtual QRect getBoundingRect() const {
+		return QRect(clsCell.getX(), clsCell.getY(), clsCell.getWidth(), clsCell.getHeight());
+	} // end method
+
+private:
+	Rsyn::Cell clsCell;
+}; // end class
+
+void
+MainWindow::populateAlternative() {
+	Rsyn::Session session;
+	Rsyn::Design design = session.getDesign();
+	Rsyn::Module module = session.getTopModule();
+	Rsyn::PhysicalDesign physicalDesign = session.getPhysicalDesign();
+
+	if (!physicalDesign)
+		return;
+
+	const Bounds &coreBounds = physicalDesign.getPhysicalDie().getBounds();
+	const QRectF sceneRect(coreBounds.getX(), coreBounds.getY(),
+			coreBounds.getWidth(), coreBounds.getHeight());
+	
+	scene->setSceneRect(sceneRect);
+
+	GraphicsLayer *instanceLayer = new GraphicsLayer;
+	
+	QPen pen;
+	pen.setColor(QColor(0, 210, 210));
+	pen.setCosmetic(true);
+	instanceLayer->setPen(pen);
+
+	for (Rsyn::Instance instance : module.allInstances()) {
+		if (instance.getType() != Rsyn::CELL)
+			continue;
+
+		instanceLayer->addItem(new AlternativeCellGraphicsItem(instance.asCell()));
+	} // end for
+
+	scene->addLayer(instanceLayer);
 } // end method
 
 // -----------------------------------------------------------------------------

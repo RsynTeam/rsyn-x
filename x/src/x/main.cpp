@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
 		#ifdef ISPD18_BIN
 			runISPD18Flow(vm);
 		#else
-			if (vm.count("gui")) {
+			if (!vm.count("no-gui")) {
 				// User interface mode...
 				#ifndef RSYN_NO_GUI
 					Q_INIT_RESOURCE(images);

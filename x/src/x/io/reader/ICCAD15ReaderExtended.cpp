@@ -28,16 +28,17 @@
 namespace ICCAD15 {
 
 bool ICCAD15ReaderExtended::load(const Rsyn::Json &params) {
-	Rsyn::ICCAD15Reader::load(params);
-
-	const bool globalPlacementOnly = params.value("globalPlacementOnly", false);
-	if (globalPlacementOnly) {
-		openBenchmarkFromICCAD15ForGlobalPlacementOnly();
+	if (Rsyn::ICCAD15Reader::load(params)) {
+		const bool globalPlacementOnly = params.value("globalPlacementOnly", false);
+		if (globalPlacementOnly) {
+			openBenchmarkFromICCAD15ForGlobalPlacementOnly();
+		} else {
+			openBenchmarkFromICCAD15();
+		} // end else
+		return true;
 	} else {
-		openBenchmarkFromICCAD15();
+		return false;
 	} // end else
-
-	return true;
 } // end method 
 
 // -----------------------------------------------------------------------------

@@ -14,9 +14,9 @@ class CellGraphicsItem : public QGraphicsItem {
 public:
     CellGraphicsItem(Rsyn::PhysicalCell physicalCell);
 
-    QRectF boundingRect() const override;
-    QPainterPath shape() const override;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) override;
+    virtual QRectF boundingRect() const override;
+    virtual QPainterPath shape() const override;
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) override;
 
 	Rsyn::PhysicalCell getPhysicalCell() const {return physicalCell;}
 

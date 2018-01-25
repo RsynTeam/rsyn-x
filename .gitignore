@@ -1,5 +1,6 @@
-# Ignore some knonw OS generated files
-# -------------------------------------
+########################################
+# Ignore some knonw OS generated files #
+########################################
 .DS_Store
 .DS_Store?
 ._*
@@ -8,8 +9,10 @@
 ehthumbs.db
 Thumbs.db
 
-# Ignore most of contents of private folder
-# -----------------------------------------
+########
+# Misc #
+########
+
 build/*
 
 x/ide/netbeans/*
@@ -17,8 +20,9 @@ x/ide/netbeans/nbproject/private
 !x/ide/netbeans/nbproject/
 !x/ide/netbeans/Makefile
 
+x/build/*
+
 x/bin/*
-!x/bin/src
 !x/bin/Makefile
 !x/bin/POWV9.dat
 !x/bin/PORT9.dat
@@ -30,6 +34,11 @@ x/bin/*
 !x/bin/runall-long.sh
 !x/bin/report.sh
 !x/bin/report-uplace.sh
+
+x/run/*
+!x/run/POWV9.dat
+!x/run/PORT9.dat
+!x/run/ICCAD15.parm
 
 x/misc/iccad2015_evaluate_solution_0831/evaluate
 x/misc/iccad2015_evaluate_solution_0831/iccad2015_evaluate_solution

@@ -1,3 +1,4 @@
+#include "GraphicsScene.h"
 #include "GraphicsView.h"
 
 #include "rsyn/qt/overlay/highlight/HighlightOverlay.h"
@@ -265,7 +266,7 @@ void
 GraphicsView::drawItems(QPainter *painter, int numItems,
 					   QGraphicsItem *items[],
 					   const QStyleOptionGraphicsItem options[]) {
-	//Stepwatch watch("Debug rendering #items=" + std::to_string(numItems));
+	Stepwatch watch("Debug rendering #items=" + std::to_string(numItems));
 	QGraphicsView::drawItems(painter, numItems, items, options);
 } // end method
 
@@ -312,6 +313,12 @@ GraphicsView::mousePressEvent(QMouseEvent *event) {
 
 void
 GraphicsView::mouseMoveEvent(QMouseEvent *event) {
+	// **temp**
+	if (scene()) {
+		((GraphicsScene *)scene())->clsHover = sceneRect().contains(mapToScene(event->pos()));
+		scene()->invalidate(QRect(), QGraphicsScene::ForegroundLayer);
+	} // end if
+
 	if (clsHighlightOverlay) {
 		QGraphicsItem *item = itemAt(event->pos());
 
@@ -338,15 +345,14 @@ GraphicsView::mouseMoveEvent(QMouseEvent *event) {
 						} // end if
 					} // end for
 
-					if (hoverPin && hoverPin != clsHighlightOverlay->getHoverPin()) {
-						needsUpdate = true;
-						tooltip = QString::fromStdString(hoverPin.getFullName());
-					} else if (!hoverPin || item != clsPreviousHoverItem) {
+					if (!hoverPin || item != clsPreviousHoverItem) {
 						needsUpdate = true;
 						hoverShape = hoverShape = item->shape().translated(item->pos());
 						tooltip = QString::fromStdString(cell.getName());
-					} // end else
-
+					} else if (hoverPin != clsHighlightOverlay->getHoverPin()) {
+						needsUpdate = true;
+						tooltip = QString::fromStdString(hoverPin.getFullName());
+					} else 
 					clsHighlightOverlay->setHoverPin(hoverPin);
 
 				} else if (RoutingGraphicsItem *routingItem = dynamic_cast<RoutingGraphicsItem *>(item)) {
@@ -372,11 +378,9 @@ GraphicsView::mouseMoveEvent(QMouseEvent *event) {
 		if (clsPreviousHoverItem != item || needsUpdate) {
 			clsHighlightOverlay->clearHover();
 			clsHighlightOverlay->setHoverOutline(hoverShape);
-			clsHighlightOverlay->update();
 			if (statusBar) {
 				statusBar->showMessage(tooltip);
 			} // end if
-			clsHighlightOverlay->update();
 		} // end if
 
 		clsPreviousHoverItem = item;

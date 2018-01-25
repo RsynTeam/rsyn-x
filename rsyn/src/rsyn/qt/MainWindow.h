@@ -15,6 +15,8 @@
 #include "rsyn/util/dbu.h"
 #include "rsyn/util/float2.h"
 
+extern const bool UseAlternativeSceneMgr;
+
 namespace Rsyn {
 class Graphics;
 
@@ -94,6 +96,7 @@ private:
 
     void setupMatrix();
     void populate();
+	void populateAlternative();
 	void populateDesignProperties();
 	void populateObjectVisibility();
 	void populateLayerVisibility();

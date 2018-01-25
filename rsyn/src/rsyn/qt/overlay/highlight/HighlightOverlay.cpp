@@ -1,4 +1,5 @@
 #include "HighlightOverlay.h"
+#include "HoverItem.h"
 
 #include "rsyn/session/Session.h"
 #include "rsyn/phy/PhysicalDesign.h"
@@ -74,21 +75,21 @@ HighlightOverlay::onChangePhysicalLayerVisibility(const Rsyn::PhysicalLayer &lay
 // -----------------------------------------------------------------------------
 
 void
-HighlightOverlay::paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) {
-	if (clsHovering) {
-		QPen pen;
-		pen.setWidth(2);
-		pen.setColor(Qt::black);
-		pen.setStyle(Qt::DashLine);
-		pen.setCosmetic(true);
-
-		QBrush brush;
-
-		painter->setPen(pen);
-		painter->setBrush(brush);
-		painter->drawPath(clsHoverOutline);
+HighlightOverlay::setHoverOutline(const QPainterPath &outline) {
+	if (!clsHoverItem) {
+		clsHoverItem = new GraphicsHoverItem();
+		clsHoverItem->setParentItem(this);
 	} // end if
+	clsHoverItem->setOutline(outline);
+	clsHoverItem->setVisible(true);
+} // end method
 
+// -----------------------------------------------------------------------------
+
+void
+HighlightOverlay::clearHover() {
+	clsHovering = false;
+	clsHoverPin = nullptr;
 } // end method
 
 // -----------------------------------------------------------------------------
