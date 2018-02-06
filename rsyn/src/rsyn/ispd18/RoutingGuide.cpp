@@ -47,15 +47,19 @@ void RoutingGuide::stop() {
 void RoutingGuide::loadGuides(const GuideDscp & dscp) {
 	for (const GuideNetDscp & netDscp : dscp.clsNetGuides) {
 		Rsyn::Net net = clsDesign.findNetByName(netDscp.clsNetName);
-		NetGuide & netGuide = clsGuides[net];
-		std::vector<LayerGuide> & layerGuides= netGuide.clsLayerGuides;
-		layerGuides.reserve(netDscp.clsLayerDscps.size());
-		for(const GuideLayerDscp & layerDscp : netDscp.clsLayerDscps) {
-			layerGuides.push_back(LayerGuide());
-			LayerGuide & layerGuide = layerGuides.back();
-			layerGuide.clsBounds = layerDscp.clsLayerGuide;
-			layerGuide.clsPhLayer = clsPhDesign.getPhysicalLayerByName(layerDscp.clsLayer);
-		} // end for 
+		if (net) {
+			NetGuide & netGuide = clsGuides[net];
+			std::vector<LayerGuide> & layerGuides= netGuide.clsLayerGuides;
+			layerGuides.reserve(netDscp.clsLayerDscps.size());
+			for (const GuideLayerDscp & layerDscp : netDscp.clsLayerDscps) {
+				layerGuides.push_back(LayerGuide());
+				LayerGuide & layerGuide = layerGuides.back();
+				layerGuide.clsBounds = layerDscp.clsLayerGuide;
+				layerGuide.clsPhLayer = clsPhDesign.getPhysicalLayerByName(layerDscp.clsLayer);
+			} // end for
+		} else {
+			std::cout << "WARNING: Net '" << netDscp.clsNetName << "' does not exist and the routing guide is being ignored.\n";
+		} // end else
 	} // end for 
 } // end method
 
