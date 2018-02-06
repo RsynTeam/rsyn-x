@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 #include "rsyn/model/routing/RoutingEstimator.h"
 #include "rsyn/model/routing/DefaultRoutingEstimationModel.h"
 #include "rsyn/model/routing/DefaultRoutingExtractionModel.h"
-#include "rsyn/session/Session.h"
+#include <Rsyn/Session>
 
 namespace Rsyn {
 
@@ -102,7 +102,25 @@ void RoutingEstimator::onPostCellRemap(Rsyn::Cell cell, Rsyn::LibraryCell oldLib
 
 // -----------------------------------------------------------------------------
 
-void RoutingEstimator::onPostInstancePlacementChange(Rsyn::Instance instance) {
+void
+RoutingEstimator::onPostPinConnect(Rsyn::Pin pin) {
+	std::cout << "INFO: RoutingEstimator was notified about a pin getting connected.\n";
+	dirtyNet(pin.getNet(), NET_UPDATE_TYPE_FULL);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void
+RoutingEstimator::onPrePinDisconnect(Rsyn::Pin pin) {
+	std::cout << "INFO: RoutingEstimator was notified about a pin getting disconnected.\n";
+	if (pin.getNet()) {
+		dirtyNet(pin.getNet(), NET_UPDATE_TYPE_FULL);
+	} // end if
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void RoutingEstimator::onPostInstanceMove(Rsyn::Instance instance) {
 	dirtyInstance(instance, NET_UPDATE_TYPE_FULL);
 } // end method
 

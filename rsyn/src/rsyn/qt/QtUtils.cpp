@@ -1,37 +1,42 @@
+/* Copyright 2014-2018 Rsyn
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
 #include "QtUtils.h"
 
 #include "rsyn/util/dbu.h"
 #include "rsyn/util/float2.h"
 
+#include <Rsyn/Point>
+#include <Rsyn/Rect>
+#include <Rsyn/Polygon>
+
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <boost/foreach.hpp>
 #include <boost/tokenizer.hpp>
 
 #include <QTreeWidget>
 #include <QHeaderView>
 #include <QPainter>
+#include <QPoint>
+#include <QRect>
+#include <QSize>
 
 namespace Rsyn {
 namespace QtUtils {
-
-// -----------------------------------------------------------------------------
-// Helper Functions (Non-Public)
-// -----------------------------------------------------------------------------
-
-float2
-findIntersection(
-		float2 p1,
-		float2 p2,
-		float2 d1,
-		float2 d2);
-
-bool
-findMyPoint(
-		float2 v0,
-		float2 v1,
-		float2 v2,
-		const float thickness,
-		std::vector<QPointF> &outlinePoints);
 
 // -----------------------------------------------------------------------------
 // Public Function
@@ -51,9 +56,82 @@ convert(const DBUxy &point) {
 
 // -----------------------------------------------------------------------------
 
-QRect convert(const Bounds &bounds) {
+QRect
+convert(const Bounds &bounds) {
 	return QRect(bounds.getLower().x, bounds.getLower().y /*upper? no all scene is y-inverted*/,
 			bounds.getWidth(), bounds.getHeight());
+} // end method
+
+// -----------------------------------------------------------------------------
+
+QPoint
+convert(const Rsyn::Point &point) {
+	return QPoint(point.getX(), point.getY());
+} // end method
+
+// -----------------------------------------------------------------------------
+
+QPolygon
+convert(const Rsyn::Polygon &polygon) {
+	QPolygon qpoly;
+	for (const Rsyn::Point &point : polygon.allPoints()) {
+		qpoly.append(QtUtils::convert(point));
+	} // end method
+	return qpoly;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+std::string
+toString(const QRectF &rect) {
+	std::ostringstream oss;
+	oss << std::fixed << std::setprecision(2);
+	oss << "(" << rect.x() << ", " << rect.y() << "; "
+			<< rect.width() << ", " << rect.height() << ")";
+	return oss.str();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+std::string
+toString(const QRect &rect) {
+	std::ostringstream oss;
+	oss << "(" << rect.x() << ", " << rect.y() << "; "
+			<< rect.width() << ", " << rect.height() << ")";
+	return oss.str();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+std::string
+toString(const QPoint &p) {
+	std::ostringstream oss;
+	oss << "(" << p.x() << ", " << p.y() << ")";
+	return oss.str();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+std::string
+toString(const QPointF &p) {
+	std::ostringstream oss;
+	oss << std::fixed << std::setprecision(2);
+	oss << "(" << p.x() << ", " << p.y() << ")";
+	return oss.str();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+std::string
+toString(const QSizeF &size) {
+	return toString(QPointF(size.width(), size.height()));
+} // end method
+
+// -----------------------------------------------------------------------------
+
+std::string
+toString(const QSize &size) {
+	return toString(QPoint(size.width(), size.height()));
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -167,141 +245,6 @@ createIcon(const QPen &pen, const QBrush &brush, const int w, const int h) {
 
 	return QIcon(pixmap);
 } // end method
-
-// -----------------------------------------------------------------------------
-
-void
-tracePathOutline(
-		const std::vector<DBUxy> &pathPoints,
-		const float halfThickness,
-		std::vector<QPointF> &outlinePoints
-) {
-
-	// Historical Note: This function was adapted from wxSightGL developed by
-	// Lenna and Guilherme around 2007.
-
-	float2 v1;
-
-	// First point
-	v1 = float2( pathPoints[0] ) +
-			( float2( pathPoints[1] ) - float2( pathPoints[0] ) ).perpendicular().normalized() * halfThickness;
-	outlinePoints.push_back(QPointF(v1.x, v1.y));
-
-	// Forward traversal.
-	bool control = true;
-	for( size_t i = 1; i < pathPoints.size() - 1; i++){
-		control = findMyPoint(
-				float2(pathPoints[i-1]),
-				float2(pathPoints[i  ]),
-				float2(pathPoints[i+1]),
-				halfThickness, outlinePoints);
-	} // end for
-
-	// Control point.
-	if (control) {
-		v1 = float2(pathPoints.back()) + float2( float2( pathPoints.back() ) -
-				float2( pathPoints[pathPoints.size()-2] ) ).perpendicular().normalized() * halfThickness ;
-		outlinePoints.push_back(QPointF(v1.x, v1.y));
-	} // end if
-
-	// Last point.
-	v1 = float2( pathPoints.back() ) + float2( float2( pathPoints[pathPoints.size()-2] ) -
-			float2( pathPoints.back() ) ).perpendicular().normalized() * halfThickness;
-	outlinePoints.push_back(QPointF(v1.x, v1.y));
-
-	// Backward traversal.
-	for( int i = pathPoints.size() - 2; i >= 1; i--){
-		findMyPoint(
-				float2(pathPoints[i+1]),
-				float2(pathPoints[i  ]),
-				float2(pathPoints[i-1]),
-				halfThickness, outlinePoints );
-	} // end if
-
-	v1 = float2( pathPoints[0] ) + float2( float2( pathPoints[0] ) -
-			float2( pathPoints[1] ) ).perpendicular().normalized() * halfThickness ;
-	outlinePoints.push_back(QPointF(v1.x, v1.y));
-	v1 = float2( pathPoints[0] ) + float2( float2( pathPoints[1] ) -
-			float2( pathPoints[0] ) ).perpendicular().normalized() * halfThickness ;
-	outlinePoints.push_back(QPointF(v1.x, v1.y));
-} // end method
-
-// -----------------------------------------------------------------------------
-
-bool
-findMyPoint(
-		float2 v0,
-		float2 v1,
-		float2 v2,
-		const float thickness,
-		std::vector<QPointF> &outlinePoints
-) {
-
-	// Historical Note: This function was adapted from wxSightGL developed by
-	// Lenna and Guilherme around 2007.
-
-	// Direction vectors.
-	float2 d1 = v1 - v0;
-	float2 d2 = v2 - v1;
-
-	// Points over the lines.
-	float2 p1 = v1 + (d1.perpendicular().normalized()) * thickness;
-	float2 p2 = v1 + (d2.perpendicular().normalized()) * thickness;
-
-	float m1 = (v0.x - v1.x) == 0 ? (v0.y - v1.y) : (v0.y - v1.y) / (v0.x - v1.x);
-	float m2 = (v1.x - v2.x) == 0 ? (v1.y - v2.y) : (v1.y - v2.y) / (v1.x - v2.x);
-
-	float tg = (m1 - m2) / (1 + m1 * m2);
-	float distancia = std::sqrt(std::pow((p1.x - p2.x), 2.0f) + std::pow((p1.y - p2.y), 2.0f));
-	float limite = std::sqrt(2.0f * std::pow(thickness, 2.0f));
-
-	if (distancia > limite && tg > 0.0f) { // dois
-		outlinePoints.push_back(QPointF(p1.x, p1.y));
-		outlinePoints.push_back(QPointF(p2.x, p2.y));
-		return true;
-	} else {
-		float2 q = findIntersection(p1, p2, d1, d2); // um
-		outlinePoints.push_back(QPointF(q.x, q.y));
-		return true;
-	}//end else
-} // end method
-
-// -----------------------------------------------------------------------------
-
-float2
-findIntersection(
-		float2 p1,
-		float2 p2,
-		float2 d1,
-		float2 d2
-) {
-
-	// Historical Note: This function was adapted from wxSightGL developed by
-	// Lenna and Guilherme around 2007.
-
-	const float a = p1.x;
-	const float e = p1.y;
-	const float b = d1.x;
-	const float f = d1.y;
-	const float c = p2.x;
-	const float g = p2.y;
-	const float d = d2.x;
-	const float h = d2.y;
-
-	float t;
-	if ((b * h - d * f) == 0) t = 0;
-	else t = ((c - a) * h + (e - g) * d) / (b * h - d * f);
-	float2 q = p1 + (d1 * t);
-
-	bool bug;
-	if ((t < 0 || t > 1)) {
-		bug = true;
-	} else {
-		bug = false;
-	} // end else
-
-	return q;
-} // end function
 
 } // end namespace (QtUtils)
 } // end namespace (Rsyn)

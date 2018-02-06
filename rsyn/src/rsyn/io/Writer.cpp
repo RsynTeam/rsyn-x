@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,17 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 #include "Writer.h"
 
 #include <iostream>
 #include <string>
 
-#include "rsyn/session/Session.h"
+#include <Rsyn/Session>
 #include "rsyn/io/legacy/Legacy.h"
 
 // Services
-#include "rsyn/phy/PhysicalDesign.h"
+#include <Rsyn/PhysicalDesign>
 #include "rsyn/model/timing/Timer.h"
 #include "rsyn/model/routing/RoutingEstimator.h"
 
@@ -36,6 +36,7 @@ void Writer::start(const Rsyn::Json &params) {
 	clsRoutingEstimator = session.getService("rsyn.routingEstimator", Rsyn::SERVICE_OPTIONAL);
 
 	clsDesign = session.getDesign();
+	clsLibrary = session.getLibrary();
 	clsModule = session.getTopModule();
 	clsPhysicalDesign = session.getPhysicalDesign();
 
@@ -209,39 +210,70 @@ void Writer::writeFullDEF(string filename) {
 			netConnection.clsPinName = pin.getName();
 		} // end for
 		std::vector<DefWireDscp> & wires = defNet.clsWires;
+		wires.push_back(DefWireDscp());
+		DefWireDscp & wire = wires.back();
 		Rsyn::PhysicalNet phNet = clsPhysicalDesign.getPhysicalNet(net);
-		wires.reserve(phNet.getNumWires());
-		for (Rsyn::PhysicalWire phWire : phNet.allWires()) {
-			wires.push_back(DefWireDscp());
-			DefWireDscp & wire = wires.back();
-			// wire.clsWireType // TODO
+		const PhysicalRouting & phRouting = phNet.getRouting();
+		
+		for(const PhysicalRoutingWire & phWire : phRouting.allWires()) {
 			std::vector<DefWireSegmentDscp> & segments = wire.clsWireSegments;
-			segments.reserve(phWire.getNumWireSegments());
-			for (Rsyn::PhysicalWireSegment phSegment : phWire.allWireSegments()) {
-				segments.push_back(DefWireSegmentDscp());
-				DefWireSegmentDscp & segment = segments.back();
-				segment.clsLayerName = phSegment.getLayer().getName();
-				std::vector<DefRoutingPointDscp> & points = segment.clsRoutingPoints;
-				points.reserve(phSegment.getNumRoutingPoints());
-				for (Rsyn::PhysicalRoutingPoint phPoint : phSegment.allRoutingPoints()) {
-					points.push_back(DefRoutingPointDscp());
-					DefRoutingPointDscp & routing = points.back();
-					routing.clsPos = phPoint.getPosition();
-					if(phPoint.hasVia()) {
-						routing.clsHasVia = true;
-						Rsyn::PhysicalVia phVia = phPoint.getVia();
-						routing.clsViaName = phVia.getName();
-					}
-					if(phPoint.hasRectangle()) {
-						routing.clsHasRectangle = true;
-						routing.clsRect = phPoint.getRectangle();
-					}
-					if(phPoint.hasExtension()) {
-						routing.clsExtension = phPoint.getExtension();
-					}
-				}
-			}
-		}
+			segments.push_back(DefWireSegmentDscp());
+			DefWireSegmentDscp & segment = segments.back();
+			segment.clsLayerName = phWire.getLayer().getName();
+			std::vector<DefRoutingPointDscp> & points = segment.clsRoutingPoints;
+			points.reserve(phWire.getNumPoints());
+			for (const DBUxy point : phWire.allPoints()) {
+				points.push_back(DefRoutingPointDscp());
+				DefRoutingPointDscp & routing = points.back();
+				routing.clsPos = point;
+				
+			} // end for 
+			if(phWire.hasNonDefaultSourceExtension()) {
+				DefRoutingPointDscp & routing = points.front();
+				DBUxy ext = phWire.getExtendedSourcePosition();
+				ext -= routing.clsPos;
+				routing.clsExtension = ext[X] ? ext[X] : ext[Y];
+				routing.clsHasExtension = true;
+			} // end if 
+			
+			if(phWire.hasNonDefaultTargetExtension()) {
+				DefRoutingPointDscp & routing = points.back();
+				DBUxy ext = phWire.getExtendedTargetPosition();
+				ext -= routing.clsPos;
+				routing.clsExtension = ext[X] ? ext[X] : ext[Y];
+				routing.clsHasExtension = true;
+			} // end if 
+		} // end for 
+		
+		for(const PhysicalRoutingVia & phVia : phRouting.allVias()) {
+			if(!phVia.isValid())
+				continue;
+			std::vector<DefWireSegmentDscp> & segments = wire.clsWireSegments;
+			segments.push_back(DefWireSegmentDscp());
+			DefWireSegmentDscp & segment = segments.back();
+			segment.clsLayerName = phVia.getTopLayer().getName();
+			std::vector<DefRoutingPointDscp> & points = segment.clsRoutingPoints;
+			points.push_back(DefRoutingPointDscp());
+			DefRoutingPointDscp & routing = points.back();
+			routing.clsPos = phVia.getPosition();
+			routing.clsHasVia = true;
+			routing.clsViaName = phVia.getVia().getName();
+		} // end for 
+		
+		for(const PhysicalRoutingRect & rect : phRouting.allRects()) {
+			std::vector<DefWireSegmentDscp> & segments = wire.clsWireSegments;
+			segments.push_back(DefWireSegmentDscp());
+			DefWireSegmentDscp & segment = segments.back();
+			segment.clsLayerName = rect.getLayer().getName();
+			segment.clsNew = true;
+			segment.clsRoutingPoints.push_back(DefRoutingPointDscp());
+			DefRoutingPointDscp & point = segment.clsRoutingPoints.back();
+			point.clsHasRectangle = true;
+			const Bounds &bds = rect.getRect();
+			point.clsPos = bds[LOWER];
+			point.clsRect[UPPER] = bds[UPPER] - point.clsPos;
+		} // end for 
+		
 	} // end for
 
 
@@ -284,7 +316,7 @@ void Writer::writeFullDEF(string filename) {
 	// write def tracks 
 	int numTracks = clsPhysicalDesign.getNumPhysicalTracks();
 	def.clsTracks.reserve(numTracks);
-	for (Rsyn::PhysicalTrack phTrack : clsPhysicalDesign.allPhysicalTracks()) {
+	for (Rsyn::PhysicalTracks phTrack : clsPhysicalDesign.allPhysicalTracks()) {
 		def.clsTracks.push_back(DefTrackDscp());
 		DefTrackDscp & defTrack = def.clsTracks.back();
 		defTrack.clsDirection = Rsyn::getPhysicalTrackDirectionDEF(phTrack.getDirection());

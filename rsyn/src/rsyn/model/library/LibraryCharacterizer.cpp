@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 
 #include "LibraryCharacterizer.h"
 #include "rsyn/util/FloatingPoint.h"
-#include "rsyn/session/Session.h"
+#include <Rsyn/Session>
 
 namespace Rsyn {
 
@@ -50,7 +50,7 @@ void LibraryCharacterizer::logicalEffort_FindReferenceLibraryTimingArc() {
 		+std::numeric_limits<Number>::infinity()
 	};
 	
-	for (Rsyn::LibraryCell lcell : clsDesign.allLibraryCells()) {
+	for (Rsyn::LibraryCell lcell : clsLibrary.allLibraryCells()) {
 		for (const TimingMode mode : allTimingModes()) {
 			for (Rsyn::LibraryArc larc : lcell.allLibraryArcs()) {
 				Number avgDelay = 0;
@@ -134,9 +134,10 @@ void LibraryCharacterizer::logicalEffort_ClaculateReferenceSlew() {
 
 // -----------------------------------------------------------------------------
 
-void LibraryCharacterizer::runLibraryAnalysis(Rsyn::Design design, TimingModel * timingModel) {
+void LibraryCharacterizer::runLibraryAnalysis(Rsyn::Design design, Rsyn::Library library, TimingModel * timingModel) {
 	// Initialization...
 	clsDesign = design;
+	clsLibrary = library;
 	clsTimingModel = timingModel;
 	clsLibraryMaxDriverResistance[EARLY] = -std::numeric_limits<Number>::max();
 	clsLibraryMaxDriverResistance[LATE] = -std::numeric_limits<Number>::max();
@@ -157,7 +158,7 @@ void LibraryCharacterizer::runLibraryAnalysis(Rsyn::Design design, TimingModel *
 	} // end for
 	
 	// Compute the logical effort for each timing arc.
-	for (Rsyn::LibraryCell lcell : clsDesign.allLibraryCells()) {
+	for (Rsyn::LibraryCell lcell : clsLibrary.allLibraryCells()) {
 		for (Rsyn::LibraryArc larc : lcell.allLibraryArcs()) {
 			Rsyn::LibraryPin lpin = larc.getFromLibraryPin();
 			
@@ -347,7 +348,7 @@ void LibraryCharacterizer::logicalEffort_Report(std::ostream &out) {
 	out << "--------------------------------------------------------------------------------\n";
 	
 	// Compute the logical effort for each timing arc.
-	for (Rsyn::LibraryCell lcell : clsDesign.allLibraryCells()) {
+	for (Rsyn::LibraryCell lcell : clsLibrary.allLibraryCells()) {
 
 		out << "Cell: "	<< lcell.getName() << "\n";
 		

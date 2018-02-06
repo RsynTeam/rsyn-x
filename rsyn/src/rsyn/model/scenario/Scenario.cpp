@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  */
  
 #include "Scenario.h"
-#include "rsyn/session/Session.h"
+#include <Rsyn/Session>
 
 namespace Rsyn {
 
@@ -35,12 +35,14 @@ Scenario::Scenario() {
 // -----------------------------------------------------------------------------
 
 void Scenario::init(
-		Rsyn::Design &design,
+		Rsyn::Design design,
+		Rsyn::Library library,
 		const ISPD13::LIBInfo &libInfosEarly,
 		const ISPD13::LIBInfo &libInfosLate,
 		const ISPD13::SDCInfo &sdc
 ) {
 	clsDesign = design;
+	clsLibrary = library;
 
 	// Create timing arc attributes.
 	clsTimingLibraryCells = clsDesign.createAttribute();
@@ -449,7 +451,7 @@ void Scenario::init_NetTypeTags() {
 void Scenario::init_MissingLibraryCellTags() {
 	// Some library cells may no appear in the liberty, so initialize them here
 	// to avoid exceptions.
-	for (Rsyn::LibraryCell lcell : clsDesign.allLibraryCells()) {
+	for (Rsyn::LibraryCell lcell : clsLibrary.allLibraryCells()) {
 		Rsyn::LibraryCellTag tag = clsDesign.getTag(lcell);
 
 		if (tag.getBufferTypeTag() == BUFFER_TYPE_TAG_NOT_SPECIFIED)

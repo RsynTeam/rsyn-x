@@ -132,6 +132,8 @@ add_executable(rsyn ${SRC_FILES})
 # Include Directories #
 #######################
 
+target_include_directories(rsyn PUBLIC "${PATH_RSYN}/src/rsyn/export")
+
 target_include_directories(rsyn PUBLIC "${PATH_RSYN}/src")
 target_include_directories(rsyn PUBLIC "${PATH_RSYN}/include")
 target_include_directories(rsyn PUBLIC "${PATH_ISPD18}/src")

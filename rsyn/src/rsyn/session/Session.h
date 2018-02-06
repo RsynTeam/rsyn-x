@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,10 +91,11 @@ struct SessionData {
 	bool clsDesignLoaded = false;
 	
 	////////////////////////////////////////////////////////////////////////////
-	// Design
+	// Design/Library
 	////////////////////////////////////////////////////////////////////////////
 
 	Rsyn::Design clsDesign;
+	Rsyn::Library clsLibrary;
 		
 	////////////////////////////////////////////////////////////////////////////
 	// Logger
@@ -385,6 +386,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////
 
 	static Rsyn::Design getDesign();
+	static Rsyn::Library getLibrary();
 	static Rsyn::Module getTopModule();
 	static Rsyn::PhysicalDesign getPhysicalDesign();
 

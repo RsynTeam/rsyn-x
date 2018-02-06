@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
 #include <ctime>
 
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/session/Session.h"
+#include <Rsyn/Session>
 #include "rsyn/sandbox/Sandbox.h"
 #include "rsyn/session/Service.h"
 #include "rsyn/model/timing/Timer.h"

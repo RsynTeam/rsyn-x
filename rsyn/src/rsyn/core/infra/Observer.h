@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,10 +55,10 @@ public:
 	onPrePinDisconnect(Rsyn::Pin pin) {}
 
 	virtual void
-	onPreMovedInstance(Rsyn::Instance) {}
+	onPreInstanceMove(Rsyn::Instance) {}
 
 	virtual void
-	onPostInstancePlacementChange(Rsyn::Instance) {}
+	onPostInstanceMove(Rsyn::Instance) {}
 
 	virtual
 	~DesignObserver() {

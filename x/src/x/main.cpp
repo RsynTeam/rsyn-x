@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,19 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 #include <boost/program_options.hpp>
 
 #include <iostream>
 #include <string>
 #include <csignal>
 
-#include "rsyn/session/Session.h"
+#include <Rsyn/Session>
 #include "rsyn/shell/Shell.h"
 
 #ifndef RSYN_NO_GUI
 #include <QApplication>
-#include "rsyn/qt/MainWindow.h"
+#include "rsyn/qt/window/MainWindow.h"
 #endif
 
 #include "rsyn/util/StreamLogger.h"
@@ -119,6 +119,11 @@ int main(int argc, char *argv[]) {
 					Q_INIT_RESOURCE(images);
 
 					QApplication app(argc, argv);
+					
+					QCoreApplication::setOrganizationName("Rsyn");
+					QCoreApplication::setOrganizationDomain("rsyn.design");
+					QCoreApplication::setApplicationName("Rsyn");
+
 					#ifdef __APPLE__
 						setlocale(LC_ALL, "en_US.UTF-8");
 					#else

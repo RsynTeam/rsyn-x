@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ class Design : public Proxy<DesignData> {
 friend class RawPointer;
 
 friend class Session;
+friend class Library;
 friend class Net;
 friend class Cell;
 friend class Pin;
@@ -280,8 +281,10 @@ public:
 
 	//! @brief Returns an iterable collection of all library cells in the
 	//!        design.
+	//! @todo  This should be removed once we concentrate everything library
+	//!        related in Rsyn::Library.
 	Range<ListCollection<LibraryCellData, LibraryCell>>
-	allLibraryCells();	
+	allLibraryCells(const bool showDeprecatedMessage = true);
 }; // end class
 
 ////////////////////////////////////////////////////////////////////////////////

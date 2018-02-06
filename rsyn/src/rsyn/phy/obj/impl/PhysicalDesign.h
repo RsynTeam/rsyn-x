@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -159,8 +159,72 @@ inline std::size_t PhysicalDesign::getNumPhysicalTracks()const {
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<PhysicalTrack> & PhysicalDesign::allPhysicalTracks() const {
+inline int PhysicalDesign::getNumPhysicalTracks(Rsyn::PhysicalLayer layer) const {
+	if (!hasPhysicalTracks(layer))
+		return 0;
+	const std::vector<Rsyn::PhysicalTracks> & tracks = allPhysicalTracks(layer);
+	return tracks.size();
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline const std::vector<Rsyn::PhysicalTracks> & PhysicalDesign::allPhysicalTracks() const {
 	return data->clsPhysicalTracks;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline const std::vector<Rsyn::PhysicalTracks> & PhysicalDesign::allPhysicalTracks(Rsyn::PhysicalLayer layer) const {
+	return data->clsMapLayerToTracks[layer];
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline bool PhysicalDesign::hasPhysicalTracks(Rsyn::PhysicalLayer layer) const {
+	if (layer == nullptr)
+		return false;
+	if (layer.getType() != Rsyn::PhysicalLayerType::ROUTING)
+		return false;
+	if (data->clsMapLayerToTracks.find(layer) == data->clsMapLayerToTracks.end())
+		return false;
+	const std::vector<Rsyn::PhysicalTracks> & tracks = allPhysicalTracks(layer);
+	return tracks.size() > 0;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline const std::vector<Rsyn::PhysicalRoutingGrid> & PhysicalDesign::allPhysicalRoutingGrids() const {
+	return data->clsPhysicalRoutingGrids;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline Rsyn::PhysicalRoutingGrid PhysicalDesign::getPhysicalRoutingGrid(Rsyn::PhysicalLayer layer) const {
+	if (layer && layer.getType() == Rsyn::PhysicalLayerType::ROUTING) {
+		auto it = data->clsMapLayerToRoutingGrid.find(layer);
+		if (it != data->clsMapLayerToRoutingGrid.end()) {
+			return it->second;
+		} // end if
+	} // end if
+	return nullptr;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline bool PhysicalDesign::hasPhysicalRoutingGrid(Rsyn::PhysicalLayer layer) const {
+	if (layer == nullptr)
+		return false;
+	if (layer.getType() != Rsyn::PhysicalLayerType::ROUTING)
+		return false;
+	if (data->clsMapLayerToRoutingGrid.find(layer) == data->clsMapLayerToRoutingGrid.end())
+		return false;
+	return true;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline int PhysicalDesign::getNumPhysicalRoutingGrids() const {
+	return data->clsPhysicalRoutingGrids.size();
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -235,6 +299,12 @@ PhysicalDesign::allPhysicalRows() {
 
 // -----------------------------------------------------------------------------
 
+inline Rsyn::LayerViaManager PhysicalDesign::getLayerViaManager() const {
+	return LayerViaManager(&data->clsLayerViaManager);
+} // end method
+
+// -----------------------------------------------------------------------------
+
 inline Rsyn::PhysicalLibraryPin PhysicalDesign::getPhysicalLibraryPin(Rsyn::LibraryPin libPin) const {
 	return PhysicalLibraryPin(&data->clsPhysicalLibraryPins[libPin]);
 } // end method 
@@ -270,7 +340,7 @@ inline Rsyn::PhysicalCell PhysicalDesign::getPhysicalCell(Rsyn::Cell cell) const
 
 inline Rsyn::PhysicalCell PhysicalDesign::getPhysicalCell(Rsyn::Pin pin) const {
 	Rsyn::Instance instance = pin.getInstance();
-	return instance.getType() == Rsyn::CELL? getPhysicalCell(instance.asCell()) : nullptr;
+	return instance.getType() == Rsyn::CELL ? getPhysicalCell(instance.asCell()) : nullptr;
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -386,7 +456,7 @@ inline DBUxy PhysicalDesign::getPinPosition(Rsyn::Pin pin) const {
 // For pins of standard-cells, returns the cell position. For macro-blocks,
 // returns the pin position itself.
 
- inline DBUxy PhysicalDesign::getRelaxedPinPosition(Rsyn::Pin pin) const {
+inline DBUxy PhysicalDesign::getRelaxedPinPosition(Rsyn::Pin pin) const {
 	// Position may be defined if the instance has info. 
 	// I'm assuming the instance doesn't know what is its position. 
 	DBUxy pos;
@@ -476,7 +546,7 @@ PhysicalDesign::createPhysicalAttribute(const DefaultPhysicalValueType &defaultV
 
 inline void PhysicalDesign::placeCell(Rsyn::PhysicalCell physicalCell, const DBU x, const DBU y, const bool dontNotifyObservers) {
 	const bool moved = (x != physicalCell.getPosition(X)) ||
-			(y != physicalCell.getPosition(Y));
+		(y != physicalCell.getPosition(Y));
 
 	// Notify observers.
 	if (moved) {
@@ -527,7 +597,6 @@ inline void PhysicalDesign::setNetRouting(Rsyn::Net net, const PhysicalRouting &
 ////////////////////////////////////////////////////////////////////////////////
 // Notification
 ////////////////////////////////////////////////////////////////////////////////
-
 
 template<class T>
 inline void PhysicalDesign::registerObserver(T *observer) {

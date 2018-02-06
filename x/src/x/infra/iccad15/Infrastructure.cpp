@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
 #include <mutex>
 
 #include "x/infra/iccad15/Infrastructure.h"
-#include "rsyn/session/Session.h"
+#include <Rsyn/Session>
 #include "rsyn/model/library/LibraryCharacterizer.h"
 #include "rsyn/model/routing/RoutingEstimator.h"
 
@@ -38,7 +38,7 @@
 #include "rsyn/util/FloatingPoint.h"
 #include "rsyn/util/Environment.h"
 
-#include "rsyn/phy/PhysicalDesign.h"
+#include <Rsyn/PhysicalDesign>
 #include "rsyn/phy/util/PhysicalUtil.h"
 #include "rsyn/phy/util/LefDescriptors.h"
 #include "rsyn/phy/util/LefDescriptors.h"

@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,8 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
+ 
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -53,12 +52,6 @@ public:
 
 	//! @brief Returns via name
 	const std::string & getName() const;
-
-	//! @brief Returns a vector reference to via layers. 
-	const std::vector<Rsyn::PhysicalViaLayer> & allViaLayers() const;
-
-	//! @brief Returns number of via layers;
-	std::size_t getNumLayers() const;
 	
 	bool isDesignVia() const;
 	

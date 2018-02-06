@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,10 +29,10 @@
 #ifndef OVERLAPREMOVER_H
 #define OVERLAPREMOVER_H
 
-#include "rsyn/session/Session.h"
+#include <Rsyn/Session>
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/util/Stepwatch.h"
-#include "rsyn/phy/PhysicalDesign.h"
+#include <Rsyn/PhysicalDesign>
 #include "x/util/BlockageControl.h"
 #include "x/infra/iccad15/utilICCAD15.h"
 #include <lemon/lp.h>

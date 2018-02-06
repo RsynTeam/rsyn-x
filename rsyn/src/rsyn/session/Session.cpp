@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,6 +70,10 @@ void Session::init() {
 	// Create design.
 	sessionData->clsDesign.create("__Root_Design__");
 
+	// Create library
+	sessionData->clsLibrary = Library(new LibraryData);
+	sessionData->clsLibrary->designData = sessionData->clsDesign.data;
+
 	// Cache messages.
 	sessionData->msgMessageRegistrationFail = getMessage("SESSION-001");
 
@@ -84,6 +88,12 @@ void Session::init() {
 
 Rsyn::Design Session::getDesign() {
 	return sessionData->clsDesign;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+Rsyn::Library Session::getLibrary() {
+	return sessionData->clsLibrary;
 } // end method
 
 // -----------------------------------------------------------------------------

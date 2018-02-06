@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public:
 	//! @brief Returns the vector reference of rectangular bounds to the Rsyn::PhysicalPinLayer.
 	const std::vector<Bounds> & allBounds() const;
 	//! @brief Returns the vector reference of polygons to the PhysicalPinLayer.
-	const std::vector<PhysicalPolygon> & allPolygons() const;
+	const std::vector<Polygon> & allPolygons() const;
 	//! @brief Returns the Rsyn::PhysicalLayer object related to the  Rsyn::PhysicalPinLayer.
 	Rsyn::PhysicalLayer getLayer() const;
 	//! @brief Returns the total number of rectangular Bounds that defines Rsyn::PhysicalPinLayer

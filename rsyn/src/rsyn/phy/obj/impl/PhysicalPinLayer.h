@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ inline const std::vector<Bounds> & PhysicalPinLayer::allBounds() const {
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<PhysicalPolygon> & PhysicalPinLayer::allPolygons() const {
+inline const std::vector<Polygon> & PhysicalPinLayer::allPolygons() const {
 	return data->clsPolygons;
 } // end method 
 

@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 #ifndef RSYN_PHYSICALDESIGN_PHYSICALDESIGNDATA_H
 #define RSYN_PHYSICALDESIGN_PHYSICALDESIGNDATA_H
 
@@ -24,6 +24,7 @@ class PhysicalDesignData : public PhysicalObject {
 public:
 	Rsyn::Design clsDesign;
 	Rsyn::Module clsModule;
+	Rsyn::LayerViaManagerData clsLayerViaManager;
 
 	std::list<std::function<void(Rsyn::Instance cell) >> callbackAddCreatePhysicalCell;
 	std::list<std::function<void(Rsyn::Instance cell) >> callbackOnPreCellRemoveEvent;
@@ -40,12 +41,15 @@ public:
 	std::vector<PhysicalSite> clsPhysicalSites;
 	std::vector<PhysicalVia> clsPhysicalVias;
 	std::vector<PhysicalSpecialNet> clsPhysicalSpecialNets;
-	std::vector<PhysicalTrack> clsPhysicalTracks;
+	std::vector<PhysicalTracks> clsPhysicalTracks;
+	std::vector<Rsyn::PhysicalRoutingGrid> clsPhysicalRoutingGrids;
 	std::unordered_map<std::string, int> clsMapPhysicalSites;
 	std::unordered_map<std::string, std::size_t> clsMapPhysicalRegions;
 	std::unordered_map<std::string, std::size_t> clsMapPhysicalGroups;
 	std::unordered_map<std::string, std::size_t> clsMapPhysicalSpecialNets;
-
+	std::map<Rsyn::PhysicalLayer, std::vector<Rsyn::PhysicalTracks>> clsMapLayerToTracks;
+	std::map<Rsyn::PhysicalLayer, Rsyn::PhysicalRoutingGrid> clsMapLayerToRoutingGrid;
+	
 	//From LEF file
 	std::unordered_map<std::string, std::size_t> clsMapPhysicalLayers;
 	std::unordered_map<std::string, std::size_t> clsMapPhysicalVias;

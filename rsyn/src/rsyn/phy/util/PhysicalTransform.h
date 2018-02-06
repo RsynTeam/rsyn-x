@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,13 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 #ifndef RSYN_PHYSICAL_TRANSFORMATION_H
 #define RSYN_PHYSICAL_TRANSFORMATION_H
 
 #include "rsyn/core/RsynTypes.h"
 #include "rsyn/util/dbu.h"
 #include "rsyn/util/Bounds.h"
+
+#include <Rsyn/Polygon>
 
 namespace Rsyn {
 
@@ -50,12 +52,22 @@ public:
 		return DBUxy(mx, my) + DBUxy(tx, ty) + clsBounds.getLower();
 	} // end method
 
-	DBUxy apply(const DBU &x, const DBU &y) const {return apply(DBUxy(x, y));}
+	DBUxy apply(const DBU &x, const DBU &y) const {
+		return apply(DBUxy(x, y));
+	} // end method
 
 	Bounds apply(const Bounds &bounds) const {
 		const DBUxy p0 = apply(bounds.getLower());
 		const DBUxy p1 = apply(bounds.getUpper());
 		return Bounds(min(p0, p1), max(p0, p1));
+	} // end method
+
+	Polygon apply(const Polygon &polygon) const {
+		Polygon transformedPolygon;
+		for (const Rsyn::Point &point : polygon.allPoints()) {
+			transformedPolygon.addPoint(apply(point));
+		} // end for
+		return transformedPolygon;
 	} // end method
 
 	Bounds getBounds() const {return clsBounds;}

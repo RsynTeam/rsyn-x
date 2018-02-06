@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 #include "DEFControlParser.h"
 
 #ifndef WIN32
@@ -373,6 +373,7 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 						point = &segmentDscp.clsRoutingPoints.back();
 						point->clsPos = DBUxy(static_cast<DBU> (x), static_cast<DBU> (y));
 						point->clsExtension = extension;
+						point->clsHasExtension = true;
 						break;
 					case DEFIPATH_TAPER:
 						//std::string taper = "TAPER ";
@@ -482,6 +483,7 @@ int defSpecialNet(defrCallbackType_e c, defiNet* net, void* ud) {
 						point = &segmentDscp.clsRoutingPoints.back();
 						point->clsPos = DBUxy(static_cast<DBU> (x), static_cast<DBU> (y));
 						point->clsExtension = extension;
+						point->clsHasExtension = true;
 						break;
 					case DEFIPATH_TAPER:
 						//std::string taper = "TAPER ";
@@ -896,56 +898,75 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 			status = defwNetConnection(defConn.clsComponentName.c_str(), defConn.clsPinName.c_str(), 0);
 			CHECK_STATUS(status);
 		} // end for 
-		
-		bool routed = true;
-		defwNetPathStart("ROUTED");
-		for(const DefWireDscp & wire : defNet.clsWires) {
-				
-			for (const DefWireSegmentDscp & segment : wire.clsWireSegments) {
-				if (!routed) 
-					defwNetPathStart("NEW");
-				routed = false;
-				
-				bool hasVia = false;
-				std::string viaName;
-				bool hasRect = false;
-				Bounds rect;
-				
-				defwNetPathLayer(segment.clsLayerName.c_str(), 0, NULL);
-				double* x;
-				double* y;
-				int numPoints = segment.clsRoutingPoints.size();
-				x = (double*) malloc(sizeof (double)*numPoints);
-				y = (double*) malloc(sizeof (double)*numPoints);
-				std::vector<double2> pos;
-				pos.resize(numPoints);
-				for (int i = 0; i < numPoints; i++) {
-					const DefRoutingPointDscp & pt = segment.clsRoutingPoints[i];
-					pos[i].set(pt.clsPos[X], pt.clsPos[Y]);
-					x[i] = pos[i].x;
-					y[i] = pos[i].y;
-					if(pt.clsHasVia) {
-						hasVia = true;
-						viaName = pt.clsViaName;
-					}
-					if(pt.clsHasRectangle) {
-						hasRect = true;
-						rect = pt.clsRect;
-					}
-						
+		if (!defNet.clsWires.empty()) {
+			bool routed = true;
+			defwNetPathStart("ROUTED");
+			for (const DefWireDscp & wire : defNet.clsWires) {
+				for (const DefWireSegmentDscp & segment : wire.clsWireSegments) {
+					if (!routed)
+						defwNetPathStart("NEW");
+					routed = false;
+					
+					bool hasVia = false;
+					std::string viaName;
+					bool hasRect = false;
+					Bounds rect;
+
+					defwNetPathLayer(segment.clsLayerName.c_str(), 0, NULL);
+					for(const DefRoutingPointDscp & pt : segment.clsRoutingPoints) {
+						double posX = pt.clsPos[X];
+						double posY = pt.clsPos[Y];
+						if(pt.clsHasExtension) {
+							double ext = pt.clsExtension;
+							defwNetPathPointWithExt(1, &posX, &posY, &ext);
+						} else {
+							defwNetPathPoint(1, &posX, &posY);
+						} // end if-else
+					} // end for 
+					
+					
+//					double* x;
+//					double* y;
+//					double* ext;
+//					int numPoints = segment.clsRoutingPoints.size();
+//					x = (double*) malloc(sizeof (double)*numPoints);
+//					y = (double*) malloc(sizeof (double)*numPoints);
+//					ext = (double*) malloc(sizeof (double)*numPoints);
+//					std::vector<double2> pos;
+//					pos.resize(numPoints);
+//					for (int i = 0; i < numPoints; i++) {
+//						const DefRoutingPointDscp & pt = segment.clsRoutingPoints[i];
+//						pos[i].set(pt.clsPos[X], pt.clsPos[Y]);
+//						x[i] = pos[i].x;
+//						y[i] = pos[i].y;
+//						if(pt.clsExtension)
+//						ext[i] = pt.clsExtension;
+//						else 
+//							ext[i] = NULL;
+//						if (pt.clsHasVia) {
+//							hasVia = true;
+//							viaName = pt.clsViaName;
+//						}
+//						if (pt.clsHasRectangle) {
+//							hasRect = true;
+//							rect = pt.clsRect;
+//						}
+//
+//					} // end for 
+//					defwNetPathPointWithExt(numPoints, x, y, ext);
+//
+//					free((double*) x);
+//					free((double*) y);
+//					free((double*) ext);
+					if (hasVia)
+						defwNetPathViaWithOrient(viaName.c_str(), -1);
+					if (hasRect)
+						defwNetPathRect(rect[LOWER][X], rect[LOWER][Y], rect[UPPER][X], rect[UPPER][Y]);
 				} // end for 
-				defwNetPathPoint(numPoints, x, y);
-				
-				free((double*) x);
-				free((double*) y);
-				if(hasVia)
-					defwNetPathViaWithOrient(viaName.c_str(), -1);
-				if(hasRect)
-					defwNetPathRect(rect[LOWER][X], rect[LOWER][Y], rect[UPPER][X], rect[UPPER][Y]);
-			}
-			
-		}
-		defwNetPathEnd();
+
+			} // end for 
+			defwNetPathEnd();
+		} // end if 
 		status = defwNetEndOneNet();
 		CHECK_STATUS(status);
 	} // end for 

@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,8 +91,23 @@ public:
 	onPostInstanceCreate(Rsyn::Instance instance) override;
 
 	virtual void
-	onPostCellRemap(Rsyn::Cell cell, Rsyn::LibraryCell oldLibraryCell) override;
+	onPreInstanceRemove(Rsyn::Instance instance) override;
 	
+	virtual void
+	onPostNetCreate(Rsyn::Net net) override;
+
+	virtual void
+	onPreNetRemove(Rsyn::Net net) override;
+
+	virtual void
+	onPostCellRemap(Rsyn::Cell cell, Rsyn::LibraryCell oldLibraryCell) override;
+
+	virtual void
+	onPostPinConnect(Rsyn::Pin pin) override;
+
+	virtual void
+	onPrePinDisconnect(Rsyn::Pin pin) override;
+
 	////////////////////////////////////////////////////////////////////////////
 	// Timing Properties
 	////////////////////////////////////////////////////////////////////////////	
@@ -234,7 +249,7 @@ private:
 	std::set<Rsyn::Pin> floatingStartpoints;
 	
 	std::set<Rsyn::Net> dirtyNets;
-	std::set<Rsyn::Instance> clsDirtyTimingCells;	
+	std::set<Rsyn::Instance> dirtyInstances;	
 	
 	void timingBuildTimingArcs_SetupBacktrackEdge(
 			TimingArc &arc, 
@@ -503,7 +518,7 @@ public:
 	//! @note  Changes observed via Rsyn::Design do not need to be notified as
 	//!        the timer already handle that internally. A typical change that
 	//!        the timer is unaware of is a placement change.
-	void dirtyInstance(Rsyn::Instance instance) { clsDirtyTimingCells.insert(instance); }
+	void dirtyInstance(Rsyn::Instance instance) { dirtyInstances.insert(instance); }
 	
 	//! @brief Notifies the timer about a change in a net.
 	//! @note  If you mark an instance as dirty automatically all nets connected

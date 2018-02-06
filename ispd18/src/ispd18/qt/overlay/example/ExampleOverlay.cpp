@@ -1,13 +1,14 @@
 #include "ExampleOverlay.h"
 
-#include "rsyn/session/Session.h"
-#include "rsyn/phy/PhysicalDesign.h"
+#include <Rsyn/Session>
+#include <Rsyn/PhysicalDesign>
 
-#include "rsyn/qt/GraphicsView.h"
+#include "rsyn/qt/graphics/view/layout/LayoutGraphicsScene.h"
 
-#include <limits>
-#include <QtWidgets>
+#include <QPen>
+#include <QBrush>
 #include <QColor>
+#include <QPainter>
 
 // -----------------------------------------------------------------------------
 
@@ -15,10 +16,7 @@ namespace RsynExample {
 
 // -----------------------------------------------------------------------------
 
-ExampleOverlay::ExampleOverlay() :
-		Rsyn::GraphicsOverlay("Example Overlay", nullptr) {
-	setZValue(100);
-	setVisible(false);
+ExampleOverlay::ExampleOverlay() {
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -29,7 +27,7 @@ ExampleOverlay::~ExampleOverlay() {
 // -----------------------------------------------------------------------------
 
 bool
-ExampleOverlay::init(Rsyn::GraphicsView *view, std::vector<Rsyn::GraphicsLayerDescriptor> &visibilityItems) {
+ExampleOverlay::init(Rsyn::LayoutGraphicsScene *scene, std::vector<Rsyn::GraphicsLayerDescriptor> &visibilityItems) {
 	Rsyn::Session session;
 	Rsyn::PhysicalDesign physicalDesign = session.getPhysicalDesign();
 
@@ -37,53 +35,58 @@ ExampleOverlay::init(Rsyn::GraphicsView *view, std::vector<Rsyn::GraphicsLayerDe
 		return false;
 
 	const Bounds &coreBounds = physicalDesign.getPhysicalDie().getBounds();
-	bounds = QRectF(coreBounds.getX(), coreBounds.getY(),
+	clsCoreBounds = QRectF(coreBounds.getX(), coreBounds.getY(),
 			coreBounds.getWidth(), coreBounds.getHeight());
 
+	visibilityItems.push_back(Rsyn::GraphicsLayerDescriptor("Overlays", true)); // @todo should not be necessary, but it is for now
 	visibilityItems.push_back(Rsyn::GraphicsLayerDescriptor("Overlays/Example", false));
-	view->registerObserver(this);
 	return true;
 } // end method
 
 // -----------------------------------------------------------------------------
 
 void
-ExampleOverlay::onChangeVisibility(const std::string &key, const bool visible) {
-	if (key == "Overlays/Example") {
-		setVisible(visible);
-	} // end if
-} // end method
+ExampleOverlay::render(QPainter *painter, const float lod, const QRectF &exposedRect) {
+	if (!getScene()->getVisibility("Overlays/Example"))
+		return;
 
-// -----------------------------------------------------------------------------
-
-void
-ExampleOverlay::onChangePhysicalLayerVisibility(const Rsyn::PhysicalLayer &layer, const bool visible) {
-} // end method
-
-// -----------------------------------------------------------------------------
-
-void
-ExampleOverlay::paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) {
 	QPen pen;
 	pen.setWidth(0);
 	pen.setColor(Qt::gray);
 
 	painter->setPen(pen);
-	painter->drawLine(bounds.left(), bounds.bottom(), bounds.right(), bounds.top());
-	painter->drawLine(bounds.left(), bounds.top(), bounds.right(), bounds.bottom());
+	painter->drawLine(clsCoreBounds.left(), clsCoreBounds.bottom(), clsCoreBounds.right(), clsCoreBounds.top());
+	painter->drawLine(clsCoreBounds.left(), clsCoreBounds.top(), clsCoreBounds.right(), clsCoreBounds.bottom());
 
-	const int fontSize = 16;
-	QFont font("Times", fontSize);
-	painter->setFont(font);
+	{ // Render a text in viewport coordinates.
+		// Save painter state.
+		painter->save();
 
-	const double scaleValue = scale()/painter->transform().m11();
-	painter->save();
-	painter->translate(bounds.x(), bounds.y() + bounds.height());
-	painter->scale(scaleValue, -scaleValue);
-	painter->setPen(QColor(0, 0, 0));
-	painter->drawText(fontSize * 0.5, fontSize * 1.5, QString(QString::fromStdString(
-			"This is an example of overlay...")));
-	painter->restore();
+		// Map core bounds (in scene coordinates) to viewport coordinates.
+		const QRectF mappedCoreBounds = painter->worldTransform().mapRect(clsCoreBounds);
+
+		// Set the world transform to the identity matrix so that everything is
+		// rendered in viewport (i.e. pixels) coordinates.
+		painter->setWorldTransform(QTransform());
+
+		// Compute the width of the text (in pixels).
+		const int fontSize = 14;
+
+		const QFont font("Times", fontSize);
+		painter->setFont(font);
+
+		const int offsetX = 5; // in pixels
+		const int offsetY = fontSize + 5; // in pixels
+
+		painter->setPen(QColor(0, 0, 0));
+		painter->drawText(
+				mappedCoreBounds.x() + offsetX,
+				mappedCoreBounds.y() + offsetY,
+				"This is an overlay...");
+
+		// Restore painter state.
+		painter->restore();
+	} // end block
 } // end method
 
 // -----------------------------------------------------------------------------

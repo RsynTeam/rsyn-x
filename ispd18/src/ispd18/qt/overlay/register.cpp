@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#include "rsyn/session/Session.h"
-#include "rsyn/qt/MainWindow.h"
+#include <Rsyn/Session>
+#include "rsyn/qt/graphics/view/layout/LayoutGraphicsScene.h"
 
 // Overlays
 #include "ispd18/qt/overlay/example/ExampleOverlay.h"
@@ -22,7 +22,6 @@
 // Registration
 namespace Rsyn {
 static Startup registerOverlays([]{
-	MainWindow::registerOverlay<RsynExample::ExampleOverlay>();
+	LayoutGraphicsScene::registerOverlay<RsynExample::ExampleOverlay>();
 });
 } // end namespace
-

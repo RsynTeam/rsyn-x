@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,6 +66,7 @@ bool ISPD2012Reader::load(const Rsyn::Json & config) {
 			optionLibrary;
 
 	clsDesign = clsSession.getDesign();
+	clsLibrary = clsSession.getLibrary();
 	{ // Liberty
 		Stepwatch watchParsingLiberty("Parsing Liberty");
 		LibertyControlParser libParser;
@@ -109,7 +110,7 @@ bool ISPD2012Reader::load(const Rsyn::Json & config) {
 
 	{ // Scenario
 		Stepwatch watchScenario("Initializing scenario manager");
-		scenario->init(clsDesign, libInfo, libInfo, sdcInfo);
+		scenario->init(clsDesign, clsLibrary, libInfo, libInfo, sdcInfo);
 		watchScenario.finish();
 	} // end block
 

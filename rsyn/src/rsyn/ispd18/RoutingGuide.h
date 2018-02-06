@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,13 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
+ 
 /* 
  * File:   RoutingGuide.h
  * Author: jucemar
@@ -26,11 +20,11 @@
  * Created on 21 de Dezembro de 2016, 17:47
  */
 
-#ifndef ISPD18_ROUTINGGUIDE
-#define ISPD18_ROUTINGGUIDE
+#ifndef RSYN_ISPD18_ROUTING_GUIDE_H
+#define RSYN_ISPD18_ROUTING_GUIDE_H
 
 #include "rsyn/session/Service.h"
-#include "rsyn/session/Session.h"
+#include <Rsyn/Session>
 #include "rsyn/ispd18/Guide.h"
 #include "rsyn/io/parser/guide-ispd18/GuideDescriptor.h"
 

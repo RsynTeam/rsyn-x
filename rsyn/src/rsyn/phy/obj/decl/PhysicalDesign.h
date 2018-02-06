@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 #ifndef PHYSICALDESIGN_PHYSICALDESIGN_H
 #define PHYSICALDESIGN_PHYSICALDESIGN_H
 
@@ -216,10 +216,25 @@ public:
 	//! @brief	Returns the total number of vias.
 	std::size_t getNumPhysicalVias() const;
 	//! @brief	Returns a vector reference to the vector of PhysicalVias. 
-	const std::vector<PhysicalVia> & allPhysicalVias() const;
+	const std::vector<Rsyn::PhysicalVia> & allPhysicalVias() const;
 
 	std::size_t getNumPhysicalTracks()const;
-	const std::vector<PhysicalTrack> & allPhysicalTracks() const;
+	
+	int getNumPhysicalTracks(Rsyn::PhysicalLayer layer) const;
+	
+	const std::vector<Rsyn::PhysicalTracks> & allPhysicalTracks() const;
+	
+	const std::vector<Rsyn::PhysicalTracks>  & allPhysicalTracks(Rsyn::PhysicalLayer layer) const;
+	
+	bool hasPhysicalTracks(Rsyn::PhysicalLayer layer) const;
+	
+	const std::vector<Rsyn::PhysicalRoutingGrid> & allPhysicalRoutingGrids() const;
+	
+	Rsyn::PhysicalRoutingGrid getPhysicalRoutingGrid(Rsyn::PhysicalLayer layer) const;
+	
+	bool hasPhysicalRoutingGrid(Rsyn::PhysicalLayer layer) const;
+	
+	int getNumPhysicalRoutingGrids() const;
 	
 	//! @brief	Returns the total number of spacing objects.  
 	std::size_t getNumPhysicalSpacing() const;
@@ -249,6 +264,10 @@ public:
 	std::size_t getNumRows() const;
 	//! @brief Iterates over all Physical Rows. 
 	Range<ListCollection<PhysicalRowData, PhysicalRow>> allPhysicalRows();
+	
+	//! @brief Returns the LayersViasManager
+	//! @comment Given a layer is possible to get all vias which connect to the bottom or top routing layers.
+	Rsyn::LayerViaManager getLayerViaManager() const;
 
 protected:
 	//! @brief initializes the Rsyn::PhysicalSite objects into Rsyn::PhysicalDesign.
@@ -279,12 +298,11 @@ public: // Temporary for the contest debug
 protected:
 	//! @brief Initializes Rsyn::PhysicalSpecialNet into Ryn::PhysicalDesign.
 	void addPhysicalSpecialNet(const DefSpecialNetDscp & specialNet);
-	//! @brief Initializes Rsyn::PhysicalWire object
-	void addSpecialWireNet(const DefWireDscp & wire, PhysicalWire phWire, const bool isSpecialNet = false);
-	//! @brief Initializes Rsyn::PhysicalWireSegment object
-	void addWireSegment(const DefWireSegmentDscp & segmentDscp, PhysicalWireSegment phWireSegment, const bool isSpecialNet = false);
-	//! @brief TODO
-	void addPhysicalTrack(const DefTrackDscp &track);
+	//! @brief Adds a track.
+	void addPhysicalTracks(const DefTrackDscp &track);
+	//! @brief Inits routing grid
+	void initRoutingGrid();
+	//! @brief Adds a via.
 	void addPhysicalDesignVia(const DefViaDscp & via);
 	//! @brief initializes the Rsyn::PhysicalSpacing objects into Rsyn::PhysicalDesign.
 	void addPhysicalSpacing(const LefSpacingDscp & spacing);
@@ -298,9 +316,9 @@ protected:
 	//! @warning works only for rectangles 
 	void mergeBounds(const std::vector<Bounds> & source, std::vector<Bounds> & target, const Dimension dim = X);
 
-	//! @brief Returns the extended position of a point in a wire segment.
-	DBUxy getExtendedPosition(const DBUxy p0, const DBUxy p1, const DBU extension) const;
-
+	//! @brief inits the manager of the layers and vias.
+	void initLayerViaManager();
+	
 private:
 	//! @brief Returns the Rsyn::PhysicalRow unique identifier.
 	PhysicalIndex getId(Rsyn::PhysicalRow phRow) const;
@@ -310,10 +328,6 @@ private:
 
 	//! @brief Returns the Rsyn::PhysicalSpacing unique identifier.
 	PhysicalIndex getId(Rsyn::PhysicalSpacing spacing) const;
-
-	//! @brief Post-processing for wire segments. Currently it sets the start
-	//! and end point positions for segments taking into account extensions.
-	void postProcessWireSegment(Rsyn::PhysicalWireSegment phWireSegment);
 
 public:
 	//! @details Creates the physical object to handle the physical object extensions.

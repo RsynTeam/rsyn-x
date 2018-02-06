@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/session/Service.h"
-#include "rsyn/phy/PhysicalDesign.h"
+#include <Rsyn/PhysicalDesign>
 #include "rsyn/model/routing/RCTree.h"
 #include "rsyn/model/routing/RoutingTopology.h"
 #include "rsyn/model/routing/RoutingEstimationModel.h"

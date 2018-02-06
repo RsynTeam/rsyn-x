@@ -1,3 +1,18 @@
+/* Copyright 2014-2018 Rsyn
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -24,8 +39,8 @@
 #include "rsyn/model/routing/DefaultRoutingEstimationModel.h"
 #include "rsyn/model/routing/DefaultRoutingExtractionModel.h"
 #include "rsyn/model/library/LibraryCharacterizer.h"
-#include "rsyn/phy/PhysicalDesign.h"
-#include "rsyn/phy/PhysicalDesign.h"
+#include <Rsyn/PhysicalDesign>
+#include <Rsyn/PhysicalDesign>
 #include "rsyn/util/Stepwatch.h"
 #include "rsyn/model/timing/Timer.h"
 #include "rsyn/model/routing/RsttRoutingEstimatorModel.h"
@@ -236,12 +251,13 @@ void GenericReader::parseSDCFile() {
 
 void GenericReader::initializeAuxiliarInfrastructure() {
 	Rsyn::Design design = session.getDesign();
+	Rsyn::Library library = session.getLibrary();
 
 	if (enableTiming) {
 		Stepwatch watchScenario("Loading scenario");
 		session.startService("rsyn.scenario",{});
 		Rsyn::Scenario* scenario = session.getService("rsyn.scenario");
-		scenario->init(design, libInfo, libInfo, sdcInfo);
+		scenario->init(design, library, libInfo, libInfo, sdcInfo);
 		watchScenario.finish();
 
 		
@@ -305,7 +321,7 @@ void GenericReader::initializeAuxiliarInfrastructure() {
 		Stepwatch watchInitLogicalEffort("Library characterization");
 		session.startService("rsyn.libraryCharacterizer",{});
 		LibraryCharacterizer *libc = session.getService("rsyn.libraryCharacterizer");
-		libc->runLibraryAnalysis(design, timingModel);
+		libc->runLibraryAnalysis(design, library, timingModel);
 		watchInitLogicalEffort.finish();
 
 		Stepwatch updateTiming("Updating timing");

@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@
 #ifndef RSYN_ICCAD15READER_H
 #define RSYN_ICCAD15READER_H
 
-#include "rsyn/session/Session.h"
+#include <Rsyn/Session>
 
 #include "rsyn/core/Rsyn.h"
 
@@ -51,6 +51,7 @@ protected:
 	Timer *clsTimer;
 	Scenario *clsScenario;
 	Rsyn::Design clsDesign;
+	Rsyn::Library clsLibrary;
 	Rsyn::Module clsModule;
 	TimingModel *clsTimingModel = nullptr;
 	RoutingEstimator *clsRoutingEstimator = nullptr;

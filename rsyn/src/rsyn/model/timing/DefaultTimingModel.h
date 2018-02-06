@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public:
 	virtual void stop() override;
 	
 	virtual void
-	onPostInstancePlacementChange(Rsyn::Instance instance) override;
+	onPostInstanceMove(Rsyn::Instance instance) override;
 private:
 	// Design.
 	Rsyn::Design clsDesign;

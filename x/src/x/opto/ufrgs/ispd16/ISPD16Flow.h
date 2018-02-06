@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 #ifndef ISPD16_FLOW_OPTO_H
 #define ISPD16_FLOW_OPTO_H
 
-#include "rsyn/session/Session.h"
+#include <Rsyn/Session>
 
 namespace Rsyn {
 class Timer;

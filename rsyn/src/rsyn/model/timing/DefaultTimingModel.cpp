@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,10 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 #include "DefaultTimingModel.h"
 
-#include "rsyn/session/Session.h"
+#include <Rsyn/Session>
 #include "rsyn/model/timing/Timer.h"
 
 namespace Rsyn {
@@ -40,7 +40,7 @@ void DefaultTimingModel::stop() {
 
 // -----------------------------------------------------------------------------
 
-void DefaultTimingModel::onPostInstancePlacementChange(Rsyn::Instance instance) {
+void DefaultTimingModel::onPostInstanceMove(Rsyn::Instance instance) {
 	clsTimer->dirtyInstance(instance);
 } // end method
 

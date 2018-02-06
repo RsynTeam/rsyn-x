@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,8 @@
 #define NETLISTDECOMPOSER_H
 
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/session/Session.h"
-#include "rsyn/phy/PhysicalDesign.h"
+#include <Rsyn/Session>
+#include <Rsyn/PhysicalDesign>
 
 #include <unordered_set>
 #include <unordered_map>

@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,6 +68,7 @@ class LibraryArcData;
 class LibraryCellData;
 class LibraryModuleData;
 class DesignData;
+class LibraryData;
 
 class NetTagData;
 class InstanceTagData;
@@ -85,6 +86,7 @@ class LibraryArc;
 class LibraryCell;
 class LibraryModule;
 class Design;
+class Library;
 
 class AttributeInitializer;
 template<typename DefaultValueType> class AttributeInitializerWithDefaultValue;
@@ -194,7 +196,7 @@ enum DesignEventType {
 	EVENT_POST_CELL_REMAP,
 	EVENT_POST_PIN_CONNECT,
 	EVENT_PRE_PIN_DISCONNECT,
-	EVENT_POST_INSTANCE_PLACEMENT_CHANGE,
+	EVENT_POST_INSTANCE_MOVE,
 
 	NUM_DESIGN_EVENTS
 }; // end enum
@@ -296,6 +298,7 @@ public:
 #include "rsyn/core/obj/decl/LibraryCell.h"
 #include "rsyn/core/obj/decl/LibraryModule.h"
 #include "rsyn/core/obj/decl/Design.h"
+#include "rsyn/core/obj/decl/Library.h"
 
 // Object's Data
 #include "rsyn/core/obj/data/Object.h"
@@ -311,6 +314,7 @@ public:
 #include "rsyn/core/obj/data/LibraryCell.h"
 #include "rsyn/core/obj/data/LibraryModule.h"
 #include "rsyn/core/obj/data/Design.h"
+#include "rsyn/core/obj/data/Library.h"
 
 // Infra
 #include "rsyn/core/infra/Attribute.h"
@@ -330,6 +334,7 @@ public:
 #include "rsyn/core/obj/impl/LibraryCell.h"
 #include "rsyn/core/obj/impl/LibraryModule.h"
 #include "rsyn/core/obj/impl/Design.h"
+#include "rsyn/core/obj/impl/Library.h"
 
 // =============================================================================
 // Hashes

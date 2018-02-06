@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@
 #ifndef RSYN_ISPD2012READER_H
 #define RSYN_ISPD2012READER_H
 
-#include "rsyn/session/Session.h"
+#include <Rsyn/Session>
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/util/Json.h"
 
@@ -39,6 +39,7 @@ class ISPD2012Reader : public Reader {
 protected:
 	Rsyn::Session clsSession;
 	Rsyn::Design clsDesign;
+	Rsyn::Library clsLibrary;
 	Rsyn::Module clsModule;
 
 public:

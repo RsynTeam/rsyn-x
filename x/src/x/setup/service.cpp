@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,13 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 // HOW-TO
 // To register a step, just include its .h below and add a call to
 // "registerService<T>(name)" where T is the service class name and name how
 // the service will be referred to.
 
-#include "rsyn/session/Session.h"
+#include <Rsyn/Session>
 
 // Services
 #include "x/model/DefaultTimingModelWithIdealClock.h"

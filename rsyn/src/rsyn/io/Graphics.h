@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@
 // TODO: This class needs a deep clean up... 2016-10-31
 
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/phy/PhysicalDesign.h"
-#include "rsyn/session/Session.h"
+#include <Rsyn/PhysicalDesign>
+#include <Rsyn/Session>
 #include "rsyn/util/Color.h"
 #include "rsyn/util/Stipple.h"
 #include "rsyn/model/timing/types.h"

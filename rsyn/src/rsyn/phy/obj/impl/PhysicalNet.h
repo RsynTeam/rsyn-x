@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,20 @@
  */
 
 namespace Rsyn {
+
+// -----------------------------------------------------------------------------
+
+inline Rsyn::Net PhysicalNet::getNet() const {
+	return data? data->clsNet : nullptr;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline std::string PhysicalNet::getName() const {
+	return getNet().getName();
+} // end method
+
+// -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalNet::getHPWL() const {
 	return data->clsBounds.computeLength();
@@ -64,21 +78,9 @@ inline Rsyn::Pin PhysicalNet::getPinBoundary(const Boundary bound, const Dimensi
 
 // -----------------------------------------------------------------------------
 
-inline PhysicalRouting &PhysicalNet::getRouting() {
+inline const PhysicalRouting &PhysicalNet::getRouting() const {
 	return data->clsRouting;
 } // end method
-
-// -----------------------------------------------------------------------------
-
-inline const std::vector<Rsyn::PhysicalWire> & PhysicalNet::allWires() const {
-	return data->clsWires;
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-inline std::size_t PhysicalNet::getNumWires() const {
-	return data->clsWires.size();
-} // end method 
 
 // -----------------------------------------------------------------------------
 

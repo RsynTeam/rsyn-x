@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,10 @@ public:
 	//! @brief Constructs a Rsyn::PhysicalNet object with a null pointer to Rsyn::PhysicalNetData.
 	PhysicalNet(std::nullptr_t) : Proxy(nullptr) {}
 
+	//! @brief Returns the net associated to this physical net.
+	Rsyn::Net getNet() const;
+	//! @brief Returns the name of the physical net.
+	std::string getName() const;
 	//! @brief Returns the semi perimeter of the Bound Box from PhysicalNet.
 	//! @details In X is the length of net Bound Box for abscissa and in Y is 
 	//! the length of net Bound Box for ordinate. 
@@ -56,13 +60,7 @@ public:
 	//! in one of its demensions.
 	Rsyn::Pin getPinBoundary(const Boundary bound, const Dimension dim) const;
 	//! @brief Return the physical routing of this net.
-	PhysicalRouting &getRouting();
-
-	//! @brief Returns a reference to a vector that stores routed net wires.
-	const std::vector<Rsyn::PhysicalWire> & allWires() const;
-	
-	// !@brief Returns the number of wires.
-	std::size_t getNumWires() const;
+	const PhysicalRouting &getRouting() const;	
 }; // end class 
 
 } // end namespace 

@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 #ifndef RSYN_WRITER_H
 #define RSYN_WRITER_H
 
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/phy/PhysicalDesign.h"
+#include <Rsyn/PhysicalDesign>
 #include "rsyn/session/Service.h"
-#include "rsyn/session/Session.h"
+#include <Rsyn/Session>
 
 namespace Rsyn {
 class PhysicalService;
@@ -34,6 +34,7 @@ class Writer : public Service {
 private:
 	// Circuitry
 	Rsyn::Design clsDesign;
+	Rsyn::Library clsLibrary;
 	Rsyn::Module clsModule;
 
 	// Physical Design

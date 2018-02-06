@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 #ifndef RSYN_PHYSICAL_ROUTING_H
 #define RSYN_PHYSICAL_ROUTING_H
 
@@ -62,6 +62,8 @@ public:
 	void setSourceExtension(const DBU extension) {clsSourceExtension = extension;}
 	void setTargetExtension(const DBU extension) {clsTargetExtension = extension;}
 
+	bool convertToPolygon(Rsyn::Polygon &polygon) const;
+
 	void clear();
 
 	const std::vector<DBUxy> &allPoints() const {return clsPoints;}
@@ -97,7 +99,7 @@ public:
 	void setPosition(const DBUxy p) {clsPosition = p;}
 	void setVia(Rsyn::PhysicalVia via);
 
-	bool isValid();
+	bool isValid() const;
 
 private:
 
@@ -113,7 +115,12 @@ class PhysicalRoutingRect {
 public:
 	PhysicalRoutingRect() {};
 	PhysicalRoutingRect(const PhysicalRoutingRect & rect);
-	
+
+	DBU getX() const {return clsRect.getX();}
+	DBU getY() const { return clsRect.getY(); }
+	DBU getWidth() const { return clsRect.getWidth(); }
+	DBU getHeight() const { return clsRect.getHeight(); }
+
 	const Bounds &getRect() const {return clsRect;}
 	Rsyn::PhysicalLayer getLayer() const;
 
@@ -197,6 +204,9 @@ public:
 	const std::vector<PhysicalRoutingRect> &
 	allRects() const {return clsRects;}
 
+	//! @brief Removes all the wires, vias and rects.
+	void clear();
+	
 private:
 
 	std::vector<PhysicalRoutingWire> clsWires;

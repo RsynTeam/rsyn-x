@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
 #define RSYN_DEFAULT_ROUTING_ESTIMATION_MODEL_H
 
 #include "rsyn/core/Rsyn.h"
-#include "rsyn/phy/PhysicalDesign.h"
+#include <Rsyn/PhysicalDesign>
 #include "rsyn/session/Service.h"
-#include "rsyn/session/Session.h"
+#include <Rsyn/Session>
 #include "rsyn/model/scenario/Scenario.h"
 #include "rsyn/model/routing/RoutingEstimationModel.h"
 

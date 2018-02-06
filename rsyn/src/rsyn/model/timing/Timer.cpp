@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 #include <limits> 
 #include <iomanip> 
 
-#include "rsyn/session/Session.h"
+#include <Rsyn/Session>
 #include "rsyn/model/scenario/Scenario.h"
 
 #include "rsyn/model/timing/Timer.h"
@@ -146,10 +146,50 @@ void Timer::onPostInstanceCreate(Rsyn::Instance instance) {
 
 // -----------------------------------------------------------------------------
 
+void Timer::onPreInstanceRemove(Rsyn::Instance instance) {
+	for (Rsyn::Pin pin : instance.allPins()) {
+		Rsyn::Net net = pin.getNet();
+		if (net) {
+			dirtyNet(net);
+		} // end if
+	} // end for
+	dirtyInstances.erase(instance);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void Timer::onPostNetCreate(Rsyn::Net net) {
+	dirtyNet(net);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void Timer::onPreNetRemove(Rsyn::Net net) {
+	for (Rsyn::Pin pin : net.allPins()) {
+		dirtyInstance(pin.getInstance());
+	} // end for
+	dirtyNets.erase(net);
+} // end method
+
+// -----------------------------------------------------------------------------
+
 void Timer::onPostCellRemap(Rsyn::Cell cell, Rsyn::LibraryCell oldLibraryCell) {
-	//std::cout << "INFO: Timer was notified about a remap.\n";
 	initializeTimingCell(cell);
 	dirtyInstance(cell);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void Timer::onPostPinConnect(Rsyn::Pin pin) {
+	dirtyInstance(pin.getInstance());
+	dirtyNet(pin.getNet());
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void Timer::onPrePinDisconnect(Rsyn::Pin pin) {
+	dirtyInstance(pin.getInstance());
+	dirtyNet(pin.getNet());
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -1421,7 +1461,7 @@ void Timer::updateTimingFull() {
 	updateTiming_CriticalEndpoints();
 	
 	dirtyNets.clear();
-	clsDirtyTimingCells.clear();
+	dirtyInstances.clear();
 	clsForceFullTimingUpdate = false;
 	
 	clsStopwatchUpdateTiming.start();
@@ -1607,7 +1647,7 @@ void Timer::updateTimingIncremental() {
 		timingModel->beforeTimingUpdate(); // don't count this in the runtime
 		
 		clsStopwatchUpdateTiming.start();
-		for (Rsyn::Instance cell : clsDirtyTimingCells) {
+		for (Rsyn::Instance cell : dirtyInstances) {
 			for (Rsyn::Pin pin : cell.allPins()) {
 				Rsyn::Net net = pin.getNet();
 				if (net) {
@@ -1629,7 +1669,7 @@ void Timer::updateTimingIncremental() {
 
 		// Clear dirty cells and nets.
 		dirtyNets.clear();
-		clsDirtyTimingCells.clear();
+		dirtyInstances.clear();
 		
 		clsStopwatchUpdateTiming.stop();
 	} // end else

@@ -24,7 +24,7 @@
 
 #ifndef RSYN_NO_GUI
 #include <QApplication>
-#include "rsyn/qt/MainWindow.h"
+#include "rsyn/qt/window/MainWindow.h"
 #endif
 
 #include "rsyn/util/StreamLogger.h"
@@ -111,6 +111,11 @@ int main(int argc, char *argv[]) {
 				Q_INIT_RESOURCE(images);
 
 				QApplication app(argc, argv);
+				
+				QCoreApplication::setOrganizationName("Rsyn");
+				QCoreApplication::setOrganizationDomain("rsyn.design");
+				QCoreApplication::setApplicationName("Rsyn");				
+				
 				#ifdef __APPLE__
 					setlocale(LC_ALL, "en_US.UTF-8");
 				#else

@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/session/Service.h"
-#include "rsyn/phy/PhysicalDesign.h"
+#include <Rsyn/PhysicalDesign>
 #include "rsyn/model/routing/RCTree.h"
 #include "rsyn/model/routing/RoutingEstimationModel.h"
 #include "rsyn/model/routing/RoutingExtractionModel.h"
@@ -32,7 +32,7 @@ namespace Rsyn {
 class Session;
 
 class RoutingEstimator : public Service, public Rsyn::DesignObserver {
-private:
+public:
 
 	// Indicates what type of update is required for a net. Add in order of 
 	// lowest priority meaning that a type with lower priority won't replace
@@ -46,6 +46,8 @@ private:
 
 		NUM_NET_UPDATE_TYPES
 	};
+
+private:
 
 	// This nets automatically handles priorities among different types of
 	// update. If one assign a lower priority update type than the current one,
@@ -105,8 +107,14 @@ public:
 	onPostCellRemap(Rsyn::Cell cell, Rsyn::LibraryCell oldLibraryCell) override;
 	
 	virtual void
-	onPostInstancePlacementChange(Rsyn::Instance instance) override;
-	
+	onPostPinConnect(Rsyn::Pin pin) override;
+
+	virtual void
+	onPrePinDisconnect(Rsyn::Pin pin) override;
+
+	virtual void
+	onPostInstanceMove(Rsyn::Instance instance) override;
+
 	Number getLocalWireResPerUnitLength() const { return routingExtractionModel->getLocalWireResPerUnitLength(); }
 	Number getLocalWireCapPerUnitLength() const { return routingExtractionModel->getLocalWireCapPerUnitLength(); }
 	

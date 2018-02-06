@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,20 +12,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 #ifndef RSYN_PHYSICAL_DESIGN_H
 #define RSYN_PHYSICAL_DESIGN_H
 
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <map>
 #include <iostream>
 #include <stddef.h>
 #include <algorithm>
 #include <limits>
 
-#include <boost/geometry.hpp>
-#include <boost/geometry/geometries/geometries.hpp>
+#include <Rsyn/Point>
+#include <Rsyn/Rect>
+#include <Rsyn/Polygon>
 
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/util/Bounds.h"
@@ -45,13 +47,6 @@ namespace Rsyn {
 // std::numeric_limts<PhysicalIndex>::max() reserved to invalid initialization object.
 typedef std::uint32_t PhysicalIndex;
 static PhysicalIndex INVALID_PHYSICAL_INDEX = std::numeric_limits<PhysicalIndex>::max();
-
-// Boost Polygon typedef 
-namespace boostGeometry = boost::geometry;
-typedef boostGeometry::model::point<DBU, 2, boostGeometry::cs::cartesian> PhysicalPolygonPoint;
-// The first type is the polygon point definition. The second type disable clockwise direction of polygon. 
-// The third type disable include again at polygon end the first point. Polygon is open. 
-typedef boostGeometry::model::polygon<PhysicalPolygonPoint, false, false> PhysicalPolygon;
 
 class PhysicalObject;
 
@@ -75,11 +70,11 @@ class PhysicalRegionData;
 class PhysicalGroupData;
 class PhysicalViaLayerData;
 class PhysicalViaData;
-class PhysicalWireSegmentData;
-class PhysicalWireData;
 class PhysicalSpecialWireData;
 class PhysicalSpecialNetData;
-class PhysicalTrackData;
+class PhysicalTracksData;
+class PhysicalRoutingGridData;
+class LayerViaManagerData;
 class PhysicalDesignData;
 
 class PhysicalRoutingPoint;
@@ -105,11 +100,11 @@ class PhysicalRegion;
 class PhysicalGroup;
 class PhysicalViaLayer;
 class PhysicalVia;
-class PhysicalWireSegment;
-class PhysicalWire;
 class PhysicalSpecialWire;
 class PhysicalSpecialNet;
-class PhysicalTrack;
+class PhysicalTracks;
+class PhysicalRoutingGrid;
+class LayerViaManager;
 class PhysicalDesign;
 
 class PhysicalAttributeInitializer;
@@ -145,11 +140,11 @@ class PhysicalRouting;
 #include "rsyn/phy/obj/decl/PhysicalGroup.h"
 #include "rsyn/phy/obj/decl/PhysicalViaLayer.h"
 #include "rsyn/phy/obj/decl/PhysicalVia.h"
-#include "rsyn/phy/obj/decl/PhysicalWireSegment.h"
-#include "rsyn/phy/obj/decl/PhysicalWire.h"
 #include "rsyn/phy/obj/decl/PhysicalSpecialWire.h"
 #include "rsyn/phy/obj/decl/PhysicalSpecialNet.h"
-#include "rsyn/phy/obj/decl/PhysicalTrack.h"
+#include "rsyn/phy/obj/decl/PhysicalTracks.h"
+#include "rsyn/phy/obj/decl/PhysicalRoutingGrid.h"
+#include "rsyn/phy/obj/decl/LayerViaManager.h"
 #include "rsyn/phy/obj/decl/PhysicalDesign.h"
 
 // Routing
@@ -177,11 +172,11 @@ class PhysicalRouting;
 #include "rsyn/phy/obj/data/PhysicalGroupData.h"
 #include "rsyn/phy/obj/data/PhysicalViaLayerData.h"
 #include "rsyn/phy/obj/data/PhysicalViaData.h"
-#include "rsyn/phy/obj/data/PhysicalWireSegmentData.h"
-#include "rsyn/phy/obj/data/PhysicalWireData.h"
 #include "rsyn/phy/obj/data/PhysicalSpecialWireData.h"
 #include "rsyn/phy/obj/data/PhysicalSpecialNetData.h"
-#include "rsyn/phy/obj/data/PhysicalTrackData.h"
+#include "rsyn/phy/obj/data/PhysicalTracksData.h"
+#include "rsyn/phy/obj/data/PhysicalRoutingGridData.h"
+#include "rsyn/phy/obj/data/LayerViaManagerData.h"
 #include "rsyn/phy/obj/data/PhysicalDesign.h"
 
 // Physical Infrastructure
@@ -212,11 +207,11 @@ class PhysicalRouting;
 #include "rsyn/phy/obj/impl/PhysicalGroup.h"
 #include "rsyn/phy/obj/impl/PhysicalViaLayer.h"
 #include "rsyn/phy/obj/impl/PhysicalVia.h"
-#include "rsyn/phy/obj/impl/PhysicalWireSegment.h"
-#include "rsyn/phy/obj/impl/PhysicalWire.h"
 #include "rsyn/phy/obj/impl/PhysicalSpecialWire.h"
 #include "rsyn/phy/obj/impl/PhysicalSpecialNet.h"
-#include "rsyn/phy/obj/impl/PhysicalTrack.h"
+#include "rsyn/phy/obj/impl/PhysicalTracks.h"
+#include "rsyn/phy/obj/impl/PhysicalRoutingGrid.h"
+#include "rsyn/phy/obj/impl/LayerViaManager.h"
 #include "rsyn/phy/obj/impl/PhysicalDesign.h"
 
 #endif /* PHYSICALDESIGN_PHYSICALDESIGN__H */

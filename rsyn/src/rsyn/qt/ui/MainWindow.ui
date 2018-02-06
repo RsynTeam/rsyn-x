@@ -226,6 +226,40 @@
                       </item>
                      </layout>
                     </widget>
+                    <widget class="QWidget" name="tab_3">
+                     <attribute name="title">
+                      <string>Settings</string>
+                     </attribute>
+                     <layout class="QVBoxLayout" name="verticalLayout_11">
+                      <item>
+                       <widget class="QCheckBox" name="checkBoxShowConnectivity">
+                        <property name="text">
+                         <string>Show Connectivity</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QCheckBox" name="checkBoxShowRoutingGuides">
+                        <property name="text">
+                         <string>Show Routing Guides</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="verticalSpacer_2">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </widget>
                    </widget>
                   </item>
                  </layout>
@@ -761,8 +795,8 @@
    <slot>onRunFlow()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1249</x>
-     <y>168</y>
+     <x>1070</x>
+     <y>146</y>
     </hint>
     <hint type="destinationlabel">
      <x>861</x>
@@ -777,8 +811,8 @@
    <slot>onUpdateRoutingEstimation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1249</x>
-     <y>237</y>
+     <x>1070</x>
+     <y>150</y>
     </hint>
     <hint type="destinationlabel">
      <x>571</x>
@@ -793,8 +827,8 @@
    <slot>onUpdateTiming()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1249</x>
-     <y>270</y>
+     <x>1070</x>
+     <y>150</y>
     </hint>
     <hint type="destinationlabel">
      <x>1273</x>
@@ -809,8 +843,8 @@
    <slot>onRunGlobalPlacement()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1249</x>
-     <y>339</y>
+     <x>1070</x>
+     <y>154</y>
     </hint>
     <hint type="destinationlabel">
      <x>1283</x>
@@ -825,8 +859,8 @@
    <slot>onRunLegalization()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1249</x>
-     <y>372</y>
+     <x>1070</x>
+     <y>154</y>
     </hint>
     <hint type="destinationlabel">
      <x>1275</x>
@@ -841,8 +875,8 @@
    <slot>onRunDetailedPlacement()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1249</x>
-     <y>405</y>
+     <x>1070</x>
+     <y>154</y>
     </hint>
     <hint type="destinationlabel">
      <x>1277</x>
@@ -857,8 +891,8 @@
    <slot>onRunGlobalRouting()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1249</x>
-     <y>474</y>
+     <x>1070</x>
+     <y>158</y>
     </hint>
     <hint type="destinationlabel">
      <x>1277</x>
@@ -873,8 +907,8 @@
    <slot>onRunDetailedRouting()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1249</x>
-     <y>507</y>
+     <x>1070</x>
+     <y>158</y>
     </hint>
     <hint type="destinationlabel">
      <x>1277</x>
@@ -921,8 +955,8 @@
    <slot>onChangeObjectVisibility(QTreeWidgetItem*,int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1118</x>
-     <y>401</y>
+     <x>1072</x>
+     <y>264</y>
     </hint>
     <hint type="destinationlabel">
      <x>639</x>
@@ -969,12 +1003,44 @@
    <slot>onSearch()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1114</x>
-     <y>131</y>
+     <x>1070</x>
+     <y>146</y>
     </hint>
     <hint type="destinationlabel">
      <x>639</x>
      <y>359</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBoxShowRoutingGuides</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onShowRoutingGuides(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1072</x>
+     <y>281</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>821</x>
+     <y>734</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBoxShowConnectivity</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onShowConnectivity(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1033</x>
+     <y>269</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>629</x>
+     <y>-18</y>
     </hint>
    </hints>
   </connection>
@@ -1002,5 +1068,7 @@
   <slot>onChangeLayerVisibility(QTreeWidgetItem*,int)</slot>
   <slot>onUnselectAllRoutingLayers()</slot>
   <slot>onSearch()</slot>
+  <slot>onShowConnectivity(bool)</slot>
+  <slot>onShowRoutingGuides(bool)</slot>
  </slots>
 </ui>

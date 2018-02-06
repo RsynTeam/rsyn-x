@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,8 @@
  * limitations under the License.
  */
  
-#ifndef MATRIX_H
-#define	MATRIX_H
+#ifndef RSYN_MATRIX_H
+#define	RSYN_MATRIX_H
 
 #include <vector>
 using std::vector;
@@ -41,6 +41,7 @@ class DenseMatrix {
 		void initialize( const int numCols, const int numRows ) {
 			clsNumCols = numCols;
 			clsNumRows = numRows;
+			clsElements.clear();
 			clsElements.resize(clsNumCols * clsNumRows);
 		} // end method
 

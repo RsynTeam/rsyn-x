@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,8 @@
 #include <algorithm>
 #include <limits>
 #include "Jezz.h"
-#include "rsyn/session/Session.h"
-#include "rsyn/phy/PhysicalDesign.h"
+#include <Rsyn/Session>
+#include <Rsyn/PhysicalDesign>
 #include "rsyn/util/Bounds.h"
 #include "rsyn/util/StreamStateSaver.h"
 #include "rsyn/util/Stepwatch.h"
@@ -229,7 +229,7 @@ void Jezz::onPostInstanceCreate(Rsyn::Instance instance) {
 
 // -----------------------------------------------------------------------------
 
-void Jezz::onPostInstancePlacementChange(Rsyn::Instance instance) {
+void Jezz::onPostInstanceMove(Rsyn::Instance instance) {
 	if (instance.getType() == Rsyn::CELL) {
 		JezzNode *jezzNode = getJezzNode(instance);
 		if (jezzNode) {

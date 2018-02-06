@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -940,8 +940,8 @@ Design::registerObserver(T *observer) {
 		data->observers[EVENT_PRE_PIN_DISCONNECT].push_back(observer);
 	} // end if	
 
-	if (typeid (&DesignObserver::onPostInstancePlacementChange) != typeid (&T::onPostInstancePlacementChange)) {
-		data->observers[EVENT_POST_INSTANCE_PLACEMENT_CHANGE].push_back(observer);
+	if (typeid (&DesignObserver::onPostInstanceMove) != typeid (&T::onPostInstanceMove)) {
+		data->observers[EVENT_POST_INSTANCE_MOVE].push_back(observer);
 	} // end if
 
 } // end method
@@ -962,9 +962,9 @@ Design::unregisterObserver(DesignObserver *observer) {
 inline
 void
 Design::notifyInstancePlaced(Rsyn::Instance instance, Rsyn::DesignObserver *ignoreObserver) {
-	for (DesignObserver * observer : data->observers[EVENT_POST_INSTANCE_PLACEMENT_CHANGE]) {
+	for (DesignObserver * observer : data->observers[EVENT_POST_INSTANCE_MOVE]) {
 		if (observer != ignoreObserver) {
-			observer->onPostInstancePlacementChange(instance);
+			observer->onPostInstanceMove(instance);
 		} // end if
 	} // end for
 } // end method
@@ -1020,7 +1020,11 @@ Design::getTag(Rsyn::LibraryCell libraryCell) {
 
 inline
 Range<ListCollection<LibraryCellData, LibraryCell>>
-Design::allLibraryCells() {
+Design::allLibraryCells(const bool showDeprecatedMessage) {
+	if (showDeprecatedMessage) {
+		std::cout << "WARNING: Rsyn::Desing::allLibraryCells() is deprecated. "
+				"Use Rsyn::Library::allLibraryCells() instead.\n";
+	} // end method
 	return ListCollection<LibraryCellData, LibraryCell>(data->libraryCells);
 } // end method
 

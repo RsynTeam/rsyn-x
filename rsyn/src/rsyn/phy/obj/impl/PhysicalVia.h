@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,8 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
+ 
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -35,18 +34,6 @@ inline const std::string & PhysicalVia::getName() const {
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<Rsyn::PhysicalViaLayer> & PhysicalVia::allViaLayers() const {
-	return data->clsViaLayers;
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-inline std::size_t PhysicalVia::getNumLayers() const {
-	return data->clsViaLayers.size();
-} // end method 
-
-// -----------------------------------------------------------------------------
-
 inline bool PhysicalVia::isDesignVia() const {
 	return data->clsDesignVia;
 } // end method 
@@ -54,19 +41,19 @@ inline bool PhysicalVia::isDesignVia() const {
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalViaLayer PhysicalVia::getTopLayer() const {
-	return data->clsTopRoutingLayer;
+	return PhysicalViaLayer(data->clsTopRoutingLayer);
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalViaLayer PhysicalVia::getCutLayer() const {
-	return data->clsCutLayer;
+	return PhysicalViaLayer(data->clsCutLayer);
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalViaLayer PhysicalVia::getBottomLayer() const {
-	return data->clsBottomRoutingLayer;
+	return PhysicalViaLayer(data->clsBottomRoutingLayer);
 } // end method 
 
 // -----------------------------------------------------------------------------

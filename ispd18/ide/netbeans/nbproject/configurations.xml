@@ -139,39 +139,46 @@
         <in>PhysicalService.cpp</in>
       </df>
       <df name="qt">
-        <df name="infra">
-          <in>GraphicsOverlay.cpp</in>
-          <in>PinMgr.cpp</in>
+        <df name="dialog">
+          <in>PropertyDialog.cpp</in>
         </df>
-        <df name="overlay">
-          <df name="floorplan">
-            <in>FloorplanOverlay.cpp</in>
-            <in>TrackOverlay.cpp</in>
+        <df name="graphics">
+          <df name="infra">
+            <df name="lookup">
+              <in>GraphicsItemGridLookup.cpp</in>
+            </df>
+            <in>GraphicsLayer.cpp</in>
+            <in>GraphicsScene.cpp</in>
+            <in>GraphicsView.cpp</in>
           </df>
-          <df name="highlight">
-            <in>HighlightOverlay.cpp</in>
-            <in>HoverItem.cpp</in>
+          <df name="util">
+            <in>GraphicsStipple.cpp</in>
+            <in>PinMgr.cpp</in>
           </df>
-          <df name="instance">
-            <in>Celltem.cpp</in>
-            <in>InstanceOverlay.cpp</in>
-            <in>MacroItem.cpp</in>
-          </df>
-          <df name="routing">
-            <in>RoutingItem.cpp</in>
-            <in>RoutingOverlay.cpp</in>
-          </df>
-          <df name="routingGuide">
-            <in>RoutingGuideItem.cpp</in>
-            <in>RoutingGuideOverlay.cpp</in>
+          <df name="view">
+            <df name="layout">
+              <df name="item">
+                <in>Cell.cpp</in>
+                <in>Macro.cpp</in>
+                <in>Rect.cpp</in>
+                <in>StandardCell.cpp</in>
+                <in>Via.cpp</in>
+                <in>Wire.cpp</in>
+              </df>
+              <df name="layer">
+                <in>Floorplan.cpp</in>
+                <in>Instance.cpp</in>
+                <in>Routing.cpp</in>
+              </df>
+              <in>LayoutGraphicsLayer.cpp</in>
+              <in>LayoutGraphicsScene.cpp</in>
+              <in>LayoutGraphicsView.cpp</in>
+            </df>
           </df>
         </df>
-        <in>GraphicsObserver.cpp</in>
-        <in>GraphicsScene.cpp</in>
-        <in>GraphicsStipple.cpp</in>
-        <in>GraphicsView.cpp</in>
-        <in>MainWindow.cpp</in>
-        <in>PropertyDialog.cpp</in>
+        <df name="window">
+          <in>MainWindow.cpp</in>
+        </df>
         <in>QtUtils.cpp</in>
       </df>
       <df name="session">
@@ -183,6 +190,9 @@
         <in>Shell.cpp</in>
       </df>
       <df name="util">
+        <df name="geometry">
+          <in>Polygon.cpp</in>
+        </df>
         <in>Logger.cpp</in>
         <in>RCTreeExtractor.cpp</in>
         <in>Stepwatch.cpp</in>
@@ -335,6 +345,7 @@
             <incDir>
               <pElem>../../build/release</pElem>
               <pElem>../..</pElem>
+              <pElem>../../../rsyn/src/rsyn/export</pElem>
               <pElem>../../../rsyn/src</pElem>
               <pElem>../../../rsyn/include</pElem>
               <pElem>../../src</pElem>
@@ -362,17 +373,6 @@
             <incDir>
               <pElem>../../build/release</pElem>
               <pElem>../..</pElem>
-              <pElem>../../../rsyn/src</pElem>
-              <pElem>../../../rsyn/include</pElem>
-              <pElem>../../src</pElem>
-              <pElem>../../include</pElem>
-              <pElem>/usr/include/x86_64-linux-gnu/qt5</pElem>
-              <pElem>/usr/include/x86_64-linux-gnu/qt5/QtWidgets</pElem>
-              <pElem>/usr/include/x86_64-linux-gnu/qt5/QtGui</pElem>
-              <pElem>/usr/include/x86_64-linux-gnu/qt5/QtCore</pElem>
-              <pElem>/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64</pElem>
-              <pElem>/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport</pElem>
-              <pElem>/usr/include/x86_64-linux-gnu/qt5/QtOpenGL</pElem>
             </incDir>
             <preprocessorList>
               <Elem>NDEBUG</Elem>
@@ -401,77 +401,77 @@
       <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/PI.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="2">
         <cTool flags="0">
         </cTool>
       </item>
       <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/attr_lookup.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="2">
         <cTool flags="0">
         </cTool>
       </item>
       <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/group_lookup.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="2">
         <cTool flags="0">
         </cTool>
       </item>
       <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/liberty_front_lex.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="2">
         <cTool flags="0">
         </cTool>
       </item>
       <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/liberty_parser.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="2">
         <cTool flags="0">
         </cTool>
       </item>
       <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/libhash.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="2">
         <cTool flags="0">
         </cTool>
       </item>
       <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/libstrtab.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="2">
         <cTool flags="0">
         </cTool>
       </item>
       <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/mymalloc.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="2">
         <cTool flags="0">
         </cTool>
       </item>
       <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/syntax_checks.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="2">
         <cTool flags="0">
         </cTool>
       </item>
       <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/syntax_decls.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="2">
         <cTool flags="0">
         </cTool>
       </item>
       <item path="../../../rsyn/src/rsyn/3rdparty/parser/liberty/token.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="2">
         <cTool flags="0">
         </cTool>
       </item>
@@ -811,140 +811,161 @@
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="../../../rsyn/src/rsyn/qt/GraphicsObserver.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/GraphicsScene.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/GraphicsStipple.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/GraphicsView.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/MainWindow.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/qt/PropertyDialog.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
       <item path="../../../rsyn/src/rsyn/qt/QtUtils.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool flags="1">
+          <incDir>
+            <pElem>../../../rsyn/src/rsyn/export</pElem>
+            <pElem>../../../rsyn/src</pElem>
+            <pElem>../../../rsyn/include</pElem>
+            <pElem>../../src</pElem>
+            <pElem>../../include</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtWidgets</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtGui</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtCore</pElem>
+            <pElem>/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtOpenGL</pElem>
+          </incDir>
         </ccTool>
       </item>
-      <item path="../../../rsyn/src/rsyn/qt/infra/GraphicsOverlay.cpp"
+      <item path="../../../rsyn/src/rsyn/qt/dialog/PropertyDialog.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="../../../rsyn/src/rsyn/qt/infra/PinMgr.cpp"
+      <item path="../../../rsyn/src/rsyn/qt/graphics/infra/GraphicsLayer.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/floorplan/FloorplanOverlay.cpp"
+      <item path="../../../rsyn/src/rsyn/qt/graphics/infra/GraphicsScene.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/floorplan/TrackOverlay.cpp"
+      <item path="../../../rsyn/src/rsyn/qt/graphics/infra/GraphicsView.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/highlight/HighlightOverlay.cpp"
+      <item path="../../../rsyn/src/rsyn/qt/graphics/infra/lookup/GraphicsItemGridLookup.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/highlight/HoverItem.cpp"
+      <item path="../../../rsyn/src/rsyn/qt/graphics/util/GraphicsStipple.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/instance/Celltem.cpp"
+      <item path="../../../rsyn/src/rsyn/qt/graphics/util/PinMgr.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/instance/InstanceOverlay.cpp"
+      <item path="../../../rsyn/src/rsyn/qt/graphics/view/layout/LayoutGraphicsLayer.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/instance/MacroItem.cpp"
+      <item path="../../../rsyn/src/rsyn/qt/graphics/view/layout/LayoutGraphicsScene.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/routing/RoutingItem.cpp"
+      <item path="../../../rsyn/src/rsyn/qt/graphics/view/layout/LayoutGraphicsView.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/routing/RoutingOverlay.cpp"
+      <item path="../../../rsyn/src/rsyn/qt/graphics/view/layout/item/Cell.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/routingGuide/RoutingGuideItem.cpp"
+      <item path="../../../rsyn/src/rsyn/qt/graphics/view/layout/item/Macro.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="../../../rsyn/src/rsyn/qt/overlay/routingGuide/RoutingGuideOverlay.cpp"
+      <item path="../../../rsyn/src/rsyn/qt/graphics/view/layout/item/Rect.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="../../../rsyn/src/rsyn/qt/graphics/view/layout/item/StandardCell.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="../../../rsyn/src/rsyn/qt/graphics/view/layout/item/Via.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="../../../rsyn/src/rsyn/qt/graphics/view/layout/item/Wire.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="../../../rsyn/src/rsyn/qt/graphics/view/layout/layer/Floorplan.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="../../../rsyn/src/rsyn/qt/graphics/view/layout/layer/Instance.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="../../../rsyn/src/rsyn/qt/graphics/view/layout/layer/Routing.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="../../../rsyn/src/rsyn/qt/window/MainWindow.cpp"
             ex="false"
             tool="1"
             flavor2="8">
@@ -1035,6 +1056,13 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="../../../rsyn/src/rsyn/util/geometry/Polygon.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="../../build/release/moc_GraphicsView.cpp"
             ex="true"
             tool="3"
@@ -1109,6 +1137,240 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <folder path="0">
+        <ccTool>
+          <incDir>
+            <pElem>../../../rsyn/src/rsyn/export</pElem>
+            <pElem>../../../rsyn/src</pElem>
+            <pElem>../../../rsyn/include</pElem>
+            <pElem>../../src</pElem>
+            <pElem>../../include</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtWidgets</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtGui</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtCore</pElem>
+            <pElem>/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtOpenGL</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="1/3rdparty">
+        <ccTool>
+          <incDir>
+            <pElem>../../../rsyn/src/rsyn/export</pElem>
+            <pElem>../../../rsyn/src</pElem>
+            <pElem>../../../rsyn/include</pElem>
+            <pElem>../../src</pElem>
+            <pElem>../../include</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtWidgets</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtGui</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtCore</pElem>
+            <pElem>/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtOpenGL</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="1/io">
+        <ccTool>
+          <incDir>
+            <pElem>../../../rsyn/src/rsyn/export</pElem>
+            <pElem>../../../rsyn/src</pElem>
+            <pElem>../../../rsyn/include</pElem>
+            <pElem>../../src</pElem>
+            <pElem>../../include</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtWidgets</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtGui</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtCore</pElem>
+            <pElem>/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtOpenGL</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="1/ispd18">
+        <ccTool>
+          <incDir>
+            <pElem>../../../rsyn/src/rsyn/export</pElem>
+            <pElem>../../../rsyn/src</pElem>
+            <pElem>../../../rsyn/include</pElem>
+            <pElem>../../src</pElem>
+            <pElem>../../include</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtWidgets</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtGui</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtCore</pElem>
+            <pElem>/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtOpenGL</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="1/model">
+        <ccTool>
+          <incDir>
+            <pElem>../../../rsyn/src/rsyn/export</pElem>
+            <pElem>../../../rsyn/src</pElem>
+            <pElem>../../../rsyn/include</pElem>
+            <pElem>../../src</pElem>
+            <pElem>../../include</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtWidgets</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtGui</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtCore</pElem>
+            <pElem>/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtOpenGL</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="1/phy">
+        <ccTool>
+          <incDir>
+            <pElem>../../../rsyn/src/rsyn/export</pElem>
+            <pElem>../../../rsyn/src</pElem>
+            <pElem>../../../rsyn/include</pElem>
+            <pElem>../../src</pElem>
+            <pElem>../../include</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtWidgets</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtGui</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtCore</pElem>
+            <pElem>/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtOpenGL</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="1/qt/dialog">
+        <ccTool>
+          <incDir>
+            <pElem>../../../rsyn/src/rsyn/export</pElem>
+            <pElem>../../../rsyn/src</pElem>
+            <pElem>../../../rsyn/include</pElem>
+            <pElem>../../src</pElem>
+            <pElem>../../include</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtWidgets</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtGui</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtCore</pElem>
+            <pElem>/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtOpenGL</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="1/qt/graphics">
+        <ccTool>
+          <incDir>
+            <pElem>../../../rsyn/src/rsyn/export</pElem>
+            <pElem>../../../rsyn/src</pElem>
+            <pElem>../../../rsyn/include</pElem>
+            <pElem>../../src</pElem>
+            <pElem>../../include</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtWidgets</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtGui</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtCore</pElem>
+            <pElem>/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtOpenGL</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="1/qt/window">
+        <ccTool>
+          <incDir>
+            <pElem>../../../rsyn/src/rsyn/export</pElem>
+            <pElem>../../../rsyn/src</pElem>
+            <pElem>../../../rsyn/include</pElem>
+            <pElem>../../src</pElem>
+            <pElem>../../include</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtWidgets</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtGui</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtCore</pElem>
+            <pElem>/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtOpenGL</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="1/session">
+        <ccTool>
+          <incDir>
+            <pElem>../../../rsyn/src/rsyn/export</pElem>
+            <pElem>../../../rsyn/src</pElem>
+            <pElem>../../../rsyn/include</pElem>
+            <pElem>../../src</pElem>
+            <pElem>../../include</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtWidgets</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtGui</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtCore</pElem>
+            <pElem>/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtOpenGL</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="1/shell">
+        <ccTool>
+          <incDir>
+            <pElem>../../../rsyn/src/rsyn/export</pElem>
+            <pElem>../../../rsyn/src</pElem>
+            <pElem>../../../rsyn/include</pElem>
+            <pElem>../../src</pElem>
+            <pElem>../../include</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtWidgets</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtGui</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtCore</pElem>
+            <pElem>/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtOpenGL</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="1/util">
+        <ccTool>
+          <incDir>
+            <pElem>../../../rsyn/src/rsyn/export</pElem>
+            <pElem>../../../rsyn/src</pElem>
+            <pElem>../../../rsyn/include</pElem>
+            <pElem>../../src</pElem>
+            <pElem>../../include</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtWidgets</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtGui</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtCore</pElem>
+            <pElem>/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtOpenGL</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="rsyn-x">
+        <ccTool>
+          <incDir>
+            <pElem>../../../rsyn/src/rsyn/export</pElem>
+            <pElem>../../../rsyn/src</pElem>
+            <pElem>../../../rsyn/include</pElem>
+            <pElem>../../src</pElem>
+            <pElem>../../include</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtWidgets</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtGui</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtCore</pElem>
+            <pElem>/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/qt5/QtOpenGL</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
     </conf>
   </confs>
 </configurationDescriptor>

@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ class LibraryCharacterizer : public Rsyn::Service {
 private:
 	
 	Rsyn::Design clsDesign;
+	Rsyn::Library clsLibrary;
 	TimingModel * clsTimingModel;
 	
 	struct LibraryArcCharacterization {
@@ -159,7 +160,7 @@ public:
 	virtual void start(const Rsyn::Json &params);
 	virtual void stop();
 
-	void runLibraryAnalysis(Rsyn::Design design, TimingModel * timingModel);
+	void runLibraryAnalysis(Rsyn::Design design, Rsyn::Library library, TimingModel * timingModel);
 	void logicalEffort_Report(std::ostream &out);	
 
 	LibraryArcCharacterization &getLibraryArcCharacterization(Rsyn::Arc arc) { return clsLibraryArcCharacterizations[arc.getLibraryArc()]; }

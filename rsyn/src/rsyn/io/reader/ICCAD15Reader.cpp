@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,8 @@
 #include "rsyn/io/parser/spef/SPEFControlParser.h"
 #include "rsyn/io/parser/verilog/SimplifiedVerilogReader.h"
 
-#include "rsyn/phy/PhysicalDesign.h"
-#include "rsyn/phy/PhysicalDesign.h"
+#include <Rsyn/PhysicalDesign>
+#include <Rsyn/PhysicalDesign>
 #include "rsyn/io/Graphics.h"
 #include "rsyn/model/routing/DefaultRoutingEstimationModel.h"
 #include "rsyn/model/routing/DefaultRoutingExtractionModel.h"
@@ -145,7 +145,7 @@ void ICCAD15Reader::openBenchmarkFromICCAD15()  {
 	
 	// Create the design.
 	clsDesign = session.getDesign();
-	
+	clsLibrary = session.getLibrary();
 	clsModule = clsDesign.getTopModule();
 	
 	DBU clsDesignDistanceUnit = (DBU)lefDscp.clsLefUnitsDscp.clsDatabase; // FIXME: should come from LEF
@@ -167,7 +167,7 @@ void ICCAD15Reader::openBenchmarkFromICCAD15()  {
 	Stepwatch watchScenario("Loading scenario");
 	session.startService("rsyn.scenario", {});
 	clsScenario = session.getService("rsyn.scenario");
-	clsScenario->init(clsDesign, libInfosEarly, libInfosLate, sdcInfos);
+	clsScenario->init(clsDesign, clsLibrary, libInfosEarly, libInfosLate, sdcInfos);
 	watchScenario.finish();
 
 	Stepwatch watchPopulateLayers("Initializing Physical Layer");
@@ -235,7 +235,7 @@ void ICCAD15Reader::openBenchmarkFromICCAD15()  {
 	Stepwatch watchInitLogicalEffort("Library characterization");
 	session.startService("rsyn.libraryCharacterizer", {});
 	LibraryCharacterizer *libc = session.getService("rsyn.libraryCharacterizer");
-	libc->runLibraryAnalysis(clsDesign, clsTimingModel);
+	libc->runLibraryAnalysis(clsDesign, clsLibrary, clsTimingModel);
 	watchInitLogicalEffort.finish();
 	
 	Stepwatch updateTiming("Updating timing");

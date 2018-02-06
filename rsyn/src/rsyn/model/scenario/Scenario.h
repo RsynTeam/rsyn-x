@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public:
 
 public:
 	
-	void init(Rsyn::Design &design,
+	void init(Rsyn::Design design, Rsyn::Library library,
 			const ISPD13::LIBInfo &libInfosEarly,
 			const ISPD13::LIBInfo &libInfosLate,
 			const ISPD13::SDCInfo &sdc);	
@@ -135,6 +135,7 @@ private:
 	void init_Mode(const TimingMode mode, const ISPD13::LIBInfo &lib);
 	
 	Rsyn::Design clsDesign;
+	Rsyn::Library clsLibrary;
 	
 	// Liberty
 	Rsyn::Attribute<Rsyn::LibraryCell, TimingLibraryCell> clsTimingLibraryCells;

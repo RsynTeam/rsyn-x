@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Rsyn
+/* Copyright 2014-2018 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,8 @@
 #include "rsyn/phy/util/BookshelfDscp.h"
 #include "rsyn/phy/util/BookshelfMapper.h"
 
-#include "rsyn/phy/PhysicalDesign.h"
-#include "rsyn/phy/PhysicalDesign.h"
+#include <Rsyn/PhysicalDesign>
+#include <Rsyn/PhysicalDesign>
 #include "rsyn/io/Graphics.h"
 
 #include "rsyn/util/Stepwatch.h"
