@@ -295,7 +295,7 @@ PhysicalRouting::PhysicalRouting(const PhysicalRouting & routing) {
 // -----------------------------------------------------------------------------
 
 void
-PhysicalRouting::addWire( const PhysicalRoutingWire &wire ) {
+PhysicalRouting::addWire(const PhysicalRoutingWire &wire) {
 	clsWires.push_back(wire);
 } // end method
 

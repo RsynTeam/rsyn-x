@@ -143,7 +143,15 @@ void Writer::stop() {
 // -----------------------------------------------------------------------------
 
 void Writer::writeDEF(const std::string & filename, const bool full) {
-	if (full) {
+	
+	if (filename != "") {
+		writeFullDEF(filename);
+	} else {
+		writeFullDEF(clsDesign.getName() + ".def");
+	} // end if-else 
+
+	
+	/*if (full) {
 		if (filename != "") {
 			writeFullDEF(filename);
 		} else {
@@ -156,6 +164,7 @@ void Writer::writeDEF(const std::string & filename, const bool full) {
 			writeICCAD15DEF(clsDesign.getName() + "-cada085.def");
 		} // end if-else 
 	} // end if-else 
+	 */
 } // end method
 
 // -----------------------------------------------------------------------------

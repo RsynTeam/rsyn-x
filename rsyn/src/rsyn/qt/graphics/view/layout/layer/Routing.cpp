@@ -211,6 +211,33 @@ RoutingLayoutGraphicsLayer::renderTracks(QPainter *painter, const float lod, con
 	pen.setStyle(Qt::DashLine);
 	painter->setPen(pen);
 
+	// Currently I don't clip the tracks (see below) as this creates artifacts
+	// when scrolling the viewport. The artifacts come from the fact that the
+	// dash pattern does not start at the same position.
+	if ((showPreferredDirection && (clsPhysicalLayer.getDirection() == Rsyn::VERTICAL)) || showNonPreferredDirection) {
+		const int numCols = clsPhysicalRoutingGrid.getNumCols();
+		for (int col = 0; col < numCols; col++) {
+			const DBUxy p0 = clsPhysicalRoutingGrid.getTrackMinPosition(Rsyn::VERTICAL, col);
+			const DBUxy p1 = clsPhysicalRoutingGrid.getTrackMaxPosition(Rsyn::VERTICAL, col);
+			painter->drawLine(p0.x, p0.y, p1.x, p1.y);
+		} // end for
+	} // end if
+
+	if ((showPreferredDirection && (clsPhysicalLayer.getDirection() == Rsyn::HORIZONTAL)) || showNonPreferredDirection) {
+		// Note: bottom and top are inverted as we inverted the y-axis.
+		const int numRows = clsPhysicalRoutingGrid.getNumRows();
+		for (int row = 0; row < numRows; row++) {
+			const DBUxy p0 = clsPhysicalRoutingGrid.getTrackMinPosition(Rsyn::HORIZONTAL, row);
+			const DBUxy p1 = clsPhysicalRoutingGrid.getTrackMaxPosition(Rsyn::HORIZONTAL, row);
+			painter->drawLine(p0.x, p0.y, p1.x, p1.y);
+		} // end for
+	} // end if
+
+	// The issue with the implementation below is that the dashes do not
+	// coincide and so artifacts appear when scrolling the viewport. For now,
+	// just draw all lines without clipping as this does not seem to affect
+	// much the rendering time.
+	/*
 	if ((showPreferredDirection && (clsPhysicalLayer.getDirection() == Rsyn::VERTICAL)) || showNonPreferredDirection) {
 		const int numCols = clsPhysicalRoutingGrid.getNumCols();
 		const int col0 = std::max(clsPhysicalRoutingGrid.getCol(exposedRect.left(), false) - 1, 0);
@@ -235,44 +262,6 @@ RoutingLayoutGraphicsLayer::renderTracks(QPainter *painter, const float lod, con
 			painter->drawLine(p0.x, p0.y, p1.x, p1.y);
 		} // end for
 	} // end if
-
-	/*
-	for (Rsyn::PhysicalTracks phTrack : clsPhysicalDesign.allPhysicalTracks()) {
-		Rsyn::PhysicalTrackDirection dir = phTrack.getDirection();
-		Rsyn::PhysicalTrackDirection reverse;
-		if(dir == Rsyn::PhysicalTrackDirection::TRACK_HORIZONTAL)
-			reverse = Rsyn::PhysicalTrackDirection::TRACK_VERTICAL;
-		else
-			reverse = Rsyn::PhysicalTrackDirection::TRACK_HORIZONTAL;
-		const DBU space = phTrack.getSpace();
-		for (Rsyn::PhysicalLayer phLayer : phTrack.allLayers()) {
-			if (phLayer != clsPhysicalLayer)
-				continue;
-
-	
-			const bool show =
-				(showNonPreferredDirection && isNonPreferredDiraction) ||
-				(showPreferredDirection && isPreferredDirection);
-
-			if (!show)
-				continue;
-
-			DBUxy p0;
-			DBUxy p1;
-
-			p0[dir] = phTrack.getLocation();
-			p1[dir] = phTrack.getLocation();
-
-			p0[reverse] = coreBounds[LOWER][reverse];
-			p1[reverse] = coreBounds[UPPER][reverse];
-
-			for (int i = 0; i < phTrack.getNumberOfTracks(); i++) {
-				painter->drawLine(p0.x, p0.y, p1.x, p1.y);
-				p0[dir] += space;
-				p1[dir] += space;
-			} // end for
-		} // end for
-	} // end for
 	*/
 } // end method
 
