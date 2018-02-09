@@ -49,8 +49,6 @@
 #define LOW 1
 #define LEFT 0
 #define RIGHT 1
-#define VERTICAL 1
-#define HORIZONTAL 0
 
 namespace Rsyn {
 
@@ -77,6 +75,8 @@ namespace Rsyn {
     private:
         const bool X = 0;
         const bool Y = 1;
+        const int VERTICAL = 1;
+        const int HORIZONTAL = 0;
 
         // Design.
         Design design;
