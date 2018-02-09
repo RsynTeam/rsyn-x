@@ -94,7 +94,6 @@
         </df>
         <in>Graphics.cpp</in>
         <in>Report.cpp</in>
-        <in>WebLogger.cpp</in>
         <in>Writer.cpp</in>
       </df>
       <df name="ispd18">
@@ -483,13 +482,6 @@
         </ccTool>
       </item>
       <item path="../../../rsyn/src/rsyn/io/Report.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="../../../rsyn/src/rsyn/io/WebLogger.cpp"
             ex="false"
             tool="1"
             flavor2="8">

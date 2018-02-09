@@ -43,13 +43,6 @@
 #include <string>
 #include <algorithm>
 
-#define ASC 0
-#define DESC 1
-#define UP 0
-#define LOW 1
-#define LEFT 0
-#define RIGHT 1
-
 namespace Rsyn {
 
     class RsttRoutingEstimatorModel : public RoutingEstimationModel, public Service {
@@ -77,6 +70,12 @@ namespace Rsyn {
         const bool Y = 1;
         const int VERTICAL = 1;
         const int HORIZONTAL = 0;
+        const int ASC = 0;
+        const int DESC = 0;
+        const int UP = 0;
+        const int LOW = 0;
+        const int LEFT = 0;
+        const int RIGHT = 0;
 
         // Design.
         Design design;

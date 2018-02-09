@@ -45,7 +45,6 @@
 
 #include "rsyn/io/parser/verilog/SimplifiedVerilogReader.h"
 #include "x/util/BlockageControl.h"
-#include "rsyn/io/WebLogger.h"
 #include "rsyn/io/image/SVGDrawingBoard.h"
 #include "rsyn/io/image/DrawingBoard.h"
 
@@ -166,7 +165,6 @@ void Infrastructure::init() {
 	clsLibraryCharacterizer = session.getService("rsyn.libraryCharacterizer");
 	clsRoutingEstimator = session.getService("rsyn.routingEstimator");
 	clsJezz = session.getService("rsyn.jezz");
-	clsWebLogger = session.getService("rsyn.webLogger", Rsyn::SERVICE_OPTIONAL);
 	clsBlockageControl = nullptr;
 
 	// Circuitry.
@@ -1365,37 +1363,6 @@ void Infrastructure::renderCriticalNetHistogram(const std::string &title) {
 		std::cout << histogramCriticalNetsWithNonCriticalSinks[i] << "\n";
 	} // end for
 	*/
-
-	if (clsWebLogger) {
-		Rsyn::Json json;
-		json["type"] = "bar";
-		
-		Rsyn::Json &data = json["data"];
-
-		data["labels"] = Rsyn::Json::array();
-		for (int i = 0; i < numBins; i++) {
-			std::ostringstream oss;
-			oss << std::setprecision(1) << std::fixed << (i/float(numBins));
-			data["labels"][i] = oss.str();
-		}
-
-		data["datasets"] = Rsyn::Json::array();
-		Rsyn::Json &dataset = data["datasets"][0];
-		dataset["label"] = "criticality";
-		dataset["backgroundColor"] = "rgba(255,99,132,0.7)";
-		dataset["borderColor"] = "rgba(255,99,132,1)";
-		for (int i = 0; i < numBins; i++) {
-			dataset["data"][i] = histogramCriticalNets[i];
-		}
-
-		clsWebLogger->renderHeading(title, 2);
-		clsWebLogger->renderText(oss1.str());
-		clsWebLogger->renderText(oss2.str());
-		clsWebLogger->renderChart(json);
-		clsWebLogger->renderLineBreak();
-	} // end if
-
-
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -1777,58 +1744,6 @@ void Infrastructure::reportDigest() {
 	cout << "Quality Score        : " << getQualityScore() << "\n";
 	cout << "--------------------------------------------------------------------------------\n";
 
-	if (clsWebLogger) {
-		clsWebLogger->renderHeading("ISPD16 Flow", 1);
-
-		Rsyn::SVGDrawingBoard board;
-
-		for (Rsyn::Instance instance : clsModule.allInstances()) {
-			if (instance.getType() != Rsyn::CELL)
-				continue;
-
-			Rsyn::Cell cell = instance.asCell();
-			Rsyn::PhysicalCell physicalCell = clsPhysicalDesign.getPhysicalCell(cell);
-			if (!instance.isMacroBlock())
-				continue;
-
-			const Bounds &bounds = physicalCell.getBounds();
-			board.drawRectangle(
-				bounds[LOWER][X], bounds[LOWER][Y],
-				bounds.computeLength(X), bounds.computeLength(Y));
-		} // end for
-
-		std::ostringstream oss;
-		
-		Rsyn::PhysicalDie phDie = clsPhysicalDesign.getPhysicalDie();
-		const Bounds &bounds = phDie.getBounds();
-		board.render(640, 480,
-				bounds[LOWER][X], bounds[LOWER][Y],
-				bounds[UPPER][X], bounds[UPPER][Y],
-				oss);
-		clsWebLogger->renderHtml(oss.str());
-		renderCriticalNetHistogram("initial");
-
-		{
-			Rsyn::DrawingBoard b;
-			b.setDrawingStyle(Rsyn::DrawingBoard::STROKE_AND_FILL);
-			b.setStrokeColor(Rsyn::DrawingBoard::BLACK);
-			
-			b.drawLine(0, 0, 50, 50);
-
-			b.setFillColor(Rsyn::DrawingBoard::SMOOTH_BLUE);
-			b.drawCircle(250, 250, 100);
-			b.drawText(150, 150, "Hello World");
-
-			b.setFillColor(Rsyn::DrawingBoard::SMOOTH_RED);
-			b.drawCubicCurve(250, 250, 300, 150, 400, 350, 450, 250);
-			//b.drawQuadraticCurve(0, 0, 50, 100, 100, 0);
-
-			b.setFillColor(Rsyn::DrawingBoard::SMOOTH_GREEN);
-			b.drawRectangle(300, 300, 150, 150);
-			b.test();
-		}
-
-	} // end if
 } // end method
 
 // -----------------------------------------------------------------------------

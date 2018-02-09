@@ -79,7 +79,6 @@ private:
  	BlockageControl * clsBlockageControl = nullptr;
 	Rsyn::RoutingEstimator * clsRoutingEstimator = nullptr;
 	Jezz * clsJezz = nullptr;
-	Rsyn::WebLogger * clsWebLogger = nullptr;
 
 	// keeping fixed data from input file.
 	Rsyn::Attribute<Rsyn::Instance, bool> clsFixedInInputFile;
