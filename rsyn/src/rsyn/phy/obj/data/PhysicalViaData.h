@@ -34,18 +34,15 @@ namespace Rsyn {
 class PhysicalViaData : public PhysicalObject {
 public:
 	std::string clsName;
-	Rsyn::PhysicalViaLayerData * clsTopRoutingLayer = nullptr;
-	Rsyn::PhysicalViaLayerData * clsCutLayer = nullptr;
-	Rsyn::PhysicalViaLayerData * clsBottomRoutingLayer = nullptr;
+	Rsyn::PhysicalViaLayerData *clsViaLayers[NUM_VIA_LAYERS];
 	bool clsDesignVia = false;
-	PhysicalViaData() = default;
+	PhysicalViaData() {
+		for (int i = 0; i < NUM_VIA_LAYERS; i++)
+			clsViaLayers[i] = nullptr;
+	}
 	~PhysicalViaData(){
-		if(clsTopRoutingLayer)
-			delete clsTopRoutingLayer;
-		if(clsCutLayer)
-			delete clsCutLayer;
-		if(clsBottomRoutingLayer)
-			delete clsBottomRoutingLayer;
+		for (int i = 0; i < NUM_VIA_LAYERS; i++)
+			delete clsViaLayers[i];
 	} // end destructor 
 }; // end class 
 

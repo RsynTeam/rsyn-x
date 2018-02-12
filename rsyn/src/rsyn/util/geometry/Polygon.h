@@ -23,6 +23,7 @@
 #include "rsyn/util/dbu.h"
 
 #include <Rsyn/Point>
+#include <Rsyn/Rect>
 
 namespace Rsyn {
 
@@ -58,17 +59,45 @@ public:
 	//! @brief Returns true if point is inside this polygon.
 	bool contains(const Point &point) const {
 		correct();
-		return boost::geometry::within(point, clsBoostPolygon) ;
+		return boost::geometry::within(point, clsBoostPolygon);
 	} // end method
 
 	//! @brief Returns the shortest distance from (x, y) to this polygon.
-	DBU distance(const DBU x, const DBU y) const {
+	FloatingPointDBU distance(const DBU x, const DBU y) const {
+		correct();
 		return distance(Point(x, y));
 	} // end method
 
-	//! @brief Returns the shortest distance from point to this polygon.
-	DBU distance(const Point &point) const {
+	//! @brief Returns the shortest distance from a point to this polygon.
+	FloatingPointDBU distance(const Point &point) const {
+		correct();
 		return boost::geometry::distance(point, clsBoostPolygon);
+	} // end method
+
+	//! @brief Returns the shortest distance from a rectangle to this polygon.
+	FloatingPointDBU distance(const Rect &rect) const {
+		correct();
+		return boost::geometry::distance(rect, clsBoostPolygon);
+	} // end method
+
+	//! @brief Returns the shortest distance from a polygon to this polygon.
+	FloatingPointDBU distance(const Polygon &poly) const {
+		correct();
+		return boost::geometry::distance(poly.clsBoostPolygon, clsBoostPolygon);
+	} // end method
+
+	//! @brief Returns true if a polygon to overlaps this polygon.
+	bool overlaps(const Rect &rect) const {
+		correct();
+		// Boost 1.58 does not support overlap among a box and a polygon
+		// directly so we first convert the rectangle to an equivalent polygon.
+		return boost::geometry::overlaps(rect.toPolygon().clsBoostPolygon, clsBoostPolygon);
+	} // end method
+
+	//! @brief Returns true if a polygon to overlaps this polygon.
+	bool overlaps(const Polygon &poly) const {
+		correct();
+		return boost::geometry::overlaps(poly.clsBoostPolygon, clsBoostPolygon);
 	} // end method
 
 	//! @brief Removes all points from this polygon.
@@ -106,7 +135,8 @@ public:
 private:
 
 	// @todo change to boost::geometry::model::ring
-	typedef boost::geometry::model::polygon<Rsyn::Point, false, false> BoostPolygon;
+	typedef boost::geometry::model::polygon<Rsyn::Point,
+			false /*clock-wise*/, false /*closed*/> BoostPolygon;
 
 	//! @brief Corrects the order of points in this polygon.
 	//! @note This is necessary to comply with boost::geometry, which assumes

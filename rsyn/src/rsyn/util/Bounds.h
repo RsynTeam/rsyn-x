@@ -175,7 +175,17 @@ public:
 	void moveTo( const DBU x, const DBU y ) { moveTo(DBUxy(x,y)); }
 	void moveCenterTo( const DBU x, const DBU y ) { moveCenterTo(DBUxy(x,y)); }
 	void translate( const DBU x, const DBU y ) { translate(DBUxy(x,y)); }
-		
+
+	Bounds getTranslated(const DBUxy displacement) const {
+		Bounds bounds = *this;
+		bounds.translate(displacement);
+		return bounds;
+	} // end method
+
+	Bounds getTranslated(const DBU x, const DBU y) const {
+		return getTranslated(DBUxy(x, y));
+	} // end method
+
 	// Multiple each coordinates by a scale factor. Useful when change the
 	// coordinate system.
 	void scaleCoordinates(const FloatingPointDBU scaling) {

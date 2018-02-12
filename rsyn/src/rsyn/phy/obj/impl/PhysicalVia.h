@@ -41,24 +41,28 @@ inline bool PhysicalVia::isDesignVia() const {
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalViaLayer PhysicalVia::getTopLayer() const {
-	return PhysicalViaLayer(data->clsTopRoutingLayer);
+	return PhysicalViaLayer(data->clsViaLayers[TOP_VIA_LAYER]);
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalViaLayer PhysicalVia::getCutLayer() const {
-	return PhysicalViaLayer(data->clsCutLayer);
+	return PhysicalViaLayer(data->clsViaLayers[CUT_VIA_LAYER]);
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalViaLayer PhysicalVia::getBottomLayer() const {
-	return PhysicalViaLayer(data->clsBottomRoutingLayer);
-} // end method 
+	return PhysicalViaLayer(data->clsViaLayers[BOTTOM_VIA_LAYER]);
+} // end method
 
 // -----------------------------------------------------------------------------
 
+inline Rsyn::PhysicalViaLayer PhysicalVia::getLayer(const PhysicalViaLayerType type) const {
+	return PhysicalViaLayer(data->clsViaLayers[type]);
+} // end method
 
+// -----------------------------------------------------------------------------
 
 } // end namespace 
 

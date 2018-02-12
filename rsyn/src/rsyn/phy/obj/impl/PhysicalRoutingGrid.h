@@ -88,37 +88,39 @@ inline int PhysicalRoutingGrid::getNumTracks() const {
 
 // -----------------------------------------------------------------------------
 
-inline int PhysicalRoutingGrid::getRow(const DBU posY, const bool clamp) const {
+inline int PhysicalRoutingGrid::getRow(const DBU posY, const RoundingStrategy roudingStrategy, const bool clamp) const {
 	const DBU pos = posY - getPosition(Y);
-	const int id = static_cast<int>(pos / getSpacing(Y));
-	return clamp? std::max(0, std::min(id, getNumRows() -1)) : id;
-} // end method 
+	const int index = FloatingPoint::round(pos / float(getSpacing(Y)), roudingStrategy);
+	return clamp? std::max(0, std::min(index, getNumRows() - 1)) : index;
+} // end method
 
 // -----------------------------------------------------------------------------
 
-inline int PhysicalRoutingGrid::getCol(const DBU posX, const bool clamp) const {
+inline int PhysicalRoutingGrid::getCol(const DBU posX, const RoundingStrategy roudingStrategy, const bool clamp) const {
 	const DBU pos = posX - getPosition(X);
-	const int id = static_cast<int>(pos / getSpacing(X));
-	return clamp? std::max(0, std::min(id, getNumCols() - 1)) : id;
+	const int index = FloatingPoint::round(pos / float(getSpacing(X)), roudingStrategy);
+	return clamp? std::max(0, std::min(index, getNumCols() - 1)) : index;
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalRoutingGrid::getPosition(const int col, const int row) const {
-	DBU MAX_DBU = std::numeric_limits<DBU>::max();
-	DBUxy pos(MAX_DBU, MAX_DBU);
-	if (row < 0 || row >= getNumRows() || col < 0 || col >= getNumCols())
-		return pos;
-	pos[X] = getColPosition(col);
-	pos[Y] = getRowPosition(row);
-	return pos;
-} // end method 
+	const DBU x = getColPosition(col);
+	const DBU y = getRowPosition(row);
+	return DBUxy(x, y);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBUxy PhysicalRoutingGrid::getSnappedPosition(const DBUxy pos, const RoundingStrategy roudingStrategy, const bool clamp) const {
+	const int col = getCol(pos.x, roudingStrategy, clamp);
+	const int row = getRow(pos.y, roudingStrategy, clamp);
+	return getPosition(col, row);
+} // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalRoutingGrid::getRowPosition(const int row) const {
-	if (row < 0 || row > getNumRows())
-		return std::numeric_limits<DBU>::max();
 	return getPosition(Y) + (getSpacing(Y) * row);
 } // end method 
 
@@ -131,8 +133,6 @@ inline DBU PhysicalRoutingGrid::getRowMaxPosition() const {
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalRoutingGrid::getColPosition(const int col) const {
-	if (col < 0 || col > getNumCols())
-		return std::numeric_limits<DBU>::max();
 	return getPosition(X) + (getSpacing(X) * col);
 } // end method 
 

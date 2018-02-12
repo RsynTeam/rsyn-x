@@ -91,6 +91,17 @@ enum PhysicalLayerType : std::int8_t {
 	NUM_PHY_LAYER = 5
 };
 
+
+enum PhysicalViaLayerType : std::int8_t {
+	INVALID_VIA_LAYER_TYPE = -1,
+	
+	BOTTOM_VIA_LAYER,
+	CUT_VIA_LAYER,
+	TOP_VIA_LAYER,
+
+	NUM_VIA_LAYERS
+};
+
 //! @brief Layer direction. 
 
 enum PhysicalLayerDirection : std::int8_t {

@@ -345,6 +345,8 @@ void PhysicalDesign::addPhysicalVia(const LefViaDscp & via) {
 	data->clsPhysicalVias.push_back(PhysicalVia(new PhysicalViaData()));
 	PhysicalVia phVia = data->clsPhysicalVias.back();
 	phVia->clsName = via.clsName;
+
+	std::vector<std::tuple<int, PhysicalViaLayerData *>> layers;
 	for (const LefViaLayerDscp & layerDscp : via.clsViaLayers) {
 		PhysicalViaLayerData * phViaLayer = new PhysicalViaLayerData();
 		phViaLayer->clsPhVia = phVia;
@@ -358,26 +360,17 @@ void PhysicalDesign::addPhysicalVia(const LefViaDscp & via) {
 			bds[LOWER][Y] = static_cast<DBU> (std::round(doubleRect[LOWER][Y]));
 			bds[UPPER][X] = static_cast<DBU> (std::round(doubleRect[UPPER][X]));
 			bds[UPPER][Y] = static_cast<DBU> (std::round(doubleRect[UPPER][Y]));
-		} // end for 
+		} // end for
 
-		// adding ordered physical layers of the via
-		if (phViaLayer->clsLayer.getType() == Rsyn::PhysicalLayerType::CUT) {
-			phVia->clsCutLayer = phViaLayer;
-		} else if (phViaLayer->clsLayer.getType() == Rsyn::PhysicalLayerType::ROUTING) {
-			if (phVia->clsBottomRoutingLayer == nullptr) {
-				phVia->clsBottomRoutingLayer = phViaLayer;
-				phVia->clsTopRoutingLayer = phViaLayer;
-			} else {
-				Rsyn::PhysicalLayer layer = phViaLayer->clsLayer;
-				Rsyn::PhysicalLayer bottom = phVia->clsBottomRoutingLayer->clsLayer;
-				if (layer.getIndex() < bottom.getIndex()) {
-					phVia->clsBottomRoutingLayer = phViaLayer;
-				} else {
-					phVia->clsTopRoutingLayer = phViaLayer;
-				} // end if-else 
-			} // end if-else 
-		} // end if-else 
-	} // end for 
+		assert(phViaLayer->clsLayer);
+		layers.push_back(std::make_tuple(phViaLayer->clsLayer.getIndex(), phViaLayer));
+	} // end for
+
+	std::sort(layers.begin(), layers.end());
+	assert(layers.size() == NUM_VIA_LAYERS);
+	for (int i = 0; i < NUM_VIA_LAYERS; i++) {
+		phVia->clsViaLayers[i] = std::get<1>(layers[i]);
+	} // end for
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -849,30 +842,20 @@ void PhysicalDesign::addPhysicalDesignVia(const DefViaDscp & via) {
 	phVia->clsDesignVia = true;
 	phVia->clsName = via.clsName;
 
+	std::vector<std::tuple<int, PhysicalViaLayerData *>> layers;
 	for (const DefViaLayerDscp & layerDscp : via.clsViaLayers) {
 		PhysicalViaLayerData * phLayer = new PhysicalViaLayerData(); 
 		phLayer->clsPhVia = phVia;
 		phLayer->clsBounds.push_back(layerDscp.clsBounds);
 		phLayer->clsLayer = getPhysicalLayerByName(layerDscp.clsLayerName);
-
-		// adding ordered physical layers of the via
-		if (phLayer->clsLayer.getType() == Rsyn::PhysicalLayerType::CUT) {
-			phVia->clsCutLayer = phLayer;
-		} else if (phLayer->clsLayer.getType() == Rsyn::PhysicalLayerType::ROUTING) {
-			if (phVia->clsBottomRoutingLayer == nullptr) {
-				phVia->clsBottomRoutingLayer = phLayer;
-				phVia->clsTopRoutingLayer = phLayer;
-			} else {
-				Rsyn::PhysicalLayer layer = phLayer->clsLayer;
-				Rsyn::PhysicalLayer bottom = phVia->clsBottomRoutingLayer->clsLayer;
-				if (layer.getIndex() < bottom.getIndex()) {
-					phVia->clsBottomRoutingLayer = phLayer;
-				} else {
-					phVia->clsTopRoutingLayer = phLayer;
-				} // end if-else 
-			} // end if-else 
-		} // end if-else 
-	} // end for 
+		assert(phLayer->clsLayer);
+		layers.push_back(std::make_tuple(phLayer->clsLayer.getIndex(), phLayer));
+	} // end for
+	std::sort(layers.begin(), layers.end());
+	assert(layers.size() == NUM_VIA_LAYERS);
+	for (int i = 0; i < NUM_VIA_LAYERS; i++) {
+		phVia->clsViaLayers[i] = std::get<1>(layers[i]);
+	} // end if
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -1026,18 +1009,19 @@ void PhysicalDesign::mergeBounds(const std::vector<Bounds> & source,
 // -----------------------------------------------------------------------------
 
 void PhysicalDesign::initLayerViaManager() {
-	for(PhysicalVia via : allPhysicalVias()){
+	for (PhysicalVia via : allPhysicalVias()) {
 		Rsyn::PhysicalLayer bottom = via.getBottomLayer().getLayer();
 		Rsyn::PhysicalLayer top = via.getTopLayer().getLayer();
-		std::vector<PhysicalVia> & bottomAll = data->clsLayerViaManager.clsVias[bottom];
-		std::vector<PhysicalVia> & bottomTop = data->clsLayerViaManager.clsTopVias[bottom];
+
+		std::vector<PhysicalVia> &bottomAll = data->clsLayerViaManager.clsVias[bottom];
+		std::vector<PhysicalVia> &bottomTop = data->clsLayerViaManager.clsTopVias[bottom];
 		bottomAll.push_back(via);
 		bottomTop.push_back(via);
 		
-		std::vector<PhysicalVia> & topAll = data->clsLayerViaManager.clsVias[top];
-		std::vector<PhysicalVia> & TopBottom = data->clsLayerViaManager.clsBottomVias[top];
+		std::vector<PhysicalVia> &topAll = data->clsLayerViaManager.clsVias[top];
+		std::vector<PhysicalVia> &topBottom = data->clsLayerViaManager.clsBottomVias[top];
 		topAll.push_back(via);
-		TopBottom.push_back(via);
+		topBottom.push_back(via);
 	} // end for 
 } // end method 
 

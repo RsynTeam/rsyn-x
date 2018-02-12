@@ -56,9 +56,10 @@ public:
 	int getNumRows() const;
 	int getNumCols() const;
 	int getNumTracks() const;
-	int getRow(const DBU posY, const bool clamp = false) const;
-	int getCol(const DBU posX, const bool clamp = false) const;
+	int getRow(const DBU posY, const RoundingStrategy roudingStrategy = ROUND_NEAREST, const bool clamp = false) const;
+	int getCol(const DBU posX, const RoundingStrategy roudingStrategy = ROUND_NEAREST, const bool clamp = false) const;
 	DBUxy getPosition(const int col, const int row) const;
+	DBUxy getSnappedPosition(const DBUxy pos, const RoundingStrategy roudingStrategy = ROUND_NEAREST, const bool clamp = false) const;
 	DBU getRowPosition(const int row) const;
 	DBU getRowMaxPosition() const;
 	DBU getColPosition(const int col) const;

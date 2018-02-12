@@ -192,6 +192,7 @@ private:
 	Rsyn::Graphics *clsRsynGraphics = nullptr;
 	Rsyn::RoutingGuide *clsRoutingGuide = nullptr;
 
+	FloorplanLayoutGraphicsLayer *clsFloorplanLayer = nullptr;
 	GraphicsLayer *clsStandardCellLayer = nullptr;
 	GraphicsLayer *clsMacroLayer = nullptr;
 	std::vector<RoutingLayoutGraphicsLayer *> clsPhysicalLayers;

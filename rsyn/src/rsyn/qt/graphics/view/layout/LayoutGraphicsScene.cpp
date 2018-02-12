@@ -88,7 +88,7 @@ LayoutGraphicsScene::initDefaultGraphicsLayers() {
 	Rsyn::Design design = session.getDesign();
 	Rsyn::Module module = session.getTopModule();
 
-	FloorplanLayoutGraphicsLayer *floorplanLayer = new FloorplanLayoutGraphicsLayer;
+	clsFloorplanLayer = new FloorplanLayoutGraphicsLayer;
 	clsStandardCellLayer = new GraphicsLayer;
 	clsMacroLayer = new GraphicsLayer;
 
@@ -196,10 +196,10 @@ LayoutGraphicsScene::initDefaultGraphicsLayers() {
 	} // end for
 
 	std::vector<GraphicsLayerDescriptor> visibilityItems;
-	floorplanLayer->init(this, visibilityItems);
-	floorplanLayer->setVisibilityKey("Floorplan");
+	clsFloorplanLayer->init(this, visibilityItems);
+	clsFloorplanLayer->setVisibilityKey("Floorplan");
 
-	addLayer(floorplanLayer);
+	addLayer(clsFloorplanLayer);
 	addLayer(clsMacroLayer);
 	addLayer(clsStandardCellLayer);
 
@@ -431,7 +431,9 @@ LayoutGraphicsScene::selectObjectAt(const QPointF pos, QRectF &selectionBounds) 
 		} else {
 			clearSelection();
 		} // end else
-	} // end else-if
+	} else {
+		clearSelection();
+	} // end else
 
 	return success;
 } // end method

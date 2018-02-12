@@ -54,14 +54,15 @@ public:
 	const std::string & getName() const;
 	
 	bool isDesignVia() const;
-	
+
 	//! @brief returns the top layer of the via
 	Rsyn::PhysicalViaLayer getTopLayer() const;
 	//! @brief returns the cut layer of the via
 	Rsyn::PhysicalViaLayer getCutLayer() const;
 	//! @brief returns the bottom layer of the via
 	Rsyn::PhysicalViaLayer getBottomLayer() const;
-	
+	//! @brief returns the respective layer
+	Rsyn::PhysicalViaLayer getLayer(const PhysicalViaLayerType type) const;
 }; // end class 
 
 } // end namespace 

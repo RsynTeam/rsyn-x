@@ -240,8 +240,8 @@ RoutingLayoutGraphicsLayer::renderTracks(QPainter *painter, const float lod, con
 	/*
 	if ((showPreferredDirection && (clsPhysicalLayer.getDirection() == Rsyn::VERTICAL)) || showNonPreferredDirection) {
 		const int numCols = clsPhysicalRoutingGrid.getNumCols();
-		const int col0 = std::max(clsPhysicalRoutingGrid.getCol(exposedRect.left(), false) - 1, 0);
-		const int col1 = std::min(clsPhysicalRoutingGrid.getCol(exposedRect.right(), false) + 1, numCols - 1);
+		const int col0 = std::max(clsPhysicalRoutingGrid.getCol(exposedRect.left()) - 1, 0);
+		const int col1 = std::min(clsPhysicalRoutingGrid.getCol(exposedRect.right()) + 1, numCols - 1);
 
 		for (int col = col0; col <= col1; col++) {
 			const DBUxy p0 = clsPhysicalRoutingGrid.getTrackMinPosition(Rsyn::VERTICAL, col);
@@ -253,8 +253,8 @@ RoutingLayoutGraphicsLayer::renderTracks(QPainter *painter, const float lod, con
 	if ((showPreferredDirection && (clsPhysicalLayer.getDirection() == Rsyn::HORIZONTAL)) || showNonPreferredDirection) {
 		// Note: bottom and top are inverted as we inverted the y-axis.
 		const int numRows = clsPhysicalRoutingGrid.getNumRows();
-		const int row0 = std::max(clsPhysicalRoutingGrid.getRow(exposedRect.top(), false) - 1, 0);
-		const int row1 = std::min(clsPhysicalRoutingGrid.getRow(exposedRect.bottom(), false) + 1, numRows - 1);
+		const int row0 = std::max(clsPhysicalRoutingGrid.getRow(exposedRect.top()) - 1, 0);
+		const int row1 = std::min(clsPhysicalRoutingGrid.getRow(exposedRect.bottom()) + 1, numRows - 1);
 
 		for (int row = row0; row <= row1; row++) {
 			const DBUxy p0 = clsPhysicalRoutingGrid.getTrackMinPosition(Rsyn::HORIZONTAL, row);

@@ -32,7 +32,7 @@ private:
 	static
 	R round(const T value, const RoundingStrategy roudingStrategy) {
 		switch (roudingStrategy) {
-			case ROUND_DOWN:    return (R)           (value);
+			case ROUND_DOWN:    return (R) std::floor(value);
 			case ROUND_UP:      return (R) std::ceil (value);
 			case ROUND_NEAREST: return (R) std::round(value);
 			default: assert(false); return 0;
