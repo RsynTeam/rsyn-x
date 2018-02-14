@@ -37,6 +37,29 @@ public:
 	void setX(const DBU x) {clsX = x;}
 	void setY(const DBU y) {clsY = y;}
 
+	//! @brief Translates this point by (dx, dy).
+	void translate(const DBU dx, const DBU dy) {
+		clsX += dx;
+		clsY += dy;
+	} // end method
+
+	//! @brief Translates this point by displacement.
+	void translate(const DBUxy displacement) {
+		translate(displacement.x, displacement.y);
+	} // end method
+
+	//! @brief Returns copy of this point translated by (dx, dy).
+	Point translated(const DBU dx, const DBU dy) const {
+		Point point = *this;
+		point.translate(dx, dy);
+		return point;
+	} // end method
+
+	//! @brief Returns copy of this point translated by displacement.
+	Point translated(const DBUxy displacement) const {
+		return translated(displacement.x, displacement.y);
+	} // end method
+
 	operator DBUxy() const {return DBUxy(clsX, clsY);}
 
 private:

@@ -22,6 +22,32 @@
 
 #define USE_BOOST_TO_CONVERT_LINE_STRING_TO_POLYGON
 
+// -----------------------------------------------------------------------------
+
+namespace Rsyn {
+
+// -----------------------------------------------------------------------------
+
+void 
+Polygon::translate(const DBU dx, const DBU dy) {
+	for (Point &point : clsBoostPolygon.outer()) {
+		point.translate(dx, dy);
+	} // end for
+} // end method
+
+// -----------------------------------------------------------------------------
+
+Polygon
+Polygon::translated(const DBU dx, const DBU dy) const {
+	Polygon poly = *this;
+	poly.translate(dx, dy);
+	return poly;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+} // end namespace
+
 // #############################################################################
 #ifdef USE_BOOST_TO_CONVERT_LINE_STRING_TO_POLYGON
 // #############################################################################
@@ -242,4 +268,3 @@ Polygon::createFromLineString(const std::vector<DBUxy> &points, const DBU width)
 } // end namespace
 
 #endif
-

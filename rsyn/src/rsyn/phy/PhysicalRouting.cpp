@@ -387,6 +387,30 @@ PhysicalRouting::addRect(
 
 // -----------------------------------------------------------------------------
 
+bool PhysicalRouting::isValid() const {
+	for (const PhysicalRoutingWire &wire : allWires()) {
+		if (!wire.isValid()) {
+			return false;
+		} // end if
+	} // end for
+
+	for (const PhysicalRoutingVia &via : allVias()) {
+		if (!via.isValid()) {
+			return false;
+		} // end if
+	} // end for
+
+	return !clsWires.empty();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+bool PhysicalRouting::isEmpty() const {
+	return clsWires.empty() && clsVias.empty() && clsRects.empty();
+} // end method
+
+// -----------------------------------------------------------------------------
+
 void 
 PhysicalRouting::clear() {
 	clsWires.clear();

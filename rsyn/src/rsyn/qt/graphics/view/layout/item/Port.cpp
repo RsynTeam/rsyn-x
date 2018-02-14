@@ -13,8 +13,9 @@
  * limitations under the License.
  */
 
-#include "Rect.h"
+#include "Port.h"
 
+#include <Rsyn/Session>
 #include <Rsyn/PhysicalDesign>
 
 #include "rsyn/qt/graphics/infra/GraphicsView.h"
@@ -27,15 +28,18 @@ namespace Rsyn {
 
 // -----------------------------------------------------------------------------
 
-RectGraphicsItem::RectGraphicsItem(Rsyn::Net net, const Rsyn::PhysicalRoutingRect &rect) : NetGraphicsItem(net) {
-	clsRect = QtUtils::convert(rect.getRect());
-	clsPhysicalLayer = rect.getLayer();
+PortGraphicsItem::PortGraphicsItem(Rsyn::Port port) : clsPort(port) {
+	Bounds rect = clsPort.getBounds();
+	Rsyn::PhysicalTransform transform(Bounds(0, 0, 0, 0), clsPort.getOrientation());
+	rect = transform.apply(rect);
+	rect.translate(clsPort.getPosition());
+	clsRect = QtUtils::convert(rect);
 } // end method
 
 // -----------------------------------------------------------------------------
 
 void
-RectGraphicsItem::render(GraphicsScene *scene, QPainter *painter, const float lod, const QRectF &exposedRect) {
+PortGraphicsItem::render(GraphicsScene *scene, QPainter *painter, const float lod, const QRectF &exposedRect) {
 	painter->drawRect(clsRect);
 } // end method
 

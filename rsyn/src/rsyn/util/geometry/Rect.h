@@ -65,6 +65,29 @@ public:
 		clsUpper.setY(clsLower.getY() + h);
 	} // end method
 
+	//! @brief Translates this rectangle by (dx, dy).
+	void translate(const DBU dx, const DBU dy) {
+		clsLower.translate(dx, dy);
+		clsUpper.translate(dx, dy);
+	} // end method
+
+	//! @brief Translates this rectangle by displacement.
+	void translate(const DBUxy displacement) {
+		translate(displacement.x, displacement.y);
+	} // end method
+
+	//! @brief Returns copy of this rectangle translated by (dx, dy).
+	Rect translated(const DBU dx, const DBU dy) const {
+		Rect rect = *this;
+		rect.translate(dx, dy);
+		return rect;
+	} // end method
+
+	//! @brief Returns copy of this rectangle translated by displacement.
+	Rect translated(const DBUxy displacement) const {
+		return translated(displacement.x, displacement.y);
+	} // end method
+
 	bool contains(const DBU x, const DBU y) const {
 		return (x >= clsLower.getX() && x <= clsUpper.getX()) &&
 				(y >= clsLower.getY() && y <= clsUpper.getY());

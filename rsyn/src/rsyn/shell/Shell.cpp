@@ -17,7 +17,7 @@
 
 namespace Rsyn {
 
-void Shell::run(const std::string &startupScript, const bool interactive) {
+void Shell::runScript(const std::string &startupScript, const bool interactive) {
 	if (startupScript.empty() && !interactive) {
 		std::cout << "Exiting. Nothing to be done... \n";
 		std::cout << " >> Try run with -gui, -interactive or -script <path_to_rsyn_script> flags. <<\n";
@@ -28,6 +28,21 @@ void Shell::run(const std::string &startupScript, const bool interactive) {
 		clsSession.evaluateFile(startupScript);
 	} // end if
 
+	if (interactive) {
+		while (true) {
+			std::string cmd;
+			std::cout << "> ";
+			std::getline(std::cin, cmd);
+			clsSession.evaluateString(cmd);
+		} // end while
+	} // end while
+} // end method
+
+// ----------------------------------------------------------------------------
+
+void Shell::runCommand(const std::string cmd, const bool interactive) {
+	clsSession.evaluateString(cmd);
+	
 	if (interactive) {
 		while (true) {
 			std::string cmd;

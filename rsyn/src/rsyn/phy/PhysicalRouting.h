@@ -145,7 +145,6 @@ public:
 	PhysicalRouting() {}
 	PhysicalRouting(const PhysicalRouting & routing);
 	
-
 	//! @brief Adds a wire.
 	void
 	addWire(
@@ -191,6 +190,14 @@ public:
 	addRect(
 			Rsyn::PhysicalLayer layer,
 			const Bounds &rect);
+
+	//! @brief Checks if this physical routing is valid by visiting all routing
+	//! elements (e.g. wires and vias) and checking if they are valid.
+	bool isValid() const;
+
+	//! @brief Checks if this physical routing is empty (i.e. no wires, vias, 
+	//! etc.)
+	bool isEmpty() const;
 
 	//! @brief Iterates over all wires.
 	const std::vector<PhysicalRoutingWire> &

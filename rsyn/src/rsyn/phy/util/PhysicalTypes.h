@@ -105,14 +105,13 @@ enum PhysicalViaLayerType : std::int8_t {
 //! @brief Layer direction. 
 
 enum PhysicalLayerDirection : std::int8_t {
-	/*! \brief Only used for Rsyn internal control.*/
-	INVALID_PHY_LAYER_DIRECTION = -1,
-	//! @brief Layer preference direction is defined as horizontal. 
+	UNKNOWN_PREFERRED_DIRECTION = -1,
+	//! @brief Layer preferred direction is defined as horizontal.
 	HORIZONTAL = 0,
 	//! @brief Layer preference direction is defined as vertical.
 	VERTICAL = 1,
 	/*! \brief Only used for Rsyn internal control.*/
-	NUM_PHY_LAYER_DIRECTION = 2
+	NUM_PREFERRED_DIRECTIONS = 2
 };
 
 // -----------------------------------------------------------------------------

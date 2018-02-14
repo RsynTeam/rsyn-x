@@ -28,7 +28,77 @@
 #endif
 
 #include "rsyn/util/StreamLogger.h"
+
+// -----------------------------------------------------------------------------
+
+#ifdef ISPD18_BIN
 #include "rsyn/io/reader/ISPD2018Reader.h"
+
+void runISPD18Flow(const boost::program_options::variables_map& vm) {
+	Rsyn::Session session;
+	
+	std::cout << "Team number: 09\n";
+	std::cout << "Member: Mateus Fogaca, Jucemar Monteiro, Henrique Placido, Andre Oliveira, Isadora Oliveira, Eder Matheus Monteiro\n";
+	std::cout << "Affiliation: Universidade Federal do Rio Grande do Sul\n";
+			
+	std::string lefFile;
+	if (!vm.count("lef")) {
+		std::cout << "[ERROR] Please specify the .lef file...\n";
+		return;
+	} // end if
+	lefFile = vm.at("lef").as<std::string>();
+	
+	std::string defFile;
+	if (!vm.count("def")) {
+		std::cout << "[ERROR] Please specify the .def file...\n";
+		return;
+	} // end if
+	defFile = vm.at("def").as<std::string>();
+	
+	std::string guideFile;
+	if (!vm.count("guide")) {
+		std::cout << "[ERROR] Please specify the .guide file...\n";
+		return;
+	} // end if
+	guideFile = vm.at("guide").as<std::string>();
+	
+	if (!vm.count("threads"))
+		session.setSessionVariable("ispd18.numThreads", 1);
+	else
+		session.setSessionVariable("ispd18.numThreads", vm.at("threads").as<int>());
+	
+	std::string outputFile = "solution.def";
+	if (vm.count("output"))
+		outputFile = vm.at("output").as<std::string>();
+	
+	std::cout << "---- Input configuration ---- \n";
+	std::cout << std::left << std::setw(18) << "LEF file:";
+	std::cout << lefFile << "\n";
+	std::cout << std::setw(18) << "DEF file:";
+	std::cout << defFile << "\n";
+	std::cout << std::setw(18) << "Guide file:";
+	std::cout << guideFile << "\n";
+	std::cout << std::setw(18) << "Output file:";
+	std::cout << outputFile << "\n";
+	std::cout << std::setw(18) << "# of threads:";
+	std::cout << session.getSessionVariableAsInteger("ispd18.numThreads") << "\n";
+	std::cout << "----------------------------- \n\n";
+	
+	Rsyn::ISPD2018Reader reader;
+	const Rsyn::Json params = 
+	{
+		{"lefFile", lefFile},
+		{"defFile", defFile},
+		{"guideFile", guideFile},
+	};
+	reader.load(params);
+	
+	std::stringstream cmd;
+	cmd << "run \"ispd18.flow\" {\"output\": \"" << outputFile << "\"};";
+	Rsyn::Shell shell;
+	shell.runCommand(cmd.str());
+} // end function
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -54,6 +124,7 @@ int main(int argc, char *argv[]) {
 	Rsyn::StreamLogger::get()->capture(std::cout);
 	//Rsyn::StreamLogger::get()->capture(std::cerr);
 
+	#ifndef ISPD18_BIN
 	// Source: http://patorjk.com/software/taag/#p=display&f=Big&t=Rsyn
 	std::cout << "\n"; // skipping the terminal line
 	std::cout << std::string(28, ' ') << R"( _____                  )" << "\n";
@@ -78,7 +149,8 @@ int main(int argc, char *argv[]) {
 	std::cout << "(http://class.ee.iastate.edu/cnchu/)\n";
 	std::cout << "\n";
 	// -------------------------------------------------------------------------
-
+	#endif
+	
 	//
 	// Command Line Parser
 	//
@@ -141,7 +213,7 @@ int main(int argc, char *argv[]) {
 			} else {
 				// Text mode...
 				Rsyn::Shell shell;
-				shell.run(optScript, vm.count("interactive"));
+				shell.runScript(optScript, vm.count("interactive"));
 			} // end else
 		#endif
 

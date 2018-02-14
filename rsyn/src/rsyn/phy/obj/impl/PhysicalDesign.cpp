@@ -317,7 +317,7 @@ Rsyn::PhysicalLayerData * PhysicalDesign::addPhysicalLayer(const LefLayerDscp& l
 		spc.data->clsEOLWithin = static_cast<DBU> (std::round(spcRule.clsEOLWithin * libDBU));
 	} // end for 
 	phLayer->clsMinWidth = static_cast<DBU> (std::round(layer.clsMinWidth * libDBU));
-	phLayer->clsArea = static_cast<DBU> (std::round(layer.clsArea * libDBU));
+	phLayer->clsArea = static_cast<DBU> (std::round(layer.clsArea * libDBU * libDBU));
 	phLayer->clsWidth = static_cast<DBU> (std::round(layer.clsWidth * libDBU));
 	phLayer->clsRelativeIndex = data->clsNumLayers[phLayer->clsType];
 	data->clsMapPhysicalLayers[layer.clsName] = phLayer->id;
@@ -344,6 +344,7 @@ void PhysicalDesign::addPhysicalVia(const LefViaDscp & via) {
 	data->clsMapPhysicalVias[via.clsName] = data->clsPhysicalVias.size();
 	data->clsPhysicalVias.push_back(PhysicalVia(new PhysicalViaData()));
 	PhysicalVia phVia = data->clsPhysicalVias.back();
+	phVia->id = data->clsPhysicalVias.size() - 1;
 	phVia->clsName = via.clsName;
 
 	std::vector<std::tuple<int, PhysicalViaLayerData *>> layers;

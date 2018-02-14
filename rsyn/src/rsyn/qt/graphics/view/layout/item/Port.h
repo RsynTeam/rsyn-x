@@ -13,23 +13,23 @@
  * limitations under the License.
  */
 
-#ifndef RSYN_RECT_GRAPHICS_ITEM_H
-#define RSYN_RECT_GRAPHICS_ITEM_H
+#ifndef RSYN_PORT_GRAPHICS_ITEM_H
+#define RSYN_PORT_GRAPHICS_ITEM_H
 
 #include "Net.h"
 #include <Rsyn/Session>
 #include <Rsyn/PhysicalDesign>
+
+#include "rsyn/qt/QtUtils.h"
 
 #include <QColor>
 #include <QGraphicsItem>
 
 namespace Rsyn {
 
-class RectGraphicsItem : public NetGraphicsItem {
+class PortGraphicsItem : public GraphicsItem {
 public:
-	RectGraphicsItem(Rsyn::Net net, const Rsyn::PhysicalRoutingRect &rect);
-
-	virtual Rsyn::PhysicalLayer getPhysicalLayer() const override {return clsPhysicalLayer;}
+	PortGraphicsItem(Rsyn::Port port);
 
 	virtual void render(GraphicsScene *scene, QPainter *painter, const float lod, const QRectF &exposedRect) override;
 
@@ -37,8 +37,12 @@ public:
 		return clsRect;
 	} // end method
 
+	Rsyn::Port getPort() const {
+		return clsPort;
+	} // end method
+
 private:
-	Rsyn::PhysicalLayer clsPhysicalLayer;
+	Rsyn::Port clsPort;
 	QRect clsRect;
 }; // end class
 

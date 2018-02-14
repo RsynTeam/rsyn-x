@@ -84,4 +84,10 @@ inline const PhysicalRouting &PhysicalNet::getRouting() const {
 
 // -----------------------------------------------------------------------------
 
+inline bool PhysicalNet::isRouted() const {
+	return !data->clsRouting.isEmpty();
+} // end method
+
+// -----------------------------------------------------------------------------
+
 } // end namespace 

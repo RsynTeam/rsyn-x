@@ -59,8 +59,10 @@ public:
 	//! @brief Return the PhysicalPin object that determines the boundary of PhysicalNet 
 	//! in one of its demensions.
 	Rsyn::Pin getPinBoundary(const Boundary bound, const Dimension dim) const;
-	//! @brief Return the physical routing of this net.
-	const PhysicalRouting &getRouting() const;	
+	//! @brief Returns the physical routing of this net.
+	const PhysicalRouting &getRouting() const;
+	//! @brief Returns true if the net is routed (has a non-empty routing).
+	bool isRouted() const;
 }; // end class 
 
 } // end namespace 

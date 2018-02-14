@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
 		if (vm.count("no-gui")) {
 			// Text mode...
 			Rsyn::Shell shell;
-			shell.run(optScript, vm.count("interactive"));
+			shell.runScript(optScript, vm.count("interactive"));
 		} else {
 			// User interface mode...
 			#ifndef RSYN_NO_GUI

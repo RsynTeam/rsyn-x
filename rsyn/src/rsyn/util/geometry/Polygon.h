@@ -51,6 +51,22 @@ public:
 		clsDirty = true;
 	} // end method
 
+	//! @brief Translates this polygon by (dx, dy).
+	void translate(const DBU dx, const DBU dy);
+
+	//! @brief Translates this polygon by displacement.
+	void translate(const DBUxy displacement) {
+		translate(displacement.x, displacement.y);
+	} // end method
+
+	//! @brief Returns copy of this polygon translated by (dx, dy).
+	Polygon translated(const DBU dx, const DBU dy) const;
+
+	//! @brief Returns copy of this polygon translated by displacement.
+	Polygon translated(const DBUxy displacement) const {
+		return translated(displacement.x, displacement.y);
+	} // end method
+
 	//! @brief Returns true if (x, y) is inside this polygon.
 	bool contains(const DBU x, const DBU y) const {
 		return contains(Point(x, y));

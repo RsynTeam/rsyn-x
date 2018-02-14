@@ -25,7 +25,8 @@ class Shell {
 private:
 	Rsyn::Session clsSession;
 public:
-	void run(const std::string &script, const bool interative);
+	void runScript(const std::string &script, const bool interactive = false);
+	void runCommand(const std::string cmd, const bool interactive = false);
 }; // end class
 
 } // end namespace

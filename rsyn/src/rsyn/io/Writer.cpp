@@ -198,6 +198,7 @@ void Writer::writeFullDEF(string filename) {
 	int numNets = clsDesign.getNumNets();
 	def.clsNets.reserve(numNets);
 	for (Rsyn::Net net : clsModule.allNets()) {
+			
 		def.clsNets.push_back(DefNetDscp());
 		DefNetDscp & defNet = def.clsNets.back();
 		defNet.clsName = net.getName();
@@ -218,11 +219,16 @@ void Writer::writeFullDEF(string filename) {
 			netConnection.clsComponentName = pin.getInstanceName();
 			netConnection.clsPinName = pin.getName();
 		} // end for
+		
+		
+		Rsyn::PhysicalNet phNet = clsPhysicalDesign.getPhysicalNet(net);
+		const PhysicalRouting & phRouting = phNet.getRouting();
+		if(!phRouting.isValid())
+			continue;
+		
 		std::vector<DefWireDscp> & wires = defNet.clsWires;
 		wires.push_back(DefWireDscp());
 		DefWireDscp & wire = wires.back();
-		Rsyn::PhysicalNet phNet = clsPhysicalDesign.getPhysicalNet(net);
-		const PhysicalRouting & phRouting = phNet.getRouting();
 		
 		for(const PhysicalRoutingWire & phWire : phRouting.allWires()) {
 			std::vector<DefWireSegmentDscp> & segments = wire.clsWireSegments;

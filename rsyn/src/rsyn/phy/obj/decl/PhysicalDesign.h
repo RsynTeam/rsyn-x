@@ -381,6 +381,9 @@ public:
 	////////////////////////////////////////////////////////////////////////////
 
 	void setNetRouting(Rsyn::Net net, const PhysicalRouting &routing);
+	void clearNetRouting(Rsyn::Net net);
+	const PhysicalRouting &getNetRouting(Rsyn::Net net) const;
+	bool isNetRouted(Rsyn::Net net) const;
 
 	////////////////////////////////////////////////////////////////////////////
 	// Notifications

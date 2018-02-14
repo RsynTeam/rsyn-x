@@ -118,7 +118,7 @@ private:
 
 	// Current zoom.
 	qreal zoomScaling;
-	qreal initialZoomScaling = 0.975;
+	qreal initialZoomScaling = 1;
 
 	// The bounds of the scene (user space) adjusted to the aspect ratio of the
 	// viewport. When zoom = 1, it means the adjustedSceneRect fits exactly

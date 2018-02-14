@@ -346,10 +346,10 @@ void MainWindow::populateObjectVisibility() {
 	tree.addHeader(0, "Object");
 	tree.addHeader(1, "", QIcon(":/glyphicons/png/glyphicons-52-eye-open.png"));
 	
-	tree.add("Highlight", 1, "", QtUtils::Checked);
 	tree.add("Instances", 1, "", QtUtils::Checked);
 	tree.add("Instances/Cells", 1, "", QtUtils::Checked);
 	tree.add("Instances/Macros", 1, "", QtUtils::Checked);
+	tree.add("Instances/Ports", 1, "", QtUtils::Checked);
 	tree.add("Pins", 1, "", QtUtils::Checked);
 	tree.add("Tracks", 1, "", QtUtils::Unchecked);
 	tree.add("Tracks/Preferred", 1, "", QtUtils::Checked);

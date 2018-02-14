@@ -54,7 +54,7 @@ std::string getPhysicalLayerType(const Rsyn::PhysicalLayerType type) {
 Rsyn::PhysicalLayerDirection getPhysicalLayerDirection(const std::string & direction) {
 	if (direction.compare("HORIZONTAL") == 0) return HORIZONTAL;
 	if (direction.compare("VERTICAL") == 0) return VERTICAL;
-	return INVALID_PHY_LAYER_DIRECTION;
+	return UNKNOWN_PREFERRED_DIRECTION;
 } // end method 
 
 // -----------------------------------------------------------------------------

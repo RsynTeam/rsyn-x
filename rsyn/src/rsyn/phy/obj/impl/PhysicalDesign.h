@@ -594,6 +594,27 @@ inline void PhysicalDesign::setNetRouting(Rsyn::Net net, const PhysicalRouting &
 	} // end for
 } // end method
 
+// -----------------------------------------------------------------------------
+
+inline void PhysicalDesign::clearNetRouting(Rsyn::Net net) {
+	PhysicalRouting emptyRouting;
+	setNetRouting(net, emptyRouting);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline const PhysicalRouting &PhysicalDesign::getNetRouting(Rsyn::Net net) const {
+	Rsyn::PhysicalNet physicalNet = getPhysicalNet(net);
+	return physicalNet->clsRouting;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline bool PhysicalDesign::isNetRouted(Rsyn::Net net) const {
+	Rsyn::PhysicalNet physicalNet = getPhysicalNet(net);
+	return !physicalNet->clsRouting.isEmpty();
+} // end method
+
 ////////////////////////////////////////////////////////////////////////////////
 // Notification
 ////////////////////////////////////////////////////////////////////////////////

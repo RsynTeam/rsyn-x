@@ -23,6 +23,7 @@
 
 #include "rsyn/qt/graphics/view/layout/item/StandardCell.h"
 #include "rsyn/qt/graphics/view/layout/item/Macro.h"
+#include "rsyn/qt/graphics/view/layout/item/Port.h"
 #include "rsyn/qt/graphics/view/layout/item/Wire.h"
 #include "rsyn/qt/graphics/view/layout/item/Via.h"
 #include "rsyn/qt/graphics/view/layout/item/Rect.h"
@@ -66,8 +67,11 @@ LayoutGraphicsScene::init() {
 	clsRoutingGuide = session.getService("rsyn.routingGuide", Rsyn::SERVICE_OPTIONAL);
 
 	const Bounds &coreBounds = clsPhysicalDesign.getPhysicalDie().getBounds();
-	const QRectF sceneRect(coreBounds.getX(), coreBounds.getY(),
+	QRectF sceneRect(coreBounds.getX(), coreBounds.getY(),
 			coreBounds.getWidth(), coreBounds.getHeight());
+
+	const qreal gap = std::min(sceneRect.width(), sceneRect.height()) * 0.01;
+	sceneRect.adjust(-gap, -gap, +gap, +gap);
 
 	setSceneRect(sceneRect);
 	setTypicalLength(clsPhysicalDesign.getRowHeight() > 0?
@@ -120,13 +124,8 @@ LayoutGraphicsScene::initDefaultGraphicsLayers() {
 		clsMacroLayer->setBrush(brush);
 
 		clsMacroLayer->setVisibilityKey("Instances/Macros");
-		clsStandardCellLayer->setZOrder(LAYER_MACRO);
+		clsMacroLayer->setZOrder(LAYER_MACRO);
 	} // end block
-
-	// Add instances.
-	for (Rsyn::Instance instance : module.allInstances()) {
-		createOrUpdateInstanceItem(instance);
-	} // end for
 
 	// Add routing.
 	clsPhysicalLayers.resize(clsPhysicalDesign.getNumLayers());
@@ -195,6 +194,12 @@ LayoutGraphicsScene::initDefaultGraphicsLayers() {
 		createOrUpdateNetItems(net);
 	} // end for
 
+	// Add instances.
+	for (Rsyn::Instance instance : module.allInstances()) {
+		createOrUpdateInstanceItem(instance);
+	} // end for
+
+	// Add floorplan.
 	std::vector<GraphicsLayerDescriptor> visibilityItems;
 	clsFloorplanLayer->init(this, visibilityItems);
 	clsFloorplanLayer->setVisibilityKey("Floorplan");
@@ -241,8 +246,14 @@ LayoutGraphicsScene::createOrUpdateInstanceItem(Rsyn::Instance instance) {
 					clsStandardCellLayer->removeItem(item);
 				} // end else
 				break;
-			case Rsyn::PORT:
+			case Rsyn::PORT: {
+				Rsyn::Port port = instance.asPort();
+				Rsyn::PhysicalPort physicalPort = clsPhysicalDesign.getPhysicalPort(port);
+				if (physicalPort && physicalPort.getLayer()) {
+					clsPhysicalLayers[physicalPort.getLayer().getIndex()]->removeItem(item);
+				} // end if
 				break;
+			}
 			case Rsyn::MODULE:
 				break;
 		} // end switch
@@ -260,8 +271,15 @@ LayoutGraphicsScene::createOrUpdateInstanceItem(Rsyn::Instance instance) {
 				clsStandardCellLayer->addItem(item);
 			} // end else
 			break;
-		case Rsyn::PORT:
+		case Rsyn::PORT: {
+			Rsyn::Port port = instance.asPort();
+			Rsyn::PhysicalPort physicalPort = clsPhysicalDesign.getPhysicalPort(port);
+			if (physicalPort && physicalPort.getLayer()) {
+				item = new PortGraphicsItem(instance.asPort());
+				clsPhysicalLayers[physicalPort.getLayer().getIndex()]->addItem(item);
+			} // end if
 			break;
+		} // end case
 		case Rsyn::MODULE:
 			break;
 	} // end switch
@@ -381,7 +399,12 @@ LayoutGraphicsScene::updateSpotlightObject(const QPointF &pos) {
 				clsSpotlightOutline = item->getOutline();
 				clsSpotlightText = QString::fromStdString(cell.getName());
 			} // end else
-
+		} else if (PortGraphicsItem *portItem = dynamic_cast<PortGraphicsItem *>(item)) {
+			Rsyn::Port port = portItem->getPort();
+			clsSpotlightInstance = port;
+			clsSpotlightBounds = item->getBoundingRect();
+			clsSpotlightOutline = item->getOutline();
+			clsSpotlightText = QString::fromStdString(port.getName());
 		} else if (NetGraphicsItem *netItem = dynamic_cast<NetGraphicsItem *>(item)) {
 			Rsyn::Net net = netItem->getNet();
 			

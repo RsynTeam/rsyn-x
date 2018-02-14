@@ -41,7 +41,7 @@ public:
 	int clsRelativeIndex = -1;
 	DBUxy clsPitch;
 	Rsyn::PhysicalLayerType clsType = INVALID_PHY_LAYER_TYPE;
-	Rsyn::PhysicalLayerDirection clsDirection = INVALID_PHY_LAYER_DIRECTION;
+	Rsyn::PhysicalLayerDirection clsDirection = UNKNOWN_PREFERRED_DIRECTION;
 	std::string clsName = Rsyn::getPhysicalInvalidName();
 	Rsyn::PhysicalLayerData * clsLower = nullptr;
 	Rsyn::PhysicalLayerData * clsUpper = nullptr;
