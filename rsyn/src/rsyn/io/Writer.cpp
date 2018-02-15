@@ -226,6 +226,7 @@ void Writer::writeFullDEF(string filename) {
 		if(!phRouting.isValid())
 			continue;
 		
+		
 		std::vector<DefWireDscp> & wires = defNet.clsWires;
 		wires.push_back(DefWireDscp());
 		DefWireDscp & wire = wires.back();
@@ -241,7 +242,6 @@ void Writer::writeFullDEF(string filename) {
 				points.push_back(DefRoutingPointDscp());
 				DefRoutingPointDscp & routing = points.back();
 				routing.clsPos = point;
-				
 			} // end for 
 			if(phWire.hasNonDefaultSourceExtension()) {
 				DefRoutingPointDscp & routing = points.front();
@@ -263,6 +263,7 @@ void Writer::writeFullDEF(string filename) {
 		for(const PhysicalRoutingVia & phVia : phRouting.allVias()) {
 			if(!phVia.isValid())
 				continue;
+
 			std::vector<DefWireSegmentDscp> & segments = wire.clsWireSegments;
 			segments.push_back(DefWireSegmentDscp());
 			DefWireSegmentDscp & segment = segments.back();

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "DEFControlParser.h"
 
 #ifndef WIN32
@@ -357,7 +357,7 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 						break;
 					case DEFIPATH_WIDTH:
 						// only for special nets
-//						segmentDscp.clsWidth = path->getWidth();
+						//						segmentDscp.clsWidth = path->getWidth();
 						break;
 					case DEFIPATH_POINT:
 						path->getPoint(&x, &y);
@@ -831,8 +831,8 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 	} // end for 
 	status = defwNewLine();
 	CHECK_STATUS(status);
-	
-	
+
+
 	// Write components
 	int numComponents = defDscp.clsComps.size();
 	status = defwStartComponents(numComponents);
@@ -853,22 +853,22 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 	status = defwNewLine();
 	CHECK_STATUS(status);
 
-	
+
 	// write ports
 	int numPins = defDscp.clsPorts.size();
 	status = defwStartPins(numPins);
 	CHECK_STATUS(status);
-	
-	
+
+
 	for (const DefPortDscp & port : defDscp.clsPorts) {
-		status = defwPin(port.clsName.c_str(), 
-			port.clsNetName.c_str(), 
+		status = defwPin(port.clsName.c_str(),
+			port.clsNetName.c_str(),
 			(port.clsSpecial ? 1 : 0), // 0 ignores, 1 set net as special
 			(port.clsDirection.compare(INVALID_DEF_NAME) == 0 ? NULL : port.clsDirection.c_str()),
 			(port.clsUse.compare(INVALID_DEF_NAME) == 0 ? NULL : port.clsUse.c_str()),
 			(port.clsLocationType.compare(INVALID_DEF_NAME) == 0 ? NULL : port.clsLocationType.c_str()),
-			(int)port.clsPos[X], 
-			(int)port.clsPos[Y], 
+			(int) port.clsPos[X],
+			(int) port.clsPos[Y],
 			defOrient(port.clsOrientation),
 			(port.clsLayerName.compare(INVALID_DEF_NAME) == 0 ? NULL : port.clsLayerName.c_str()),
 			(int) port.clsLayerBounds[LOWER][X],
@@ -888,87 +888,73 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 	status = defwStartNets(numNets);
 	CHECK_STATUS(status);
 
-	
+
 	// write nets
-	for(const DefNetDscp & defNet : defDscp.clsNets) {
+	for (const DefNetDscp & defNet : defDscp.clsNets) {
 		status = defwNet(defNet.clsName.c_str());
 		CHECK_STATUS(status);
 		// Writing Net connections
-		for(const DefNetConnection & defConn : defNet.clsConnections){
+		for (const DefNetConnection & defConn : defNet.clsConnections) {
 			status = defwNetConnection(defConn.clsComponentName.c_str(), defConn.clsPinName.c_str(), 0);
 			CHECK_STATUS(status);
 		} // end for 
 		if (!defNet.clsWires.empty()) {
 			bool routed = true;
-			defwNetPathStart("ROUTED");
+			status = defwNetPathStart("ROUTED");
+			CHECK_STATUS(status);
 			for (const DefWireDscp & wire : defNet.clsWires) {
 				for (const DefWireSegmentDscp & segment : wire.clsWireSegments) {
-					if (!routed)
-						defwNetPathStart("NEW");
+					if (!routed) {
+						status = defwNetPathStart("NEW");
+						CHECK_STATUS(status);
+					}
 					routed = false;
-					
+
 					bool hasVia = false;
 					std::string viaName;
 					bool hasRect = false;
 					Bounds rect;
 
-					defwNetPathLayer(segment.clsLayerName.c_str(), 0, NULL);
-					for(const DefRoutingPointDscp & pt : segment.clsRoutingPoints) {
+					status = defwNetPathLayer(segment.clsLayerName.c_str(), 0, NULL);
+					CHECK_STATUS(status);
+					for (const DefRoutingPointDscp & pt : segment.clsRoutingPoints) {
 						double posX = pt.clsPos[X];
 						double posY = pt.clsPos[Y];
-						if(pt.clsHasExtension) {
+						if (pt.clsHasExtension) {
 							double ext = pt.clsExtension;
-							defwNetPathPointWithExt(1, &posX, &posY, &ext);
+							status = defwNetPathPointWithExt(1, &posX, &posY, &ext);
+							CHECK_STATUS(status);
 						} else {
-							defwNetPathPoint(1, &posX, &posY);
+							status = defwNetPathPoint(1, &posX, &posY);
+							CHECK_STATUS(status);
 						} // end if-else
+						if (pt.clsHasVia) {
+							hasVia = true;
+							viaName = pt.clsViaName;
+						}
+						if (pt.clsHasRectangle) {
+							hasRect = true;
+							rect = pt.clsRect;
+						}
 					} // end for 
-					
-					
-//					double* x;
-//					double* y;
-//					double* ext;
-//					int numPoints = segment.clsRoutingPoints.size();
-//					x = (double*) malloc(sizeof (double)*numPoints);
-//					y = (double*) malloc(sizeof (double)*numPoints);
-//					ext = (double*) malloc(sizeof (double)*numPoints);
-//					std::vector<double2> pos;
-//					pos.resize(numPoints);
-//					for (int i = 0; i < numPoints; i++) {
-//						const DefRoutingPointDscp & pt = segment.clsRoutingPoints[i];
-//						pos[i].set(pt.clsPos[X], pt.clsPos[Y]);
-//						x[i] = pos[i].x;
-//						y[i] = pos[i].y;
-//						if(pt.clsExtension)
-//						ext[i] = pt.clsExtension;
-//						else 
-//							ext[i] = NULL;
-//						if (pt.clsHasVia) {
-//							hasVia = true;
-//							viaName = pt.clsViaName;
-//						}
-//						if (pt.clsHasRectangle) {
-//							hasRect = true;
-//							rect = pt.clsRect;
-//						}
-//
-//					} // end for 
-//					defwNetPathPointWithExt(numPoints, x, y, ext);
-//
-//					free((double*) x);
-//					free((double*) y);
-//					free((double*) ext);
-					if (hasVia)
-						defwNetPathViaWithOrient(viaName.c_str(), -1);
-					if (hasRect)
-						defwNetPathRect(rect[LOWER][X], rect[LOWER][Y], rect[UPPER][X], rect[UPPER][Y]);
+
+					if (hasVia) {
+						status = defwNetPathViaWithOrient(viaName.c_str(), -1);
+						CHECK_STATUS(status);
+					}
+					if (hasRect) {
+						status = defwNetPathRect(rect[LOWER][X], rect[LOWER][Y], rect[UPPER][X], rect[UPPER][Y]);
+						CHECK_STATUS(status);
+					}
 				} // end for 
 
 			} // end for 
-			defwNetPathEnd();
+			status = defwNetPathEnd();
+			CHECK_STATUS(status);
 		} // end if 
 		status = defwNetEndOneNet();
 		CHECK_STATUS(status);
+		//CHECK_STATUS(status);
 	} // end for 
 
 	status = defwEndNets();

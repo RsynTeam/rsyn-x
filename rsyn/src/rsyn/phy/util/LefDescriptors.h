@@ -41,6 +41,7 @@
 // done in the physical layer initialization.
 
 static const std::string INVALID_LEF_NAME = "*<INVALID_LEF_NAME>*";
+static const std::string DEFAULT_PIN_DIRECTION = "INPUT";
 
 // -----------------------------------------------------------------------------
 
@@ -77,7 +78,7 @@ class LefPinDscp {
 public:
 	bool clsHasPort = false;
 	std::string clsPinName = INVALID_LEF_NAME;
-	std::string clsPinDirection = INVALID_LEF_NAME;
+	std::string clsPinDirection = DEFAULT_PIN_DIRECTION;
 	std::string clsPinUse = INVALID_LEF_NAME;
 	DoubleRectangle clsBounds;
 	std::vector<LefPortDscp> clsPorts;
