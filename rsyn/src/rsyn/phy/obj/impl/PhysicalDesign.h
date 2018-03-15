@@ -388,7 +388,7 @@ inline int PhysicalDesign::getNumMovedCells() const {
 
 		const DBUxy initialPos = phCell.getInitialPosition();
 		const DBUxy currentPos = phCell.getPosition();
-		if (initialPos[X] != currentPos[X] || initialPos[Y] != initialPos[Y])
+		if (initialPos[X] != currentPos[X] || initialPos[Y] != currentPos[Y])
 			count++;
 	} // end for
 	return count;
