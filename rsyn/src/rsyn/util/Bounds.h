@@ -231,10 +231,10 @@ public:
 	// Make the lower be +inf and upper be -inf. Useful when computing the
 	// bounding box of a set of points.
 	void degenerate() {
-		(*this)[LOWER][X] = +std::numeric_limits<DBU>::infinity();
-		(*this)[LOWER][Y] = +std::numeric_limits<DBU>::infinity();
-		(*this)[UPPER][X] = -std::numeric_limits<DBU>::infinity();
-		(*this)[UPPER][Y] = -std::numeric_limits<DBU>::infinity();
+		(*this)[LOWER][X] = std::numeric_limits<DBU>::max();
+		(*this)[LOWER][Y] = std::numeric_limits<DBU>::max();
+		(*this)[UPPER][X] = std::numeric_limits<DBU>::min();
+		(*this)[UPPER][Y] = std::numeric_limits<DBU>::min();
 	} // end method
 	
 	// Increases this rectangle so that the point x, y will be inside it.
