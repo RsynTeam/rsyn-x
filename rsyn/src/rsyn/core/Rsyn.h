@@ -183,6 +183,7 @@ enum NetTypeTag {
 
 enum SessionEventType {
 	EVENT_DESIGN_LOADED,
+	EVENT_SERVICE_STARTED,
 
 	NUM_SESSION_EVENTS
 }; // end enum

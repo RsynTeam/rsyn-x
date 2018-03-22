@@ -213,6 +213,9 @@ public:
 
 	//! @brief Removes all the wires, vias and rects.
 	void clear();
+        
+        //! @brief Computes net routed wirelength
+        DBU computeWirelength() const;
 	
 private:
 

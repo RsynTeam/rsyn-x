@@ -148,15 +148,25 @@ LayoutGraphicsScene::initDefaultGraphicsLayers() {
 			pen.setColor(QtUtils::convert(color));
 			pen.setCosmetic(true);
 		} else if (layer.getType() == Rsyn::CUT) {
-			const FillStippleMask topPattern = clsRsynGraphics->getRoutingLayerRendering(
-					layer.getPhysicalLayerUpper().getRelativeIndex()).getFillPattern();
-			const Color topColor = clsRsynGraphics->getRoutingLayerRendering(
-					layer.getPhysicalLayerUpper().getRelativeIndex()).getColor();
+			FillStippleMask topPattern = STIPPLE_MASK_EMPTY;
+			Color topColor(0, 0, 0);
 
-			const FillStippleMask bottomPattern = clsRsynGraphics->getRoutingLayerRendering(
-					layer.getPhysicalLayerLower().getRelativeIndex()).getFillPattern();
-			const Color bottomColor = clsRsynGraphics->getRoutingLayerRendering(
-					layer.getPhysicalLayerLower().getRelativeIndex()).getColor();
+			FillStippleMask bottomPattern = STIPPLE_MASK_EMPTY;
+			Color bottomColor(0, 0, 0);
+
+			if (layer.getPhysicalLayerUpper()) {
+				topPattern = clsRsynGraphics->getRoutingLayerRendering(
+						layer.getPhysicalLayerUpper().getRelativeIndex()).getFillPattern();
+				topColor = clsRsynGraphics->getRoutingLayerRendering(
+						layer.getPhysicalLayerUpper().getRelativeIndex()).getColor();
+			} // end if
+
+			if (layer.getPhysicalLayerLower()) {
+				bottomPattern = clsRsynGraphics->getRoutingLayerRendering(
+						layer.getPhysicalLayerLower().getRelativeIndex()).getFillPattern();
+				bottomColor = clsRsynGraphics->getRoutingLayerRendering(
+						layer.getPhysicalLayerLower().getRelativeIndex()).getColor();
+			} // end if
 
 			GraphicsStippleMgr *mgr = GraphicsStippleMgr::get();
 			
@@ -223,12 +233,40 @@ LayoutGraphicsScene::initUserGraphicsLayers() {
 		for (auto &f : registeredOverlayVec) {
 			LayoutGraphicsLayer *graphicsLayer = f();
 			std::vector<GraphicsLayerDescriptor> visibilityItems;
-			graphicsLayer->init(this, visibilityItems);
+			if (graphicsLayer->init(this, visibilityItems)) {
+				clsVisibilityItems.insert(std::end(clsVisibilityItems),
+						std::begin(visibilityItems), std::end(visibilityItems));
+				addLayer(graphicsLayer);
+				clsUserLayers[graphicsLayer] = true;
+			} else {
+				clsUserLayers[graphicsLayer] = false;
+			} // end else
+		} // end for
+	} // end if
+} // end method
+
+// -----------------------------------------------------------------------------
+
+bool
+LayoutGraphicsScene::initMissingUserGraphicsLayers() {
+	bool started = false;
+	for (auto it : clsUserLayers) {
+		if (it.second)
+			continue;
+
+		std::vector<GraphicsLayerDescriptor> visibilityItems;
+		LayoutGraphicsLayer *graphicsLayer = it.first;
+		if (graphicsLayer->init(this, visibilityItems)) {
 			clsVisibilityItems.insert(std::end(clsVisibilityItems),
 					std::begin(visibilityItems), std::end(visibilityItems));
 			addLayer(graphicsLayer);
-		} // end for
-	} // end if
+			clsUserLayers[graphicsLayer] = true;
+			started = true;
+		} else {
+			clsUserLayers[graphicsLayer] = false;
+		} // end else
+	} // end method
+	return started;
 } // end method
 
 // -----------------------------------------------------------------------------
