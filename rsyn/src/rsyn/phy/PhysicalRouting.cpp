@@ -401,7 +401,6 @@ bool PhysicalRouting::isValid() const {
 	} // end for
 
 	return !clsWires.empty();
-	
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -417,16 +416,6 @@ PhysicalRouting::clear() {
 	clsWires.clear();
 	clsVias.clear();
 	clsRects.clear();
-} // end method
-
-// -----------------------------------------------------------------------------
-
-DBU PhysicalRouting::computeWirelength() const {
-	DBU wirelength = 0;
-	for (Rsyn::PhysicalRoutingWire wire : allWires()) {
-		wirelength += DBUxy::computeManhattanDistance(wire.allPoints()[0], wire.allPoints()[1]);
-	} // end for
-	return wirelength;
 } // end method
 
 // -----------------------------------------------------------------------------

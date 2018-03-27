@@ -79,17 +79,6 @@ public:
 	const Bounds &getBounds() const;
 	
 	Rsyn::PhysicalCell asPhysicalCell() const;
-	
-	// Mateus and Isadora @ 2018/03/19
-	// Maybe it should be moved to PhysicalInstanceData?
-	// Used in map-like data structures.
-	friend bool operator<(const PhysicalInstance &left, const PhysicalInstance &right) {
-		// [IMPORTANT] We don't use the pointer (e) directly to avoid
-		// non-determinism behavior. Note that the pointer address may change
-		// from execution to execution and hence the mapping function may return
-		// elements in different order leading to different results.
-		return left.getInstance() < right.getInstance();
-	} // end method
 }; // end class 
 
 } // end namespace 

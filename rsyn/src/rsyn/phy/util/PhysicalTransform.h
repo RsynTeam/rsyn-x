@@ -28,23 +28,6 @@ class PhysicalTransform {
 public:
 
 	PhysicalTransform() : clsOrientation(ORIENTATION_INVALID) {}
-
-	//! @brief Creates a transform with origin at (0, 0).
-	//! Example of Use: Transform port geometries.
-	PhysicalTransform(const PhysicalOrientation orientation) : clsBounds(0, 0, 0, 0), clsOrientation(orientation) {}
-	
-	//! @brief Creates a transform with origin at (origin.x, origin.y).
-	PhysicalTransform(const DBUxy origin, const PhysicalOrientation orientation) : clsBounds(origin.x, origin.y, 0, 0), clsOrientation(orientation) {}
-
-	//! @briief Creates a transform with origin at the lower-left point of the
-	//! bounds with the necessary translation, obtained from the bounds size, to
-	//! keep the lower-left position of the transformed bounds at the same
-	//! position of the lower-left of the original bounds.
-	//! Example of Use: Handle cell transformation where one expects that the
-	//! cell position (lower-left) to be kept at the same position after the
-	//! transformation. For instance, if one is flipping the boundary of a cell
-	//! at (0, 0), the flipped cell boundary should still be at (0, 0) after the
-	//! transformation.
 	PhysicalTransform(const Bounds bounds, const PhysicalOrientation orientation) : clsBounds(bounds), clsOrientation(orientation) {}
 
 	DBUxy apply(const DBUxy &point) const {

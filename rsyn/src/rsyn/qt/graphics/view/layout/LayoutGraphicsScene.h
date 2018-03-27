@@ -43,14 +43,10 @@ public:
 	enum GraphicsLayerEnum {
 		LAYER_BACKGROUND,
 		LAYER_FLOORPLAN,
-		LAYER_BELOW_INSTANCE,
 		LAYER_MACRO,
 		LAYER_PORT,
 		LAYER_STANDARD_CELL,
-		LAYER_ABOVE_INSTANCE,
-		LAYER_BELOW_ROUTING,
 		LAYER_ROUTING,
-		LAYER_ABOVE_ROUTING,
 		LAYER_FOREGROUND
 	}; // end enum
 
@@ -62,10 +58,6 @@ public:
 
 	void init();
 	bool isInit() const {return clsPhysicalDesign != nullptr;}
-
-	//! @brief Start user graphics layers (overlays) that were not yet started.
-	//! Returns true if at least one overlay was started.
-	bool initMissingUserGraphicsLayers();
 
 	//! @brief Render the scene if changes occurred.
 	void redrawScene();
@@ -241,12 +233,12 @@ private:
 	typedef std::vector<OverlayInstantiatonFunction> RegisteredOverlayVec;
 	static RegisteredOverlayVec *clsRegisteredOverlays;
 
-	std::map<LayoutGraphicsLayer *, bool> clsUserLayers;
 	std::vector<GraphicsLayerDescriptor> clsVisibilityItems;
 
 	// Status bar.
 	QStatusBar *statusBar = nullptr;
 }; // end class
+
 
 // -----------------------------------------------------------------------------
 

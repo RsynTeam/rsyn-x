@@ -39,7 +39,7 @@ public:
 	int clsLayerBoundIndex = -1; // The cell bound is defined by one of the layers.
 	std::vector<Rsyn::PhysicalObstacle> clsObs;
 	Polygon clsPolygonBounds;
-	Rsyn::PhysicalObstacle clsTopLayerObs;
+
 	PhysicalLibraryCellData() = default;
 
 }; // end class 

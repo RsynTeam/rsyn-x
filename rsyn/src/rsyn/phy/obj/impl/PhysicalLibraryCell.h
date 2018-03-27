@@ -87,17 +87,6 @@ inline PhysicalSite PhysicalLibraryCell::getSite() const {
 
 //-----------------------------------------------------------------------------
 
-inline 	bool PhysicalLibraryCell::hasTopLayerObstacle() const{
-	return data->clsTopLayerObs != nullptr;
-} // end  method 
-
-//-----------------------------------------------------------------------------
-inline 	Rsyn::PhysicalObstacle PhysicalLibraryCell::getTopLayerObstracle() const {
-	return data->clsTopLayerObs;
-} // end  method 
-
-//-----------------------------------------------------------------------------
-		
 inline const std::vector<PhysicalObstacle> & PhysicalLibraryCell::allObstacles() const {
 	return data->clsObs;
 } // end  method 

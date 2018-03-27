@@ -28,9 +28,6 @@ public:
 	virtual void
 	onDesignLoaded() {}
 
-	virtual void
-	onServiceStarted(const std::string &serviceName) {}
-
 	virtual
 	~SessionObserver();
 

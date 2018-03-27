@@ -473,10 +473,6 @@ Session::registerObserver(T *observer) {
 		sessionData->observers[EVENT_DESIGN_LOADED].push_back(observer);
 	} // end if
 
-	if (typeid(&SessionObserver::onServiceStarted) != typeid(&T::onServiceStarted)) {
-		sessionData->observers[EVENT_SERVICE_STARTED].push_back(observer);
-	} // end if
-
 } // end method
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -108,8 +108,6 @@ public:
 	bool overlaps(const Polygon &polygon) const;
 
 	operator Bounds() const {return Bounds(getLower(), getUpper());}
-	
-	Bounds getBounds() const { return Bounds(getLower(), getUpper()); }
 
 	Polygon toPolygon() const;
 

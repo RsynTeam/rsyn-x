@@ -119,14 +119,7 @@ MainWindow::~MainWindow() {
 
 void 
 MainWindow::onDesignLoaded() {
-	clsNotificationDesignLoaded = true;
-} // end method
 
-// -----------------------------------------------------------------------------
-
-void
-MainWindow::onServiceStarted(const std::string &serviceName) {
-	clsNotificationServiceStarted = true;
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -297,6 +290,7 @@ MainWindow::populateScene() {
 	layoutScene->init();
 	layoutScene->setStatusBar(statusBar());
 
+	clsGraphicsLayerDescriptors = layoutScene->getVisibilityItems();
 	scene = layoutScene;
 } // end method
 
@@ -363,16 +357,12 @@ void MainWindow::populateObjectVisibility() {
 	tree.add("Routing Guides", 1, "", QtUtils::Unchecked);
 	tree.add("Routing", 1, "", QtUtils::Checked);
 
-	LayoutGraphicsScene *layoutScene = dynamic_cast<LayoutGraphicsScene *>(scene);
-	for (const GraphicsLayerDescriptor &dscp :  layoutScene->getVisibilityItems()) {
+	for (const GraphicsLayerDescriptor &dscp : clsGraphicsLayerDescriptors) {
 		tree.add(dscp.getName(), 1, "", dscp.getVisible()?
 			QtUtils::Checked : QtUtils::Unchecked);
 	} // end method
 
-	treeWidgetObjectVisibility->clear();
-	treeWidgetObjectVisibility->setEnabled(false);
 	QtUtils::populateQTreeWidget(tree, treeWidgetObjectVisibility);
-	treeWidgetObjectVisibility->setEnabled(true);
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -816,21 +806,9 @@ MainWindow::handleResults(const QString &) {
 	} // end block
 
 	LayoutGraphicsScene *layoutScene = dynamic_cast<LayoutGraphicsScene *>(scene);
-
-	if (layoutScene) {
-		if (clsNotificationServiceStarted) {
-			if (layoutScene->initMissingUserGraphicsLayers()) {
-				populateObjectVisibility();
-			} // end if
-		} // end if
+	if (layoutScene)
 		layoutScene->redrawScene();
-	} // end if
 
-	// Clear notifications.
-	clsNotificationDesignLoaded = false;
-	clsNotificationServiceStarted = false;
-
-	// Stops progress bar and re-enable the window.
 	progressBar->setMaximum(100);
 	progressBar->setValue(100);
 	setEnabled(true);

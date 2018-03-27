@@ -368,8 +368,7 @@ void PhysicalDesign::addPhysicalVia(const LefViaDscp & via) {
 	} // end for
 
 	std::sort(layers.begin(), layers.end());
-	
-//	assert(layers.size() == NUM_VIA_LAYERS);
+	assert(layers.size() == NUM_VIA_LAYERS);
 	for (int i = 0; i < NUM_VIA_LAYERS; i++) {
 		phVia->clsViaLayers[i] = std::get<1>(layers[i]);
 	} // end for
@@ -420,22 +419,10 @@ Rsyn::LibraryCell PhysicalDesign::addPhysicalLibraryCell(const LefMacroDscp& mac
 			phObs->clsBounds = scaledBounds;
 		} // end if-else 
 		phObs->clsLayer = getPhysicalLayerByName(libObs.clsMetalLayer);
-		
-		// Mateus - 2018/03/11 - Defensive programming to avoid crashes in ICCAD15 benchmarks.
-		if (!phObs->clsLayer)
-			continue;
-		
 		phObs->id = phlCell.clsObs.size() - 1;
 		// Hard code. After implementing mapping structure in Rsyn, remove this line.
 		if (libObs.clsMetalLayer.compare("metal1") == 0) {
 			phlCell.clsLayerBoundIndex = phlCell.clsObs.size() - 1;
-		} // end if 
-		Rsyn::PhysicalObstacle topPhObs = phlCell.clsTopLayerObs;
-		if(topPhObs != nullptr) {
-			if(topPhObs.getLayer().getIndex() < phObs->clsLayer.getIndex())
-				phlCell.clsTopLayerObs = phObs;
-		} else {
-			phlCell.clsTopLayerObs = phObs;
 		}
 	} // end for
 
@@ -866,7 +853,7 @@ void PhysicalDesign::addPhysicalDesignVia(const DefViaDscp & via) {
 		layers.push_back(std::make_tuple(phLayer->clsLayer.getIndex(), phLayer));
 	} // end for
 	std::sort(layers.begin(), layers.end());
-//	assert(layers.size() == NUM_VIA_LAYERS);
+	assert(layers.size() == NUM_VIA_LAYERS);
 	for (int i = 0; i < NUM_VIA_LAYERS; i++) {
 		phVia->clsViaLayers[i] = std::get<1>(layers[i]);
 	} // end if

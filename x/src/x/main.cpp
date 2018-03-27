@@ -38,8 +38,7 @@ void runISPD18Flow(const boost::program_options::variables_map& vm) {
 	Rsyn::Session session;
 	
 	std::cout << "Team number: 09\n";
-	std::cout << "Team name: UFRGS-Brazil\n";
-	std::cout << "Member: Mateus Fogaca, Jucemar Monteiro, Henrique Placido, Andre Oliveira, Isadora Oliveira, Eder Matheus Monteiro, Marcelo Johann, Ricardo Reis\n";
+	std::cout << "Member: Mateus Fogaca, Jucemar Monteiro, Henrique Placido, Andre Oliveira, Isadora Oliveira, Eder Matheus Monteiro\n";
 	std::cout << "Affiliation: Universidade Federal do Rio Grande do Sul\n";
 			
 	std::string lefFile;

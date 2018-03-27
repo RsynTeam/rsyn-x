@@ -62,10 +62,6 @@ public:
 	Rsyn::PhysicalMacroClass getClass() const;
 	//! @brief Returns PhysicalSite object related to the PhysicalLibraryCell.
 	Rsyn::PhysicalSite getSite() const;
-	//! @breif Returns true if there is a top layer obstacle. The top layer obs is the highest metal layer blockage.
-	bool hasTopLayerObstacle() const;
-	//! @breif Returns the top layer obstacle. The top layer obs is the highest metal layer blockage.
-	Rsyn::PhysicalObstacle getTopLayerObstracle() const;
 	//! @brief Returns a constant vector reference to PhysicalObstacle objects that 
 	//! represent the  metal layers blocked in the top of the PhysicalLibraryCell.
 	const std::vector<Rsyn::PhysicalObstacle> & allObstacles() const ;
