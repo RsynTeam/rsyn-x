@@ -35,9 +35,11 @@
 #include "x/opto/example/SandboxTest.h"
 #include "x/opto/example/PhysicalDesignEx.h"
 
-#ifdef RSYN_ENABLE_OVERLAP_REMOVER
+#ifdef RSYN_COIN_FOUND
+#ifdef RSYN_GLPK_FOUND
 #include "x/opto/example/LemonLP.h"
 #include "x/opto/ufrgs/qpdp/OverlapRemover.h"
+#endif
 #endif
 
 // Registration
@@ -69,9 +71,11 @@ static Startup registerProcesses([]{
 	session.registerProcess<Testing::SandboxTest>("testing.sandbox");
 
 	// Optionals
-#ifdef RSYN_ENABLE_OVERLAP_REMOVER
+#ifdef RSYN_COIN_FOUND
+#ifdef RSYN_GLPK_FOUND
 	session.registerProcess<ICCAD15::LemonLP>("example.lemonLP");
 	session.registerProcess<ICCAD15::OverlapRemover>("ufrgs.overlapRemover");
+#endif
 #endif
 });
 } // end namespace

@@ -29,8 +29,9 @@ namespace Rsyn {
 // -----------------------------------------------------------------------------
 
 PortGraphicsItem::PortGraphicsItem(Rsyn::Port port) : clsPort(port) {
+	// Note: Port geometries are given relative to the port position.
 	Bounds rect = clsPort.getBounds();
-	Rsyn::PhysicalTransform transform(Bounds(0, 0, 0, 0), clsPort.getOrientation());
+	Rsyn::PhysicalTransform transform(clsPort.getOrientation());
 	rect = transform.apply(rect);
 	rect.translate(clsPort.getPosition());
 	clsRect = QtUtils::convert(rect);

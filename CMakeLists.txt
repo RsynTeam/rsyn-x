@@ -6,7 +6,7 @@
 #########
 
 # Specify the minimum version for CMake
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 2.8)
 
 # Message
 message(STATUS "Rsyn")
@@ -59,6 +59,7 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(PNG REQUIRED)
 find_package(COIN)
+find_package(GLPK)
 
 # OpenMP (not working)
 #find_package(OpenMP)
@@ -92,13 +93,19 @@ file(GLOB_RECURSE SRC_FILES_X
 
 set(SRC_FILES ${SRC_FILES_RSYN} ${SRC_FILES_X})
 
-if(NOT COIN_FOUND)
+if(NOT COIN_FOUND OR NOT GLPK_FOUND)
   list(REMOVE_ITEM SRC_FILES ${PATH_X}/src/x/opto/example/LemonLP.h)
   list(REMOVE_ITEM SRC_FILES ${PATH_X}/src/x/opto/example/LemonLP.cpp)
   list(REMOVE_ITEM SRC_FILES ${PATH_X}/src/x/opto/ufrgs/qpdp/OverlapRemover.h)
   list(REMOVE_ITEM SRC_FILES ${PATH_X}/src/x/opto/ufrgs/qpdp/OverlapRemover.cpp)
-else()
-  add_definitions(-DRSYN_ENABLE_OVERLAP_REMOVER=1)
+endif()
+
+if(COIN_FOUND)
+  add_definitions(-DRSYN_COIN_FOUND=1)
+endif()
+
+if(GLPK_FOUND)
+  add_definitions(-DRSYN_GLPK_FOUND=1)
 endif()
 
 #####################
@@ -193,6 +200,11 @@ target_link_libraries(rsyn ${PNG_LIBRARY})
 if(COIN_FOUND)
   target_include_directories(rsyn PUBLIC ${COIN_INCLUDE_DIR})
   target_link_libraries(rsyn ${COIN_LIBRARIES})
+endif()
+
+# GLPK
+if(GLPK_FOUND)
+  target_link_libraries(rsyn glpk)
 endif()
 
 # Qt5 Widgets for linking

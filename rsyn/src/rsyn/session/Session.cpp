@@ -467,6 +467,12 @@ Session::startService(const std::string &name, const Rsyn::Json &params, const b
 			service = it->second();
 			service->start(params);
 			sessionData->clsRunningServices[name] = service;
+
+			// Notify observers.
+			for (SessionObserver *observer : sessionData->observers[EVENT_SERVICE_STARTED]) {
+				observer->onServiceStarted(name);
+			} // end for
+
 			return true;
 		} else {
 			if (!dontErrorOut) {

@@ -64,6 +64,7 @@ public:
 
 	// Rsyn::Session notifications.
 	virtual void onDesignLoaded() override;
+	virtual void onServiceStarted(const std::string &serviceName) override;
 
 protected:
 
@@ -123,12 +124,14 @@ private:
     GraphicsScene *scene = nullptr;
 	GraphicsView *view = nullptr;
 
-	std::vector<GraphicsLayerDescriptor> clsGraphicsLayerDescriptors;
-
 	QSettings clsSettings;
 	int clsCurrentCommandHistoryIndex = 0;
 
 	int clsNextLogLineIndex = 0;
+
+	bool clsNotificationDesignLoaded = false;
+	bool clsNotificationServiceStarted = false;
+
 }; // end clas
 
 } // end namespace
