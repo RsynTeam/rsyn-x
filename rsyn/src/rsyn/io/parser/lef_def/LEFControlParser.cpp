@@ -248,14 +248,16 @@ int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
 					bound->updatePoints(rect->xl, rect->yl, rect->xh, rect->yh);
 					break;
 				case lefiGeomPolygonE:
-					poly = geometry->lefiGeometries::getPolygon(i);
-					polyDscp->clsPolygonPoints.resize(poly->numPoints,
-						double2(std::numeric_limits<double>::infinity(),
-						std::numeric_limits<double>::infinity()));
-					for (int k = 0; k < poly->numPoints; k++) {
-						point = &polyDscp->clsPolygonPoints[k];
-						point->set(poly->x[k], poly->y[k]);
-					} // end for 
+					// Mateus @ 2018/04/05:
+					//	Not supported yet, skipping to avoid crashes...
+					//poly = geometry->lefiGeometries::getPolygon(i);
+					//polyDscp->clsPolygonPoints.resize(poly->numPoints,
+					//	double2(std::numeric_limits<double>::infinity(),
+					//	std::numeric_limits<double>::infinity()));
+					//for (int k = 0; k < poly->numPoints; k++) {
+					//	point = &polyDscp->clsPolygonPoints[k];
+					//	point->set(poly->x[k], poly->y[k]);
+					//} // end for 
 					break;
 				default:
 					std::cout << "WARNING: function " << __func__ << " does not supports pin geometry type in the LEF Parser Control.\n";
