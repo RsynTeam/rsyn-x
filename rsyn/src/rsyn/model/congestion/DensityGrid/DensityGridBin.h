@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -26,66 +26,73 @@
  * Created on 16 de Setembro de 2016, 18:14
  */
 
-#ifndef GRIDAREABIN_H
-#define GRIDAREABIN_H
+#ifndef RSYN_DENSITY_GRID_BIN_H
+#define RSYN_DENSITY_GRID_BIN_H
+
+
+#include "rsyn/util/Bounds.h"
+#include "rsyn/model/congestion/DensityGrid/DensityGridBlockage.h"
+#include "rsyn/model/congestion/DensityGrid/DensityGridType.h"
+
+#include <vector>
+#include <unordered_map>
 
 namespace Rsyn {
 
 class DensityGridBin {
-	friend class DensityGridData;
-	friend class DensityGrid;
-protected:
+public:
 	Bounds clsBounds;
-	std::vector<DBU> clsAreas;
-	std::vector<int> clsNumPins;
 	std::vector<Bounds> clsRows;
-	std::vector<DensityGridBlockage> clsBlockages;
+	std::vector<int> clsNumPins;
+	std::vector<Rsyn::DensityGridBlockage> clsBlockages;
+//protected:
+	std::vector<DBU> clsAreas;
 	std::unordered_map<std::string, int> clsMapBlockages;
 
 	void addArea(const AreaType type, const DBU area) {
 		clsAreas[type] += area;
 	} // end method 
-	
+
 	void removeArea(const AreaType type, const DBU area) {
 		clsAreas[type] -= area;
 	} // end method 
-	
+
 	void setArea(const AreaType type, const DBU area) {
 		clsAreas[type] = area;
 	} // end method 
-	
+
 	void clearArea(const AreaType type) {
 		clsAreas[type] = 0.0;
 	} // end method 
-	
+
 	void addPins(const PinType type, const int numPins) {
 		clsNumPins[type] += numPins;
 	} // end method 
-	
+
 	void addPin(const PinType type) {
 		clsNumPins[type]++;
 	} // end method
-	
+
 	void removePins(const PinType type, const int numPins) {
 		clsNumPins[type] -= numPins;
 	} // end method 
-	
+
 	void removePin(const PinType type) {
 		clsNumPins[type]--;
 	} // end method 
-	
+
 	void setPins(const PinType type, int numPins) {
 		clsNumPins[type] = numPins;
 	} // end method 
-	
+
 	void clearPins(const PinType type) {
 		clsNumPins[type] = 0;
 	} // end method 
-	
+
 	void resetBounds() {
 		clsBounds.clear();
 	} // end method 
-	
+
 public:
 
 	DensityGridBin() {
@@ -113,22 +120,22 @@ public:
 		return clsBounds[bound][dim];
 	} // end method 
 
-	DBU getArea (const AreaType type) const {
+	DBU getArea(const AreaType type) const {
 		return clsAreas[type];
 	} // end method 
-	
-	bool hasArea(const AreaType type ) const {
+
+	bool hasArea(const AreaType type) const {
 		return clsAreas[type] > 0;
 	} // end method 
-	
-	int getNumPins (const PinType type) const {
+
+	int getNumPins(const PinType type) const {
 		return clsNumPins[type];
 	} // end method 
 
-	const std::vector<DensityGridBlockage> & allDensityGridBlockage() const {
+	const std::vector<Rsyn::DensityGridBlockage> & allDensityGridBlockage() const {
 		return clsBlockages;
 	} // end method 
-	
+
 	const std::vector<Bounds> & allRows() const {
 		return clsRows;
 	} // end method 
@@ -136,5 +143,5 @@ public:
 
 } // end namespace 
 
-#endif /* GRIDAREABIN_H */
+#endif /* RSYN_DENSITY_GRID_BIN_H */
 

@@ -19,11 +19,12 @@
 // and name how the process will be referred to.
 
 #include <Rsyn/Session>
-
+#include "rsyn/io/reader/DesignPositionReader.h"
 // Optimizations
 
 // Registration
 namespace Rsyn {
 void Session::registerProcesses() {
+	registerProcess<Rsyn::DesignPositionReader>("loadDesignPosition");
 } // end method
 } // end namespace

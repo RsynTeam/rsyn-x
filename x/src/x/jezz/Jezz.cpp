@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /* Copyright 2014-2017 Rsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -125,7 +125,7 @@ void Jezz::start(const Rsyn::Json &params) {
 			Stepwatch leg("Legalizing circuit", false);
 			jezz_Legalize();
 			leg.finish();
-			clsRuntime = leg.getElapsedTime();
+			clsRuntime += leg.getElapsedTime();
 		});
 	} // end block
 
@@ -159,6 +159,16 @@ void Jezz::start(const Rsyn::Json &params) {
 
 		session.registerCommand(dscp, [&](const ScriptParsing::Command & command) {
 			reportFinalResults();
+		});
+	} // end block
+
+	{ // report average cell displacement (ACD)
+		ScriptParsing::CommandDescriptor dscp;
+		dscp.setName("jezzReportAcd");
+		dscp.setDescription("Report Average Cell Displacement (ACD).");
+
+		session.registerCommand(dscp, [&](const ScriptParsing::Command & command) {
+			reportAverageCellDisplacement();
 		});
 	} // end block
 } // end method
@@ -234,8 +244,8 @@ void Jezz::onPostInstanceMove(Rsyn::Instance instance) {
 		JezzNode *jezzNode = getJezzNode(instance);
 		if (jezzNode) {
 			const DBUxy position = instance.getPosition();
-				jezz_dp_RemoveNode(jezzNode);
-				jezz_dp_UpdateReferencePosition(jezzNode, position.x, position.y);
+			jezz_dp_RemoveNode(jezzNode);
+			jezz_dp_UpdateReferencePosition(jezzNode, position.x, position.y);
 		} // end if
 	} // end if
 } // end method
@@ -252,36 +262,44 @@ void Jezz::initJezz() {
 	clsInitialized = true;
 	clsInitialHpwl = clsPhysicalDesign.getHPWL();
 	clsRuntime = 0.0;
+	Stepwatch initJezz("Init Jezz", false);
 
 	// Create an attribute to map instances to jezz nodes.
 	clsMapInstancesToJezzNodes = clsDesign.createAttribute();
 
 	//Initialize Jezz Legalizer
-	const int numRows = clsPhysicalDesign.getNumRows();
-	Rsyn::PhysicalModule phModule = clsPhysicalDesign.getPhysicalModule(clsModule);
-	const Bounds &coreBounds = phModule.getBounds();
-	const int numSites = coreBounds.computeLength(X) / clsPhysicalDesign.getRowSiteWidth();
+	UpdatePositionCallback updatePositionCallback = [&](Rsyn::Cell cell, const DBU x, const DBU y, Rsyn::PhysicalOrientation orient){
+		Rsyn::PhysicalCell physicalCell = clsPhysicalDesign.getPhysicalCell(cell);
 
-	jezz_Init(
-		coreBounds.getCoordinate(LOWER, X),
-		coreBounds.getCoordinate(LOWER, Y),
-		clsPhysicalDesign.getRowHeight(),
-		clsPhysicalDesign.getRowSiteWidth(),
-		numRows,
-		numSites,
-		[&](Rsyn::Cell cell, const DBU x, const DBU y) {
-			Rsyn::PhysicalCell physicalCell = clsPhysicalDesign.getPhysicalCell(cell);
+		// Update session.
+		if (x != physicalCell.getCoordinate(LOWER, X) || y != physicalCell.getCoordinate(LOWER, Y)) {
+			clsPhysicalDesign.placeCell(physicalCell, x, y, orient, true);
+			clsPhysicalDesign.notifyInstancePlaced(physicalCell.getInstance(), this);
+		} // end if
 
-			// Update session.
-			if (x != physicalCell.getCoordinate(LOWER, X) || y != physicalCell.getCoordinate(LOWER, Y)) {
-				clsPhysicalDesign.placeCell(physicalCell, x, y, true);
-				clsPhysicalDesign.notifyInstancePlaced(physicalCell.getInstance(), this);
-			} // end if
+		// Set the reference cell position as the new legalized one.
+		Jezz::JezzNode * jezzNode = clsMapInstancesToJezzNodes[physicalCell.getInstance()];
+		jezz_dp_UpdateReferencePosition(jezzNode, x, y);
+	};
 
-			// Set the reference cell position as the new legalized one.
-			Jezz::JezzNode * jezzNode = clsMapInstancesToJezzNodes[physicalCell.getInstance()];
-			jezz_dp_UpdateReferencePosition(jezzNode, x, y);
-		});
+	clsJezzUpdatePositionCallback = updatePositionCallback;
+
+	
+	clsJezzSiteWidth = clsPhysicalDesign.getRowSiteWidth();
+	clsJezzRowHeight = clsPhysicalDesign.getRowHeight();
+	clsJezzSlotLengthInUserUnits = (4 * clsJezzRowHeight);
+	clsJezzSlotLengthInJezzUnits = jezz_SnapSizeX(clsJezzSlotLengthInUserUnits);
+
+	// Make a clean-up before starting.
+	jezz_Cleanup();
+
+	// Create a jezz row per design row.
+	jezz_InitRows();
+
+	// Flag Jezz as initialized.
+	clsJezzInitialized = true;
+	clsJezzIncrementalMode = false;
+
 
 	// Define obstacles.
 	initJezz_Obstacles();
@@ -307,6 +325,9 @@ void Jezz::initJezz() {
 
 		clsMapInstancesToJezzNodes[instance] = jezzNode;
 	} // end for
+
+	initJezz.finish();
+	clsRuntime += initJezz.getElapsedTime();
 
 	//	// Debug
 	//	for (const Jezz::JezzNode *node : clsJezz->allNodes()) {
@@ -343,10 +364,10 @@ void Jezz::initJezz_Obstacles() {
 		}
 	};
 
-	Rsyn::PhysicalModule phModule = clsPhysicalDesign.getPhysicalModule(clsModule);
+//	Rsyn::PhysicalModule phModule = clsPhysicalDesign.getPhysicalModule(clsModule);
 
 	const int numRows = clsPhysicalDesign.getNumRows();
-	const Bounds &coreBounds = phModule.getBounds();
+	//const Bounds &coreBounds = phModule.getBounds();
 
 	// Vector to store obstacles per row.
 	std::vector<std::vector < Obstacle >> rows(numRows);
@@ -375,12 +396,12 @@ void Jezz::initJezz_Obstacles() {
 	for (const Rsyn::PhysicalRow phRow : clsPhysicalDesign.allPhysicalRows()) {
 		const Bounds &bounds = phRow.getBounds();
 
-		if (bounds[LOWER][X] > coreBounds[LOWER][X]) {
-			pushObstacle(coreBounds[LOWER][X], bounds[LOWER][Y], bounds[LOWER][X], bounds[UPPER][Y], nullptr);
+		if (bounds[LOWER][X] > clsJezzBounds[LOWER][X]) {
+			pushObstacle(clsJezzBounds[LOWER][X], bounds[LOWER][Y], bounds[LOWER][X], bounds[UPPER][Y], nullptr);
 		} // end if
 
-		if (bounds[UPPER][X] < coreBounds[UPPER][X]) {
-			pushObstacle(bounds[UPPER][X], bounds[LOWER][Y], coreBounds[UPPER][X], bounds[UPPER][Y], nullptr);
+		if (bounds[UPPER][X] < clsJezzBounds[UPPER][X]) {
+			pushObstacle(bounds[UPPER][X], bounds[LOWER][Y], clsJezzBounds[UPPER][X], bounds[UPPER][Y], nullptr);
 		} // end if
 	} // end for
 
@@ -404,7 +425,9 @@ void Jezz::initJezz_Obstacles() {
 				} // end for
 			} else {
 				const Bounds &rect = phCell.getBounds();
-				pushObstacle(rect[LOWER][X], rect[LOWER][Y], rect[UPPER][X], rect[UPPER][Y], instance);
+				if (rect.overlap(clsJezzBounds)) {
+					pushObstacle(rect[LOWER][X], rect[LOWER][Y], rect[UPPER][X], rect[UPPER][Y], instance);
+				} // end if 
 			} // end else
 		} // end if
 	} // end for
@@ -454,6 +477,30 @@ void Jezz::initJezz_Obstacles() {
 // -----------------------------------------------------------------------------
 
 void Jezz::jezz_InitRows() {
+
+	clsJezzBounds[LOWER][X] = std::numeric_limits<DBU>::max();
+	clsJezzBounds[LOWER][Y] = std::numeric_limits<DBU>::max();
+	clsJezzBounds[UPPER][X] = -std::numeric_limits<DBU>::max();
+	clsJezzBounds[UPPER][Y] = -std::numeric_limits<DBU>::max();
+
+
+	for (Rsyn::PhysicalRow phRow : clsPhysicalDesign.allPhysicalRows()) {
+		const Bounds & bds = phRow.getBounds();
+		clsJezzBounds[LOWER][X] = std::min(clsJezzBounds[LOWER][X], bds[LOWER][X]);
+		clsJezzBounds[LOWER][Y] = std::min(clsJezzBounds[LOWER][Y], bds[LOWER][Y]);
+		clsJezzBounds[UPPER][X] = std::max(clsJezzBounds[UPPER][X], bds[UPPER][X]);
+		clsJezzBounds[UPPER][Y] = std::max(clsJezzBounds[UPPER][Y], bds[UPPER][Y]);
+	} // end for 
+
+	clsJezzNumRows = clsPhysicalDesign.getNumRows();
+
+	double numSites = static_cast<double> (clsJezzBounds.computeLength(X));
+	numSites /= clsJezzSiteWidth;
+	numSites = std::ceil(numSites);
+
+	clsJezzNumSites = static_cast<DBU> (numSites);
+
+
 	// Defensive programming. Call clear to ensure that resize will call the 
 	// element constructors again. Since clear does not free the memory, this 
 	// should not mess with row pointers stored elsewhere.
@@ -463,13 +510,15 @@ void Jezz::jezz_InitRows() {
 		jezzRow.reset();
 	} // end for
 
-	for (int i = 0; i < clsJezzNumRows; i++) {
+	int i = 0;
+	for (Rsyn::PhysicalRow phRow : clsPhysicalDesign.allPhysicalRows()) {
 		JezzRow &jezzRow = clsJezzRows[i];
-		jezzRow.origin_x = clsJezzOriginX;
-		jezzRow.origin_y = clsJezzOriginY + i*clsJezzRowHeight;
+		jezzRow.origin_x = clsJezzBounds[LOWER][X];
+		jezzRow.origin_y = clsJezzBounds[LOWER][Y] + i*clsJezzRowHeight;
 		jezzRow.x = jezz_SnapPositionX(jezzRow.origin_x);
 		jezzRow.y = i;
 		jezzRow.w = clsJezzNumSites;
+		jezzRow.clsOrientation = phRow.getSiteOrientation();
 
 		// Define some useful values to the guts of root node so that we don't
 		// need to deal with special cases as for instance define the x position
@@ -492,6 +541,7 @@ void Jezz::jezz_InitRows() {
 		// Initialize cache slots.
 		const int numSlots = roundedUpIntegralDivision(jezzRow.width(), clsJezzSlotLengthInJezzUnits);
 		jezzRow.slots.assign(numSlots, nullptr);
+		++i;
 	} // end for
 } // end method
 
@@ -502,40 +552,6 @@ void Jezz::jezz_DeleteWhitespaceNodes() {
 	for (JezzNode &whitespace : clsJezzWhitespaces) {
 		jezz_DeleteWhitespaceNode(&whitespace);
 	} // end for
-} // end method
-
-// -----------------------------------------------------------------------------
-
-void Jezz::jezz_Init(
-	const DBU originX,
-	const DBU originY,
-	const DBU rowHeight,
-	const DBU siteWidth,
-	const int numRows,
-	const int numSites,
-	UpdatePositionCallback updatePositionCallback) {
-
-	clsJezzNumSites = numSites;
-	clsJezzNumRows = numRows;
-
-	clsJezzUpdatePositionCallback = updatePositionCallback;
-	clsJezzSiteWidth = siteWidth;
-	clsJezzRowHeight = rowHeight;
-	clsJezzOriginX = originX;
-	clsJezzOriginY = originY;
-
-	clsJezzSlotLengthInUserUnits = (4 * rowHeight);
-	clsJezzSlotLengthInJezzUnits = jezz_SnapSizeX(clsJezzSlotLengthInUserUnits);
-
-	// Make a clean-up before starting.
-	jezz_Cleanup();
-
-	// Create a jezz row per design row.
-	jezz_InitRows();
-
-	// Flag Jezz as initialized.
-	clsJezzInitialized = true;
-	clsJezzIncrementalMode = false;
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -670,6 +686,7 @@ void Jezz::jezz_Cleanup() {
 	clsJezzDeletedNodes.clear();
 	clsJezzDeletedWhitespaces.clear();
 
+	clsJezzBounds.clear();
 	clsJezzInitialized = false;
 	clsJezzIncrementalMode = false;
 } // end method
@@ -1148,7 +1165,7 @@ double Jezz::jezz_InsertNode(
 	// this.
 	if (!trial && jezzNode->reference) {
 		clsJezzUpdatePositionCallback(jezzNode->reference,
-			jezz_UnsnapPositionX(jezzNode->x), jezzRow->origin_y);
+			jezz_UnsnapPositionX(jezzNode->x), jezzRow->origin_y, jezzRow->getOrientation());
 	} // end if	
 
 	return bestOverallDisturbance;
@@ -1268,7 +1285,7 @@ int Jezz::jezz_AdjustPositionConsolidate(JezzRow *jezzRow,
 			// let's do it like this.
 			if (node->reference) {
 				clsJezzUpdatePositionCallback(node->reference,
-					jezz_UnsnapPositionX(node->x), jezzRow->origin_y);
+					jezz_UnsnapPositionX(node->x), jezzRow->origin_y, jezzRow->getOrientation());
 			} // end if
 		} // end else
 
@@ -1317,7 +1334,7 @@ void Jezz::reportFinalResults(std::ostream & out) {
 
 	out << std::left;
 	out << "\n";
-	out << "Jezz          "; // reserve space for "Final Result: "
+	out << "                  "; // reserve space for "Final Result: "
 	out << std::setw(N) << "Design";
 	out << std::setw(N) << "GP_HPWL(e6)";
 	out << std::setw(N) << "Leg_HPWL(e6)";
@@ -1327,7 +1344,7 @@ void Jezz::reportFinalResults(std::ostream & out) {
 	out << std::setw(N) << "runtime(s)";
 	out << "\n";
 
-	out << "Final Result: "; // make it easy to grep
+	out << "Jezz Result:      "; // make it easy to grep
 	out << std::setw(N) << clsDesign.getName();
 	out << std::setw(N) << initialHpwl / (designUnits * 1e6);
 	out << std::setw(N) << hpwl / (designUnits * 1e6);
@@ -1344,11 +1361,120 @@ void Jezz::reportFinalResults(std::ostream & out) {
 
 // -----------------------------------------------------------------------------
 
+void Jezz::reportAverageCellDisplacement(std::ostream & out) {
+	int numCells = clsPhysicalDesign.getNumElements(Rsyn::PhysicalType::PHYSICAL_MOVABLE);
+	std::vector<DBU> dispCells;
+	dispCells.reserve(numCells);
+	for (Rsyn::Instance inst : clsModule.allInstances()) {
+		if (inst.isFixed() || inst.getType() != Rsyn::CELL)
+			continue;
+		Rsyn::Cell cell = inst.asCell();
+		Rsyn::PhysicalCell phCell = clsPhysicalDesign.getPhysicalCell(cell);
+		DBU disp = phCell.getDisplacement();
+		dispCells.push_back(disp);
+	} // end for 
+
+	std::sort(dispCells.begin(), dispCells.end(), [](const DBU disp0, const DBU disp1) {
+		return disp0 > disp1;
+	}); // end sort 
+
+
+	const double clsAcd2Weight = 10.0;
+	const double clsAcd5Weight = 4.0;
+	const double clsAcd10Weight = 2.0;
+	const double clsAcd20Weight = 1.0;
+
+	const int numAcd2 = static_cast<int> (numCells * 0.02);
+	const int numAcd5 = static_cast<int> (numCells * 0.05);
+	const int numAcd10 = static_cast<int> (numCells * 0.1);
+	const int numAcd20 = static_cast<int> (numCells * 0.2);
+
+	const bool empty = dispCells.empty();
+
+	double clsAcdMaxDisp = empty ? 0.0 : static_cast<double> (dispCells[0]);
+	double clsAcdAvgDisp = 0.0;
+	double clsAcd2 = 0.0;
+	double clsAcd5 = 0.0;
+	double clsAcd10 = 0.0;
+	double clsAcd20 = 0.0;
+
+
+	for (int i = 0; i < numAcd2; ++i) {
+		clsAcd2 += dispCells[i];
+	} // end for 
+
+	clsAcd5 = clsAcd2;
+	for (int i = numAcd2; i < numAcd5; ++i) {
+		clsAcd5 += dispCells[i];
+	} // end for 
+
+	clsAcd10 = clsAcd5;
+	for (int i = numAcd5; i < numAcd10; ++i) {
+		clsAcd10 += dispCells[i];
+	} // end for 
+
+	clsAcd20 = clsAcd10;
+	for (int i = numAcd10; i < numAcd20; ++i) {
+		clsAcd20 += dispCells[i];
+	} // end for
+
+	clsAcdAvgDisp = clsAcd20;
+	for (int i = numAcd20; i < numCells; ++i) {
+		clsAcdAvgDisp += dispCells[i];
+	} // end for
+
+	clsAcdAvgDisp = empty ? 0.0 : (clsAcdAvgDisp / numCells);
+
+	clsAcd2 = empty ? 0.0 : (clsAcd2 / numAcd2);
+	clsAcd5 = empty ? 0.0 : (clsAcd5 / numAcd5);
+	clsAcd10 = empty ? 0.0 : (clsAcd10 / numAcd10);
+	clsAcd20 = empty ? 0.0 : (clsAcd20 / numAcd20);
+
+	double wAcd2 = clsAcd2Weight * clsAcd2;
+	double wAcd5 = clsAcd5Weight * clsAcd5;
+	double wAcd10 = clsAcd10Weight * clsAcd10;
+	double wAcd20 = clsAcd20Weight * clsAcd20;
+
+	double clsWeightedAcd = (wAcd2 + wAcd5 + wAcd10 + wAcd20) / (10.0 + 4.0 + 2.0 + 1.0);
+
+	StreamStateSaver sss(out);
+	const int N = 15;
+	//	const double rowHeight = double(clsPhDesign.getRowHeight());
+	const double database = double(clsPhysicalDesign.getDatabaseUnits(Rsyn::DBUType::DESIGN_DBU));
+	out << std::left;
+	out << "\n";
+	out << "Jezz              ";
+	out << std::setw(N) << "Design";
+	out << std::setw(N) << "ACD2%";
+	out << std::setw(N) << "ACD5%";
+	out << std::setw(N) << "ACD10%";
+	out << std::setw(N) << "ACD20%";
+	out << std::setw(N) << "wACD";
+	out << std::setw(N) << "ACDAVG";
+	out << std::setw(N) << "ACDMaxDisp";
+	out << "\n";
+
+	out << "ACD(um):          "; // make it easy to grep
+	out << std::setw(N) << clsDesign.getName();
+	out << std::setw(N) << clsAcd2 / database;
+	out << std::setw(N) << clsAcd5 / database;
+	out << std::setw(N) << clsAcd10 / database;
+	out << std::setw(N) << clsAcd20 / database;
+	out << std::setw(N) << clsWeightedAcd / database;
+	out << std::setw(N) << clsAcdAvgDisp / database;
+	out << std::setw(N) << clsAcdMaxDisp / database;
+	out << "\n";
+
+	sss.restore();
+} // end method
+
+// ----------------------------------------------------------------------------- 
+
 void Jezz::jezz_UpdatePositions(JezzRow *jezzRow) {
 	for (JezzNodeGuts *jezzNode : jezzRow->allNodesFromHeadToTail()) {
 		if (jezzNode->reference) {
 			const DBU x = jezz_UnsnapPositionX(jezzNode->x);
-			clsJezzUpdatePositionCallback(jezzNode->reference, x, jezzRow->origin_y);
+			clsJezzUpdatePositionCallback(jezzNode->reference, x, jezzRow->origin_y, jezzRow->getOrientation());
 		} // end if
 	} // end for
 } // end method
@@ -1490,8 +1616,8 @@ void Jezz::jezz_StressTest() {
 
 		const DBU randomx = rand() / DBU(RAND_MAX);
 		const DBU randomy = rand() / DBU(RAND_MAX);
-		const DBU x1 = clsJezzOriginX + (coreWidth * randomx);
-		const DBU y1 = clsJezzOriginY + (coreHeight * randomy);
+		const DBU x1 = clsJezzBounds[LOWER][X] + (coreWidth * randomx);
+		const DBU y1 = clsJezzBounds[LOWER][Y] + (coreHeight * randomy);
 
 		// Due to rounding, some random generated (x, y) may lie outside the
 		// row bounds.
@@ -1532,8 +1658,8 @@ void Jezz::jezz_StressTest_CacheSystem() {
 	for (int i = 0; i < N; i++) {
 		const DBU randomx = rand() / DBU(RAND_MAX);
 		const DBU randomy = rand() / DBU(RAND_MAX);
-		const DBU x = clsJezzOriginX + (coreWidth * randomx);
-		const DBU y = clsJezzOriginY + (coreHeight * randomy);
+		const DBU x = clsJezzBounds[LOWER][X] + (coreWidth * randomx);
+		const DBU y = clsJezzBounds[LOWER][Y] + (coreHeight * randomy);
 
 		const int col = jezz_SnapPositionX(x);
 		const int row = jezz_SnapPositionY(y);
@@ -1728,12 +1854,12 @@ void Jezz::jezz_dp_SwapNeighbours(JezzNode *jezzNode0, const ListLink link) {
 	// Ugly. Keep global position up-to-date.
 	if (jezzNode0->reference) {
 		clsJezzUpdatePositionCallback(jezzNode0->reference,
-			jezz_UnsnapPositionX(jezzNode0->x), jezzRow->origin_y);
+			jezz_UnsnapPositionX(jezzNode0->x), jezzRow->origin_y, jezzRow->getOrientation());
 	} // end if	
 
 	if (jezzNode1->reference) {
 		clsJezzUpdatePositionCallback(jezzNode1->reference,
-			jezz_UnsnapPositionX(jezzNode1->x), jezzRow->origin_y);
+			jezz_UnsnapPositionX(jezzNode1->x), jezzRow->origin_y, jezzRow->getOrientation());
 	} // end if	
 } // end method
 

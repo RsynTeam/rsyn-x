@@ -29,20 +29,24 @@
 #ifndef GRIDAREABLOCKAGE_H
 #define GRIDAREABLOCKAGE_H
 
+
+#include "rsyn/core/Rsyn.h"
+#include "rsyn/util/Bounds.h"
+#include <vector>
+
 namespace Rsyn {
 
 class DensityGridBlockage {
-	friend class DensityGrid;
-protected:
+public:
 	std::vector<Bounds> clsBounds;
-	Rsyn::Instance clsInstance;
+	Instance clsInstance;
 public:
 	DensityGridBlockage() { }
 	std::size_t getNumBounds() const { return clsBounds.size(); }
 	bool hasBounds() const { return !clsBounds.empty(); }
 	const std::vector<Bounds> & allBounds() const { return clsBounds; }
 	
-	Rsyn::Instance getInstance() const { return clsInstance; }
+	Instance getInstance() const { return clsInstance; }
 	bool hasInstance() const { return clsInstance != nullptr; }
 }; // end class 
 

@@ -23,7 +23,6 @@
 
 // Readers
 #include "rsyn/io/reader/BookshelfReader.h"
-#include "rsyn/io/reader/DesignPositionReader.h"
 #include "rsyn/io/reader/SizingISPDReader.h"
 #include "rsyn/io/reader/ISPD2014Reader.h"
 #include "rsyn/io/reader/ICCAD15Reader.h"
@@ -40,7 +39,6 @@ void Session::registerReaders() {
 	registerReader<Rsyn::BookshelfReader>("bookshelf");
 	registerReader<Rsyn::ISPD2014Reader>("ispd14");
 	registerReader<Rsyn::SizingISPDReader>("sizingISPD");
-	registerReader<Rsyn::DesignPositionReader>("loadDesignPosition");
 	registerReader<Rsyn::GenericReader>("generic");
 	registerReader<Rsyn::ISPD2018Reader>("ispd18");
 } // end method

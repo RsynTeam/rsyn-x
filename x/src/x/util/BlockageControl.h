@@ -30,7 +30,7 @@
 #define BLOCKAGECONTROL_H
 
 #include <Rsyn/Session>
-#include "rsyn/util/Matrix.h"
+#include "rsyn/util/Array.h"
 #include <Rsyn/PhysicalDesign>
 using Rsyn::PhysicalCell;
 namespace ICCAD15 {
@@ -56,7 +56,7 @@ protected:
 	int clsMatrixDimension;
 	DBU clsBinsHeight;
 	DBU clsBinsWidth;
-	DenseMatrix<BinData> clsBins;	
+	Array2D<BinData> clsBins;	
 	
 public:
 	BlockageControl() {};

@@ -35,7 +35,7 @@
 
 namespace Rsyn {
 
-class DesignPositionReader : public Reader {
+class DesignPositionReader : public Process {
 protected:
 	Rsyn::Session session;
 	Rsyn::Design clsDesign;
@@ -46,8 +46,9 @@ public:
 	DesignPositionReader() {}
 	DesignPositionReader(const DesignPositionReader& orig) {}
 	virtual ~DesignPositionReader() {}
-	virtual bool load(const Rsyn::Json &params) override;
+	virtual bool run(const Rsyn::Json &params) override;
 protected:
+	bool load(const Rsyn::Json &params);
 	void openDef(std::string & path);
 	void openBookshelf(std::string & path);
 }; // end class 

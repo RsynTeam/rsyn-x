@@ -24,7 +24,7 @@
 #include <QRect>
 
 #include "GraphicsItemLookup.h"
-#include "rsyn/util/Matrix.h"
+#include "rsyn/util/Array.h"
 
 namespace Rsyn {
 
@@ -76,7 +76,7 @@ private:
 	float clsBinHeight = 0;
 	
 	std::unordered_set<GraphicsItem *> clsItems;
-	DenseMatrix<InternalItemList> clsGrid;
+	Array2D<InternalItemList> clsGrid;
 
 }; // end class
 

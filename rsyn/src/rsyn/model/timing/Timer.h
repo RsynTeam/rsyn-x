@@ -35,6 +35,7 @@
 #include "rsyn/util/RangeBasedLoop.h"
 #include "rsyn/util/dbu.h"
 #include "rsyn/util/FloatingPoint.h"
+#include "rsyn/util/Histogram.h"
 
 #include "TimingNet.h"
 #include "TimingPin.h"
@@ -68,6 +69,17 @@ public:
 		// delay less the input driver delay when driving no load (i.e.
 		// parasitic delay).
 		INPUT_DRIVER_DELAY_MODE_PRIME_TIME
+	}; // end enum
+
+	//! @brief Defines which kind of timing update are to be performed.
+	//! @note Arrival times are always updated, but required and centrality can
+	//! be selectively disabled.
+	enum UpdateType {
+		ARRIVAL    = 0b0001, 
+		REQUIRED   = 0b0010,
+		CENTRALITY = 0b0100,
+
+		ALL        = ~0
 	}; // end enum
 
 private:
@@ -249,7 +261,10 @@ private:
 	std::set<Rsyn::Pin> floatingStartpoints;
 	
 	std::set<Rsyn::Net> dirtyNets;
-	std::set<Rsyn::Instance> dirtyInstances;	
+	std::set<Rsyn::Instance> dirtyInstances;
+
+	bool clsIsRequiredOutOfSync = true;
+	bool clsIsCentralityOutOfSync = true;
 	
 	void timingBuildTimingArcs_SetupBacktrackEdge(
 			TimingArc &arc, 
@@ -259,15 +274,15 @@ private:
 	// Update Timing
 	////////////////////////////////////////////////////////////////////////////
 	
-	void updateTiming_Arc_NonUnate(const TimingMode mode, const EdgeArray<Number> islew, const EdgeArray<Number> load, Rsyn::Arc arc);
-	void updateTiming_Arc(const TimingMode mode, const EdgeArray<Number> islew, const EdgeArray<Number> load, const bool skip, Rsyn::Arc arc, Rsyn::LibraryArc larc, TimingArcState &state);
+	void updateTiming_Arc_NonUnate(const TimingMode mode, const EdgeArray<Number> islew, const EdgeArray<Number> load, Rsyn::Arc arc, Rsyn::LibraryArc larc, TimingArcState &state) const;
+	void updateTiming_Arc(const TimingMode mode, const EdgeArray<Number> islew, const EdgeArray<Number> load, const bool skip, Rsyn::Arc arc, Rsyn::LibraryArc larc, TimingArcState &state) const;
 	
 	void updateTiming_Net_InitDriver(Rsyn::Pin driver, const TimingMode mode, const EdgeArray<Number> load);
 	void updateTiming_Net_TimingMode(const TimingMode mode, Rsyn::Net net, const EdgeArray<Number> load, Rsyn::Arc arc);
 	void updateTiming_Net(Rsyn::Net net);
 
 	void updateTiming_HandleFloatingPins();
-	
+
 	// Propagate arrival times.
 	void updateTiming_PropagateArrivalTimes();
 	void updateTiming_PropagateArrivalTimesIncremental(std::set<Rsyn::Net> &endpoints);		
@@ -364,6 +379,11 @@ private:
 		return timingPin.state[mode].a[transition];
 	} // end method
 
+	//! @brief Returns the arrival time at a timing pin.
+	EdgeArray<Number> getPinArrivalTime(const TimingPin &timingPin, const TimingMode mode) const {
+		return timingPin.state[mode].a;
+	} // end method
+
 	//! @brief Returns the worst arrival time between rise and fall transition
 	//!        at a timing pin.
 	Number getPinWorstArrivalTime(const TimingPin &timingPin, const TimingMode mode) const {
@@ -383,6 +403,11 @@ private:
 		return timingPin.state[mode].q[transition];
 	} // end method
 
+	//! @brief Returns the required time at this timing pin.
+	EdgeArray<Number> getPinRequiredTime(const TimingPin &timingPin, const TimingMode mode) const {
+		return timingPin.state[mode].q;
+	} // end method
+
 	//! @brief Returns the worst required time between rise and fall transition
 	//!        at a timing pin.
 	Number getPinWorstRequiredTime(const TimingPin &timingPin, const TimingMode mode) const {
@@ -399,6 +424,11 @@ private:
 	//! @brief Returns the negative slack (i.e. min{slack, 0}) at a timing pin.
 	Number getPinNegativeSlack(const TimingPin &timingPin, const TimingMode mode, const TimingTransition transition) const {
 		return timingPin.getNegativeSlack(mode, transition);
+	} // end method
+
+	//! @brief Returns the negative slack (i.e. min{slack, 0}) at a timing pin.
+	EdgeArray<Number> getPinNegativeSlack(const TimingPin &timingPin, const TimingMode mode) const {
+		return timingPin.getNegativeSlack(mode);
 	} // end method
 
 	//! @brief Returns the worst slack at a timing pin.
@@ -438,6 +468,11 @@ private:
 		return timingPin.state[mode].slew[transition];
 	} // end method
 
+	//! @brief Returns the slew at a timing pin.
+	EdgeArray<Number> getPinSlew(const TimingPin &timingPin, const TimingMode mode) const {
+		return timingPin.state[mode].slew;
+	} // end method
+
 	//! @brief Returns the (adjusted) clock period of the worst path passing
 	//!        through a pin.
 	//! @note  The adjusted clock period is the clock period accounting for
@@ -460,6 +495,21 @@ private:
 	//! @brief Returns the current delay of a timing arc.
 	Number getArcDelay(const TimingArc &timingArc, const TimingMode mode, const TimingTransition oedge) const {
 		return timingArc.state[mode].delay[oedge];
+	} // end method
+
+	//! @brief Returns the current delay of a timing arc.
+	EdgeArray<Number> getArcDelay(const TimingArc &timingArc, const TimingMode mode) const {
+		return timingArc.state[mode].delay;
+	} // end method
+
+	//! @brief Returns the current slew of a timing arc.
+	Number getArcSlew(const TimingArc &timingArc, const TimingMode mode, const TimingTransition oedge) const {
+		return timingArc.state[mode].oslew[oedge];
+	} // end method
+
+	//! @brief Returns the current slew of a timing arc.
+	EdgeArray<Number> getArcSlew(const TimingArc &timingArc, const TimingMode mode) const {
+		return timingArc.state[mode].oslew;
 	} // end method
 
 	//! @brief Returns the pin criticality i.e. the ratio of this pin slack and
@@ -531,14 +581,22 @@ public:
 	//! @note  Usually this is not necessary as the timer keeps track of each
 	//!        net/instance that needs update and hence can perform an
 	//!        incremental update, which is much faster in most cases.
-	void updateTimingFull();
+	void updateTimingFull(const UpdateType updateType = ALL);
 	
 	//! @brief Performs an incremental timing update.
 	//! @note  An incremental update will update only the instances/nets and
 	//!        their transitive fanout that were changed since the last timing
 	//!        update.
-	void updateTimingIncremental();
-	
+	void updateTimingIncremental(const UpdateType updateType = ALL);
+
+	//! @brief Performs a full required timing update.
+	//! @note  Arrival times are supposed to be up-to-date.
+	void updateRequiredTimes();
+
+	//! @brief Performs a full required timing update.
+	//! @note  Arrival times are supposed to be up-to-date.
+	void updateCentrality();
+
 	//! @brief Updates the timing of a single net without propagating the
 	//!        changes.
 	//! @note  This leaves the timing in an inconsistent state till the next
@@ -554,10 +612,27 @@ public:
 	//!        timing update is performed (incremental or full).
 	//! @note  Useful when performing small local changes that will not cause
 	//!        a whole lot of timing change.
-	//! @note  2nd level fanout nets are those being driven by the sinks of the
-	//!        cell.
-	void updateTimingLocally(Rsyn::Instance cell, const bool includeSecondFanoutLevelNets = false);
-		
+	//! @param includeFanoutNetsOfSinkCells also update the nets driven by the
+	//!        sinks of the cell.
+	//! @param includeFanoutNetsOfSideCells also update the nets driven by the
+	//!        side cells (i.e. those driven by the same driver as the cell).
+	void updateTimingLocally(Rsyn::Instance cell, const bool includeFanoutNetsOfSinkCells = false, const bool includeFanoutNetsOfSideCells = false);
+
+	//! @brief Computes the arrival and slew at an primary input.
+	void calculatePrimaryInputTiming(const Rsyn::Pin pin, const TimingMode mode, const EdgeArray<Number> &load, EdgeArray<Number> &arrival, EdgeArray<Number> &slew) const;
+
+	//! @brief Indicates whether or not required times are out of sync i.e.
+	//!        a full required time update is necessary.
+	bool isRequiredTimeOutOfSync() const {
+		return clsIsRequiredOutOfSync;
+	} // end method
+
+	//! @brief Indicates whether or not centrality values are out of sync i.e.
+	//!        a full centrality time update is necessary.
+	bool isCentralityOutOfSync() const {
+		return clsIsCentralityOutOfSync;
+	} // end method
+
 	//! @brief Helper function to compute the slack given and arrival and
 	//!        required time. It handles internally the differences when
 	//!        computing early and late slacks.
@@ -594,12 +669,23 @@ public:
 	//! @brief Returns load being driven by a pin.
 	Number getPinLoadCapacitance(Rsyn::Pin pin, const TimingTransition oedge) const { 
 		Rsyn::Net net = pin.getNet();
-		return net? getNetLoad(net)[oedge] : 0; 
+		return pin.isDriver() && net? getNetLoad(net)[oedge] : 0;
+	} // end method
+
+	//! @brief Returns load being driven by a pin.
+	Rsyn::EdgeArray<Number> getPinLoadCapacitance(Rsyn::Pin pin) const {
+		Rsyn::Net net = pin.getNet();
+		return pin.isDriver() && net? getNetLoad(net) : Rsyn::EdgeArray<Number>(0, 0);
 	} // end method
 
 	//! @brief Returns the arrival time at a timing pin.
 	Number getPinArrivalTime(Rsyn::Pin pin, const TimingMode mode, const TimingTransition transition) const {
 		return getPinArrivalTime(getTimingPin(pin), mode, transition);
+	} // end method
+
+	//! @brief Returns the arrival time at a timing pin.
+	EdgeArray<Number> getPinArrivalTime(Rsyn::Pin pin, const TimingMode mode) const {
+		return getPinArrivalTime(getTimingPin(pin), mode);
 	} // end method
 
 	//! @brief Returns the worst arrival time between rise and fall transition
@@ -620,6 +706,11 @@ public:
 		return getPinRequiredTime(getTimingPin(pin), mode, transition);
 	} // end method
 
+	//! @brief Returns the required time at this pin.
+	EdgeArray<Number> getPinRequiredTime(Rsyn::Pin pin, const TimingMode mode) const {
+		return getPinRequiredTime(getTimingPin(pin), mode);
+	} // end method
+
 	//! @brief Returns the worst required time between rise and fall transition
 	//!        at a pin.
 	Number getPinWorstRequiredTime(Rsyn::Pin pin, const TimingMode mode) const {
@@ -631,9 +722,19 @@ public:
 		return getTimingPin(pin).getSlack(mode, transition);
 	} // end method
 
+	//! @brief Returns the slack at a pin.
+	EdgeArray<Number> getPinSlack(Rsyn::Pin pin, const TimingMode mode) const {
+		return getTimingPin(pin).getSlack(mode);
+	} // end method
+
 	//! @brief Returns the negative slack (i.e. min{slack, 0}) at a pin.
 	Number getPinNegativeSlack(Rsyn::Pin pin, const TimingMode mode, const TimingTransition transition) const {
 		return getPinNegativeSlack(getTimingPin(pin), mode, transition);
+	} // end method
+
+	//! @brief Returns the negative slack (i.e. min{slack, 0}) at a pin.
+	EdgeArray<Number> getPinNegativeSlack(Rsyn::Pin pin, const TimingMode mode) const {
+		return getPinNegativeSlack(getTimingPin(pin), mode);
 	} // end method
 
 	//! @brief Returns the worst slack at a pin.
@@ -661,12 +762,37 @@ public:
 		return getPinSlew(getTimingPin(pin), mode, transition);
 	} // end method	
 
+	//! @brief Returns the slew at a pin.
+	EdgeArray<Number> getPinSlew(Rsyn::Pin pin, const TimingMode mode) const {
+		return getPinSlew(getTimingPin(pin), mode);
+	} // end method
+
 	//! @brief Returns the (adjusted) clock period of the worst path passing
 	//!        through a pin.
 	//! @note  The adjusted clock period is the clock period accounting for
 	//!        skew, setup/hold time, etc.
 	Number getPinAdjustedClockPeriod(Rsyn::Pin pin, const TimingMode mode, const TimingTransition transition) const {
 		return getPinAdjustedClockPeriod(getTimingPin(pin), mode, transition);
+	} // end method
+
+	//! @brief Returns how much the arrival time of this pin should be scaled
+	//!        in order to make the worst path passing through the pin meet
+	//!        timing assuming the arrival times at the other pin on the path
+	//!        are also scaled.
+	EdgeArray<Number> getPinSlackScaling(Rsyn::Pin pin, const TimingMode mode) const {
+		const Number T = getClockPeriod();
+		const EdgeArray<Number> slack = getPinSlack(pin, mode);
+
+		EdgeArray<Number> scaling(1, 1);
+		if (T > 0) {
+			for (Rsyn::TimingTransition edge : Rsyn::allTimingTransitions()) {
+				if (!isUninitializedValue(slack[edge])) {
+					scaling[edge] = T / (T - slack[edge]);
+				} // end else
+			} // end for
+		} // end if
+
+		return scaling;
 	} // end method
 
 	//! @brief Returns the total negative slack.
@@ -717,10 +843,10 @@ public:
 	} // end method	
 	
 	//! @brief Returns the critical arc of a cell.
-	//! @note  The critical arc is not necessarily  the slowest (late) / fastest
+	//! @note  The critical arc is not necessarily the slowest (late) / fastest
 	//!        (early), but it is the arc related to the critical path passing 
-	//!         thru the cell.
-	//! @result A tuple (arc, input transition, output transition).
+	//!        thru the cell.
+	//! @result A tuple (arc, input edge, output edge).
 	std::tuple<Rsyn::Arc, TimingTransition, TimingTransition>
 	getCellCriticalArc(Rsyn::Instance cell, const TimingMode mode) const {
 		Number criticalSlack = +std::numeric_limits<Number>::infinity();
@@ -747,7 +873,7 @@ public:
 		return std::make_tuple(criticalArc,
 				criticalInputTransition, criticalOutputTransition);
 	} // end method
-	
+
 	//! @brief   Returns the percentage of the worst path delay passing through
 	//!          this cell due to this cell.
 	//! @details For instance, if the worst path delay is 100 and the cell delay
@@ -781,7 +907,7 @@ public:
 	//! @brief Returns the worst slack at the cell's output pins.
 	Number getCellWorstSlack(const Rsyn::Instance cell, const TimingMode mode) const {
 		Number wns = std::numeric_limits<Number>::max() ;
-		for(Rsyn::Pin pin : cell.allPins(Rsyn::OUT)){
+		for (Rsyn::Pin pin : cell.allPins(Rsyn::OUT)) {
 			Number wnsPin = getPinWorstSlack(pin, mode);
 			if(wnsPin < wns)
 				wns = wnsPin;
@@ -862,6 +988,21 @@ public:
 	//! @brief Returns the current delay of an arc.
 	Number getArcDelay(Rsyn::Arc arc, const TimingMode mode, const TimingTransition oedge) const {
 		return getArcDelay(getTimingArc(arc), mode, oedge);
+	} // end method
+
+	//! @brief Returns the current delay of an arc.
+	EdgeArray<Number> getArcDelay(Rsyn::Arc arc, const TimingMode mode) const {
+		return getArcDelay(getTimingArc(arc), mode);
+	} // end method
+
+	//! @brief Returns the current slew of an arc.
+	Number getArcSlew(Rsyn::Arc arc, const TimingMode mode, const TimingTransition oedge) const {
+		return getArcSlew(getTimingArc(arc), mode, oedge);
+	} // end method
+
+	//! @brief Returns the current slew of an arc.
+	EdgeArray<Number> getArcSlew(Rsyn::Arc arc, const TimingMode mode) const {
+		return getArcSlew(getTimingArc(arc), mode);
 	} // end method
 
 	//! @brief Returns the current worst delay among rise/fall of an arc.
@@ -985,7 +1126,19 @@ public:
 		} // end for
 		return maxWireDelay;
 	} // end method		
-	
+
+	//! @brief Returns the sense of an arc.
+	Rsyn::TimingSense getArcSense(Rsyn::Arc arc) const {
+		Rsyn::ArcType arcType = arc.getType();
+		return (arcType == Rsyn::NET_ARC) ? Rsyn::POSITIVE_UNATE :
+			getTimingLibraryArc(arc).sense;
+	} // end method
+
+	//! @brief Returns the sense of a library arc.
+	Rsyn::TimingSense getArcSense(Rsyn::LibraryArc larc) const {
+		return getTimingLibraryArc(larc).sense;
+	} // end method
+
 	//! @brief Returns the arrival time propagated to the "to" pin of an arc
 	//!        given the transition type at the "to" pin.
 	//! @note  The arrival time may be different than the actual arrival time 
@@ -998,6 +1151,17 @@ public:
 		return timingArc.state[mode].delay[toEdge] + from.state[mode].a[fromEdge];
 	} // end method
 
+	//! @brief Returns the arrival time propagated to the "to" pin of an arc
+	//!        given the transition type at the "to" pin.
+	//! @note  The arrival time may be different than the actual arrival time
+	//!        stored at "to" since "to" stores the worst arrival time.
+	EdgeArray<Number> getArcArrivalTimeAtToPin(Rsyn::Arc arc, const TimingMode mode) const {
+		EdgeArray<Number> result;
+		result[RISE] = getArcArrivalTimeAtToPin(arc, mode, RISE);
+		result[FALL] = getArcArrivalTimeAtToPin(arc, mode, FALL);
+		return result;
+	} // end method
+
 	//! @brief Returns the required time propagated to the "from" pin of an arc
 	//!        given the transition type at the "to" pin.
 	//! @note  The required time may be different than the actual required time
@@ -1007,6 +1171,17 @@ public:
 		const TimingArc &timingArc = getTimingArc(arc);
 
 		return to.state[mode].q[toEdge]	- timingArc.state[mode].delay[toEdge];
+	} // end method
+
+	//! @brief Returns the required time propagated to the "from" pin of an arc
+	//!        given the transition type at the "to" pin.
+	//! @note  The required time may be different than the actual required time
+	//!        stored at "from" since "from" stores the worst required time.
+	EdgeArray<Number> getArcRequiredTimeAtFromPin(Rsyn::Arc arc, const TimingMode mode) const {
+		EdgeArray<Number> result;
+		result[RISE] = getArcRequiredTimeAtFromPin(arc, mode, RISE);
+		result[FALL] = getArcRequiredTimeAtFromPin(arc, mode, FALL);
+		return result;
 	} // end method
 
 	//! @brief Returns the worst arrival (between rise/fall) time propagated to
@@ -1031,6 +1206,21 @@ public:
 		const Number a = getArcArrivalTimeAtToPin(arc, mode, toEdge);
 		const Number q = getPinRequiredTime(arc.getToPin(), mode, toEdge);
 		return computeSlack(mode, a, q);
+	} // end method
+
+	//! @brief Returns the slack at the "to" pin of an arc given a transition
+	//!        type at the "to" pin and assuming the arrival time at the "to"
+	//!        pin is propagated from the arc passed as argument. The required
+	//!        time used for slack computation is the one stored in the "to"
+	//!        pin.
+	//! @note  This may return a different value than getPinSlack("to") as the
+	//!        arrival time at "to" is assumed to be the one propagate from this
+	//!        arc.
+	EdgeArray<Number> getArcSlackAtToPin(Rsyn::Arc arc, const TimingMode mode) const {
+		EdgeArray<Number> result;
+		result[RISE] = getArcSlackAtToPin(arc, mode, RISE);
+		result[FALL] = getArcSlackAtToPin(arc, mode, FALL);
+		return result;
 	} // end method
 
 	//! @brief Returns the worst slack (among rise/fall) at the "to" pin of an
@@ -1754,15 +1944,15 @@ public:
 			const Number slackThreshold = 0);	
 	
 	////////////////////////////////////////////////////////////////////////////
-	// Histogram 
+	// Stats
 	////////////////////////////////////////////////////////////////////////////
 
 	//! @brief Returns the number of cells with negative slack at their output
 	//!        pins.
-	int countNumberNegativeSlackCells(const TimingMode mode);	
+	int countNumberNegativeSlackCells(const TimingMode mode) const;
 
 	//! @brief Outputs the slack histogram.
-	void slackHistrogram(ostream &out, TimingMode mode);
+	void reportSlackHistrogram(const HistogramOptions &options = HistogramOptions(), const TimingMode mode = Rsyn::LATE, ostream &out = std::cout) const;
 	
 	////////////////////////////////////////////////////////////////////////////
 	// Debug
@@ -1799,20 +1989,6 @@ public:
 	// For eaches
 	////////////////////////////////////////////////////////////////////////////
 
-	//! @brief Returns an iterable collation of timing modes (i.e. EARLY and
-	//!        LATE).
-	std::array<TimingMode, 2>
-	allTimingModes() const {
-		return {EARLY, LATE};
-	} // end method
-
-	//! @brief Returns an iterable collation of timing modes (i.e. RISE and
-	//!        FALL).
-	std::array<TimingTransition, 2> 
-	allTimingTransitions() const {
-		return {FALL, RISE};
-	} // end method
-	
 	//! @brief Returns an iterable collation of timing transition pairs.
 	std::array<std::tuple<TimingTransition, TimingTransition>, 4>
 	allTimingTransitionPairs() const {

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef PHYSICALDESIGN_PHYSICALDESIGN_H
 #define PHYSICALDESIGN_PHYSICALDESIGN_H
 
@@ -188,12 +188,12 @@ public:
 
 	//! @brief	Returns the Rsyn::PhysicalLayer object associated to the parameter layer name.
 	Rsyn::PhysicalLayer getPhysicalLayerByName(const std::string & layerName);
-	
+
 	//! @brief	Returns the Rsyn::PhysicalLayer object associated to the parameter layer index.
 	//! @details	The index is a integer from 0 to less than the number of layers.
 	//!		If the the index number is outside of the ranger, than a null reference is returned. 
 	Rsyn::PhysicalLayer getPhysicalLayerByIndex(const int index);
-	
+
 	//! @brief	Returns the Rsyn::PhysicalLayer object associated to the parameter layer index.
 	//! @details	The index is a integer from 0 to less than the number of layers of the parameter type.
 	//!		If the the index number is outside of the ranger, than a null reference is returned. 
@@ -219,23 +219,23 @@ public:
 	const std::vector<Rsyn::PhysicalVia> & allPhysicalVias() const;
 
 	std::size_t getNumPhysicalTracks()const;
-	
+
 	int getNumPhysicalTracks(Rsyn::PhysicalLayer layer) const;
-	
+
 	const std::vector<Rsyn::PhysicalTracks> & allPhysicalTracks() const;
-	
-	const std::vector<Rsyn::PhysicalTracks>  & allPhysicalTracks(Rsyn::PhysicalLayer layer) const;
-	
+
+	const std::vector<Rsyn::PhysicalTracks> & allPhysicalTracks(Rsyn::PhysicalLayer layer) const;
+
 	bool hasPhysicalTracks(Rsyn::PhysicalLayer layer) const;
-	
+
 	const std::vector<Rsyn::PhysicalRoutingGrid> & allPhysicalRoutingGrids() const;
-	
+
 	Rsyn::PhysicalRoutingGrid getPhysicalRoutingGrid(Rsyn::PhysicalLayer layer) const;
-	
+
 	bool hasPhysicalRoutingGrid(Rsyn::PhysicalLayer layer) const;
-	
+
 	int getNumPhysicalRoutingGrids() const;
-	
+
 	//! @brief	Returns the total number of spacing objects.  
 	std::size_t getNumPhysicalSpacing() const;
 	//! @brief	Returns a reference to the vector of PhysicalSpacing. 
@@ -252,7 +252,7 @@ public:
 	std::vector<PhysicalGroup> & allPhysicalGroups() const;
 	//! @brief Returns a constant reference to a vector of physical special nets.
 	std::vector<PhysicalSpecialNet> & allPhysicalSpecialNets() const;
-	
+
 	//! @brief Returns the row height. It is assumed all rows have the same height.
 	//! The row height of the first row is returned.
 	//I'm assuming all rows have the same height.
@@ -264,7 +264,7 @@ public:
 	std::size_t getNumRows() const;
 	//! @brief Iterates over all Physical Rows. 
 	Range<ListCollection<PhysicalRowData, PhysicalRow>> allPhysicalRows();
-	
+
 	//! @brief Returns the LayersViasManager
 	//! @comment Given a layer is possible to get all vias which connect to the bottom or top routing layers.
 	Rsyn::LayerViaManager getLayerViaManager() const;
@@ -318,7 +318,7 @@ protected:
 
 	//! @brief inits the manager of the layers and vias.
 	void initLayerViaManager();
-	
+
 private:
 	//! @brief Returns the Rsyn::PhysicalRow unique identifier.
 	PhysicalIndex getId(Rsyn::PhysicalRow phRow) const;
@@ -354,23 +354,49 @@ public:
 	//! @warning Caution when using dontNotifyObservers.
 	//! We can use it when you may expect the move to be rolled back, but it is
 	//! not, recall to mark the cell as dirty.
-	void placeCell(Rsyn::PhysicalCell physicalCell, const DBU x, const DBU y, const bool dontNotifyObservers = false);
+	void placeCell(Rsyn::PhysicalCell physicalCell, const DBU x, const DBU y,
+		Rsyn::PhysicalOrientation orient = ORIENTATION_INVALID,
+		const bool dontNotifyObservers = false);
 	//! @brief places the Rsyn::PhysicalCell at defined position.
 	//! @warning Caution when using dontNotifyObservers.
 	//! We can use it when you may expect the move to be rolled back, but it is
 	//! not, recall to mark the cell as dirty.
-	void placeCell(Rsyn::Cell cell, const DBU x, const DBU y, const bool dontNotifyObservers = false);
+	void placeCell(Rsyn::Cell cell, const DBU x, const DBU y,
+		Rsyn::PhysicalOrientation orient = ORIENTATION_INVALID,
+		const bool dontNotifyObservers = false);
 	//! @brief places the Rsyn::PhysicalCell at defined position.
 	//! @warning Caution when using dontNotifyObservers.
 	//! We can use it when you may expect the move to be rolled back, but it is
 	//! not, recall to mark the cell as dirty.
-	void placeCell(Rsyn::PhysicalCell physicalCell, const DBUxy pos, const bool dontNotifyObservers = false);
+	void placeCell(Rsyn::PhysicalCell physicalCell, const DBUxy pos,
+		Rsyn::PhysicalOrientation orient = ORIENTATION_INVALID,
+		const bool dontNotifyObservers = false);
 	//! @brief places the Rsyn::PhysicalCell at defined position.
 	//! @warning Caution when using dontNotifyObservers.
 	//! We can use it when you may expect the move to be rolled back, but it is
 	//! not, recall to mark the cell as dirty.
-	void placeCell(Rsyn::Cell cell, const DBUxy pos, const bool dontNotifyObservers = false);
+	void placeCell(Rsyn::Cell cell, const DBUxy pos,
+		Rsyn::PhysicalOrientation orient = ORIENTATION_INVALID,
+		const bool dontNotifyObservers = false);
 	
+	
+	//! @brief set cell orientation.
+	//! @warning Caution when using dontNotifyObservers.
+	//! We can use it when you may expect the move to be rolled back, but it is
+	//! not, recall to mark the cell as dirty.
+	void setCellOrientation(Rsyn::PhysicalCell physicalCell, Rsyn::PhysicalOrientation orient,
+		const bool dontNotifyObservers = false);
+	//! @brief set cell orientation.
+	//! @warning Caution when using dontNotifyObservers.
+	//! We can use it when you may expect the move to be rolled back, but it is
+	//! not, recall to mark the cell as dirty.
+	void setCellOrientation(Rsyn::Cell cell, Rsyn::PhysicalOrientation orient,
+		const bool dontNotifyObservers = false);
+	
+	void flipCell(Rsyn::PhysicalCell physicalCell, const bool dontNotifyObservers = false);
+	
+	void flipCell(Rsyn::Cell cell, const bool dontNotifyObservers = false);
+
 	//! @brief Explicitly notify observer that a cell was moved. This is only necessary
 	//! if "dontNotifyObservers = true" in "placeCell" methods.
 	//! @todo Remove
@@ -398,7 +424,7 @@ public:
 	//! @brief Unregisters an observer so it will no longer receives
 	//!        notifications about changes in the netlist.
 	void unregisterObserver(PhysicalDesignObserver *observer);
-	
+
 }; // end class 
 
 } // end namespace 

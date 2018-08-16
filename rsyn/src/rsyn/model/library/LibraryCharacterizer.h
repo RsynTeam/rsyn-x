@@ -12,7 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
+#ifndef RSYN_LIBRARY_CHARACTERIZER_H
+#define RSYN_LIBRARY_CHARACTERIZER_H
+
 #include <vector>
 
 #include "rsyn/core/Rsyn.h"
@@ -21,13 +24,20 @@
 
 namespace Rsyn {
 
+class Scenario;
+
 class LibraryCharacterizer : public Rsyn::Service {
 
 private:
 	
 	Rsyn::Design clsDesign;
 	Rsyn::Library clsLibrary;
-	TimingModel * clsTimingModel;
+
+	Rsyn::Scenario *clsScenario = nullptr;
+	
+	TimingModel * clsTimingModel = nullptr;
+
+	bool clsAnalysisPerformed = false;
 	
 	struct LibraryArcCharacterization {
 		LibraryArcCharacterization() : sense(TIMING_SENSE_INVALID) {}
@@ -86,7 +96,15 @@ private:
 	
 	Number clsLibraryMaxDriverResistance[NUM_TIMING_MODES];
 	Number clsLibraryMinDriverResistance[NUM_TIMING_MODES];
-	
+
+	Number clsTypicalDelay = 0;
+	Number clsTypicalDelayPerLeakage = 0;
+	Number clsTypicalSlew = 0;
+	Number clsTypicalDelayToSlewSensitivity = 0;
+
+	void doTypicalAnalysis();
+	void doLogicalEffortAnalysis();
+
 	void logicalEffort_FindReferenceLibraryTimingArc();
 	void logicalEffort_ClaculateReferenceSlew();
 	
@@ -160,8 +178,35 @@ public:
 	virtual void start(const Rsyn::Json &params);
 	virtual void stop();
 
-	void runLibraryAnalysis(Rsyn::Design design, Rsyn::Library library, TimingModel * timingModel);
-	void logicalEffort_Report(std::ostream &out);	
+	//! @Brief Performs the library analysis.
+	void runLibraryCharacterization(TimingModel * timingModel);
+
+	//! @brief Reports logical effort analysis.
+	void reportLogicalEffort(std::ostream &out);
+
+	//! @brief Reports typical values for the library.
+	void reportTypicalValues(std::ostream &out);
+
+	//! @brief Returns the typical delay for the library. The typical delay is
+	//!        defined as the average fanout-of-4 delay of the inverters in the
+	//!        library.
+	Number getTypicalDelay() const {return clsTypicalDelay;}
+
+	//! @brief Returns the typical delay per leakage for the library. The
+	//!        typical delay per leakage is defined as the average fanout-of-4
+	//!        delay divided by the (state-independent) leakage of the inverters
+	//!        in the library.
+	Number getTypicalDelayPerLeakage() const {return clsTypicalDelayPerLeakage;}
+
+	//! @brief Returns the typical slew for the library. The typical slew is
+	//!        defined as the average fanout-of-4 slew of the inverters in the
+	//!        library.
+	Number getTypicalSlew() const {return clsTypicalSlew;}
+
+	//! @brief Returns the typical delay to slew sensitivity (i.e. how much
+	//!        the delay will change given a change in the input slew) for the
+	//!        library. The sensitivity is computed based on the typical slew.
+	Number getTypicalDelayToSlewSensitivity() const {return clsTypicalDelayToSlewSensitivity;}
 
 	LibraryArcCharacterization &getLibraryArcCharacterization(Rsyn::Arc arc) { return clsLibraryArcCharacterizations[arc.getLibraryArc()]; }
 	const LibraryArcCharacterization &getLibraryArcCharacterization(Rsyn::Arc arc) const { return clsLibraryArcCharacterizations[arc.getLibraryArc()]; }
@@ -191,19 +236,11 @@ public:
 
 	Number getLibraryMaxDriverResistance(const TimingMode mode) const {
 		return clsLibraryMaxDriverResistance[mode];
-	}
+	} // end method
 	
 	Number getLibraryMinDriverResistance(const TimingMode mode) const {
 		return clsLibraryMinDriverResistance[mode];
-	}
-	
-	Number getClsLibraryMaxDriverResistance(const TimingMode mode) const {
-			return clsLibraryMaxDriverResistance[mode];
-	}
-
-	Number getClsLibraryMinDriverResistance(const TimingMode mode) const {
-		return clsLibraryMinDriverResistance[mode];
-	}
+	} // end method
 	
 	Number getArcLogicalEffortDelay(Rsyn::Arc arc, const TimingMode mode, const TimingTransition oedge, const Number load) const {
 		const LibraryArcCharacterization &larc = getLibraryArcCharacterization(arc);
@@ -220,14 +257,23 @@ public:
 		return getArcLogicalEffortDelay(arc, mode, oedge, larc.le[mode].cin[oedge]);
 	} // end method	
 
-	// Returns the max driver resistance among all arcs of this cell.
+	//! @brief Returns the max driver resistance among all arcs of this cell.
 	Number getCellMaxDriverResistance(Rsyn::Instance cell, const TimingMode mode) const {
 		Number maxR = 0;
 		for (Rsyn::Arc arc : cell.allArcs()) {
 			maxR = std::max(maxR, getDriverResistance(arc, mode));
 		} // end for
 		return maxR;		
-	} // end method	
+	} // end method
+
+	//! @brief Computes fanout-of-n delay for a library arc. The load is set to
+	//!        n times the input pin capacitance. The delay is computed
+	//!        iteratively where the input slew of iteration k is the output
+	//!        slew of iteration k-1.
+	void computeFanoutOfNDelay(Rsyn::LibraryArc larc, const int n, EdgeArray<Number> &delay, EdgeArray<Number> &slew, EdgeArray<Number> &delayToSlewSensitivity, const int numIterations = 5) const;
+
 }; // end class
 
 } // end namespace
+
+#endif

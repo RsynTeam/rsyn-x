@@ -31,7 +31,7 @@
 
 #include "rsyn/util/Json.h"
 
-#include "rsyn/util/Matrix.h"
+#include "rsyn/util/Array.h"
 #include "rsyn/util/AsciiProgressBar.h"
 #include "rsyn/util/StreamStateSaver.h"
 #include "rsyn/util/Stepwatch.h"
@@ -338,7 +338,7 @@ void Infrastructure::updateGains() {
 			// Only count the cap that can be reduced by a better placement.
 			const double load = clsRoutingEstimator->getRCTree(net).getTotalWireCap();
 
-			for (const Rsyn::TimingMode mode : clsTimer->allTimingModes()) {
+			for (const Rsyn::TimingMode mode : Rsyn::allTimingModes()) {
 				Rsyn::Arc arc = clsTimer->getCriticalTimingArcToPin(pin, mode);
 				if (!arc)
 					continue;
@@ -353,7 +353,7 @@ void Infrastructure::updateGains() {
 			avgGain[Rsyn::LATE ] /= cell.getNumOutputPins();
 		} // end if
 		
-		for (const Rsyn::TimingMode mode : clsTimer->allTimingModes()) {
+		for (const Rsyn::TimingMode mode : Rsyn::allTimingModes()) {
 			clsGains[mode][cell] = avgGain[mode];
 			clsMaxGain[mode] = std::max(clsMaxGain[mode], avgGain[mode]);
 		} // end for
@@ -744,7 +744,7 @@ bool Infrastructure::moveCell(Rsyn::PhysicalCell physicalCell, const DBU x, cons
 	#endif	
 	
 	// Update cell position to the target location.
-	clsPhysicalDesign.placeCell(physicalCell, boundedx, boundedy, true);
+	clsPhysicalDesign.placeCell(physicalCell, boundedx, boundedy, physicalCell.getOrientation(), true);
 	
 	if (clsJezz->isInitialized()) {
 		// Un-legalize.
@@ -848,7 +848,7 @@ bool Infrastructure::moveCell(Rsyn::PhysicalCell physicalCell, const DBU x, cons
 	
 	if (failed && rollback) {
 		// Move cell back to its previous position.
-		clsPhysicalDesign.placeCell(physicalCell, preivousX, preivousY, true);
+		clsPhysicalDesign.placeCell(physicalCell, preivousX, preivousY, physicalCell.getOrientation(), true);
 		
 		// Update the reference position to be used during legalization.
 		clsJezz->jezz_dp_UpdateReferencePosition(jezzNode, preivousX, preivousY);

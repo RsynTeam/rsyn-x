@@ -63,8 +63,10 @@ public:
 	LibraryPin getFromLibraryPin() const;
 
 	//! @brief Returns the "to" library pin.
-	LibraryPin getToLibraryPin() const;	
-	
+	LibraryPin getToLibraryPin() const;
+
+	//! @brief Returns the index of this arc relative to the library cell.
+	int getIndex() const;
 }; // end class
 	
 } // end namespace

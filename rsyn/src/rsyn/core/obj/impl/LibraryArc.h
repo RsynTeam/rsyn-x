@@ -85,5 +85,12 @@ LibraryArc::getToLibraryPin() const {
 	return data->to;
 } // end method
 
-	
+// -----------------------------------------------------------------------------
+
+inline
+int
+LibraryArc::getIndex() const {
+	return data->index;
+} // end method
+
 } // end namespace

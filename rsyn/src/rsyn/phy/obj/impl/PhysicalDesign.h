@@ -544,13 +544,17 @@ PhysicalDesign::createPhysicalAttribute(const DefaultPhysicalValueType &defaultV
 // We can use it when you may expect the move to be rolled back, but it is
 // not, recall to mark the cell as dirty.
 
-inline void PhysicalDesign::placeCell(Rsyn::PhysicalCell physicalCell, const DBU x, const DBU y, const bool dontNotifyObservers) {
+inline void PhysicalDesign::placeCell(Rsyn::PhysicalCell physicalCell, const DBU x, const DBU y,
+	Rsyn::PhysicalOrientation orient, const bool dontNotifyObservers) {
 	const bool moved = (x != physicalCell.getPosition(X)) ||
 		(y != physicalCell.getPosition(Y));
 
 	// Notify observers.
 	if (moved) {
 		physicalCell->clsInstance->clsBounds.moveTo(x, y);
+		if (orient != ORIENTATION_INVALID) {
+			physicalCell->clsInstance->clsOrientation = orient;
+		} // end if 
 		if (!dontNotifyObservers) {
 			data->clsDesign.notifyInstancePlaced(physicalCell.getInstance());
 		} // end if
@@ -559,20 +563,79 @@ inline void PhysicalDesign::placeCell(Rsyn::PhysicalCell physicalCell, const DBU
 
 // -----------------------------------------------------------------------------
 
-inline void PhysicalDesign::placeCell(Rsyn::Cell cell, const DBU x, const DBU y, const bool dontNotifyObservers) {
-	placeCell(getPhysicalCell(cell), x, y, dontNotifyObservers);
+inline void PhysicalDesign::placeCell(Rsyn::Cell cell, const DBU x, const DBU y,
+	Rsyn::PhysicalOrientation orient, const bool dontNotifyObservers) {
+	placeCell(getPhysicalCell(cell), x, y, orient, dontNotifyObservers);
 } // end method	
 
 // -----------------------------------------------------------------------------
 
-inline void PhysicalDesign::placeCell(Rsyn::PhysicalCell physicalCell, const DBUxy pos, const bool dontNotifyObservers) {
-	placeCell(physicalCell, pos[X], pos[Y], dontNotifyObservers);
+inline void PhysicalDesign::placeCell(Rsyn::PhysicalCell physicalCell, const DBUxy pos,
+	Rsyn::PhysicalOrientation orient, const bool dontNotifyObservers) {
+	placeCell(physicalCell, pos[X], pos[Y], orient, dontNotifyObservers);
 } // end method
 
 // -----------------------------------------------------------------------------
 
-inline void PhysicalDesign::placeCell(Rsyn::Cell cell, const DBUxy pos, const bool dontNotifyObservers) {
-	placeCell(getPhysicalCell(cell), pos[X], pos[Y], dontNotifyObservers);
+inline void PhysicalDesign::placeCell(Rsyn::Cell cell, const DBUxy pos,
+	Rsyn::PhysicalOrientation orient, const bool dontNotifyObservers) {
+	placeCell(getPhysicalCell(cell), pos[X], pos[Y], orient, dontNotifyObservers);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline void PhysicalDesign::setCellOrientation(Rsyn::PhysicalCell physicalCell,
+	Rsyn::PhysicalOrientation orient, const bool dontNotifyObservers) {
+	if (orient != ORIENTATION_INVALID) {
+		physicalCell->clsInstance->clsOrientation = orient;
+	} // end if 
+	if (!dontNotifyObservers) {
+		data->clsDesign.notifyInstancePlaced(physicalCell.getInstance());
+	} // end if
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline void PhysicalDesign::setCellOrientation(Rsyn::Cell cell, Rsyn::PhysicalOrientation orient,
+	const bool dontNotifyObservers) {
+	setCellOrientation(getPhysicalCell(cell), orient, dontNotifyObservers);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline void PhysicalDesign::flipCell(Rsyn::PhysicalCell physicalCell, const bool dontNotifyObservers) {
+	Rsyn::PhysicalOrientation orient = physicalCell.getOrientation();
+	Rsyn::PhysicalOrientation flippedOrient = ORIENTATION_INVALID;
+
+	switch (orient) {
+		case ORIENTATION_N: flippedOrient = ORIENTATION_FN;
+			break;
+		case ORIENTATION_S: flippedOrient = ORIENTATION_FS;
+			break;
+		case ORIENTATION_W: flippedOrient = ORIENTATION_FW;
+			break;
+		case ORIENTATION_E: flippedOrient = ORIENTATION_FE;
+			break;
+		case ORIENTATION_FN: flippedOrient = ORIENTATION_N;
+			break;
+		case ORIENTATION_FS: flippedOrient = ORIENTATION_S;
+			break;
+		case ORIENTATION_FW: flippedOrient = ORIENTATION_W;
+			break;
+		case ORIENTATION_FE: flippedOrient = ORIENTATION_E;
+			break;
+		default: flippedOrient = ORIENTATION_INVALID;
+	} // end switch 
+
+	if (flippedOrient != ORIENTATION_INVALID) {
+		setCellOrientation(physicalCell, flippedOrient, dontNotifyObservers);
+	} // end if 
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline void PhysicalDesign::flipCell(Rsyn::Cell cell, const bool dontNotifyObservers) {
+	flipCell(getPhysicalCell(cell), dontNotifyObservers);
 } // end method
 
 // -----------------------------------------------------------------------------

@@ -20,6 +20,8 @@
 #include "LibraryCharacterizer.h"
 #include "rsyn/util/FloatingPoint.h"
 #include <Rsyn/Session>
+#include <Rsyn/Debug>
+#include "rsyn/model/scenario/Scenario.h"
 
 namespace Rsyn {
 
@@ -29,6 +31,189 @@ void LibraryCharacterizer::start(const Rsyn::Json &params) {
 // -----------------------------------------------------------------------------
 
 void LibraryCharacterizer::stop() {
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void LibraryCharacterizer::runLibraryCharacterization(TimingModel * timingModel) {
+	if (clsAnalysisPerformed && clsTimingModel == timingModel) {
+		return;
+	} // end if
+
+	clsAnalysisPerformed = false;
+
+	Rsyn::Session session;
+	clsDesign = session.getDesign();
+	clsLibrary = session.getLibrary();
+	clsScenario = session.getService("rsyn.scenario");
+	clsTimingModel = timingModel;
+	clsLibraryMaxDriverResistance[EARLY] = -std::numeric_limits<Number>::max();
+	clsLibraryMaxDriverResistance[LATE] = -std::numeric_limits<Number>::max();
+	clsLibraryMinDriverResistance[EARLY] = std::numeric_limits<Number>::max();
+	clsLibraryMinDriverResistance[LATE] = std::numeric_limits<Number>::max();
+
+	// Creates an attribute to hold the characterization data.
+	clsLibraryArcCharacterizations = clsDesign.createAttribute();
+
+	doTypicalAnalysis();
+	doLogicalEffortAnalysis();
+
+	clsAnalysisPerformed = true;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void LibraryCharacterizer::doTypicalAnalysis() {
+	const int typicalFanout = 4;
+
+	clsTypicalDelay = 0;
+	clsTypicalDelayPerLeakage = 0;
+	clsTypicalSlew = 0;
+	clsTypicalDelayToSlewSensitivity =  0;
+
+	int counter = 0;
+	EdgeArray<Number> sumDelay(0, 0);
+	EdgeArray<Number> sumDelayPerLeakage(0, 0);
+	EdgeArray<Number> sumSlew(0, 0);
+	EdgeArray<Number> sumDelayToSlewSensitivity(0, 0);
+
+	// Compute the logical effort for each timing arc.
+	for (Rsyn::LibraryCell lcell : clsLibrary.allLibraryCells()) {
+		Rsyn::LibraryArc larc = lcell.getAnyLibraryArc();
+
+		// Check if this is an inverter.
+		const bool isInverter =
+				lcell.getNumInputPins() == 1 &&
+				lcell.getNumOutputPins() == 1 &&
+				clsTimingModel->getLibraryArcSense(larc) == Rsyn::NEGATIVE_UNATE;
+
+		// Skip is is not an inverter.
+		if (!isInverter)
+			continue;
+
+		// Compute fanout-of-n.
+		EdgeArray<Number> delay;
+		EdgeArray<Number> slew;
+		EdgeArray<Number> delayToSlewSensitivity;
+		computeFanoutOfNDelay(larc, typicalFanout, delay, slew, delayToSlewSensitivity);
+
+		sumDelay += delay;
+		sumDelayPerLeakage += delay / clsScenario->getLibraryCellLeakagePower(lcell);
+		sumSlew += slew;
+		sumDelayToSlewSensitivity += delayToSlewSensitivity;
+
+		counter++;
+	} // end for cells
+
+	rsynAssert(counter > 0, "No inverters found in the library for characterization.");
+
+	const EdgeArray<Number> avgDelay = sumDelay / counter;
+	const EdgeArray<Number> avgDelayPerLeakage = sumDelayPerLeakage / counter;
+	const EdgeArray<Number> avgSlew = sumSlew / counter;
+	const EdgeArray<Number> avgDelayToSlewSensitivity = sumDelayToSlewSensitivity / counter;
+
+	clsTypicalDelay = avgDelay.getAvg();
+	clsTypicalDelayPerLeakage = avgDelayPerLeakage.getAvg();
+	clsTypicalSlew = avgSlew.getAvg();
+	clsTypicalDelayToSlewSensitivity = avgDelayToSlewSensitivity.getAvg();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void LibraryCharacterizer::doLogicalEffortAnalysis() {
+	logicalEffort_FindReferenceLibraryTimingArc();
+	logicalEffort_ClaculateReferenceSlew();
+
+	// Define gains where the delay will be computed.
+	const int N = 32 + 1; // 0 ... 32
+	clsLogicalEffort_Gains.resize(N);
+	for (int i = 0; i < N; i++) {
+		clsLogicalEffort_Gains[i] = i;
+	} // end for
+
+	// Compute the logical effort for each timing arc.
+	for (Rsyn::LibraryCell lcell : clsLibrary.allLibraryCells()) {
+		for (Rsyn::LibraryArc larc : lcell.allLibraryArcs()) {
+			Rsyn::LibraryPin lpin = larc.getFromLibraryPin();
+
+			LibraryArcCharacterization &timingLibraryArc = getLibraryArcCharacterization(larc);
+			timingLibraryArc.sense = clsTimingModel->getLibraryArcSense(larc);
+
+			for (std::tuple<TimingMode, TimingTransition> element : allTimingModeAndTransitionPairs()) {
+				const TimingMode mode = std::get<0>(element);
+				const TimingTransition oedge = std::get<1>(element);
+
+				LibraryArcCharacterization::LogicalEffort &arcLe = timingLibraryArc.le[mode];
+
+				// [NOTE] Since the our infrastructure does not takes into
+				// account different capacitance of each transition, there's
+				// nothing to be done in this switch. But we let it here for
+				// future use.
+				switch (timingLibraryArc.sense) {
+					case POSITIVE_UNATE:
+						arcLe.cin[RISE] = clsTimingModel->getLibraryPinInputCapacitance(lpin); // [RISE]
+						arcLe.cin[FALL] = clsTimingModel->getLibraryPinInputCapacitance(lpin); // [FALL]
+
+						arcLe.slew[RISE] = clsLogicalEffort_ReferenceSlew[mode][RISE];
+						arcLe.slew[FALL] = clsLogicalEffort_ReferenceSlew[mode][FALL];
+						break;
+
+					case NEGATIVE_UNATE:
+						arcLe.cin[RISE] = clsTimingModel->getLibraryPinInputCapacitance(lpin); // [FALL];
+						arcLe.cin[FALL] = clsTimingModel->getLibraryPinInputCapacitance(lpin); // [RISE];
+
+						arcLe.slew[RISE] = clsLogicalEffort_ReferenceSlew[mode][FALL];
+						arcLe.slew[FALL] = clsLogicalEffort_ReferenceSlew[mode][RISE];
+						break;
+
+					case NON_UNATE:
+						arcLe.cin[RISE] = arcLe.cin[FALL] =	(
+								clsTimingModel->getLibraryPinInputCapacitance(lpin)/*[RISE]*/ +
+								clsTimingModel->getLibraryPinInputCapacitance(lpin)/*[FALL]*/) / 2;
+
+						arcLe.slew[RISE] = arcLe.slew[FALL] = (
+								clsLogicalEffort_ReferenceSlew[mode][FALL] +
+								clsLogicalEffort_ReferenceSlew[mode][RISE]) / 2;
+						break;
+
+					default:
+						assert(false);
+				} // end switch
+
+				logicalEffort_TimingArc(larc, mode, oedge,
+						arcLe.cin[oedge], clsLogicalEffort_ReferenceSlew[mode][oedge], clsLogicalEffort_Gains,
+						arcLe.g[oedge], arcLe.p[oedge], arcLe.residuum[oedge]);
+				arcLe.valid[oedge] = 1;
+			} // end for
+
+			clsLibraryMaxDriverResistance[EARLY] = std::max(
+					clsLibraryMaxDriverResistance[EARLY],
+					getDriverResistance(larc, EARLY));
+			clsLibraryMaxDriverResistance[LATE] = std::max(
+					clsLibraryMaxDriverResistance[LATE],
+					getDriverResistance(larc, LATE));
+			if (getDriverResistance(larc, EARLY, RISE)) {
+				clsLibraryMinDriverResistance[EARLY] = std::min(
+						clsLibraryMinDriverResistance[EARLY],
+						getDriverResistance(larc, EARLY, RISE));
+			} // end if
+			if (getDriverResistance(larc, EARLY, FALL)) {
+				clsLibraryMinDriverResistance[EARLY] = std::min(
+						clsLibraryMinDriverResistance[EARLY],
+						getDriverResistance(larc, EARLY, FALL));
+			} // end if
+			if (getDriverResistance(larc, LATE, RISE)) {
+				clsLibraryMinDriverResistance[LATE] = std::min(
+						clsLibraryMinDriverResistance[LATE],
+						getDriverResistance(larc, LATE, RISE));
+			} // end if
+			if (getDriverResistance(larc, LATE, FALL)) {
+				clsLibraryMinDriverResistance[LATE] = std::min(
+						clsLibraryMinDriverResistance[LATE],
+						getDriverResistance(larc, LATE, FALL));
+			} // end if
+		} // end for
+	} // end for cells
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -85,7 +270,6 @@ void LibraryCharacterizer::logicalEffort_ClaculateReferenceSlew() {
 	const Number h = 1;
 
 	for (const TimingMode mode : allTimingModes()) {
-		Rsyn::LibraryCell lcell = clsLogicalEffort_ReferenceLibraryCell[mode];
 		Rsyn::LibraryArc larc = clsLogicalEffort_ReferenceLibraryArcPointer[mode];
 		Rsyn::LibraryPin lpin = larc.getFromLibraryPin();
 		
@@ -130,116 +314,6 @@ void LibraryCharacterizer::logicalEffort_ClaculateReferenceSlew() {
 			
 		} // end for
 	} // end for
-} // end method
-
-// -----------------------------------------------------------------------------
-
-void LibraryCharacterizer::runLibraryAnalysis(Rsyn::Design design, Rsyn::Library library, TimingModel * timingModel) {
-	// Initialization...
-	clsDesign = design;
-	clsLibrary = library;
-	clsTimingModel = timingModel;
-	clsLibraryMaxDriverResistance[EARLY] = -std::numeric_limits<Number>::max();
-	clsLibraryMaxDriverResistance[LATE] = -std::numeric_limits<Number>::max();
-	clsLibraryMinDriverResistance[EARLY] = std::numeric_limits<Number>::max();
-	clsLibraryMinDriverResistance[LATE] = std::numeric_limits<Number>::max();
-	
-	// Creates an attribute to hold the characterization data.
-	clsLibraryArcCharacterizations = clsDesign.createAttribute();
-	
-	logicalEffort_FindReferenceLibraryTimingArc();
-	logicalEffort_ClaculateReferenceSlew();
-	
-	// Define gains where the delay will be computed.
-	const int N = 32 + 1; // 0 ... 32
-	clsLogicalEffort_Gains.resize(N);
-	for (int i = 0; i < N; i++) {
-		clsLogicalEffort_Gains[i] = i;
-	} // end for
-	
-	// Compute the logical effort for each timing arc.
-	for (Rsyn::LibraryCell lcell : clsLibrary.allLibraryCells()) {
-		for (Rsyn::LibraryArc larc : lcell.allLibraryArcs()) {
-			Rsyn::LibraryPin lpin = larc.getFromLibraryPin();
-			
-			LibraryArcCharacterization &timingLibraryArc = getLibraryArcCharacterization(larc);
-			timingLibraryArc.sense = clsTimingModel->getLibraryArcSense(larc);
-			
-			for (std::tuple<TimingMode, TimingTransition> element : allTimingModeAndTransitionPairs()) {
-				const TimingMode mode = std::get<0>(element);
-				const TimingTransition oedge = std::get<1>(element);
-
-				LibraryArcCharacterization::LogicalEffort &arcLe = timingLibraryArc.le[mode];
-				
-				// [NOTE] Since the our infrastructure does not takes into
-				// account different capacitance of each transition, there's
-				// nothing to be done in this switch. But we let it here for 
-				// future use.
-				switch (timingLibraryArc.sense) {
-					case POSITIVE_UNATE:
-						arcLe.cin[RISE] = clsTimingModel->getLibraryPinInputCapacitance(lpin); // [RISE]
-						arcLe.cin[FALL] = clsTimingModel->getLibraryPinInputCapacitance(lpin); // [FALL]
-						
-						arcLe.slew[RISE] = clsLogicalEffort_ReferenceSlew[mode][RISE];
-						arcLe.slew[FALL] = clsLogicalEffort_ReferenceSlew[mode][FALL];
-						break;
-						
-					case NEGATIVE_UNATE:
-						arcLe.cin[RISE] = clsTimingModel->getLibraryPinInputCapacitance(lpin); // [FALL];
-						arcLe.cin[FALL] = clsTimingModel->getLibraryPinInputCapacitance(lpin); // [RISE];
-						
-						arcLe.slew[RISE] = clsLogicalEffort_ReferenceSlew[mode][FALL];
-						arcLe.slew[FALL] = clsLogicalEffort_ReferenceSlew[mode][RISE];				
-						break;
-						
-					case NON_UNATE:
-						arcLe.cin[RISE] = arcLe.cin[FALL] =	(
-								clsTimingModel->getLibraryPinInputCapacitance(lpin)/*[RISE]*/ + 
-								clsTimingModel->getLibraryPinInputCapacitance(lpin)/*[FALL]*/) / 2;
-						
-						arcLe.slew[RISE] = arcLe.slew[FALL] = (
-								clsLogicalEffort_ReferenceSlew[mode][FALL] + 
-								clsLogicalEffort_ReferenceSlew[mode][RISE]) / 2;
-						break;
-						
-					default:
-						assert(false);
-				} // end switch					
-								
-				logicalEffort_TimingArc(larc, mode, oedge, 
-						arcLe.cin[oedge], clsLogicalEffort_ReferenceSlew[mode][oedge], clsLogicalEffort_Gains,
-						arcLe.g[oedge], arcLe.p[oedge], arcLe.residuum[oedge]);
-				arcLe.valid[oedge] = 1;
-			} // end for
-			
-			clsLibraryMaxDriverResistance[EARLY] = std::max(
-					clsLibraryMaxDriverResistance[EARLY],
-					getDriverResistance(larc, EARLY));
-			clsLibraryMaxDriverResistance[LATE] = std::max(
-					clsLibraryMaxDriverResistance[LATE],
-					getDriverResistance(larc, LATE));
-			if (getDriverResistance(larc, EARLY, RISE)) {
-				clsLibraryMinDriverResistance[EARLY] = std::min(
-						clsLibraryMinDriverResistance[EARLY],
-						getDriverResistance(larc, EARLY, RISE));
-			} // end if
-			if (getDriverResistance(larc, EARLY, FALL)) {
-				clsLibraryMinDriverResistance[EARLY] = std::min(
-						clsLibraryMinDriverResistance[EARLY],
-						getDriverResistance(larc, EARLY, FALL));
-			} // end if
-			if (getDriverResistance(larc, LATE, RISE)) {
-				clsLibraryMinDriverResistance[LATE] = std::min(
-						clsLibraryMinDriverResistance[LATE],
-						getDriverResistance(larc, LATE, RISE));
-			} // end if
-			if (getDriverResistance(larc, LATE, FALL)) {
-				clsLibraryMinDriverResistance[LATE] = std::min(
-						clsLibraryMinDriverResistance[LATE],
-						getDriverResistance(larc, LATE, FALL));
-			} // end if
-		} // end for
-	} // end for cells
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -342,10 +416,54 @@ void LibraryCharacterizer::logicalEffort_TimingArc(
 
 // -----------------------------------------------------------------------------
 
-void LibraryCharacterizer::logicalEffort_Report(std::ostream &out) {
-	out << "--------------------------------------------------------------------------------\n";
+void LibraryCharacterizer::computeFanoutOfNDelay(Rsyn::LibraryArc larc, const int n,
+		EdgeArray<Number> &delay,
+		EdgeArray<Number> &slew,
+		EdgeArray<Number> &delayToSlewSensitivity,
+		const int numIterations
+) const {
+	// Get the input pin.
+	Rsyn::LibraryPin lpin = larc.getFromLibraryPin();
+
+	// Compute the load.
+	const Number load = clsTimingModel->getLibraryPinInputCapacitance(lpin) * n;
+
+	// Get the sense (use negative unate for non-unate arcs for now).
+	const TimingSense sense = clsTimingModel->getLibraryArcSense(larc) == NON_UNATE?
+		NEGATIVE_UNATE : clsTimingModel->getLibraryArcSense(larc);
+
+	// Compute the delay and slew iterating a few times in order to
+	// make the slew converge.
+	delay.set(0, 0);
+	slew.set(0, 0);
+	for (int i = 0; i < numIterations; i++) {
+		for (const Rsyn::TimingTransition oedge : allTimingTransitions()) {
+			const TimingTransition iedge = sense == POSITIVE_UNATE? oedge : Rsyn::REVERSE_EDGE_TYPE[oedge];
+			clsTimingModel->calculateLibraryArcTiming(larc, Rsyn::LATE, oedge, slew[iedge], load, delay[oedge], slew[oedge]);
+		} // end for
+	} // end for
+
+	// Compute delay to (input) slew sensitivity.
+	const Number delta = 0.1*slew.getAvg();
+
+	for (Rsyn::TimingTransition oedge : Rsyn::allTimingTransitions()) {
+		const TimingTransition iedge = sense == POSITIVE_UNATE? oedge : Rsyn::REVERSE_EDGE_TYPE[oedge];
+
+		Number delay0, delay1, outputSlew0, outputSlew1;
+		clsTimingModel->calculateLibraryArcTiming(larc, Rsyn::LATE, oedge, slew[iedge] - delta, load, delay0, outputSlew0);
+		clsTimingModel->calculateLibraryArcTiming(larc, Rsyn::LATE, oedge, slew[iedge] + delta, load, delay1, outputSlew1);
+		delayToSlewSensitivity[oedge] = (delay1 - delay0) / (2.0f * delta);
+		//inputSlewToOutputSlewSensitivity[oedge] = (outputSlew1 - outputSlew0) / (2.0f * delta);
+	} // end for
+
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void LibraryCharacterizer::reportLogicalEffort(std::ostream &out) {
+	out << std::string(80, '-') << "\n";
 	out << "Logical Effort Report\n";
-	out << "--------------------------------------------------------------------------------\n";
+	out << std::string(80, '-') << "\n";
 	
 	// Compute the logical effort for each timing arc.
 	for (Rsyn::LibraryCell lcell : clsLibrary.allLibraryCells()) {
@@ -404,7 +522,19 @@ void LibraryCharacterizer::logicalEffort_Report(std::ostream &out) {
 			} // end for each timing mode / timing transition
 		} // end for each library arc
 	} // end for
-	
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void LibraryCharacterizer::reportTypicalValues(std::ostream &out) {
+	out << std::string(80, '-') << "\n";
+	out << "Typical Library Values\n";
+	out << std::string(80, '-') << "\n";
+	out << "Delay : " << getTypicalDelay() << "\n";
+	out << "Delay per Leakage : " << getTypicalDelayPerLeakage() << "\n";
+	out << "Slew : " << getTypicalSlew() << "\n";
+	out << "Delay to Slew Sensitivity : " << getTypicalDelayToSlewSensitivity() << "\n";
+	out << "\n";
 } // end method
 
 } // end namespace

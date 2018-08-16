@@ -30,7 +30,7 @@
 #include "rsyn/model/routing/DefaultRoutingEstimationModel.h"
 #include "rsyn/model/routing/DefaultRoutingExtractionModel.h"
 #include "rsyn/model/routing/RsttRoutingEstimatorModel.h"
-#include "rsyn/model/congestion/DensityGrid/DensityGridService.h"
+#include "rsyn/model/congestion/DensityGrid/DensityGrid.h"
 #include "rsyn/io/Report.h"
 #include "rsyn/io/Writer.h"
 #include "rsyn/io/Graphics.h"
@@ -48,7 +48,7 @@ void Session::registerServices() {
 	registerService<Rsyn::DefaultRoutingEstimationModel>("rsyn.defaultRoutingEstimationModel");
 	registerService<Rsyn::DefaultRoutingExtractionModel>("rsyn.defaultRoutingExtractionModel");
 	registerService<Rsyn::RsttRoutingEstimatorModel>("rsyn.RSTTroutingEstimationModel");
-	registerService<Rsyn::DensityGridService>("rsyn.densityGrid");
+	registerService<Rsyn::DensityGrid>("rsyn.densityGrid");
 	registerService<Rsyn::Report>("rsyn.report");
 	registerService<Rsyn::Writer>("rsyn.writer");
 	registerService<Rsyn::Graphics>("rsyn.graphics");

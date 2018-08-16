@@ -17,9 +17,12 @@
 #define RSYN_H
 
 #include <cstdint>
+#include <functional>
 #include <array>
 #include <set>
+#include <unordered_set>
 #include <map>
+#include <unordered_map>
 #include <list>
 #include <queue>
 #include <vector>
@@ -317,6 +320,27 @@ public:
 #include "rsyn/core/obj/data/Design.h"
 #include "rsyn/core/obj/data/Library.h"
 
+// Hashes
+namespace std {
+
+#define RSYN_CREATE_HASH(OBJ) \
+template <> \
+struct hash<OBJ> { \
+	size_t operator()(const OBJ &obj) const { \
+		return hash<Rsyn::Proxy<OBJ##Data>>()(obj); \
+	} \
+};
+
+RSYN_CREATE_HASH(Rsyn::Net);
+RSYN_CREATE_HASH(Rsyn::Pin);
+RSYN_CREATE_HASH(Rsyn::Arc);
+RSYN_CREATE_HASH(Rsyn::Instance);
+RSYN_CREATE_HASH(Rsyn::LibraryPin);
+RSYN_CREATE_HASH(Rsyn::LibraryArc);
+RSYN_CREATE_HASH(Rsyn::LibraryCell);
+
+} // end namespace
+
 // Infra
 #include "rsyn/core/infra/Attribute.h"
 #include "rsyn/core/infra/Observer.h"
@@ -336,27 +360,5 @@ public:
 #include "rsyn/core/obj/impl/LibraryModule.h"
 #include "rsyn/core/obj/impl/Design.h"
 #include "rsyn/core/obj/impl/Library.h"
-
-// =============================================================================
-// Hashes
-// =============================================================================
-
-namespace std {
-#define RSYN_CREATE_HASH(OBJ) \
-template <> \
-struct hash<OBJ> { \
-	size_t operator()(const OBJ &obj) const { \
-		return hash<Rsyn::Proxy<OBJ##Data>>()(obj); \
-	} \
-};
-
-RSYN_CREATE_HASH(Rsyn::Net);
-RSYN_CREATE_HASH(Rsyn::Pin);
-RSYN_CREATE_HASH(Rsyn::Arc);
-RSYN_CREATE_HASH(Rsyn::Instance);
-RSYN_CREATE_HASH(Rsyn::LibraryPin);
-RSYN_CREATE_HASH(Rsyn::LibraryArc);
-RSYN_CREATE_HASH(Rsyn::LibraryCell);
-} // end namespace
 
 #endif

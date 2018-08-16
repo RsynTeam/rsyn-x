@@ -64,7 +64,7 @@ struct InstanceData : ObjectData {
 		extra(nullptr),
 		mid(-1),
 		clsBounds(0, 0, 0, 0),
-		clsOrientation(ORIENTATION_INVALID), // @todo set to R0 by default
+		clsOrientation(ORIENTATION_N), // @todo set to R0 by default
 		clsPortPos(0, 0) {
 	} // end constructor
 }; // end struct

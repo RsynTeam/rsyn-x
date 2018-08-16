@@ -28,7 +28,8 @@ class GenericReader : public Reader {
 	std::vector<std::string> defFiles;
 	std::string verilogFile;
 	std::string sdcFile;
-	std::string libertyFile;
+	std::string libertyFileEarly;
+	std::string libertyFileLate;
 	
 	Number localWireCapacitancePerMicron;
 	Number localWireResistancePerMicron;
@@ -37,6 +38,7 @@ class GenericReader : public Reader {
 	bool enableTiming = false;
 	bool enableNetlistFromVerilog = false;
 	bool enableRSTT = false;
+	bool sameEarlyLateLibFiles = false;
 	
 public:
 	GenericReader() = default;
@@ -47,7 +49,8 @@ private:
 	LefDscp lefDescriptor;
 	DefDscp defDescriptor;
 	Legacy::Design verilogDescriptor;
-	ISPD13::LIBInfo libInfo;
+	ISPD13::LIBInfo libInfoEarly;
+	ISPD13::LIBInfo libInfoLate;
 	ISPD13::SDCInfo sdcInfo;
 	
 	void parsingFlow();

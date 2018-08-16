@@ -29,14 +29,18 @@
 
 namespace Rsyn {
 
+bool DesignPositionReader::run(const Rsyn::Json & config) {
+	return load(config);
+} // end method 
+
+// -----------------------------------------------------------------------------
+
 bool DesignPositionReader::load(const Rsyn::Json & config) {
-	
 	this->session = session;
 	std::string path = config.value("path", "");
 	clsDesign = session.getDesign();
 	clsModule = session.getTopModule();
 	clsPhysicalDesign = session.getPhysicalDesign();
-	
 	std::string ext = boost::filesystem::extension(path);
 	
 	// checking the extension file

@@ -76,6 +76,8 @@ void Graphics::start(const Rsyn::Json &params) {
 	clsDesign = session.getDesign();
 	clsModule = session.getTopModule();
 	
+	clsColoringEnabled = false;
+	
 	clsInstanceColors = clsDesign.createAttribute();
 	
 	clsDesign.registerObserver(this);

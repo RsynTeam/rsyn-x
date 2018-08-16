@@ -71,11 +71,11 @@ namespace Rsyn {
         const int VERTICAL = 1;
         const int HORIZONTAL = 0;
         const int ASC = 0;
-        const int DESC = 0;
+        const int DESC = 1;
         const int UP = 0;
-        const int LOW = 0;
+        const int LOW = 1;
         const int LEFT = 0;
-        const int RIGHT = 0;
+        const int RIGHT = 1;
 
         // Design.
         Design design;

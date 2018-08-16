@@ -35,7 +35,7 @@ struct ModuleData {
 	std::set<Port> portsByDirection[Rsyn::NUM_SIGNAL_DIRECTIONS]; // TODO: unify these too
 	
 	// Used for some netlist traversing...
-	int sign;	
+	mutable int sign;
 	
 	ModuleData() :
 		sign(0) {}

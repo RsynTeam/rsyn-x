@@ -235,7 +235,7 @@ void ICCAD15Reader::openBenchmarkFromICCAD15()  {
 	Stepwatch watchInitLogicalEffort("Library characterization");
 	session.startService("rsyn.libraryCharacterizer", {});
 	LibraryCharacterizer *libc = session.getService("rsyn.libraryCharacterizer");
-	libc->runLibraryAnalysis(clsDesign, clsLibrary, clsTimingModel);
+	libc->runLibraryCharacterization(clsTimingModel);
 	watchInitLogicalEffort.finish();
 	
 	Stepwatch updateTiming("Updating timing");

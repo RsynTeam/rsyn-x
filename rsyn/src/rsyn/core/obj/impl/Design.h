@@ -674,7 +674,7 @@ Design::remap(Cell cell, LibraryCell newLibraryCell) {
 	
 	// Create a mapping between the old and new pins.
 	// TODO: Cache this!
-	std::map<Rsyn::LibraryPin, Rsyn::LibraryPin> mapLibraryPins;
+	std::unordered_map<Rsyn::LibraryPin, Rsyn::LibraryPin> mapLibraryPins;
 	for (LibraryPin oldLibraryPin : oldLibraryCell.allLibraryPins()) {
 		LibraryPin newLibraryPin = 
 				newLibraryCell.getLibraryPinByName(oldLibraryPin.getName());
@@ -689,7 +689,7 @@ Design::remap(Cell cell, LibraryCell newLibraryCell) {
 
 	// Create a mapping between the old and new arcs.
 	// TODO: Cache this!
-	std::map<Rsyn::LibraryArc, Rsyn::LibraryArc> mapLibraryArcs;
+	std::unordered_map<Rsyn::LibraryArc, Rsyn::LibraryArc> mapLibraryArcs;
 	for (LibraryArc oldLibraryArc : oldLibraryCell.allLibraryArcs()) {
 		LibraryArc newLibraryArc =
 				newLibraryCell.getLibraryArcByPinNames(oldLibraryArc.getFromName(), oldLibraryArc.getToName());

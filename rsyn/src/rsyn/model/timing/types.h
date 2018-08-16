@@ -12,13 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
+#include <array>
+
 #ifndef RSYN_TIMING_TYPES_H
 #define RSYN_TIMING_TYPES_H
 
 typedef float Number;
 
 namespace Rsyn {
+
+// -----------------------------------------------------------------------------
 
 enum TimingMode {
 	EARLY = 0,
@@ -27,6 +31,13 @@ enum TimingMode {
 	NUM_TIMING_MODES
 }; // end enum
 
+inline const std::array<TimingMode, NUM_TIMING_MODES> &allTimingModes() {
+	static const std::array<TimingMode, NUM_TIMING_MODES> items = {EARLY, LATE};
+	return items;
+} // end function
+
+// -----------------------------------------------------------------------------
+
 enum TimingTransition {
 	TIMING_TRANSITION_INVALID = -1,
 	RISE = 0,
@@ -34,6 +45,13 @@ enum TimingTransition {
 	
 	NUM_EDGE_TYPES
 }; // end enum
+
+inline const std::array<TimingTransition, NUM_EDGE_TYPES> &allTimingTransitions() {
+	static const std::array<TimingTransition, NUM_EDGE_TYPES> items = {RISE, FALL};
+	return items;
+} // end function
+
+// -----------------------------------------------------------------------------
 
 enum TimingSense {
 	TIMING_SENSE_INVALID = -1,
@@ -49,6 +67,13 @@ const TimingTransition REVERSE_EDGE_TYPE[2] = {
 	FALL,
 	RISE
 };
+
+inline const std::array<TimingSense, NUM_TIMING_SENSES> &allTimingSenses() {
+	static const std::array<TimingSense, NUM_TIMING_SENSES> items = {NEGATIVE_UNATE, POSITIVE_UNATE, NON_UNATE};
+	return items;
+} // end function
+
+// -----------------------------------------------------------------------------
 
 extern const Number UNINITVALUE; 
 extern const Number DEFAULT_UNINIT_VALUE[NUM_TIMING_MODES];

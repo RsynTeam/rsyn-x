@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -49,7 +49,7 @@ namespace Rsyn {
 
 bool GenericReader::load(const Rsyn::Json& params) {
 	std::string path = params.value("path", "");
-		
+
 	if (path.back() != '/')
 		path += "/";
 
@@ -86,9 +86,23 @@ bool GenericReader::load(const Rsyn::Json& params) {
 		enableNetlistFromVerilog = true;
 	} // end if 
 
-	if (params.count("sdcFile") && params.count("libFile")) {
+
+	const bool hasLibFiles = params.count("sdcFile") && (
+		params.count("libFile") ||
+		params.count("libFileEarly") && params.count("libFileLate")
+		);
+
+	if (hasLibFiles) {
 		sdcFile = path + params.value("sdcFile", "");
-		libertyFile = path + params.value("libFile", "");
+		sameEarlyLateLibFiles = params.count("libFile") && hasLibFiles;
+
+		if (sameEarlyLateLibFiles) {
+			libertyFileEarly = path + params.value("libFile", "");
+			libertyFileLate = path + params.value("libFile", "");
+		} else {
+			libertyFileEarly = path + params.value("libFileEarly", "");
+			libertyFileLate = path + params.value("libFileLate", "");
+		} // end if-else 
 
 		enableTiming = true;
 
@@ -112,8 +126,6 @@ bool GenericReader::load(const Rsyn::Json& params) {
 		std::cout << std::left << std::setw(40) << "enableRSTT...";
 		std::cout << std::boolalpha << enableRSTT << "\n";
 		std::cout << "\n";
-
-		enableTiming = true;
 	} // end if 
 
 	this->session = session;
@@ -199,7 +211,7 @@ void GenericReader::populateDesign() {
 	Rsyn::Design design = session.getDesign();
 
 	if (enableTiming)
-		Reader::populateRsynLibraryFromLiberty(libInfo, design);
+		Reader::populateRsynLibraryFromLiberty(libInfoEarly, design);
 
 	if (enableNetlistFromVerilog)
 		Reader::populateRsyn(lefDescriptor, defDescriptor, verilogDescriptor, design);
@@ -214,6 +226,7 @@ void GenericReader::populateDesign() {
 	physicalDesign.loadLibrary(lefDescriptor);
 	physicalDesign.loadDesign(defDescriptor);
 	physicalDesign.updateAllNetBounds(false);
+	watch.finish();
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -221,15 +234,24 @@ void GenericReader::populateDesign() {
 void GenericReader::parseLibertyFile() {
 	Stepwatch parsingLibertyWatch("Parsing Liberty file");
 
-	Rsyn::Design design = session.getDesign();
-
-	if (!boost::filesystem::exists(libertyFile)) {
-		std::cout << "[WARNING] Failed to open file " << libertyFile << "\n";
+	if (!boost::filesystem::exists(libertyFileEarly)) {
+		std::cout << "[WARNING] Failed to open file " << libertyFileEarly << "\n";
 		std::exit(1);
 	} // end if 
 
-	LibertyControlParser libertyParser;
-	libertyParser.parseLiberty(libertyFile, libInfo);
+	if (!boost::filesystem::exists(libertyFileLate)) {
+		std::cout << "[WARNING] Failed to open file " << libertyFileLate << "\n";
+		std::exit(1);
+	} // end if 
+
+
+	LibertyControlParser libertyParserEarly;
+	libertyParserEarly.parseLiberty(libertyFileEarly, libInfoEarly);
+	if (!sameEarlyLateLibFiles) {
+		LibertyControlParser libertyParserLate;
+		libertyParserLate.parseLiberty(libertyFileLate, libInfoLate);
+	} // end if 
+	parsingLibertyWatch.finish();
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -257,12 +279,15 @@ void GenericReader::initializeAuxiliarInfrastructure() {
 		Stepwatch watchScenario("Loading scenario");
 		session.startService("rsyn.scenario",{});
 		Rsyn::Scenario* scenario = session.getService("rsyn.scenario");
-		scenario->init(design, library, libInfo, libInfo, sdcInfo);
+		if (sameEarlyLateLibFiles) {
+			scenario->init(design, library, libInfoEarly, libInfoEarly, sdcInfo);
+		} else {
+			scenario->init(design, library, libInfoEarly, libInfoLate, sdcInfo);
+		} // end if-else 
 		watchScenario.finish();
 
-		
 		RoutingEstimationModel* routingEstimationModel;
-		
+
 		if (!enableRSTT) {
 			session.startService("rsyn.defaultRoutingEstimationModel",{});
 			DefaultRoutingEstimationModel* defaultRoutingEstimationModel =
@@ -270,7 +295,7 @@ void GenericReader::initializeAuxiliarInfrastructure() {
 			routingEstimationModel = defaultRoutingEstimationModel;
 		} else {
 			session.startService("rsyn.RSTTroutingEstimationModel");
-			RsttRoutingEstimatorModel* rsstRoutingEstimationModel = 
+			RsttRoutingEstimatorModel* rsstRoutingEstimationModel =
 				session.getService("rsyn.RSTTroutingEstimationModel");
 			routingEstimationModel = rsstRoutingEstimationModel;
 		} // end if
@@ -304,12 +329,11 @@ void GenericReader::initializeAuxiliarInfrastructure() {
 		Rsyn::Timer* timer = session.getService("rsyn.timer");
 
 		Stepwatch watchInit("Initializing timer");
-		timer->init(
-			design,
-			session,
-			scenario,
-			libInfo,
-			libInfo);
+		if (sameEarlyLateLibFiles) {
+			timer->init(design, session, scenario, libInfoEarly, libInfoEarly);
+		} else {
+			timer->init(design, session, scenario, libInfoEarly, libInfoLate);
+		} // end if-else 
 		watchInit.finish();
 
 		Stepwatch watchInitModel("Initializing default timing model");
@@ -321,7 +345,7 @@ void GenericReader::initializeAuxiliarInfrastructure() {
 		Stepwatch watchInitLogicalEffort("Library characterization");
 		session.startService("rsyn.libraryCharacterizer",{});
 		LibraryCharacterizer *libc = session.getService("rsyn.libraryCharacterizer");
-		libc->runLibraryAnalysis(design, library, timingModel);
+		libc->runLibraryCharacterization(timingModel);
 		watchInitLogicalEffort.finish();
 
 		Stepwatch updateTiming("Updating timing");

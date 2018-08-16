@@ -12,13 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <limits>
 
 namespace Rsyn {
 
 inline
-DesignData * 
+DesignData *
 Instance::_getDesignData() const {
 	return getDesign().data;
 } // end method
@@ -26,16 +26,16 @@ Instance::_getDesignData() const {
 // -----------------------------------------------------------------------------
 
 inline
-DesignData * 
-Instance::getDesignData() { 
+DesignData *
+Instance::getDesignData() {
 	return _getDesignData();
 } // end method
 
 // -----------------------------------------------------------------------------
 
 inline
-const DesignData * 
-Instance::getDesignData() const { 
+const DesignData *
+Instance::getDesignData() const {
 	return _getDesignData();
 } // end method
 
@@ -62,7 +62,7 @@ const Design
 Instance::getDesign() const {
 	return _getDesign();
 } // end method
-	
+
 // -----------------------------------------------------------------------------
 
 inline
@@ -128,13 +128,13 @@ Instance::asModule() const {
 inline
 std::string
 Instance::getHierarchicalName() const {
-	return (data->parent? data->parent.getHierarchicalName() : "") + "/" + getName();
+	return (data->parent ? data->parent.getHierarchicalName() : "") + "/" + getName();
 } // end method
 
 // -----------------------------------------------------------------------------
 
 inline
-InstanceType 
+InstanceType
 Instance::getType() const {
 	return data->type;
 } // end method
@@ -150,19 +150,19 @@ Instance::getPinByName(const std::string &name) const {
 	} // end method
 	return nullptr;
 } // end method
-	
+
 // -----------------------------------------------------------------------------
 
 inline
 const std::string &
 Instance::getName() const {
-	return data? getDesign()->instanceNames[data->id] : NullName;
+	return data ? getDesign()->instanceNames[data->id] : NullName;
 } // end method
 
 // -----------------------------------------------------------------------------
 
 inline
-int 
+int
 Instance::getNumPins() const {
 	return (int) data->pins.size();
 } // end method
@@ -170,7 +170,7 @@ Instance::getNumPins() const {
 // -----------------------------------------------------------------------------
 
 inline
-int 
+int
 Instance::getNumPins(const Direction direction) const {
 	// TODO: optimize this using instance types (e.g. cell can get the number
 	// of pins of certain direction via its library cell).
@@ -181,14 +181,14 @@ Instance::getNumPins(const Direction direction) const {
 			counter++;
 		} // end if
 	} // end for
-	
+
 	return counter;
 } // end method
 
 // -----------------------------------------------------------------------------
 
 inline
-int 
+int
 Instance::getNumInputPins() const {
 	return getNumPins(Rsyn::IN);
 } // end method
@@ -196,7 +196,7 @@ Instance::getNumInputPins() const {
 // -----------------------------------------------------------------------------
 
 inline
-int 
+int
 Instance::getNumOutputPins() const {
 	return getNumPins(Rsyn::OUT);
 } // end method
@@ -204,7 +204,7 @@ Instance::getNumOutputPins() const {
 // -----------------------------------------------------------------------------
 
 inline
-int 
+int
 Instance::getNumBidirectionalPins() const {
 	return getNumPins(Rsyn::BIDIRECTIONAL);
 } // end method
@@ -213,7 +213,7 @@ Instance::getNumBidirectionalPins() const {
 // -----------------------------------------------------------------------------
 
 inline
-int 
+int
 Instance::getNumArcs() const {
 	return (int) data->arcs.size();
 } // end method
@@ -221,7 +221,7 @@ Instance::getNumArcs() const {
 // -----------------------------------------------------------------------------
 
 inline
-TopologicalIndex 
+TopologicalIndex
 Instance::getTopologicalIndex() const {
 	// TODO: The topological order of an instance my be ambiguous in some cases
 	// as in the case of registers. There's no arc between D and Q pins and 
@@ -237,7 +237,7 @@ Instance::getTopologicalIndex() const {
 	for (Rsyn::Arc arc : allArcs()) {
 		order = std::max(order, arc.getFromPin().getTopologicalIndex());
 	} // end for
-	
+
 	// Some cells may not have arcs, so as a fall back, get the largest
 	// topological index of its pins.
 	if (order == MIN_TOPOLOGICAL_INDEX) {
@@ -245,8 +245,8 @@ Instance::getTopologicalIndex() const {
 			order = std::max(order, pin.getTopologicalIndex());
 		} // end for		
 	} // end if
-	
-	return order;	
+
+	return order;
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -268,7 +268,7 @@ Instance::isPort(const Direction direction) {
 // -----------------------------------------------------------------------------
 
 inline
-Pin 
+Pin
 Instance::getPinByIndex(const int index) const {
 	return data->pins[index];
 } // end method
@@ -276,7 +276,7 @@ Instance::getPinByIndex(const int index) const {
 // -----------------------------------------------------------------------------
 
 inline
-Pin 
+Pin
 Instance::getAnyInputPin() const {
 	for (Pin pin : allPins()) {
 		if (pin.getDirection() == Rsyn::IN) {
@@ -302,7 +302,7 @@ Instance::getAnyOutputPin() const {
 // -----------------------------------------------------------------------------
 
 inline
-Arc 
+Arc
 Instance::getArc(const Pin from, const Pin to) {
 	for (Arc arc : allArcs()) {
 		if ((arc.getFromPin() == from) && (arc.getToPin() == to)) {
@@ -315,7 +315,7 @@ Instance::getArc(const Pin from, const Pin to) {
 // -----------------------------------------------------------------------------
 
 inline
-Arc 
+Arc
 Instance::getArcByPinNames(const std::string &from, const std::string &to) {
 	for (Arc arc : allArcs()) {
 		if ((arc.getFromPin().getName() == from) && (arc.getToPin().getName() == to)) {
@@ -328,13 +328,13 @@ Instance::getArcByPinNames(const std::string &from, const std::string &to) {
 // -----------------------------------------------------------------------------
 
 inline
-Arc 
+Arc
 Instance::getAnyArc() {
-	return !data->arcs.empty()? data->arcs[0] : nullptr;
+	return !data->arcs.empty() ? data->arcs[0] : nullptr;
 } // end method
 
 // -----------------------------------------------------------------------------
-	
+
 inline
 Range<CollectionOfPinsFilteredByDirection>
 Instance::allPins(const Direction direction) const {
@@ -350,7 +350,7 @@ Instance::allPins() const {
 } // end method
 
 // -----------------------------------------------------------------------------
-	
+
 inline
 Range<CollectionOfArcs>
 Instance::allArcs() const {
@@ -362,7 +362,7 @@ Instance::allArcs() const {
 inline
 bool
 Instance::isSequential() const {
-	return getType() == Rsyn::CELL?
+	return getType() == Rsyn::CELL ?
 		asCell().getLibraryCell().isSequential() : false;
 } // end method
 
@@ -371,7 +371,7 @@ Instance::isSequential() const {
 inline
 bool
 Instance::isTie(const TieType type) const {
-	return getType() == Rsyn::CELL?
+	return getType() == Rsyn::CELL ?
 		asCell().getLibraryCell().isTie(type) : false;
 } // end method
 
@@ -380,7 +380,7 @@ Instance::isTie(const TieType type) const {
 inline
 bool
 Instance::isBuffer(const BufferType type) const {
-	return getType() == Rsyn::CELL?
+	return getType() == Rsyn::CELL ?
 		asCell().getLibraryCell().isBuffer(type) : false;
 } // end method
 
@@ -449,6 +449,18 @@ Instance::isMacroBlock() const {
 	if (data->tag.block.isNotSpecified())
 		throw TagNotSpecifiedException("Block");
 	return data->tag.block;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline 
+bool
+Instance::isFlipped() const {
+	PhysicalOrientation orient = getOrientation();
+
+	const bool fliped = orient == ORIENTATION_FN || orient == ORIENTATION_FS ||
+		orient == ORIENTATION_FW || orient == ORIENTATION_FE;
+	return fliped;
 } // end method
 
 // -----------------------------------------------------------------------------

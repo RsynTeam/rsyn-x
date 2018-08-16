@@ -47,7 +47,7 @@ LibraryCell::getLibraryPinByName(const std::string &name) const {
 inline
 const std::string &
 LibraryCell::getName() const {
-	return data->name;
+	return data? data->name : NullName;
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -148,6 +148,14 @@ LibraryCell::getLibraryArc(const Rsyn::LibraryPin from, const Rsyn::LibraryPin t
 			return larc;
 	} // end method
 	return nullptr;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline
+LibraryArc
+LibraryCell::getLibraryArcByIndex(const int index) const {
+	return data->arcs[index];
 } // end method
 
 // -----------------------------------------------------------------------------

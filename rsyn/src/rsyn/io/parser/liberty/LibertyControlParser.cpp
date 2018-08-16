@@ -49,14 +49,13 @@ void LibertyControlParser::parseLiberty_LookUpTable(si2drGroupIdT &gtiming2, si2
 	if ( !strcmp(name, "scalar") || lutType == LUT_TYPE_HOLD || lutType == LUT_TYPE_SETUP) {
 		lut.loadIndices.resize(1);
 		lut.transitionIndices.resize(1);
-		lut.tableVals.resize(1);
-		lut.tableVals[0].resize(1);
+		lut.tableVals.initialize(1, 1);
 
 		lut.loadIndices[0] = std::numeric_limits<double>::quiet_NaN();
 		lut.transitionIndices[0] = std::numeric_limits<double>::quiet_NaN();
 
 		long double el = liberty_get_element(ldata, 0, 0);
-		lut.tableVals[0][0] = Rsyn::Units::convertToInternalUnits(Rsyn::MEASURE_TIME, (double) el, unitPrefixForTime);
+		lut.tableVals(0, 0) = Rsyn::Units::convertToInternalUnits(Rsyn::MEASURE_TIME, (double) el, unitPrefixForTime);
 
 		lut.isScalar = true;
 	} else {
@@ -74,9 +73,8 @@ void LibertyControlParser::parseLiberty_LookUpTable(si2drGroupIdT &gtiming2, si2
 		
 		lut.loadIndices.resize(dimLoadSize);
 		lut.transitionIndices.resize(max(1, dimSlewSize));
-		lut.tableVals.resize(dimLoadSize);
+		lut.tableVals.initialize(dimLoadSize, std::max(1, dimSlewSize));
 		for ( int i = 0; i < dimLoadSize; ++i ) {
-			lut.tableVals[i].resize(max(1, dimSlewSize));
 			const double load =  Rsyn::Units::convertToInternalUnits(
 				Rsyn::MEASURE_CAPACITANCE, 
 				(double) ldata->index_info[lutLoadIndex][i],
@@ -91,7 +89,7 @@ void LibertyControlParser::parseLiberty_LookUpTable(si2drGroupIdT &gtiming2, si2
 				long double el = lutLoadIndex == 0?
 					liberty_get_element(ldata, i, j) :
 					liberty_get_element(ldata, j, i);
-				lut.tableVals[i][j] = Rsyn::Units::convertToInternalUnits( 
+				lut.tableVals(i, j) = Rsyn::Units::convertToInternalUnits(
 					Rsyn::MEASURE_TIME, (double) el, unitPrefixForTime);
 			} // end for
 		} // end else

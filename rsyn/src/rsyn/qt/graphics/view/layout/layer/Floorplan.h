@@ -25,6 +25,8 @@ namespace Rsyn {
 class LayoutGraphicsScene;
 
 class FloorplanLayoutGraphicsLayer : public LayoutGraphicsLayer {
+private:
+	QRect clsCoreBounds;
 public:
 
     FloorplanLayoutGraphicsLayer();
@@ -36,7 +38,11 @@ public:
 
 private:
 
-	QRect clsCoreBounds;
+	void renderCoreBounds(QPainter * painter);
+	void renderPhysicalRows(QPainter * painter);
+	void renderLayoutRegions(QPainter * painter);
+	
+	
 
 }; // end class
 

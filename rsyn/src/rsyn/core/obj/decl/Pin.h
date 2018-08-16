@@ -163,6 +163,11 @@ public:
 	const std::vector<Arc> &
 	allOutgoingArcs() const;
 
+	//! @brief Returns an iterable collection of all arcs given a traverse
+	//!        direction.
+	const std::vector<Arc> &
+	allArcs(const TraverseType direction) const;
+
 	//! @brief Connects this pin to a net. If the pin is currently connected,
 	//!        it will be first disconnected.
 	void connect(Net net);

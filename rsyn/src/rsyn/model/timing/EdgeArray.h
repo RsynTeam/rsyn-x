@@ -141,6 +141,8 @@ public:
 
 	T getMax() const { return max(clsValue[RISE], clsValue[FALL]); }
 	T getMin() const { return min(clsValue[RISE], clsValue[FALL]); }
+	T getSum() const { return clsValue[RISE] + clsValue[FALL]; }
+	T getAvg() const { return (clsValue[RISE] + clsValue[FALL]) / ((T) 2); }
 	T getRise() const { return clsValue[RISE]; }
 	T getFall() const { return clsValue[FALL]; }
 	

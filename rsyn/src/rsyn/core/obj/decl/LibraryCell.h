@@ -86,6 +86,9 @@ public:
 	//!        or if no such arc is found.
 	LibraryArc getLibraryArc(const Rsyn::LibraryPin from, const Rsyn::LibraryPin to) const;
 
+	//! @brief Returns the library arc by its index.
+	LibraryArc getLibraryArcByIndex(const int index) const;
+
 	//! @brief Returns the library arc from the "from" pin to the "to" pin. 
 	//!        Returns null if either pin is not found or if no such arc exist 
 	//!        between the pins.

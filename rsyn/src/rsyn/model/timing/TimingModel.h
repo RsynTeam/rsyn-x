@@ -12,16 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-/* 
- * File:   TimingModelInterface.h
- * Author: gaflach
- *
- * Created on September 8, 2016, 7:06 PM
- */
 
-#ifndef TIMING_MODEL_INTERFACE_H
-#define TIMING_MODEL_INTERFACE_H
+#ifndef RSYN_TIMING_MODEL_INTERFACE_H
+#define RSYN_TIMING_MODEL_INTERFACE_H
 
 #include "rsyn/core/Rsyn.h"
 #include "rsyn/sandbox/Sandbox.h"
@@ -123,7 +116,20 @@ public:
 	const Rsyn::Net net,
 	const TimingMode mode,
 	const EdgeArray<Number> &slew) = 0;
-	
+
+	virtual
+	void
+	calculateCellArcTiming(
+	const Rsyn::Arc arc,
+	const TimingMode mode,
+	const TimingTransition oedge,
+	const Number islew,
+	const Number load,
+	Number &delay,
+	Number &slew) {
+		calculateLibraryArcTiming(arc.getLibraryArc(), mode, oedge, islew, load, delay, slew);
+	}
+
 	virtual
 	void
 	calculateNetArcTiming(
@@ -163,6 +169,19 @@ public:
 	const TimingMode mode,
 	const EdgeArray<Number> &slew) = 0;
 
+	virtual
+	void
+	calculateCellArcTiming(
+	const Rsyn::SandboxArc arc,
+	const TimingMode mode,
+	const TimingTransition oedge,
+	const Number islew,
+	const Number load,
+	Number &delay,
+	Number &slew) {
+		calculateLibraryArcTiming(arc.getLibraryArc(), mode, oedge, islew, load, delay, slew);
+	}
+	
 	virtual
 	void
 	calculateNetArcTiming(

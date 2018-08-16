@@ -323,11 +323,27 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 						// END TODO 
 						break;
 					case DEFIPATH_MASK:
-						std::cout << "TODO DEFIPATH_MASK at " << __func__ << "\n";
+						
+						{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
+							static bool warning = false;
+							if (!warning) {
+								warning = true;
+								std::cout << "TODO DEFIPATH_MASK at " << __func__ << "\n";
+							} // end if
+						} // end block
+					
 						break;
 					case DEFIPATH_VIAMASK:
-						// TODO 
-						std::cout << "TODO DEFIPATH_VIAMASK at " << __func__ << "\n";
+						// TODO
+						
+						{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
+							static bool warning = false;
+							if (!warning) {
+								warning = true;
+								std::cout << "TODO DEFIPATH_VIAMASK at " << __func__ << "\n";
+							} // end if
+						} // end block
+					
 						break;
 					case DEFIPATH_VIA:
 						point->clsViaName = path->getVia();
@@ -335,7 +351,15 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 						break;
 					case DEFIPATH_VIAROTATION:
 						//TODO
-						std::cout << "TODO DEFIPATH_VIAROTATION at " << __func__ << "\n";
+						
+						{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
+							static bool warning = false;
+							if (!warning) {
+								warning = true;
+								std::cout << "TODO DEFIPATH_VIAROTATION at " << __func__ << "\n";
+							} // end if
+						} // end block
+					
 						//orientStr(path->getViaRotation());
 						break;
 					case DEFIPATH_RECT:
@@ -350,7 +374,15 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 						break;
 					case DEFIPATH_VIRTUALPOINT:
 						//TODO
-						std::cout << "TODO DEFIPATH_VIRTUALPOINT at " << __func__ << "\n";
+						
+						{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
+							static bool warning = false;
+							if (!warning) {
+								warning = true;
+								std::cout << "TODO DEFIPATH_VIRTUALPOINT at " << __func__ << "\n";
+							} // end if
+						} // end block
+						
 						//int x, y;
 						//path->getVirtualPoint(&x, &y);
 						//std::cout<<"virtualPoint: "<<netDscp.clsName<<"\n";
@@ -377,15 +409,40 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 						break;
 					case DEFIPATH_TAPER:
 						//std::string taper = "TAPER ";
-						std::cout << "TODO DEFIPATH_TAPER at " << __func__ << "\n";
+						
+						{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
+							static bool warning = false;
+							if (!warning) {
+								warning = true;
+								std::cout << "TODO DEFIPATH_TAPER at " << __func__ << "\n";
+							} // end if
+						} // end block
+					
 						break;
 					case DEFIPATH_TAPERRULE:
 						//path->getTaperRule();
-						std::cout << "TODO DEFIPATH_TAPERRULE at " << __func__ << "\n";
+//						// TODO
+						
+						{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
+							static bool warning = false;
+							if (!warning) {
+								warning = true;
+								std::cout << "TODO DEFIPATH_TAPERRULE at " << __func__ << "\n";
+							} // end if
+						} // end block
+					
 						break;
 					case DEFIPATH_STYLE:
 						//path->getStyle();
-						std::cout << "TODO DEFIPATH_STYLE at " << __func__ << "\n";
+						
+						{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
+							static bool warning = false;
+							if (!warning) {
+								warning = true;
+								std::cout << "TODO DEFIPATH_STYLE at " << __func__ << "\n";
+							} // end if
+						} // end block
+						
 						break;
 				} // end switch
 				pathId = path->next();

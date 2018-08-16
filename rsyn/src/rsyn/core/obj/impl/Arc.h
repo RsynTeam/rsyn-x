@@ -127,4 +127,12 @@ Arc::getToNet() const {
 	return getToPin().getNet();
 } // end method
 
+// -----------------------------------------------------------------------------
+
+inline
+int
+Arc::getIndex() const {
+	return getLibraryArc()? getLibraryArc().getIndex() : -1;
+} // end method
+
 } // end namespace

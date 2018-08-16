@@ -46,6 +46,8 @@ extern "C" {
 #include "rsyn/3rdparty/parser/liberty/si2dr_liberty.h"
 }
 
+#include "rsyn/util/Array.h"
+
 using std::cout ;
 using std::endl ;
 using std::istream ;
@@ -396,7 +398,7 @@ struct SpefNodeName {
 	bool isScalar;
         vector<double> loadIndices ;
         vector<double> transitionIndices ;
-        vector<vector<double> > tableVals ;
+        Array2D<double> tableVals ;
 	
 	LibParserLUT() : isScalar(false) {};
 	

@@ -19,12 +19,14 @@
 #include <iomanip> 
 
 #include <Rsyn/Session>
+#include <Rsyn/Debug>
 #include "rsyn/model/scenario/Scenario.h"
 
 #include "rsyn/model/timing/Timer.h"
 #include "rsyn/util/FloatingPoint.h"
 #include "rsyn/util/ThreadPool.h"
 #include "rsyn/util/MD5.h"
+#include "rsyn/util/Histogram.h"
 
 #define TIMER_DEBUG_PRUNING 0
 
@@ -520,13 +522,10 @@ void Timer::timingBuildTimingArcs_SetupBacktrackEdge(TimingArc &arc, const Timin
 
 // -----------------------------------------------------------------------------
 
-void Timer::updateTiming_Arc_NonUnate(const TimingMode mode, const EdgeArray<Number> islew, const EdgeArray<Number> load, Rsyn::Arc arc) {
-	TimingArc &timingArc = getTimingArc(arc);
-	TimingPin &timingPinFrom = getTimingPin(arc.getFromPin());
+void Timer::updateTiming_Arc_NonUnate(const TimingMode mode, const EdgeArray<Number> islew, const EdgeArray<Number> load, Rsyn::Arc arc, Rsyn::LibraryArc larc, TimingArcState &state) const {
+	const TimingArc &timingArc = getTimingArc(arc);
+	const TimingPin &timingPinFrom = getTimingPin(arc.getFromPin());
 
-	TimingArcState &state = timingArc.state[mode];
-	Rsyn::LibraryArc larc = arc.getLibraryArc();
-	
 	if (ENABLE_IITIMER_COMPATIBILITY_MODE) {
 
 		// Compatibility mode enables our timer to match the timing reported by
@@ -551,8 +550,13 @@ void Timer::updateTiming_Arc_NonUnate(const TimingMode mode, const EdgeArray<Num
 				assert(false);
 		} // end switch
 
+		
 		for (const TimingTransition oedge : allTimingTransitions()) {
-			timingModel->calculateLibraryArcTiming(larc, mode, oedge, islew[iedge], load[oedge], state.delay[oedge], state.oslew[oedge]);
+			if (arc) {
+				timingModel->calculateCellArcTiming(arc, mode, oedge, islew[iedge], load[oedge], state.delay[oedge], state.oslew[oedge]);
+			} else {
+				timingModel->calculateLibraryArcTiming(larc, mode, oedge, islew[iedge], load[oedge], state.delay[oedge], state.oslew[oedge]);
+			} // end else
 		} // end for
 
 		// Define backtrack.
@@ -575,7 +579,11 @@ void Timer::updateTiming_Arc_NonUnate(const TimingMode mode, const EdgeArray<Num
 
 			const TimingTransition iedge = RISE;
 			for (const TimingTransition oedge : allTimingTransitions()) {
-				timingModel->calculateLibraryArcTiming(larc, mode, oedge, islew[iedge], load[oedge], state.delay[oedge], state.oslew[oedge]);
+				if (arc) {
+					timingModel->calculateCellArcTiming(arc, mode, oedge, islew[iedge], load[oedge], state.delay[oedge], state.oslew[oedge]);
+				} else {
+					timingModel->calculateLibraryArcTiming(larc, mode, oedge, islew[iedge], load[oedge], state.delay[oedge], state.oslew[oedge]);
+				} // end else
 
 				state.backtrack[oedge] = iedge;
 			} // end for
@@ -590,7 +598,11 @@ void Timer::updateTiming_Arc_NonUnate(const TimingMode mode, const EdgeArray<Num
 			for (const std::tuple<TimingTransition, TimingTransition> transitions : allTimingTransitionPairs()) {
 				const TimingTransition iedge = std::get<0>(transitions);
 				const TimingTransition oedge = std::get<1>(transitions);
-				timingModel->calculateLibraryArcTiming(larc, mode, oedge, islew[iedge], load[oedge], delay[oedge][iedge], oslew[oedge][iedge]);
+				if (arc) {
+					timingModel->calculateCellArcTiming(arc, mode, oedge, islew[iedge], load[oedge], delay[oedge][iedge], oslew[oedge][iedge]);
+				} else {
+					timingModel->calculateLibraryArcTiming(larc, mode, oedge, islew[iedge], load[oedge], delay[oedge][iedge], oslew[oedge][iedge]);
+				} // end else
 			} // end for
 
 			// Update delay, output slew and backtrack edge.
@@ -627,7 +639,7 @@ void Timer::updateTiming_Arc(
 		Rsyn::Arc arc, 
 		Rsyn::LibraryArc larc,
 		TimingArcState &state
-) {
+) const {
 	// [NOTE] By construction, ports do not have a timing arc... So we don't
 	// need to deal with ports here.
 
@@ -638,9 +650,14 @@ void Timer::updateTiming_Arc(
 		{
 			// Transition direction is maintained from input to output:
 			// rise->rise and fall->fall.
-						
-			timingModel->calculateLibraryArcTiming(larc, mode, FALL, islew[FALL], load[FALL], state.delay[FALL], state.oslew[FALL]);
-			timingModel->calculateLibraryArcTiming(larc, mode, RISE, islew[RISE], load[RISE], state.delay[RISE], state.oslew[RISE]);
+
+			if (arc) {
+				timingModel->calculateCellArcTiming(arc, mode, FALL, islew[FALL], load[FALL], state.delay[FALL], state.oslew[FALL]);
+				timingModel->calculateCellArcTiming(arc, mode, RISE, islew[RISE], load[RISE], state.delay[RISE], state.oslew[RISE]);
+			} else {
+				timingModel->calculateLibraryArcTiming(larc, mode, FALL, islew[FALL], load[FALL], state.delay[FALL], state.oslew[FALL]);
+				timingModel->calculateLibraryArcTiming(larc, mode, RISE, islew[RISE], load[RISE], state.delay[RISE], state.oslew[RISE]);				
+			} // end else
 
 			// Backtrack edge are constant for this timing sense.
 			break;
@@ -649,16 +666,21 @@ void Timer::updateTiming_Arc(
 		{
 			// Transition direction is reversed from input to output: rise->fall
 			// and fall->rise.
-			
-			timingModel->calculateLibraryArcTiming(larc, mode, FALL, islew[RISE], load[FALL], state.delay[FALL], state.oslew[FALL]);
-			timingModel->calculateLibraryArcTiming(larc, mode, RISE, islew[FALL], load[RISE], state.delay[RISE], state.oslew[RISE]);			
+
+			if (arc) {
+				timingModel->calculateCellArcTiming(arc, mode, FALL, islew[RISE], load[FALL], state.delay[FALL], state.oslew[FALL]);
+				timingModel->calculateCellArcTiming(arc, mode, RISE, islew[FALL], load[RISE], state.delay[RISE], state.oslew[RISE]);
+			} else {
+				timingModel->calculateLibraryArcTiming(larc, mode, FALL, islew[RISE], load[FALL], state.delay[FALL], state.oslew[FALL]);
+				timingModel->calculateLibraryArcTiming(larc, mode, RISE, islew[FALL], load[RISE], state.delay[RISE], state.oslew[RISE]);
+			} // end else
 
 			// Backtrack edge are constant for this timing sense.
 			break;
 		} // end case
 		case NON_UNATE:
 		{
-			updateTiming_Arc_NonUnate(mode, islew, load, arc);
+			updateTiming_Arc_NonUnate(mode, islew, load, arc, larc, state);
 			break;
 		} // end case
 		default:
@@ -677,43 +699,7 @@ void Timer::updateTiming_Net_InitDriver(Rsyn::Pin driver, const TimingMode mode,
 	TimingPin &timingPin = getTimingPin(driver);
 	
 	if (driver.isPort()) {
-		Rsyn::Cell port  = driver.getInstance().asCell();
-		
-		for (TimingTransition transition : allTimingTransitions()) {
-			timingPin.state[mode].a[transition] = clsScenario->getInputDelay(port, 0);
-			timingPin.state[mode].slew[transition] = clsScenario->getInputTransition(port, EdgeArray<Number>(0, 0))[transition];
-		} // end for
-		
-		const Scenario::InputDriver * inputDriver = clsScenario->getInputDriver(port);
-		if (inputDriver) {
-			switch (inputDriverDelayMode) {
-				case INPUT_DRIVER_DELAY_MODE_UI_TIMER: {
-					TimingArcState state;
-					updateTiming_Arc(mode, inputDriver->inputSlew, load, false,
-							nullptr, inputDriver->libraryArc, state);
-					timingPin.state[mode].a = state.delay;
-					timingPin.state[mode].slew = state.oslew;				
-					break;
-				} // end case
-
-				case INPUT_DRIVER_DELAY_MODE_PRIME_TIME: {
-					// Note. The delay at an input port driven by an input driver is
-					// set to the user defined input delay plus the delta between the
-					// delay of the input driver driven the actual net load and the
-					// delay of the input driver driven no load. The idea is to remove
-					// the parasitic delay from the arrival time.
-					TimingArcState state0;
-					TimingArcState state1;
-					updateTiming_Arc(mode, inputDriver->inputSlew, EdgeArray<Number>(0, 0), false,
-							nullptr, inputDriver->libraryArc, state0);
-					updateTiming_Arc(mode, inputDriver->inputSlew, load, false,
-							nullptr, inputDriver->libraryArc, state1);
-					timingPin.state[mode].a += state1.delay - state0.delay;
-					timingPin.state[mode].slew = state1.oslew;
-					break;
-				} // end case
-			} // end switch
-		} // end if
+		calculatePrimaryInputTiming(driver, mode, load, timingPin.state[mode].a, timingPin.state[mode].slew);
 	} else {
 		switch (mode) {
 			case EARLY: {
@@ -776,12 +762,10 @@ void Timer::updateTiming_Net_TimingMode(const TimingMode mode, Rsyn::Net net, co
 
 void Timer::updateTiming_Net(Rsyn::Net net) {
 	if (net.getNumPins() < 1) {
-//		std::cout << "[WARNING] Net without pins.\n";
 		return;
 	} // end if
 	
 	Rsyn::Pin driver = net.getAnyDriver();
-	TimingNet &timingNet = getTimingNet(net);
 	TimingPin &timingPin = getTimingPin(driver);
 	
 	// Effective load capacitance..
@@ -1264,6 +1248,7 @@ void Timer::updateTiming_UpdateTimingViolations() {
 		} // end for
 	} // end for
 } // end method
+
 // -----------------------------------------------------------------------------
 
 void Timer::updateTiming_Centrality_Net(Rsyn::Net net) {
@@ -1354,6 +1339,7 @@ void Timer::updateTiming_Centrality_Net(Rsyn::Net net) {
 		} // end for			
 	} // end if
 } // end method
+
 // -----------------------------------------------------------------------------
 
 void Timer::updateTiming_Centrality() {
@@ -1447,7 +1433,7 @@ void Timer::updateTiming_CriticalEndpoints() {
 
 // -----------------------------------------------------------------------------
 
-void Timer::updateTimingFull() {
+void Timer::updateTimingFull(const UpdateType updateType) {
 	timingModel->beforeTimingUpdate(); // don't count this in the runtime
 	
 	clsStopwatchUpdateTiming.start();
@@ -1456,8 +1442,21 @@ void Timer::updateTimingFull() {
 	updateTiming_PropagateArrivalTimes();
 	updateTiming_UpdateTimingTests();
 	updateTiming_UpdateTimingViolations();
-	updateTiming_PropagateRequiredTimes();
-	updateTiming_Centrality();
+
+	if (updateType & REQUIRED) {
+		updateTiming_PropagateRequiredTimes();
+		clsIsRequiredOutOfSync = false;
+	} else {
+		clsIsRequiredOutOfSync = true;
+	} // end else
+
+	if (updateType & CENTRALITY) {
+		updateTiming_Centrality();
+		clsIsCentralityOutOfSync = false;
+	} else {
+		clsIsCentralityOutOfSync = true;
+	} // end else
+
 	updateTiming_CriticalEndpoints();
 	
 	dirtyNets.clear();
@@ -1465,6 +1464,18 @@ void Timer::updateTimingFull() {
 	clsForceFullTimingUpdate = false;
 	
 	clsStopwatchUpdateTiming.start();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void Timer::updateRequiredTimes() {
+	updateTiming_PropagateRequiredTimes();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void Timer::updateCentrality() {
+	updateTiming_Centrality();
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -1639,10 +1650,10 @@ void Timer::updateTiming_PropagateArrivalTimesIncremental(std::set<Rsyn::Net> &e
 
 // -----------------------------------------------------------------------------
 
-void Timer::updateTimingIncremental() {
+void Timer::updateTimingIncremental(const UpdateType updateType) {
 	if (clsForceFullTimingUpdate) {
 		std::cout << "[INFO] Forcing full timing update.\n";
-		updateTimingFull();
+		updateTimingFull(updateType);
 	} else {
 		timingModel->beforeTimingUpdate(); // don't count this in the runtime
 		
@@ -1663,8 +1674,27 @@ void Timer::updateTimingIncremental() {
 		updateTiming_PropagateArrivalTimesIncremental(endpoints);
 		updateTiming_UpdateTimingTests();
 		updateTiming_UpdateTimingViolations();
-		updateTiming_PropagateRequiredTimesIncremental(endpoints);
-		updateTiming_CentralityIncremental(endpoints);
+
+		if (updateType & REQUIRED) {
+			updateTiming_PropagateRequiredTimesIncremental(endpoints);
+			// Note: Required sync state does not change after an incremental
+			// update. If it's already out of sync, an incremental update won't
+			// fix that. If it's in sync, an incremental update will keep
+			// everything in sync.
+		} else {
+			clsIsRequiredOutOfSync = true;
+		} // end else
+
+		if (updateType & CENTRALITY) {
+			updateTiming_CentralityIncremental(endpoints);
+			// Note: Centrality sync state does not change after an incremental
+			// update. If it's already out of sync, an incremental update won't
+			// fix that. If it's in sync, an incremental update will keep
+			// everything in sync.
+		} else {
+			clsIsCentralityOutOfSync = true;
+		} // end else
+
 		updateTiming_CriticalEndpoints();
 
 		// Clear dirty cells and nets.
@@ -1677,7 +1707,7 @@ void Timer::updateTimingIncremental() {
 
 // -----------------------------------------------------------------------------
 
-void Timer::updateTimingLocally(Rsyn::Instance cell, const bool includeSecondFanoutLevelNets) {
+void Timer::updateTimingLocally(Rsyn::Instance cell, const bool includeFanoutNetsOfSinkCells, const bool includeFanoutNetsOfSideCells) {
 	// Process nets in topological order...
 
 	std::vector<std::tuple<TopologicalIndex, Rsyn::Net>> nets;
@@ -1690,7 +1720,7 @@ void Timer::updateTimingLocally(Rsyn::Instance cell, const bool includeSecondFan
 		if (net) {
 			nets.push_back(std::make_tuple(net.getTopologicalIndex(), net));
 
-			if (includeSecondFanoutLevelNets && pin.isOutput()) {
+			if (includeFanoutNetsOfSinkCells && (pin.isOutput() || includeFanoutNetsOfSideCells)) {
 				for (Rsyn::Pin sink : net.allPins(Rsyn::SINK)) {
 					for (Rsyn::Arc arc : sink.allOutgoingArcs()) {
 						Rsyn::Net sinkNet = arc.getToNet();
@@ -1724,6 +1754,50 @@ void Timer::updateTimingLocally(Rsyn::Instance cell, const bool includeSecondFan
 		} else {
 			std::cout << "[BUG] Sequential cell without a data pin.\n";
 		} // end else
+	} // end if
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void Timer::calculatePrimaryInputTiming(const Rsyn::Pin pin, const TimingMode mode, const EdgeArray<Number> &load, EdgeArray<Number> &arrival, EdgeArray<Number> &slew) const {
+	rsynAssert(pin.isPort(Rsyn::IN), "Pin is not a port.");
+
+	Rsyn::Cell port = pin.getInstance().asCell();
+
+	for (TimingTransition edge : allTimingTransitions()) {
+		arrival[edge] = clsScenario->getInputDelay(port, 0);
+		slew[edge] = clsScenario->getInputTransition(port, EdgeArray<Number>(0, 0))[edge];
+	} // end for
+
+	const Scenario::InputDriver *inputDriver = clsScenario->getInputDriver(port);
+	if (inputDriver) {
+		switch (inputDriverDelayMode) {
+			case INPUT_DRIVER_DELAY_MODE_UI_TIMER: {
+				TimingArcState state;
+				updateTiming_Arc(mode, inputDriver->inputSlew, load, false,
+						nullptr, inputDriver->libraryArc, state);
+				arrival = state.delay;
+				slew = state.oslew;
+				break;
+			} // end case
+
+			case INPUT_DRIVER_DELAY_MODE_PRIME_TIME: {
+				// Note. The delay at an input port driven by an input driver is
+				// set to the user defined input delay plus the delta between the
+				// delay of the input driver driven the actual net load and the
+				// delay of the input driver driven no load. The idea is to remove
+				// the parasitic delay from the arrival time.
+				TimingArcState state0;
+				TimingArcState state1;
+				updateTiming_Arc(mode, inputDriver->inputSlew, EdgeArray<Number>(0, 0), false,
+						nullptr, inputDriver->libraryArc, state0);
+				updateTiming_Arc(mode, inputDriver->inputSlew, load, false,
+						nullptr, inputDriver->libraryArc, state1);
+				arrival += state1.delay - state0.delay;
+				slew = state1.oslew;
+				break;
+			} // end case
+		} // end switch
 	} // end if
 } // end method
 
@@ -2123,13 +2197,12 @@ void Timer::writeTimingFile(ostream &out) {
 		}
 	}
 
-	for (Rsyn::Port cell : module.allPorts(Rsyn::OUT)) {
-		const Number loadCap = clsScenario->getOutputLoad(cell, 0);
-		out << "load " << cell.getName() << " " << loadCap <<
+	for (Rsyn::Port port : module.allPorts(Rsyn::OUT)) {
+		const Number loadCap = clsScenario->getOutputLoad(port, 0);
+		out << "load " << port.getName() << " " << loadCap <<
 			" " << loadCap <<
 			" " << loadCap <<
 			" " << loadCap << "\n";
-
 	}
 } // end method
 
@@ -2610,7 +2683,8 @@ void Timer::reportPath(const std::vector<PathHop> &path, std::ostream &out) {
 	out << std::right;
 	
 	out << std::setw(3) << " " << " ";
-	out << std::setw(11) << "Wire/Arc" << " ";		
+	out << std::setw(11) << "Arc" << " ";
+	out << std::setw(7) << "Path" << " ";
 	out << std::setw(9) << "Arrival" << " ";
 	out << std::setw(9) << "Required" << " ";
 	out << std::setw(9) << "Slack" << " ";
@@ -2622,7 +2696,8 @@ void Timer::reportPath(const std::vector<PathHop> &path, std::ostream &out) {
 	out << "\n";
 	
 	out << std::setw(3) << "#" << " ";
-	out << std::setw(11) << "Delay" << " ";		
+	out << std::setw(11) << "Delay" << " ";
+	out << std::setw(7) << "Delay" << " ";
 	out << std::setw(9) << "Time" << " ";
 	out << std::setw(9) << "Time" << " ";
 	out << std::setw(9) << " " << " ";
@@ -2636,19 +2711,29 @@ void Timer::reportPath(const std::vector<PathHop> &path, std::ostream &out) {
 	out << "--------------------------------------------------------------------------------\n";
 	
 	out << std::fixed << std::setprecision(2);
-	
+
+	int level = 0;
+	const Number pathDelay = path.back().getArrival() - path.front().getArrival();
+
 	const int numHops = path.size();
 	for (int i = 0; i < numHops; i++) {
 		const PathHop &hop = path[i];
 
 		const TimingPin &timingPin = getTimingPin(hop.getPin());
 		Rsyn::Net net = hop.getNet();
-		
-		out << std::setw(3) << (i+1) << " ";
+
+		if (hop.getPin().isDriver()) {
+			out << std::setw(3) << level << " ";
+			level++;
+		} else {
+			out << std::setw(3) << "-" << " ";
+		} // end else
 		
 		out << std::setw(9) << getPathHopDelay(hop) << " ";
 		out << std::setw(1) << (hop.getArcToThisPin()? "a" : "w") << " ";		
-		
+
+		out << std::setw(6) << (100*(hop.getDelay() / pathDelay)) << "%" << " ";
+
 		out << std::setw(9) << hop.getArrival() << " ";
 		out << std::setw(9) << hop.getRequired() << " ";
 		out << std::setw(9) << hop.getSlack() << " ";
@@ -2827,43 +2912,30 @@ bool Timer::queryTopCriticalEndpoints(
 // Histogram
 ////////////////////////////////////////////////////////////////////////////////
 
-int Timer::countNumberNegativeSlackCells(const TimingMode mode) {
+int Timer::countNumberNegativeSlackCells(const TimingMode mode) const {
 	int counter = 0;
-	
 	for (Rsyn::Instance instance : module.allInstances()) {
-		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
-		const Number criticallyCell = getCellCriticality(cell, mode);
-		if(criticallyCell > 0)
+		const Number criticallyCell = getCellCriticality(instance, mode);
+		if (criticallyCell > 0)
 			counter++;
-	} // end for 
+	} // end for
 	return counter;	
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-void Timer::slackHistrogram(ostream &out, TimingMode mode) {
-	cout<<"[INFO] Computing Slack Histogram\n";
-	
-	const int numbCells = countNumberNegativeSlackCells(mode);
-	if(numbCells == 0)
-		return; 
-	
-	const int numbSample = (int) std::ceil(std::sqrt(numbCells));
-	const Number wns = getWns(mode);
-	const Number range = wns / numbSample;
-	std::vector<int> histogram;
-	histogram.resize(numbSample + 1, 0);
-	for (Rsyn::Instance instance : module.allInstances()) {
-		Rsyn::Cell cell = instance.asCell(); // TODO: hack, assuming that the instance is a cell
-		const Number wnsCell = getCellWorstNegativeSlack(cell, mode);
-		if(wnsCell < 0){
-			int pos = (int) (wnsCell / range);
-			histogram[pos]++;
-		} // end if 
-	} // end for 
-	out<<"slack"<<"\t#cells\n";
-	for(int i = 0; i < numbSample; i++)
-		out<<(i*range)<<"\t"<<histogram[i]<<"\n";
+void Timer::reportSlackHistrogram(const HistogramOptions &options, const TimingMode mode, ostream &out) const {
+	Histogram histogram;
+
+	for (Rsyn::Pin pin : allEndpoints()) {
+		const Number slack = getPinWorstSlack(pin, mode);
+		if (!isUninitializedValue(slack))
+			histogram.addSample(slack);
+	} // end for
+
+	histogram.print(options, "Slack", out);
 } // end method 
+
+// -----------------------------------------------------------------------------
 
 } // end namespace

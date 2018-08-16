@@ -29,7 +29,7 @@ private:
 
 	//! @brief Generates the next sign to be used in some traversal algorithms
 	//!        as topological sorting.
-	int generateNextSign();
+	int generateNextSign() const;
 
 	//! @brief Gets the current sign to be used in some traversal algorithms as
 	//!        topological sorting.
@@ -101,22 +101,22 @@ public:
 	//! @brief Returns an iterable collection of all instances instantiated in
 	//!        this module.
 	Range<ReferenceListCollection<Instance>>
-	allInstances();
+	allInstances() const;
 
 	//! @brief Returns an iterable collection of all ports instantiated in this
 	//!        module.
 	Range<ReferenceListCollection<Port>>
-	allPorts();
+	allPorts() const;
 
 	//! @brief Returns an iterable collection of all ports of a given direction
 	//!        inside this module.
 	std::set<Port> &
-	allPorts(const Rsyn::Direction direction);
+	allPorts(const Rsyn::Direction direction) const;
 
 	//! @brief Returns an iterable collection of all nets instantiated in this
 	//!        module.
 	Range<ReferenceListCollection<Net>>
-	allNets();	
+	allNets() const;
 
 	//! @brief Returns an iterable collection of all interface pins of a given
 	//!        direction.
@@ -151,33 +151,33 @@ public:
 	//! @brief Returns an iterable collection of all pins instantiated in this
 	//!        module in topological order (from inputs to outputs).
 	std::vector<TupleElement<1, TopologicalIndex, Pin>>
-	allPinsInTopologicalOrder();
+	allPinsInTopologicalOrder() const;
 
 	//! @brief Returns an iterable collection of all pins instantiated in this
 	//!        module in reverse topological order (from outputs to inputs).
 	std::vector<TupleElement<1, TopologicalIndex, Pin>>
-	allPinsInReverseTopologicalOrder();
+	allPinsInReverseTopologicalOrder() const;
 
 	//! @brief Returns an iterable collection of all nets instantiated in this
 	//!        module in topological order (from inputs to outputs).
 	//! @note  See Net::getTopologicalIndex() description to check how
 	//!        the topological index of nets is defined.
 	std::vector<TupleElement<1, TopologicalIndex, Net>>
-	allNetsInTopologicalOrder();	
+	allNetsInTopologicalOrder() const;
 
 	//! @brief Returns an iterable collection of all nets instantiated in this
 	//!        module in reverse topological order (from outputs to inputs).
 	//! @note  See Net::getTopologicalIndex() description to check how
 	//!        the topological index of nets is defined.
 	std::vector<TupleElement<1, TopologicalIndex, Net>>
-	allNetsInReverseTopologicalOrder();	
+	allNetsInReverseTopologicalOrder() const;
 
 	//! @brief Returns an iterable collection of all instances instantiated in
 	//!        this module in topological order (from inputs to outputs).
 	//! @note  See Instance::getTopologicalIndex() description to check how
 	//!        the topological index of instances is defined.
 	std::vector<TupleElement<1, TopologicalIndex, Instance>>
-	allInstancesInTopologicalOrder();	
+	allInstancesInTopologicalOrder() const;
 
 	//! @brief Returns a vector with the nets in the fanout cone of a pin. The
 	//!        nets are sorted in breadth-first order (which is not the same as
@@ -185,7 +185,7 @@ public:
 	//!        topological order. If not null, the first net is always the net
 	//!        to which the seed pins is connected to.
 	std::vector<Rsyn::Net>
-	getFanoutConeNetsInBreadthFirstOrder(Rsyn::Pin seed);
+	getFanoutConeNetsInBreadthFirstOrder(Rsyn::Pin seed) const;
 
 	//! @brief Returns a vector with the nets in the fan-in cone of a pin. The 
 	//!        nets are sorted in breadth-first order (which is not the same as
@@ -193,7 +193,7 @@ public:
 	//!        topological order. If not null, the first net is always the net
 	//!        to which the seed pins is connected to.
 	std::vector<Rsyn::Net>
-	getFaninConeNetsInBreadthFirstOrder(Rsyn::Pin seed);	
+	getFaninConeNetsInBreadthFirstOrder(Rsyn::Pin seed) const;
 	
 }; // end class
 	

@@ -58,7 +58,7 @@ class PhysicalService;
 class Jezz : public Rsyn::Service, public Rsyn::DesignObserver {
 public:
 	
-	typedef	std::function<void(Rsyn::Cell cell, const DBU x, const DBU y)> UpdatePositionCallback;
+	typedef	std::function<void(Rsyn::Cell cell, const DBU x, const DBU y, Rsyn::PhysicalOrientation orient)> UpdatePositionCallback;
 
 	enum ListLink {HEAD, TAIL};
 	const static ListLink REVERSE_LIST_LINK[2];
@@ -379,6 +379,7 @@ public:
 		DBU origin_x; // min x in design coordinates
 		DBU origin_y; // min y in design coordinates
 		
+		Rsyn::PhysicalOrientation clsOrientation; 
 		int x;
 		int y; // y in Jezz coordinates (basically row index)
 		int w; // width 
@@ -388,13 +389,14 @@ public:
 		int xmin() const { return x; }
 		int xmax() const { return x + w; }
 		int width() const { return w; }
-		
+		Rsyn::PhysicalOrientation getOrientation() const { return clsOrientation; }
 		JezzRow() {
 			origin_x = 0;
 			origin_y = 0;
 			x = 0;
 			y = 0;
 			w = 0;
+			clsOrientation = Rsyn::PhysicalOrientation::ORIENTATION_INVALID;
 		} // end constructor
 	}; // end struct
 	
@@ -411,14 +413,15 @@ private:
 
 	DBU clsJezzSiteWidth;
 	DBU clsJezzRowHeight;
-	DBU clsJezzOriginX;
-	DBU clsJezzOriginY;
+	//DBU clsJezzOriginX;
+	//DBU clsJezzOriginY;
 	
 	int clsJezzNumSites;
 	int clsJezzNumRows;
 	
 	DBU clsJezzSlotLengthInUserUnits;
 	int clsJezzSlotLengthInJezzUnits;
+	Bounds clsJezzBounds;
 		
 	std::vector<JezzRow> clsJezzRows;
 	std::deque<JezzNode> clsJezzNodes;
@@ -429,8 +432,7 @@ private:
 	std::list<JezzNode *> clsJezzDeletedWhitespaces;
 	std::list<JezzNode *> clsJezzDeletedNodes;
 	
-	std::map<std::string,
-	std::deque<JezzNode>> clsJezzStoredSolution;
+	std::map<std::string, std::deque<JezzNode>> clsJezzStoredSolution;
 
 	// <cumulative cost, maximum cost (tie break)>
 	std::vector<std::pair<double, double>> compoundOffsetToLeft;
@@ -462,7 +464,7 @@ public:
 	JezzNode *getJezzNode(Rsyn::Instance instance) { return clsMapInstancesToJezzNodes[instance]; }
 	bool isInitialized() const { return clsInitialized; }
 
-	int jezz_SnapPositionX(const DBU x) const { return (x - clsJezzOriginX)/clsJezzSiteWidth; }
+	int jezz_SnapPositionX(const DBU x) const { return (x - clsJezzBounds[LOWER][X])/clsJezzSiteWidth; }
 	int jezz_SnapPositionY(const DBU y) const { return jezz_GetRowIndex(y); }
 	
 	int jezz_SnapSizeX(const DBU w) const { return (w/clsJezzSiteWidth); }
@@ -475,8 +477,8 @@ public:
 	int jezz_SnapSizeY(const DBU ymin, const DBU ymax) const { 
 		return jezz_SnapPositionY(ymax) - jezz_SnapPositionY(ymin); }
 
-	DBU jezz_UnsnapPositionX(const int x) const { return clsJezzOriginX + x*clsJezzSiteWidth; }
-	DBU jezz_UnsnapPositionY(const int y) const { return clsJezzOriginY + y*clsJezzRowHeight; }
+	DBU jezz_UnsnapPositionX(const int x) const { return clsJezzBounds[LOWER][X] + x*clsJezzSiteWidth; }
+	DBU jezz_UnsnapPositionY(const int y) const { return clsJezzBounds[LOWER][Y] + y*clsJezzRowHeight; }
 
 	DBU jezz_UnsnapSizeX(const int w) const { return w*clsJezzSiteWidth; }
 	DBU jezz_UnsnapSizeY(const int h) const { return h*clsJezzRowHeight; }	
@@ -490,8 +492,8 @@ private:
 	// resolve the ambiguity using the resolution parameter. If top is provided,
 	// the top row will be returned; if bottom, the bottom row.
 	int jezz_GetRowIndex(const DBU y, const SharedRowEdgeResolution resolution = TOP) const {
-		const int index = (y - clsJezzOriginY)/clsJezzRowHeight;
-		if ((resolution == BOTTOM) && ((y - clsJezzOriginY)%clsJezzRowHeight == 0)) {
+		const int index = (y - clsJezzBounds[LOWER][Y])/clsJezzRowHeight;
+		if ((resolution == BOTTOM) && ((y - clsJezzBounds[LOWER][Y])%clsJezzRowHeight == 0)) {
 			return index - 1;
 		} else {
 			return index;
@@ -505,7 +507,7 @@ private:
 	} // end method
 
 	JezzRow *jezz_GetRowByIndex(const int row) { return &clsJezzRows[row]; }
-	DBU jezz_GetRowY(const int row) const { return clsJezzOriginY + (clsJezzRowHeight*row); }
+	DBU jezz_GetRowY(const int row) const { return clsJezzBounds[LOWER][Y] + (clsJezzRowHeight*row); }
 
 	bool jezz_Overlap(const int x, JezzNode *jezzNode);
 	bool jezz_Enclosed(JezzNode *jezzNodeOutter, JezzNode *jezzNodeInner);
@@ -542,19 +544,10 @@ private:
 	void jezz_UpdatePositions(JezzRow *legRow);
 	
 	void reportFinalResults(std::ostream & out = std::cout);
+	void reportAverageCellDisplacement(std::ostream & out = std::cout);
 public:
 	
 	Jezz();
-	
-	void jezz_Init(		
-			const DBU originX,
-			const DBU originY,
-			const DBU rowHeight,
-			const DBU siteWidth,
-			const int numRows,
-			const int numSites,
-			UpdatePositionCallback updatePositionCallback
-	);	
 	
 	bool jezz_LegalizeNode(JezzNode *jezzNode);
 	bool jezz_Legalize();

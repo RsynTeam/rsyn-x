@@ -80,7 +80,12 @@ public:
 	Net getFromNet() const;
 
 	//! @brief Returns the net to which the "to" pin connects to if any.
-	Net getToNet() const;	
+	Net getToNet() const;
+
+	//! @brief Returns the index of this arc relative to its instance and
+	//! library cell. If this arc does not belong to an instance (i.e. net arc),
+	//! returns -1.
+	int getIndex() const;
 }; // end class
 	
 } // end namespace

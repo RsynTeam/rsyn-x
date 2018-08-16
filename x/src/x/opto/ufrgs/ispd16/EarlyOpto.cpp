@@ -17,7 +17,7 @@
 
 #include "rsyn/util/AsciiProgressBar.h"
 #include "rsyn/util/Stepwatch.h"
-#include "rsyn/util/Matrix.h"
+#include "rsyn/util/Array.h"
 #include "rsyn/model/library/LibraryCharacterizer.h"
 #include "rsyn/model/timing/Timer.h"
 #include "rsyn/model/routing/RoutingEstimator.h"

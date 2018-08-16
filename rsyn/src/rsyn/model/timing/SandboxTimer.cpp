@@ -363,7 +363,7 @@ void SandboxTimer::updateTiming_Arc_NonUnate(const TimingMode mode, const EdgeAr
 		} // end switch
 
 		for (const TimingTransition oedge : allTimingTransitions()) {
-			timingModel->calculateLibraryArcTiming(larc, mode, oedge, islew[iedge], load[oedge], state.delay[oedge], state.oslew[oedge]);
+			timingModel->calculateCellArcTiming(arc, mode, oedge, islew[iedge], load[oedge], state.delay[oedge], state.oslew[oedge]);
 		} // end for
 
 		// Define backtrack.
@@ -386,7 +386,7 @@ void SandboxTimer::updateTiming_Arc_NonUnate(const TimingMode mode, const EdgeAr
 
 			const TimingTransition iedge = RISE;
 			for (const TimingTransition oedge : allTimingTransitions()) {
-				timingModel->calculateLibraryArcTiming(larc, mode, oedge, islew[iedge], load[oedge], state.delay[oedge], state.oslew[oedge]);
+				timingModel->calculateCellArcTiming(arc, mode, oedge, islew[iedge], load[oedge], state.delay[oedge], state.oslew[oedge]);
 
 				state.backtrack[oedge] = iedge;
 			} // end for
@@ -401,7 +401,7 @@ void SandboxTimer::updateTiming_Arc_NonUnate(const TimingMode mode, const EdgeAr
 			for (const std::tuple<TimingTransition, TimingTransition> transitions : allTimingTransitionPairs()) {
 				const TimingTransition iedge = std::get<0>(transitions);
 				const TimingTransition oedge = std::get<1>(transitions);
-				timingModel->calculateLibraryArcTiming(larc, mode, oedge, islew[iedge], load[oedge], delay[oedge][iedge], oslew[oedge][iedge]);
+				timingModel->calculateCellArcTiming(arc, mode, oedge, islew[iedge], load[oedge], delay[oedge][iedge], oslew[oedge][iedge]);
 			} // end for
 
 			// Update delay, output slew and backtrack edge.
@@ -450,8 +450,13 @@ void SandboxTimer::updateTiming_Arc(
 			// Transition direction is maintained from input to output:
 			// rise->rise and fall->fall.
 
-			timingModel->calculateLibraryArcTiming(larc, mode, FALL, islew[FALL], load[FALL], state.delay[FALL], state.oslew[FALL]);
-			timingModel->calculateLibraryArcTiming(larc, mode, RISE, islew[RISE], load[RISE], state.delay[RISE], state.oslew[RISE]);
+			if (arc) {
+				timingModel->calculateCellArcTiming(arc, mode, FALL, islew[FALL], load[FALL], state.delay[FALL], state.oslew[FALL]);
+				timingModel->calculateCellArcTiming(arc, mode, RISE, islew[RISE], load[RISE], state.delay[RISE], state.oslew[RISE]);
+			} else {
+				timingModel->calculateLibraryArcTiming(larc, mode, FALL, islew[FALL], load[FALL], state.delay[FALL], state.oslew[FALL]);
+				timingModel->calculateLibraryArcTiming(larc, mode, RISE, islew[RISE], load[RISE], state.delay[RISE], state.oslew[RISE]);
+			} // end else
 
 			// Backtrack edge are constant for this timing sense.
 			break;
@@ -461,8 +466,13 @@ void SandboxTimer::updateTiming_Arc(
 			// Transition direction is reversed from input to output: rise->fall
 			// and fall->rise.
 
-			timingModel->calculateLibraryArcTiming(larc, mode, FALL, islew[RISE], load[FALL], state.delay[FALL], state.oslew[FALL]);
-			timingModel->calculateLibraryArcTiming(larc, mode, RISE, islew[FALL], load[RISE], state.delay[RISE], state.oslew[RISE]);
+			if (arc) {
+				timingModel->calculateCellArcTiming(arc, mode, FALL, islew[RISE], load[FALL], state.delay[FALL], state.oslew[FALL]);
+				timingModel->calculateCellArcTiming(arc, mode, RISE, islew[FALL], load[RISE], state.delay[RISE], state.oslew[RISE]);
+			} else {
+				timingModel->calculateLibraryArcTiming(larc, mode, FALL, islew[RISE], load[FALL], state.delay[FALL], state.oslew[FALL]);
+				timingModel->calculateLibraryArcTiming(larc, mode, RISE, islew[FALL], load[RISE], state.delay[RISE], state.oslew[RISE]);
+			} // end else
 
 			// Backtrack edge are constant for this timing sense.
 			break;

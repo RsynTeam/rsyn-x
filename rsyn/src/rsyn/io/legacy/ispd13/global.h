@@ -309,10 +309,10 @@ namespace ISPD13 {
 		weightY = (y - yLower) / (yUpper - yLower);
 
 		double result;
-		result = (1.0 - weightX)*(1.0 - weightY)*(lut.tableVals[xLowerIndex][yLowerIndex]);
-		result += (weightX)*(1.0 - weightY)*(lut.tableVals[xUpperIndex][yLowerIndex]);
-		result += (1.0 - weightX)*(weightY)*(lut.tableVals[xLowerIndex][yUpperIndex]);
-		result += (weightX)*(weightY)*(lut.tableVals[xUpperIndex][yUpperIndex]);
+		result = (1.0 - weightX)*(1.0 - weightY)*(lut.tableVals(xLowerIndex, yLowerIndex));
+		result += (weightX)*(1.0 - weightY)*(lut.tableVals(xUpperIndex, yLowerIndex));
+		result += (1.0 - weightX)*(weightY)*(lut.tableVals(xLowerIndex, yUpperIndex));
+		result += (weightX)*(weightY)*(lut.tableVals(xUpperIndex, yUpperIndex));
 
 		return result;
 	} // end method

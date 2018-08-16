@@ -33,7 +33,7 @@ Module::getDesign() const {
 
 inline
 int 
-Module::generateNextSign() { 
+Module::generateNextSign() const {
 	return ++data->moduleData->sign; /*must be pre-increment*/ 
 } // end method
 
@@ -230,7 +230,7 @@ Module::getNumPorts(const Direction direction) const {
 
 inline
 Range<ReferenceListCollection<Instance>>
-Module::allInstances() {
+Module::allInstances() const {
 	return ReferenceListCollection<Instance>(data->moduleData->instances);
 } // end method
 
@@ -238,7 +238,7 @@ Module::allInstances() {
 
 inline
 Range<ReferenceListCollection<Port>>
-Module::allPorts() {
+Module::allPorts() const {
 	return ReferenceListCollection<Port>(data->moduleData->ports);
 } // end method
 
@@ -246,7 +246,7 @@ Module::allPorts() {
 
 inline
 std::set<Port> &
-Module::allPorts(const Rsyn::Direction direction) {
+Module::allPorts(const Rsyn::Direction direction) const {
 	return data->moduleData->portsByDirection[direction];
 } // end method
 
@@ -254,7 +254,7 @@ Module::allPorts(const Rsyn::Direction direction) {
 
 inline
 Range<ReferenceListCollection<Net>>
-Module::allNets() {
+Module::allNets() const {
 	return ReferenceListCollection<Net>(data->moduleData->nets);
 } // end method
 
@@ -286,7 +286,7 @@ Module::allInterfaceArcs() const {
 
 inline
 std::vector<TupleElement<1, TopologicalIndex, Pin>>
-Module::allPinsInTopologicalOrder() {
+Module::allPinsInTopologicalOrder() const {
 	const int numNets = data->moduleData->nets.size();
 
 	std::vector<TupleElement<1, TopologicalIndex, Pin>> sortedPins;
@@ -305,7 +305,7 @@ Module::allPinsInTopologicalOrder() {
 
 inline
 std::vector<TupleElement<1, TopologicalIndex, Pin>>
-Module::allPinsInReverseTopologicalOrder() {
+Module::allPinsInReverseTopologicalOrder() const {
 	const int numNets = data->moduleData->nets.size();
 
 	std::vector<TupleElement<1, TopologicalIndex, Pin>> sortedPins;
@@ -323,7 +323,7 @@ Module::allPinsInReverseTopologicalOrder() {
 
 inline
 std::vector<TupleElement<1, TopologicalIndex, Net>>
-Module::allNetsInTopologicalOrder() {
+Module::allNetsInTopologicalOrder() const {
 	const int numNets = data->moduleData->nets.size();
 	
 	std::vector<TupleElement<1, TopologicalIndex, Net>> sortedNets;
@@ -343,7 +343,7 @@ Module::allNetsInTopologicalOrder() {
 
 inline
 std::vector<TupleElement<1, TopologicalIndex, Net>>
-Module::allNetsInReverseTopologicalOrder() {
+Module::allNetsInReverseTopologicalOrder() const {
 	const int numNets = data->moduleData->nets.size();
 	
 	std::vector<TupleElement<1, TopologicalIndex, Net>> sortedNets;
@@ -363,7 +363,7 @@ Module::allNetsInReverseTopologicalOrder() {
 
 inline
 std::vector<TupleElement<1, TopologicalIndex, Instance>>
-Module::allInstancesInTopologicalOrder() {
+Module::allInstancesInTopologicalOrder() const {
 	const int numInstances = data->moduleData->instances.size();
 	
 	std::vector<TupleElement<1, TopologicalIndex, Instance>> sortedInstances;
@@ -385,7 +385,7 @@ Module::allInstancesInTopologicalOrder() {
 
 inline
 std::vector<Rsyn::Net> 
-Module::getFanoutConeNetsInBreadthFirstOrder(Rsyn::Pin seed) {
+Module::getFanoutConeNetsInBreadthFirstOrder(Rsyn::Pin seed) const {
 	std::vector<Rsyn::Net> result;	
 	std::queue<Rsyn::Net> open;
 	
@@ -425,7 +425,7 @@ Module::getFanoutConeNetsInBreadthFirstOrder(Rsyn::Pin seed) {
 
 inline
 std::vector<Rsyn::Net>
-Module::getFaninConeNetsInBreadthFirstOrder(Rsyn::Pin seed) {
+Module::getFaninConeNetsInBreadthFirstOrder(Rsyn::Pin seed) const {
 	std::vector<Rsyn::Net> result;	
 	std::queue<Rsyn::Net> open;
 	

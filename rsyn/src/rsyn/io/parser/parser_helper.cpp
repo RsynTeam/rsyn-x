@@ -1033,15 +1033,14 @@ void LibParser::_begin_read_lut (LibParserLUT& lut) {
     assert (valid) ;
     assert (tokens.size() == 1 && tokens[0] == "values") ;
     
-    lut.tableVals.resize(size1) ;
+    lut.tableVals.initialize(size1, size2) ;
     for (unsigned i=0 ; i < lut.loadIndices.size(); ++i) {
         valid = read_line_as_tokens (is, tokens) ;
         assert (valid) ;
         assert (tokens.size() == lut.transitionIndices.size()) ;
         
-        lut.tableVals[i].resize(size2) ;
         for (unsigned j=0; j < lut.transitionIndices.size(); ++j) {
-            lut.tableVals[i][j] = std::atof(tokens[j].c_str()) ;
+            lut.tableVals(i, j) = std::atof(tokens[j].c_str()) ;
             
         }
     }
@@ -1345,14 +1344,14 @@ bool LibParser::read_cell_info (LibParserCellInfo& cell) {
 
 ostream& operator<< (ostream& os, LibParserLUT& lut) {
     
-    if (lut.loadIndices.empty() && lut.transitionIndices.empty() && lut.tableVals.empty())
+    if (lut.loadIndices.empty() && lut.transitionIndices.empty() && lut.tableVals.isEmpty())
         return os ;
     
     // We should have either all empty or none empty.
-    assert (!lut.loadIndices.empty() && !lut.transitionIndices.empty() && !lut.tableVals.empty()) ;
+    assert (!lut.loadIndices.empty() && !lut.transitionIndices.empty() && !lut.tableVals.isEmpty()) ;
     
-    assert (lut.tableVals.size() == lut.loadIndices.size()) ;
-    assert (lut.tableVals[0].size() == lut.transitionIndices.size()) ;
+    assert (lut.tableVals.getNumElements() == lut.loadIndices.size()) ;
+    assert (lut.tableVals.getNumRows() == lut.transitionIndices.size()) ;
     
     cout << "\t" ;
     for (unsigned i=0; i < lut.transitionIndices.size(); ++i) {
@@ -1365,7 +1364,7 @@ ostream& operator<< (ostream& os, LibParserLUT& lut) {
         cout << lut.loadIndices[i] << "\t" ;
         
         for (unsigned j=0; j < lut.transitionIndices.size(); ++j)
-            cout << lut.tableVals[i][j] << "\t" ;
+            cout << lut.tableVals(i, j) << "\t" ;
         
         cout << endl ;
         

@@ -61,7 +61,7 @@ private:
 
 		// We store the scalar delay/slew in a 1x1 lookup. 
 		if (lut.loadIndices.size() == 1 && lut.transitionIndices.size() == 1) {
-			return lut.tableVals[0][0];
+			return lut.tableVals(0, 0);
 		} // end if
 
 		// If the input slew is uninitialized, return uninitialized value.
@@ -122,10 +122,10 @@ private:
 		weightY = (truncy - yLower) / (yUpper - yLower);		
 
 		double result;
-		result = (1.0 - weightX)*(1.0 - weightY)*(lut.tableVals[xLowerIndex][yLowerIndex]);
-		result += (weightX)*(1.0 - weightY)*(lut.tableVals[xUpperIndex][yLowerIndex]);
-		result += (1.0 - weightX)*(weightY)*(lut.tableVals[xLowerIndex][yUpperIndex]);
-		result += (weightX)*(weightY)*(lut.tableVals[xUpperIndex][yUpperIndex]);
+		result  = (1.0 - weightX)*(1.0 - weightY)*(lut.tableVals(xLowerIndex, yLowerIndex));
+		result += (weightX)*(1.0 - weightY)*(lut.tableVals(xUpperIndex, yLowerIndex));
+		result += (1.0 - weightX)*(weightY)*(lut.tableVals(xLowerIndex, yUpperIndex));
+		result += (weightX)*(weightY)*(lut.tableVals(xUpperIndex, yUpperIndex));
 
 		return result;
 	} // end method
@@ -148,9 +148,9 @@ private:
 	EdgeArray<Number> getSetupTime(Scenario::TimingLibraryPin &timingLibraryPin) const {
 		// HARD CODED
 		EdgeArray<Number> tsetup(0, 0);
-		if (!timingLibraryPin.getSetupLut(Rsyn::RISE).tableVals.empty()) {
-			tsetup[RISE] = (Number) timingLibraryPin.getSetupLut(Rsyn::RISE).tableVals[0][0];
-			tsetup[FALL] = (Number) timingLibraryPin.getSetupLut(Rsyn::FALL).tableVals[0][0];
+		if (!timingLibraryPin.getSetupLut(Rsyn::RISE).tableVals.isEmpty()) {
+			tsetup[RISE] = (Number) timingLibraryPin.getSetupLut(Rsyn::RISE).tableVals(0, 0);
+			tsetup[FALL] = (Number) timingLibraryPin.getSetupLut(Rsyn::FALL).tableVals(0, 0);
 		} // end if
 		return tsetup;
 	} // end method
@@ -158,9 +158,9 @@ private:
 	EdgeArray<Number> getHoldTime(const Scenario::TimingLibraryPin &timingLibraryPin) const {
 		// HARD CODED
 		EdgeArray<Number> thold(0, 0);
-		if (!timingLibraryPin.getHoldLut(Rsyn::RISE).tableVals.empty()) {
-			thold[RISE] = (Number) timingLibraryPin.getHoldLut(Rsyn::RISE).tableVals[0][0];
-			thold[FALL] = (Number) timingLibraryPin.getHoldLut(Rsyn::FALL).tableVals[0][0];
+		if (!timingLibraryPin.getHoldLut(Rsyn::RISE).tableVals.isEmpty()) {
+			thold[RISE] = (Number) timingLibraryPin.getHoldLut(Rsyn::RISE).tableVals(0, 0);
+			thold[FALL] = (Number) timingLibraryPin.getHoldLut(Rsyn::FALL).tableVals(0, 0);
 		} // end if
 		return thold;
 	} // end method

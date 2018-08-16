@@ -77,7 +77,15 @@ public:
 	const std::vector<GraphicsLayerDescriptor> &getVisibilityItems() const {
 		return clsVisibilityItems;
 	} // end method
+	
+	bool isColoringEnabled() const {
+		return clsRsynGraphics->isColoringEnabled();
+	} // end method
 
+	Color getColor(Rsyn::Instance inst) const{
+		return clsRsynGraphics->getCellColor(inst);
+	} // end method
+	
 	//! @brief Gets the selected instance.
 	Rsyn::Instance getSelectedInstance() const {
 		return clsSelectedInstance;
@@ -138,6 +146,11 @@ public:
 
 	//! @brief Clear selection.
 	void clearSelection();
+	
+	//! @brief Returns clicked mouse position
+	DBUxy getClickedMousePosition() const {
+		return clsClickedMousePosition;
+	}
 
 	//! @brief Sets the status bar on which to display information.
 	void setStatusBar(QStatusBar *bar) {statusBar = bar;}
@@ -216,7 +229,7 @@ private:
 
 	// Visibility
 	bool clsShowRoutingGuides = true;
-
+	
 	// Used to store the current object under the user attention.
 	Rsyn::Instance clsSpotlightInstance;
 	Rsyn::Net clsSpotlightNet;
@@ -235,6 +248,8 @@ private:
 	Rsyn::Instance clsSelectedInstance;
 	Rsyn::Net clsSelectedNet;
 	Rsyn::Pin clsSelectedPin;
+	
+	DBUxy clsClickedMousePosition;
 
 	// Generic functions used to instantiate overlays.
 	typedef std::function<LayoutGraphicsLayer *()> OverlayInstantiatonFunction;

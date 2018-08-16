@@ -64,7 +64,6 @@ public:
 namespace std {
 //! @brief Specialization of hash functor to allow Rsyn objects to be used
 //!        in unordered collections.
-template <>
 template <typename T>
 struct hash<Rsyn::Proxy<T>> {
 	size_t operator()(const Rsyn::Proxy<T> &proxy) const {

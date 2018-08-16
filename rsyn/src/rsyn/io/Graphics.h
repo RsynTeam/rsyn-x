@@ -89,6 +89,11 @@ public:
 
 	virtual void onPostInstanceCreate(Rsyn::Instance instance) override;
 
+	bool isColoringEnabled() const { return clsColoringEnabled; }
+	void setColoringEnabled(const bool coloringEnabled) { 
+		clsColoringEnabled = coloringEnabled;
+	}
+	
 	//! @brief Get the color associated to an instance
 	Color &getCellColor(Rsyn::Instance instance) {return clsInstanceColors[instance];}
 
@@ -161,6 +166,8 @@ private:
 	Rsyn::Attribute<Rsyn::Instance, Color> clsInstanceColors;
 
 	CanvasTheme clsCanvasTheme = CANVAS_THEME_WHITE;
+	
+	bool clsColoringEnabled;
 
 	static const std::array<Color, NUM_CANVAS_THEMES> clsBackgroundColor;
 	static const std::array<RenderingStyle, NUM_CANVAS_THEMES> clsInstanceColor;

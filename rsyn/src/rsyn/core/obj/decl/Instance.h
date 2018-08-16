@@ -210,6 +210,10 @@ public:
 	//!        is raised.
 	bool isMacroBlock() const;
 
+	//! @brief Returns true if this instance orientation is flipped.
+	//! @see   isFlipped()
+	bool isFlipped() const;
+	
 	//! @brief Returns the x position of the instance.
 	DBU getX() const;
 

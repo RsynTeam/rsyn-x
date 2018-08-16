@@ -12,90 +12,187 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
+
 #include "rsyn/model/congestion/DensityGrid/DensityGrid.h"
+#include "rsyn/phy/PhysicalService.h"
+#include "rsyn/util/StreamStateSaver.h"
 
 namespace Rsyn {
 
-// -----------------------------------------------------------------------------
+void DensityGrid::start(const Json &params) {
+	Session session;
 
-void DensityGrid::init(Rsyn::PhysicalDesign phDesign, Rsyn::Module module, double targetUtilization,
-	double unit, bool showDetails, const bool keepRowBounds) {
-	if (data) {
-		std::cout << "WARNING:  ABU was already initialized\n";
+	if (!session.isServiceRunning("rsyn.physical")) {
+		std::cout << "Warning: rsyn.physical service must be running before start DensityGrid service.\n"
+			<< "DensityGrid was not initialized.\n";
 		return;
 	} // end if 
 
-	data = new DensityGridData();
-	data->clsPhDesign = phDesign;
-	data->clsModule = module;
-	data->clsTargetDensity = targetUtilization;
-	data->clsPhModule = phDesign.getPhysicalModule(module);
+	clsPhDesign = session.getPhysicalDesign();
+	clsDesign = session.getDesign();
+	clsModule = clsDesign.getTopModule();
+	clsPhModule = clsPhDesign.getPhysicalModule(clsModule);
+	clsTargetDensity = params.value("density", clsTargetDensity);
+	clsBeta = params.value("numRows", clsBeta);
+	clsStaticBinDimension = params.value("staticBinDimension", clsStaticBinDimension);
+	clsShowDetails = params.value("showDetails", clsShowDetails);
+	clsKeepRowBounds = params.value("keepRowBounds", clsKeepRowBounds);
 
-	const DBU length = static_cast<DBU> (unit * data->clsPhDesign.getRowHeight());
 
-	updateBinLength(length, showDetails, keepRowBounds);
+	init();
+	updateArea(MOVABLE_AREA);
+
+	{ // run legalization of global placement solution to minimize cell displacement.
+		ScriptParsing::CommandDescriptor dscp;
+		dscp.setName("reportDensityAbu");
+		dscp.setDescription("Report ABU from density grid");
+
+		session.registerCommand(dscp, [&](const ScriptParsing::Command & command) {
+			updateAbu();
+			reportAbu(std::cout);
+		});
+	} // end block
+	
+	{ // run legalization of global placement solution to minimize cell displacement.
+		ScriptParsing::CommandDescriptor dscp;
+		dscp.setName("updateDensityAbu");
+		dscp.setDescription("Update ABU from density grid");
+
+		session.registerCommand(dscp, [&](const ScriptParsing::Command & command) {
+			updateAbu();
+		});
+	} // end block
+
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-void DensityGrid::updateBinLength(const DBU binLength, bool showDetails, const bool keepRowBounds) {
+void DensityGrid::stop() {
 
-	const Bounds & dieBounds = data->clsPhModule.getBounds();
-	data->clsBinSize = binLength;
-	data->clsNumCols = roundedUpIntegralDivision(dieBounds.computeLength(X), binLength);
-	data->clsNumRows = roundedUpIntegralDivision(dieBounds.computeLength(Y), binLength);
-	data->clsBins.clear();
-	data->clsBins.resize(getNumBins());
-	data->clsBins.shrink_to_fit();
+} // end method 
 
-	if (showDetails) {
+// -----------------------------------------------------------------------------
+
+void DensityGrid::init() {
+	computeBinLength();
+	updateBinLength();
+	clsIsInitialized = true;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+void DensityGrid::computeBinLength() {
+	if (clsStaticBinDimension) {
+		const DBU length = static_cast<DBU> (clsBeta * clsPhDesign.getRowHeight());
+		clsBinSize[X] = length;
+		clsBinSize[Y] = length;
+	} else {
+		const int numCells = clsPhDesign.getNumElements(Rsyn::PHYSICAL_MOVABLE);
+		std::vector<DBU> cellWidth;
+		std::vector<DBU> cellHeight;
+		cellWidth.reserve(numCells);
+		cellHeight.reserve(numCells);
+		for (Rsyn::Instance inst : clsModule.allInstances()) {
+			if (inst.getType() != Rsyn::CELL || inst.isFixed())
+				continue;
+
+			Rsyn::PhysicalCell phCell = clsPhDesign.getPhysicalCell(inst.asCell());
+			cellWidth.push_back(phCell.getWidth());
+			cellHeight.push_back(phCell.getHeight());
+		} // end for 
+		std::sort(cellWidth.begin(), cellWidth.end());
+		std::sort(cellHeight.begin(), cellHeight.end());
+
+		// bin width is defined at Section IV.B in BONNPLACE Legalization : 
+		// minimizing movement by iterative augmentation from Ulrich Brenner 
+		// https://doi.org/10.1109/TCAD.2013.2253834
+		DBU medianWidth; // Using the median cell size to define the bin width
+		DBU medianHeight; // Using the median cell size to define the bin height
+		if (cellWidth.size() % 2 == 0) {
+			int pos = cellWidth.size() / 2;
+			medianWidth = static_cast<DBU> ((cellWidth[pos - 1] + cellWidth[pos]) * 0.5);
+		} else {
+			int pos = cellWidth.size() / 2;
+			medianWidth = cellWidth[pos];
+		} // end if
+
+		if (cellHeight.size() % 2 == 0) {
+			int pos = cellHeight.size() / 2;
+			medianHeight = static_cast<DBU> ((cellHeight[pos - 1] + cellHeight[pos]) * 0.5);
+		} else {
+			int pos = cellHeight.size() / 2;
+			medianHeight = cellHeight[pos];
+		} // end if
+
+
+		int pos99_5Width = (int) (cellWidth.size()*0.995); // using the cell width that is bigger than 99.5% 
+		DBU width99_5 = cellWidth[pos99_5Width];
+
+		int pos99_5Height = (int) (cellHeight.size()*0.995); // using the cell height that is bigger than 99.5% 
+		DBU height99_5 = cellHeight[pos99_5Height];
+
+		clsBinSize[X] = std::max(medianWidth * clsBeta, width99_5);
+		clsBinSize[Y] = std::max(medianHeight * clsBeta, height99_5);
+	} // end if-else 
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+void DensityGrid::updateBinLength() {
+	const Bounds & dieBounds = clsPhModule.getBounds();
+	clsNumCols = roundedUpIntegralDivision(dieBounds.computeLength(X), getBinSize(X));
+	clsNumRows = roundedUpIntegralDivision(dieBounds.computeLength(Y), getBinSize(Y));
+	clsBins.clear();
+	clsBins.resize(getNumBins());
+	clsBins.shrink_to_fit();
+
+	if (clsShowDetails) {
 		std::cout << "\tDie Bounds      : " << dieBounds << "\n";
 		std::cout << "\tNum of Bins     : " << getNumBins() << " ( " << getNumRows() << " x " << getNumCols() << " )" << "\n";
-		std::cout << "\tBin dimension   : " << getBinSize() << " x " << getBinSize() << "\n";
+		std::cout << "\tBin dimension   : " << getBinSize(X) << " x " << getBinSize(Y) << "\n";
 	} // end if 
 
 	/* 0. initialize density map */
-	DBUxy lower = data->clsPhModule.getCoordinate(LOWER);
-	DBUxy upper = data->clsPhModule.getCoordinate(UPPER);
+	DBUxy lower = clsPhModule.getCoordinate(LOWER);
+	DBUxy upper = clsPhModule.getCoordinate(UPPER);
 	for (int j = 0; j < getNumRows(); j++) {
 		for (int k = 0; k < getNumCols(); k++) {
 			unsigned binId = getIndex(j, k);
-			DensityGridBin & bin = data->clsBins[binId];
-			bin.clsBounds[LOWER][X] = lower[X] + k*binLength;
-			bin.clsBounds[LOWER][Y] = lower[Y] + j*binLength;
-			bin.clsBounds[UPPER][X] = std::min(bin.clsBounds[LOWER][X] + binLength, upper[X]);
-			bin.clsBounds[UPPER][Y] = std::min(bin.clsBounds[LOWER][Y] + binLength, upper[Y]);
+			DensityGridBin & bin = clsBins[binId];
+			bin.clsBounds[LOWER][X] = lower[X] + k * getBinSize(X);
+			bin.clsBounds[LOWER][Y] = lower[Y] + j * getBinSize(Y);
+			bin.clsBounds[UPPER][X] = std::min(bin.clsBounds[LOWER][X] + getBinSize(X), upper[X]);
+			bin.clsBounds[UPPER][Y] = std::min(bin.clsBounds[LOWER][Y] + getBinSize(Y), upper[Y]);
 		} // end for 
 	} // end for 
 
-	updatePlaceableArea(keepRowBounds);
+	updatePlaceableArea();
 	updateArea(FIXED_AREA);
 
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-void DensityGrid::updatePlaceableArea(const bool storeRowBounds) {
-	if (storeRowBounds) {
-		data->clsHasRowBounds = storeRowBounds;
-		DBU binSize = getBinSize();
-		DBU rowHeight = data->clsPhDesign.getRowHeight();
+void DensityGrid::updatePlaceableArea() {
+	if (clsKeepRowBounds) {
+		DBU binSize = getBinSize(Y);
+		DBU rowHeight = clsPhDesign.getRowHeight();
 		int numRows = roundedUpIntegralDivision(binSize, rowHeight);
 		for (int i = 0; i < getNumBins(); i++) {
-			DensityGridBin & bin = data->clsBins[i];
+			DensityGridBin & bin = clsBins[i];
 			bin.clsRows.reserve(numRows);
 		} // end for 
 	} // end if
 
-	const Bounds & dieBounds = data->clsPhModule.getBounds();
-	for (const Rsyn::PhysicalRow phRow : data->clsPhDesign.allPhysicalRows()) {
+	const Bounds & dieBounds = clsPhModule.getBounds();
+	for (const PhysicalRow phRow : clsPhDesign.allPhysicalRows()) {
 		Bounds rowOverlap = dieBounds.overlapRectangle(phRow.getBounds());
 		int lcol, rcol, brow, trow;
 		getIndex(rowOverlap[LOWER], brow, lcol);
@@ -107,11 +204,11 @@ void DensityGrid::updatePlaceableArea(const bool storeRowBounds) {
 		for (int j = brow; j <= trow; j++) {
 			for (int k = lcol; k <= rcol; k++) {
 				unsigned binId = getIndex(j, k);
-				DensityGridBin & bin = data->clsBins[binId];
+				DensityGridBin & bin = clsBins[binId];
 				const Bounds & binBound = bin.clsBounds;
 				Bounds binOverlap = rowOverlap.overlapRectangle(binBound);
 				bin.addArea(PLACEABLE_AREA, binOverlap.computeArea());
-				if (storeRowBounds)
+				if (clsKeepRowBounds)
 					bin.clsRows.push_back(binOverlap);
 			} // end for 
 		} // end for 
@@ -123,8 +220,8 @@ void DensityGrid::updatePlaceableArea(const bool storeRowBounds) {
 void DensityGrid::updateArea(const AreaType type) {
 	clearAreaOfBins(type);
 
-	for (Rsyn::Instance instance : data->clsModule.allInstances()) {
-		if (instance.getType() != Rsyn::CELL) {
+	for (Instance instance : clsModule.allInstances()) {
+		if (instance.getType() != CELL) {
 			continue;
 		} // end if 
 
@@ -134,11 +231,11 @@ void DensityGrid::updateArea(const AreaType type) {
 		if (instance.isFixed() && type != FIXED_AREA)
 			continue;
 
-		Rsyn::Cell cell = instance.asCell();
-		const Rsyn::PhysicalCell phCell = data->clsPhDesign.getPhysicalCell(cell);
+		Cell cell = instance.asCell();
+		const PhysicalCell phCell = clsPhDesign.getPhysicalCell(cell);
 
 		if (type == FIXED_AREA && phCell.hasLayerBounds()) {
-			Rsyn::PhysicalLibraryCell phLibCel = data->clsPhDesign.getPhysicalLibraryCell(cell);
+			PhysicalLibraryCell phLibCel = clsPhDesign.getPhysicalLibraryCell(cell);
 			for (const Bounds & rect : phLibCel.allLayerObstacles()) {
 				Bounds bound = rect;
 				bound.translate(phCell.getPosition());
@@ -158,7 +255,7 @@ void DensityGrid::clearAreaOfBins(const AreaType type) {
 	for (int j = 0; j < getNumRows(); j++) {
 		for (int k = 0; k < getNumCols(); k++) {
 			const int index = getIndex(j, k);
-			DensityGridBin & bin = data->clsBins[index];
+			DensityGridBin & bin = clsBins[index];
 			bin.clearArea(type);
 		} // end for
 	} // end for
@@ -167,17 +264,17 @@ void DensityGrid::clearAreaOfBins(const AreaType type) {
 // -----------------------------------------------------------------------------
 
 void DensityGrid::getIndex(const DBUxy pos, int & row, int & col) const {
-	const Bounds &dieBounds = data->clsPhModule.getBounds();
+	const Bounds &dieBounds = clsPhModule.getBounds();
 	const DBUxy lower = dieBounds[LOWER];
-	col = static_cast<int> ((pos[X] - lower[X]) / getBinSize());
-	row = static_cast<int> ((pos[Y] - lower[Y]) / getBinSize());
+	col = static_cast<int> ((pos[X] - lower[X]) / getBinSize(X));
+	row = static_cast<int> ((pos[Y] - lower[Y]) / getBinSize(Y));
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 bool DensityGrid::hasArea(const int row, const int col, const AreaType type) const {
 	int index = getIndex(row, col);
-	const DensityGridBin & bin = data->clsBins[index];
+	const DensityGridBin & bin = clsBins[index];
 	return bin.hasArea(type);
 } // end method 
 
@@ -185,7 +282,7 @@ bool DensityGrid::hasArea(const int row, const int col, const AreaType type) con
 
 DBU DensityGrid::getArea(const int row, const int col, const AreaType type) const {
 	int index = getIndex(row, col);
-	const DensityGridBin & bin = data->clsBins[index];
+	const DensityGridBin & bin = clsBins[index];
 	return bin.getArea(type);
 } // end method 
 
@@ -193,7 +290,7 @@ DBU DensityGrid::getArea(const int row, const int col, const AreaType type) cons
 
 DBU DensityGrid::getAvailableArea(const int row, const int col, const AreaType type) const {
 	const int index = getIndex(row, col);
-	DensityGridBin & bin = data->clsBins[index];
+	const DensityGridBin & bin = clsBins[index];
 	if (type == MOVABLE_AREA)
 		return bin.getArea(PLACEABLE_AREA) - bin.getArea(FIXED_AREA);
 	if (type == FIXED_AREA)
@@ -207,7 +304,7 @@ DBU DensityGrid::getAvailableArea(const int row, const int col, const AreaType t
 
 void DensityGrid::removeArea(const int row, const int col, const AreaType type, const DBU area) {
 	const int index = getIndex(row, col);
-	DensityGridBin & bin = data->clsBins[index];
+	DensityGridBin & bin = clsBins[index];
 	bin.addArea(type, area);
 } // end method 
 
@@ -215,7 +312,7 @@ void DensityGrid::removeArea(const int row, const int col, const AreaType type, 
 
 void DensityGrid::removeArea(const int row, const int col, const AreaType type, const Bounds & rect) {
 	const int index = getIndex(row, col);
-	DensityGridBin & bin = data->clsBins[index];
+	DensityGridBin & bin = clsBins[index];
 	const Bounds & overlap = rect.overlapRectangle(bin.getBounds());
 	bin.addArea(type, overlap.computeArea());
 } // end method 
@@ -224,7 +321,7 @@ void DensityGrid::removeArea(const int row, const int col, const AreaType type, 
 
 void DensityGrid::addArea(const int row, const int col, const AreaType type, const DBU area) {
 	const int index = getIndex(row, col);
-	DensityGridBin & bin = data->clsBins[index];
+	DensityGridBin & bin = clsBins[index];
 	bin.addArea(type, area);
 } // end method 
 
@@ -232,7 +329,7 @@ void DensityGrid::addArea(const int row, const int col, const AreaType type, con
 
 void DensityGrid::addArea(const int row, const int col, const AreaType type, const Bounds & rect) {
 	const int index = getIndex(row, col);
-	DensityGridBin & bin = data->clsBins[index];
+	DensityGridBin & bin = clsBins[index];
 	const Bounds & overlap = rect.overlapRectangle(bin.getBounds());
 	bin.addArea(type, overlap.computeArea());
 } // end method 
@@ -240,10 +337,10 @@ void DensityGrid::addArea(const int row, const int col, const AreaType type, con
 // -----------------------------------------------------------------------------
 
 DBU DensityGrid::getMaxArea(const AreaType type) const {
-	const int index = data->clsMaxAreaBin[type];
+	const int index = clsMaxAreaBin[type];
 	if (index < 0)
 		return -std::numeric_limits<DBU>::max();
-	const DensityGridBin & bin = data->clsBins[index];
+	const DensityGridBin & bin = clsBins[index];
 	return bin.getArea(type);
 } // end method 
 
@@ -251,7 +348,7 @@ DBU DensityGrid::getMaxArea(const AreaType type) const {
 
 double DensityGrid::getRatioUsage(const int row, const int col, AreaType type) const {
 	const int index = getIndex(row, col);
-	DensityGridBin & bin = data->clsBins[index];
+	const DensityGridBin & bin = clsBins[index];
 	if (type == MOVABLE_AREA)
 		return (double) bin.getArea(type) / (double) getAvailableArea(row, col, type);
 	if (type == FIXED_AREA)
@@ -265,13 +362,13 @@ double DensityGrid::getRatioUsage(const int row, const int col, AreaType type) c
 
 void DensityGrid::updateMaxAreas() {
 	for (int i = 0; i < getNumBins(); i++) {
-		const DensityGridBin & bin = data->clsBins[i];
+		const DensityGridBin & bin = clsBins[i];
 		if (bin.getArea(FIXED_AREA) > getMaxArea(FIXED_AREA))
-			data->clsMaxAreaBin[FIXED_AREA] = i;
+			clsMaxAreaBin[FIXED_AREA] = i;
 		if (bin.getArea(MOVABLE_AREA) > getMaxArea(MOVABLE_AREA))
-			data->clsMaxAreaBin[MOVABLE_AREA] = i;
+			clsMaxAreaBin[MOVABLE_AREA] = i;
 		if (bin.getArea(PLACEABLE_AREA) > getMaxArea(PLACEABLE_AREA))
-			data->clsMaxAreaBin[PLACEABLE_AREA] = i;
+			clsMaxAreaBin[PLACEABLE_AREA] = i;
 	} // end for 
 } // end method 
 
@@ -290,10 +387,10 @@ void DensityGrid::updatePins() {
 
 void DensityGrid::updatePins(const PinType type) {
 	clearPinsOfBins(type);
-	for (Rsyn::Instance inst : data->clsModule.allInstances()) {
-		if (inst.getType() != Rsyn::CELL)
+	for (Instance inst : clsModule.allInstances()) {
+		if (inst.getType() != CELL)
 			continue;
-		Rsyn::PhysicalCell phCell = data->clsPhDesign.getPhysicalCell(inst.asCell());
+		PhysicalCell phCell = clsPhDesign.getPhysicalCell(inst.asCell());
 		DBUxy pos = phCell.getPosition();
 
 		if (type == BLOCK_PIN && !inst.isMacroBlock())
@@ -302,10 +399,10 @@ void DensityGrid::updatePins(const PinType type) {
 			continue;
 		if (type == MOVABLE_PIN && !inst.isMovable())
 			continue;
-		for (Rsyn::Pin pin : inst.allPins()) {
+		for (Pin pin : inst.allPins()) {
 			if (type == CONNECTED_PIN && !pin.isConnected())
 				continue;
-			DBUxy disp = data->clsPhDesign.getPinDisplacement(pin);
+			DBUxy disp = clsPhDesign.getPinDisplacement(pin);
 			addPin(pos + disp, type);
 		} // end for 
 	} // end for 
@@ -317,7 +414,7 @@ void DensityGrid::addPin(const DBUxy pos, const PinType type) {
 	int row, col;
 	getIndex(pos, row, col);
 	const int binIndex = getIndex(row, col);
-	DensityGridBin & bin = data->clsBins[binIndex];
+	DensityGridBin & bin = clsBins[binIndex];
 	bin.addPin(type);
 } // end method 
 
@@ -325,7 +422,7 @@ void DensityGrid::addPin(const DBUxy pos, const PinType type) {
 
 void DensityGrid::clearPinsOfBins(const PinType type) {
 	for (int i = 0; i < getNumBins(); i++) {
-		DensityGridBin & bin = data->clsBins[i];
+		DensityGridBin & bin = clsBins[i];
 		bin.clearPins(type);
 	} // end for 
 } // end method 
@@ -334,17 +431,17 @@ void DensityGrid::clearPinsOfBins(const PinType type) {
 
 int DensityGrid::getNumPins(const int row, const int col, const PinType type) {
 	int index = getIndex(row, col);
-	const DensityGridBin & bin = data->clsBins[index];
+	const DensityGridBin & bin = clsBins[index];
 	return bin.getNumPins(type);
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 int DensityGrid::getMaxPins(const PinType type) const {
-	const int index = data->clsMaxPinBin[type];
+	const int index = clsMaxPinBin[type];
 	if (index < 0)
 		return -std::numeric_limits<int>::max();
-	const DensityGridBin & bin = data->clsBins[index];
+	const DensityGridBin & bin = clsBins[index];
 	return bin.getNumPins(type);
 } // end method 
 
@@ -353,15 +450,15 @@ int DensityGrid::getMaxPins(const PinType type) const {
 void DensityGrid::updateMaxPins() {
 	for (int i = 0; i < getNumBins(); i++) {
 
-		const DensityGridBin & bin = data->clsBins[i];
+		const DensityGridBin & bin = clsBins[i];
 		if (bin.getNumPins(FIXED_PIN) > getMaxPins(FIXED_PIN))
-			data->clsMaxPinBin[FIXED_PIN] = i;
+			clsMaxPinBin[FIXED_PIN] = i;
 		if (bin.getNumPins(MOVABLE_PIN) > getMaxPins(MOVABLE_PIN))
-			data->clsMaxPinBin[MOVABLE_PIN] = i;
+			clsMaxPinBin[MOVABLE_PIN] = i;
 		if (bin.getNumPins(BLOCK_PIN) > getMaxPins(BLOCK_PIN))
-			data->clsMaxPinBin[BLOCK_PIN] = i;
+			clsMaxPinBin[BLOCK_PIN] = i;
 		if (bin.getNumPins(CONNECTED_PIN) > getMaxPins(CONNECTED_PIN))
-			data->clsMaxPinBin[CONNECTED_PIN] = i;
+			clsMaxPinBin[CONNECTED_PIN] = i;
 	} // end for 
 } // end method 
 
@@ -369,12 +466,12 @@ void DensityGrid::updateMaxPins() {
 
 void DensityGrid::initBlockages() {
 	// TODO -> reserve space in vectors. 
-	for (Rsyn::Instance inst : data->clsModule.allInstances()) {
-		if (inst.getType() == Rsyn::CELL) {
-			Rsyn::PhysicalCell phCell = data->clsPhDesign.getPhysicalCell(inst.asCell());
+	for (Instance inst : clsModule.allInstances()) {
+		if (inst.getType() == CELL) {
+			PhysicalCell phCell = clsPhDesign.getPhysicalCell(inst.asCell());
 			if (!inst.isFixed())
 				continue;
-			Rsyn::PhysicalLibraryCell phLibCell = data->clsPhDesign.getPhysicalLibraryCell(inst.asCell());
+			PhysicalLibraryCell phLibCell = clsPhDesign.getPhysicalLibraryCell(inst.asCell());
 			if (phLibCell.hasLayerObstacles()) {
 				for (const Bounds & rect : phLibCell.allLayerObstacles()) {
 					Bounds bounds = rect;
@@ -386,9 +483,9 @@ void DensityGrid::initBlockages() {
 				addBlockageBound(bounds, inst);
 			} // end if-else 
 		} else {
-			Rsyn::PhysicalInstance phInstance = data->clsPhDesign.getPhysicalInstance(inst);
+			PhysicalInstance phInstance = clsPhDesign.getPhysicalInstance(inst);
 			const Bounds & bounds = phInstance.getBounds();
-			Rsyn::PhysicalModule phModule = data->clsPhDesign.getPhysicalModule(data->clsModule);
+			PhysicalModule phModule = clsPhDesign.getPhysicalModule(clsModule);
 			const Bounds &overlap = bounds.overlapRectangle(phModule.getBounds());
 			if (overlap.computeArea() <= 0)
 				continue;
@@ -401,7 +498,7 @@ void DensityGrid::initBlockages() {
 
 void DensityGrid::clearBlockageOfBins() {
 	for (int i = 0; i < getNumBins(); i++) {
-		DensityGridBin & bin = data->clsBins[i];
+		DensityGridBin & bin = clsBins[i];
 		bin.clsBlockages.clear();
 	} // end method 
 } // end method 
@@ -409,40 +506,40 @@ void DensityGrid::clearBlockageOfBins() {
 // -----------------------------------------------------------------------------
 
 void DensityGrid::splitGridBins(const double minBinSize) {
-	if (!data->clsHasRowBounds)
+	if (!clsHasRowBounds)
 		std::cout << "WARNING: Row bounds was not initialized. Therefore, "
 		<< "the placeable area will be evenly split between grid area bins.\n";
 
-	const Bounds & dieBounds = data->clsPhModule.getBounds();
-	DBU binSize = getBinSize() / 2; // dividing bin size to two. The grid is split into four.
+	const Bounds & dieBounds = clsPhModule.getBounds();
+	DBUxy binSize = getBinSize() / 2; // dividing bin size to two. The grid is split into four.
 
-	if (binSize < minBinSize)
+	if (binSize[X] < minBinSize || binSize[Y] < minBinSize)
 		return;
-	int numCols = static_cast<int> (dieBounds.computeLength(X) / binSize);
-	int numRows = static_cast<int> (dieBounds.computeLength(Y) / binSize);
+	int numCols = static_cast<int> (dieBounds.computeLength(X) / binSize[X]);
+	int numRows = static_cast<int> (dieBounds.computeLength(Y) / binSize[Y]);
 	std::vector<DensityGridBin> grid;
 	grid.resize(numCols * numRows);
-	DBUxy lower = data->clsPhModule.getCoordinate(LOWER);
-	DBUxy upper = data->clsPhModule.getCoordinate(UPPER);
-	DBU rowHeight = data->clsPhDesign.getRowHeight();
-	int rowSize = static_cast<int> (binSize / rowHeight);
+	DBUxy lower = clsPhModule.getCoordinate(LOWER);
+	DBUxy upper = clsPhModule.getCoordinate(UPPER);
+	DBU rowHeight = clsPhDesign.getRowHeight();
+	int rowSize = static_cast<int> (binSize[Y] / rowHeight);
 
 	for (int i = 0; i < numRows; i++) {
 		for (int j = 0; j < numCols; j++) {
 			int oldRow = i / 2;
 			int oldCol = j / 2;
 			int oldBinId = getIndex(oldRow, oldCol);
-			DensityGridBin & oldBin = data->clsBins[oldBinId];
+			DensityGridBin & oldBin = clsBins[oldBinId];
 
 			int binId = i * numCols + j;
 			DensityGridBin & bin = grid[binId];
-			bin.clsBounds[LOWER][X] = lower[X] + j*binSize;
-			bin.clsBounds[LOWER][Y] = lower[Y] + i*binSize;
-			bin.clsBounds[UPPER][X] = std::min(bin.clsBounds[LOWER][X] + binSize, upper[X]);
-			bin.clsBounds[UPPER][Y] = std::min(bin.clsBounds[LOWER][Y] + binSize, upper[Y]);
+			bin.clsBounds[LOWER][X] = lower[X] + j * binSize[X];
+			bin.clsBounds[LOWER][Y] = lower[Y] + i * binSize[Y];
+			bin.clsBounds[UPPER][X] = std::min(bin.clsBounds[LOWER][X] + binSize[X], upper[X]);
+			bin.clsBounds[UPPER][Y] = std::min(bin.clsBounds[LOWER][Y] + binSize[Y], upper[Y]);
 			const Bounds & binBounds = bin.getBounds();
 
-			if (data->clsHasRowBounds) {
+			if (clsHasRowBounds) {
 				bin.clsRows.reserve(rowSize);
 				for (const Bounds & row : oldBin.clsRows) {
 					if (row.overlap(binBounds)) {
@@ -458,10 +555,10 @@ void DensityGrid::splitGridBins(const double minBinSize) {
 			} // end if-else 
 		} // end for 
 	} // end for 
-	data->clsNumCols = numCols;
-	data->clsNumRows = numRows;
-	data->clsBinSize = binSize;
-	data->clsBins.swap(grid); // big-O constant
+	clsNumCols = numCols;
+	clsNumRows = numRows;
+	clsBinSize = binSize;
+	clsBins.swap(grid); // big-O constant
 	updateArea(FIXED_AREA);
 	updateArea(MOVABLE_AREA);
 
@@ -471,7 +568,7 @@ void DensityGrid::splitGridBins(const double minBinSize) {
 
 const Bounds & DensityGrid::getBinBound(const int row, const int col) {
 	int index = getIndex(row, col);
-	const DensityGridBin & bin = data->clsBins[index];
+	const DensityGridBin & bin = clsBins[index];
 	return bin.getBounds();
 } // end method 
 
@@ -481,92 +578,150 @@ const DensityGridBin & DensityGrid::getDensityGridBin(const DBUxy pos) const {
 	int row, col;
 	getIndex(pos, row, col);
 	const int index = getIndex(row, col);
-	return data->clsBins[index];
+	return clsBins[index];
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-const std::vector<DensityGridBlockage> & DensityGrid::allDensityGridBlockages(const int row, const int col) const {
+const std::vector<Rsyn::DensityGridBlockage> & DensityGrid::allDensityGridBlockages(const int row, const int col) const {
 	int index = getIndex(row, col);
-	const DensityGridBin & bin = data->clsBins[index];
+	const DensityGridBin & bin = clsBins[index];
 	return bin.clsBlockages;
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-void DensityGrid::updateAbu(bool showDetails) {
+void DensityGrid::updateAbu() {
 	updateArea(MOVABLE_AREA);
-
-
-	int skipped_bin_cnt = 0;
 	std::vector<double> ratioUsage;
-	ratioUsage.resize(getNumBins(), 0.0);
-	double areaThreshold = getBinSize() * getBinSize() * data->clsBinAreaThreshold;
-	/* 2. determine the free space & utilization per bin */
-	for (int j = 0; j < getNumRows(); j++) {
-		for (int k = 0; k < getNumCols(); k++) {
-			const DensityGridBin & bin = getDensityGridBin(j, k);
-			double binArea = bin.clsBounds.computeArea();
-			if (binArea > areaThreshold) {
-				double freeArea = bin.getArea(PLACEABLE_AREA) - bin.getArea(FIXED_AREA);
-				if (freeArea > data->clsFreeSpaceThreshold * binArea) {
-					int binId = getIndex(j, k);
-					ratioUsage[binId] = bin.getArea(MOVABLE_AREA) / freeArea;
-				} else {
-					skipped_bin_cnt++;
-				}
+	int numBins = getNumBins();
+	ratioUsage.reserve(numBins);
+	const double areaThreshold = getBinSize(X) * getBinSize(Y) * clsBinAreaThreshold;
+
+
+	for (const DensityGridBin & bin : clsBins) {
+		double binArea = bin.clsBounds.computeArea();
+		if (binArea > areaThreshold) {
+			double freeArea = bin.getArea(PLACEABLE_AREA) - bin.getArea(FIXED_AREA);
+			if (freeArea > clsFreeSpaceThreshold * binArea) {
+				double ratio = bin.getArea(MOVABLE_AREA) / freeArea;
+				ratioUsage.push_back(ratio);
 			} // end if 
-		} // end for 
-	} // end for  
+		} // end if 
+	} // end for 
 
-	std::sort(ratioUsage.begin(), ratioUsage.end());
+	numBins = ratioUsage.size();
+	std::sort(ratioUsage.begin(), ratioUsage.end(),
+		[](const double ratio1, const double ratio2) {
+			return ratio1 > ratio2;
+		}); // end sort 
 
-	/* 3. obtain ABU numbers */
-	double abu1 = 0.0, abu2 = 0.0, abu5 = 0.0, abu10 = 0.0, abu20 = 0.0;
-	const int numBins = getNumBins();
-	int clip_index = static_cast<int> (0.02 * (numBins - skipped_bin_cnt));
-	for (int j = numBins - 1; j > numBins - 1 - clip_index; j--) {
-		abu2 += ratioUsage[j];
-	}
-	abu2 = (clip_index) ? abu2 / clip_index : ratioUsage[numBins - 1];
 
-	clip_index = static_cast<int> (0.05 * (numBins - skipped_bin_cnt));
-	for (int j = numBins - 1; j > numBins - 1 - clip_index; j--) {
-		abu5 += ratioUsage[j];
-	}
-	abu5 = (clip_index) ? abu5 / clip_index : ratioUsage[numBins - 1];
+	clsAbu2 = 0.0;
+	clsAbu5 = 0.0;
+	clsAbu10 = 0.0;
+	clsAbu20 = 0.0;
+	clsAbu = 0.0;
+	clsAbuPenalty = 0.0;
 
-	clip_index = static_cast<int> (0.10 * (numBins - skipped_bin_cnt));
-	for (int j = numBins - 1; j > numBins - 1 - clip_index; j--) {
-		abu10 += ratioUsage[j];
-	}
-	abu10 = (clip_index) ? abu10 / clip_index : ratioUsage[numBins - 1];
+	const int index2 = static_cast<int> (0.02 * numBins);
+	const int index5 = static_cast<int> (0.05 * numBins);
+	const int index10 = static_cast<int> (0.10 * numBins);
+	const int index20 = static_cast<int> (0.20 * numBins);
 
-	clip_index = static_cast<int> (0.20 * (numBins - skipped_bin_cnt));
-	for (int j = numBins - 1; j > numBins - 1 - clip_index; j--) {
-		abu20 += ratioUsage[j];
-	}
-	abu20 = (clip_index) ? abu20 / clip_index : ratioUsage[numBins - 1];
-	//	ratioUsage.clear();
+	for (int j = 0; j < index2; ++j) {
+		clsAbu2 += ratioUsage[j];
+	} // end for
 
-	if (showDetails) {
+	clsAbu5 = clsAbu2;
+	for (int j = index2; j < index5; ++j) {
+		clsAbu5 += ratioUsage[j];
+	} // end for
+
+	clsAbu10 = clsAbu5;
+	for (int j = index5; j < index10; ++j) {
+		clsAbu10 += ratioUsage[j];
+	} // end for
+
+	clsAbu20 = clsAbu10;
+	for (int j = index10; j < index20; ++j) {
+		clsAbu20 += ratioUsage[j];
+	} // end for
+
+	clsAbu2 = (index2) ? clsAbu2 / index2 : 0.0;
+	clsAbu5 = (index5) ? clsAbu5 / index5 : 0.0;
+	clsAbu10 = (index10) ? clsAbu10 / index10 : 0.0;
+	clsAbu20 = (index20) ? clsAbu20 / index20 : 0.0;
+
+	const double wAbu2 = clsAbu2Weight * clsAbu2;
+	const double wAbu5 = clsAbu5Weight * clsAbu5;
+	const double wAbu10 = clsAbu10Weight * clsAbu10;
+	const double wAbu20 = clsAbu20Weight * clsAbu20;
+
+	clsAbu = (wAbu2 + wAbu5 + wAbu10 + wAbu20) /
+		(clsAbu2Weight + clsAbu5Weight + clsAbu10Weight + clsAbu20Weight);
+
+	double penaltyAbu2 = (clsAbu2 / getTargetDensity()) - 1.0;
+	penaltyAbu2 = std::max(0.0, penaltyAbu2);
+
+	double penaltyAbu5 = (clsAbu5 / getTargetDensity()) - 1.0;
+	penaltyAbu5 = std::max(0.0, penaltyAbu5);
+
+	double penaltyAbu10 = (clsAbu10 / getTargetDensity()) - 1.0;
+	penaltyAbu10 = std::max(0.0, penaltyAbu10);
+
+	double penaltyAbu20 = (clsAbu20 / getTargetDensity()) - 1.0;
+	penaltyAbu20 = std::max(0.0, penaltyAbu20);
+
+	double wpenaltyAbu2 = clsAbu2Weight * penaltyAbu2;
+	double wpenaltyAbu5 = clsAbu5Weight * penaltyAbu5;
+	double wpenaltyAbu10 = clsAbu10Weight * penaltyAbu10;
+	double wpenaltyAbu20 = clsAbu20Weight * penaltyAbu20;
+
+	clsAbuPenalty = (wpenaltyAbu2 + wpenaltyAbu5 + wpenaltyAbu10 + wpenaltyAbu20) /
+		(clsAbu2Weight + clsAbu5Weight + clsAbu10Weight + clsAbu20Weight);
+
+	if (clsShowDetails) {
 		std::cout << "\ttarget util     : " << getTargetDensity() << "\n";
-		std::cout << "\tABU {2,5,10,20} : " << abu2 << ", " << abu5 << ", " << abu10 << ", " << abu20 << "\n";
+		std::cout << "\tABU {2,5,10,20} : " << clsAbu2
+			<< ", " << clsAbu5 << ", " << clsAbu10
+			<< ", " << clsAbu20 << "\n";
+		std::cout << "\tABU penalty     : " << clsAbuPenalty << "\n";
+		std::cout << "\tALPHA           : " << clsAlpha << "\n";
 	} // end if
 
-	/* calculate overflow & ABU_penalty */
-	abu2 = std::max(0.0, abu2 / getTargetDensity() - 1.0);
-	abu5 = std::max(0.0, abu5 / getTargetDensity() - 1.0);
-	abu10 = std::max(0.0, abu10 / getTargetDensity() - 1.0);
-	abu20 = std::max(0.0, abu20 / getTargetDensity() - 1.0);
-	data->clsAbu = (data->clsAbu2Weight * abu2 + data->clsAbu5Weight * abu5 +
-		data->clsAbu10Weight * abu10 + data->clsAbu20Weight * abu20) /
-		(data->clsAbu2Weight + data->clsAbu5Weight + data->clsAbu10Weight + data->clsAbu20Weight);
+} // end method 
 
-	if (showDetails) {
-		std::cout << "\tABU penalty     : " << data->clsAbu << "\n";
-		std::cout << "\tALPHA           : " << data->clsAlpha << "\n";
-	} // end if
+// -----------------------------------------------------------------------------
+
+void DensityGrid::reportAbu(std::ostream & out) {
+	StreamStateSaver sss(out);
+	const int N = 15;
+
+	out << std::left;
+	out << "\n";
+	out << "                  ";
+	out << std::setw(N) << "Design";
+	out << std::setw(N) << "Abu2%";
+	out << std::setw(N) << "Abu5%";
+	out << std::setw(N) << "Abu10%";
+	out << std::setw(N) << "Abu20%";
+	out << std::setw(N) << "Abu";
+	out << std::setw(N) << "AbuPenalty";
+	out << "\n";
+
+	out << "DGrid (ABU):      "; // make it easy to grep
+	out << std::setw(N) << clsDesign.getName();
+	out << std::setw(N) << clsAbu2;
+	out << std::setw(N) << clsAbu5;
+	out << std::setw(N) << clsAbu10;
+	out << std::setw(N) << clsAbu20;
+	out << std::setw(N) << clsAbu;
+	out << std::setw(N) << clsAbuPenalty;
+	out << "\n";
+
+	sss.restore();
+
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -589,14 +744,14 @@ void DensityGrid::addArea(const AreaType type, const Bounds & bound) {
 
 // -----------------------------------------------------------------------------
 
-void DensityGrid::addBlockageBound(const Bounds & bound, Rsyn::Instance inst) {
+void DensityGrid::addBlockageBound(const Bounds & bound, Instance inst) {
 	int brow, lcol, trow, rcol;
 	getIndex(bound[LOWER], brow, lcol);
 	getIndex(bound[UPPER], trow, rcol);
 	for (int i = brow; i <= trow; i++) {
 		for (int j = lcol; j <= rcol; j++) {
 			const int index = getIndex(i, j);
-			DensityGridBin & bin = data->clsBins[index];
+			DensityGridBin & bin = clsBins[index];
 			int blockIndex = bin.clsBlockages.size();
 			std::unordered_map<std::string, int>::iterator it = bin.clsMapBlockages.find(inst.getName());
 			if (it != bin.clsMapBlockages.end()) {

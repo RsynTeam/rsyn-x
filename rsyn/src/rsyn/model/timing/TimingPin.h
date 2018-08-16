@@ -102,8 +102,11 @@ struct TimingPin {
 		} // end switch
 	} // end method	
 	
-	Number getNegativeSlack(const TimingMode mode) const { 
-		return std::min((Number) 0, getWorstSlack(mode));
+	EdgeArray<Number> getNegativeSlack(const TimingMode mode) const {
+		EdgeArray<Number> nslack;
+		nslack[RISE] = std::min((Number) 0, getSlack(mode, RISE));
+		nslack[FALL] = std::min((Number) 0, getSlack(mode, FALL));
+		return nslack;
 	} // end method		
 	
 	Number getNegativeSlack(const TimingMode mode, const TimingTransition transition) const { 

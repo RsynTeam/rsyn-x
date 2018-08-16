@@ -436,7 +436,12 @@ LayoutGraphicsScene::updateSpotlightObject(const QPointF &pos) {
 				clsSpotlightBounds = item->getBoundingRect();
 				clsSpotlightOutline = item->getOutline();
 				clsSpotlightText = QString::fromStdString(cell.getName());
-			} // end else
+			} // end if
+			
+			Rsyn::LibraryCell libCell = cell.getLibraryCell();
+			if (libCell) {
+				clsSpotlightText += " | Libcell: " + QString::fromStdString(libCell.getName());
+			} // end if
 		} else if (PortGraphicsItem *portItem = dynamic_cast<PortGraphicsItem *>(item)) {
 			Rsyn::Port port = portItem->getPort();
 			clsSpotlightInstance = port;
@@ -676,7 +681,10 @@ LayoutGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) {
 
 void
 LayoutGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) {
-	selectObjectAt(mouseEvent->scenePos());
+	QPointF mousePos = mouseEvent->scenePos();
+	clsClickedMousePosition[X] = mousePos.x();
+	clsClickedMousePosition[Y] = mousePos.y();
+	selectObjectAt(mousePos);
 } // end method
 
 // -----------------------------------------------------------------------------

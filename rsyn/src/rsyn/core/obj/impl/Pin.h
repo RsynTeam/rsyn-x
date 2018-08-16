@@ -322,6 +322,14 @@ Pin::allOutgoingArcs() const {
 // -----------------------------------------------------------------------------
 
 inline
+const std::vector<Arc> &
+Pin::allArcs(const TraverseType direction) const {
+	return data->arcs[direction];
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline
 void 
 Pin::connect(Net net) {
 	getDesign().connectPin(*this, net);

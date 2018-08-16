@@ -14,6 +14,8 @@
  */
  
 #include "StandardCell.h"
+#include "rsyn/qt/graphics/view/layout/LayoutGraphicsScene.h"
+#include "rsyn/qt/QtUtils.h"
 
 #include <QPainter>
 #include <QFont>
@@ -24,13 +26,21 @@ namespace Rsyn {
 void
 StandardCellGraphicsItem::render(GraphicsScene *scene, QPainter *painter, const float lod, const QRectF &exposedRect) {
 	Rsyn::Cell cell = getCell();
+
+	LayoutGraphicsScene *layoutScene = (LayoutGraphicsScene *) scene;
+	if (layoutScene->isColoringEnabled()) {
+		painter->setPen(QtUtils::convert(layoutScene->getColor((Instance)getCell())));
+		painter->fillRect(cell.getX(), cell.getY(), cell.getWidth(), cell.getHeight(),
+				QtUtils::convert(layoutScene->getColor((Instance)getCell())));
+	} // end if
+
 	painter->drawRect(cell.getX(), cell.getY(), cell.getWidth(), cell.getHeight());
 
 	// Draw pins.
 	if (lod > 50) {
 		renderPins(painter);
 	} // end if
-
+	
 	// Draw name.
 	if (lod > 100) {
 		renderName(painter, exposedRect);

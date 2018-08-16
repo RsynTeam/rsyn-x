@@ -169,6 +169,11 @@ void PhysicalDesign::loadDesign(const DefDscp & design) {
 	initLayerViaManager();
 	// only to keep coherence in the design;
 	data->clsNumElements[PHYSICAL_PORT] = data->clsDesign.getNumInstances(Rsyn::PORT);
+
+	std::cout << "Loaded Design\n";
+	std::cout << "\tName: " << data->clsDesign.getName() << "\n";
+	std::cout << "\t#Moveable Insts: " << getNumElements(PhysicalType::PHYSICAL_MOVABLE) << "\n";
+	std::cout << "\t#Fixed Insts: " << getNumElements(PhysicalType::PHYSICAL_FIXED) << "\n";
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -179,7 +184,7 @@ void PhysicalDesign::initPhysicalDesign(Rsyn::Design dsg, const Rsyn::Json &para
 		return;
 	} // end if
 	this->data = new PhysicalDesignData();
-	
+
 	if (!params.is_null()) {
 		data->clsEnablePhysicalPins = params.value("clsEnablePhysicalPins", data->clsEnablePhysicalPins);
 		data->clsEnableMergeRectangles = params.value("clsEnableMergeRectangles", data->clsEnableMergeRectangles);
@@ -368,8 +373,8 @@ void PhysicalDesign::addPhysicalVia(const LefViaDscp & via) {
 	} // end for
 
 	std::sort(layers.begin(), layers.end());
-	
-//	assert(layers.size() == NUM_VIA_LAYERS);
+
+	//	assert(layers.size() == NUM_VIA_LAYERS);
 	for (int i = 0; i < NUM_VIA_LAYERS; i++) {
 		phVia->clsViaLayers[i] = std::get<1>(layers[i]);
 	} // end for
@@ -420,19 +425,19 @@ Rsyn::LibraryCell PhysicalDesign::addPhysicalLibraryCell(const LefMacroDscp& mac
 			phObs->clsBounds = scaledBounds;
 		} // end if-else 
 		phObs->clsLayer = getPhysicalLayerByName(libObs.clsMetalLayer);
-		
+
 		// Mateus - 2018/03/11 - Defensive programming to avoid crashes in ICCAD15 benchmarks.
 		if (!phObs->clsLayer)
 			continue;
-		
+
 		phObs->id = phlCell.clsObs.size() - 1;
 		// Hard code. After implementing mapping structure in Rsyn, remove this line.
 		if (libObs.clsMetalLayer.compare("metal1") == 0) {
 			phlCell.clsLayerBoundIndex = phlCell.clsObs.size() - 1;
 		} // end if 
 		Rsyn::PhysicalObstacle topPhObs = phlCell.clsTopLayerObs;
-		if(topPhObs != nullptr) {
-			if(topPhObs.getLayer().getIndex() < phObs->clsLayer.getIndex())
+		if (topPhObs != nullptr) {
+			if (topPhObs.getLayer().getIndex() < phObs->clsLayer.getIndex())
 				phlCell.clsTopLayerObs = phObs;
 		} else {
 			phlCell.clsTopLayerObs = phObs;
@@ -470,7 +475,7 @@ Rsyn::LibraryCell PhysicalDesign::addPhysicalLibraryCell(const LefMacroDscp& mac
 			} // end for 
 			upperPoints.push_front(phObs.allBounds().back()[UPPER]);
 			phlCell.clsPolygonBounds.addPoint(phObs.allBounds().back()[LOWER][X],
-					phObs.allBounds().back()[UPPER][Y]);
+				phObs.allBounds().back()[UPPER][Y]);
 
 			for (DBUxy point : upperPoints) {
 				phlCell.clsPolygonBounds.addPoint(point[X], point[Y]);
@@ -710,9 +715,9 @@ void PhysicalDesign::addPhysicalNet(const DefNetDscp & netDscp) {
 				wire.setLayer(physicalLayer);
 				const DefRoutingPointDscp & source = segmentDscp.clsRoutingPoints.front();
 				const DefRoutingPointDscp & target = segmentDscp.clsRoutingPoints.back();
-				if(source.clsHasExtension)
+				if (source.clsHasExtension)
 					wire.setSourceExtension(source.clsExtension);
-				if(target.clsHasExtension)
+				if (target.clsHasExtension)
 					wire.setTargetExtension(target.clsExtension);
 				if (segmentDscp.clsRoutedWidth > 0) {
 					wire.setWidth(segmentDscp.clsRoutedWidth);
@@ -813,13 +818,13 @@ void PhysicalDesign::initRoutingGrid() {
 
 	// to use std::sort algorithm, the operator int() const in Proxy must be public. Otherwise, there is a compiler error
 	data->clsPhysicalRoutingGrids.clear();
-	for(Rsyn::PhysicalLayer layer : allPhysicalLayers()) {
-		if(!hasPhysicalRoutingGrid(layer))
+	for (Rsyn::PhysicalLayer layer : allPhysicalLayers()) {
+		if (!hasPhysicalRoutingGrid(layer))
 			continue;
 		PhysicalRoutingGrid routing = data->clsMapLayerToRoutingGrid[layer];
 		data->clsPhysicalRoutingGrids.push_back(routing);
 	} // end for 
-	
+
 	Rsyn::PhysicalRoutingGrid bottom;
 	for (Rsyn::PhysicalRoutingGrid routing : allPhysicalRoutingGrids()) {
 		for (Rsyn::PhysicalTracks track : routing.allTracks()) {
@@ -836,9 +841,9 @@ void PhysicalDesign::initRoutingGrid() {
 			} // end if-else 
 		} // end for 
 		routing->clsBounds[UPPER][X] = routing->clsBounds[LOWER][X] +
-			(routing->clsSpacing[X] * (routing->clsNumTracks[X]-1));
+			(routing->clsSpacing[X] * (routing->clsNumTracks[X] - 1));
 		routing->clsBounds[UPPER][Y] = routing->clsBounds[LOWER][Y] +
-			(routing->clsSpacing[Y] * (routing->clsNumTracks[Y]-1));
+			(routing->clsSpacing[Y] * (routing->clsNumTracks[Y] - 1));
 		routing->clsBottomRoutingGrid = bottom;
 		if (bottom != nullptr)
 			bottom->clsTopRoutingGrid = routing;
@@ -858,7 +863,7 @@ void PhysicalDesign::addPhysicalDesignVia(const DefViaDscp & via) {
 
 	std::vector<std::tuple<int, PhysicalViaLayerData *>> layers;
 	for (const DefViaLayerDscp & layerDscp : via.clsViaLayers) {
-		PhysicalViaLayerData * phLayer = new PhysicalViaLayerData(); 
+		PhysicalViaLayerData * phLayer = new PhysicalViaLayerData();
 		phLayer->clsPhVia = phVia;
 		phLayer->clsBounds.push_back(layerDscp.clsBounds);
 		phLayer->clsLayer = getPhysicalLayerByName(layerDscp.clsLayerName);
@@ -866,7 +871,7 @@ void PhysicalDesign::addPhysicalDesignVia(const DefViaDscp & via) {
 		layers.push_back(std::make_tuple(phLayer->clsLayer.getIndex(), phLayer));
 	} // end for
 	std::sort(layers.begin(), layers.end());
-//	assert(layers.size() == NUM_VIA_LAYERS);
+	//	assert(layers.size() == NUM_VIA_LAYERS);
 	for (int i = 0; i < NUM_VIA_LAYERS; i++) {
 		phVia->clsViaLayers[i] = std::get<1>(layers[i]);
 	} // end if
@@ -1031,7 +1036,7 @@ void PhysicalDesign::initLayerViaManager() {
 		std::vector<PhysicalVia> &bottomTop = data->clsLayerViaManager.clsTopVias[bottom];
 		bottomAll.push_back(via);
 		bottomTop.push_back(via);
-		
+
 		std::vector<PhysicalVia> &topAll = data->clsLayerViaManager.clsVias[top];
 		std::vector<PhysicalVia> &topBottom = data->clsLayerViaManager.clsBottomVias[top];
 		topAll.push_back(via);
