@@ -161,6 +161,8 @@ RoutingLayoutGraphicsLayer::renderRoutingGuides(QPainter *painter, const float l
 	const Rsyn::NetGuide &guide = clsRoutingGuide->getGuide(net);
 
 	QPainterPath outline;
+	// Mateus @ 180824: Fixed bug with overlapping routing guides in a same layer
+	outline.setFillRule(Qt::WindingFill);
 	for (const Rsyn::LayerGuide &segment : guide.allLayerGuides()) {
 		const Rsyn::PhysicalLayer layer = segment.getLayer();
 		if (layer != clsPhysicalLayer)
