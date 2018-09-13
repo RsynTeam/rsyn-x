@@ -55,9 +55,6 @@ set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Werror=return-type")
 # Check Dependencies #
 ######################
 find_package(Boost COMPONENTS system filesystem program_options REQUIRED)
-find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
-find_package(PNG REQUIRED)
 find_package(COIN)
 find_package(GLPK)
 

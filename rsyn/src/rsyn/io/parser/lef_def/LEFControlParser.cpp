@@ -36,6 +36,10 @@
 #include "lef5.8/lefiDebug.hpp"
 #include "lef5.8/lefiUtil.hpp"
 
+#include <boost/geometry.hpp>
+#include <boost/geometry/geometries/adapted/boost_polygon.hpp>
+#include <boost/geometry/algorithms/correct.hpp>
+
 // -----------------------------------------------------------------------------
 
 // =============================================================================
@@ -190,6 +194,8 @@ int lefMacroCB(lefrCallbackType_e c, lefiMacro* macro, lefiUserData ud) {
 int numWarningsInoutPins = 0;
 
 int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
+	typedef boost::polygon::polygon_90_with_holes_data<double> Polygon90;
+	typedef boost::polygon::polygon_traits<Polygon90>::point_type BoostPoint;
 	// Skip power and ground pins...
 	//if (strcmp(pin->use(), "GROUND") == 0) return 0;
 	//if (strcmp(pin->use(), "POWER") == 0) return 0;
@@ -235,6 +241,10 @@ int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
 			lefiGeomPolygon * poly;
 			LefPolygonDscp * polyDscp;
 			double2 * point;
+			
+			std::vector< boost::polygon::rectangle_data<double> > rects;
+			Polygon90 polygon90;
+			std::vector<BoostPoint> pts;
 			switch (geoType) {
 				case lefiGeomLayerE:
 					lefPort.clsLefPortGeoDscp.push_back(LefPortGeometryDscp());
@@ -248,16 +258,26 @@ int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
 					bound->updatePoints(rect->xl, rect->yl, rect->xh, rect->yh);
 					break;
 				case lefiGeomPolygonE:
-					// Mateus @ 2018/04/05:
-					//	Not supported yet, skipping to avoid crashes...
-					//poly = geometry->lefiGeometries::getPolygon(i);
-					//polyDscp->clsPolygonPoints.resize(poly->numPoints,
-					//	double2(std::numeric_limits<double>::infinity(),
-					//	std::numeric_limits<double>::infinity()));
-					//for (int k = 0; k < poly->numPoints; k++) {
-					//	point = &polyDscp->clsPolygonPoints[k];
-					//	point->set(poly->x[k], poly->y[k]);
-					//} // end for 
+					// Mateus @ 2018/09/13:
+					// Support for polygon-shapped pins
+					poly = geometry->getPolygon(i);
+					
+					for (int k = 0; k < poly->numPoints; k++) {
+						pts.push_back(boost::polygon::construct<BoostPoint>(poly->x[k], poly->y[k]));
+					} // end for 
+					
+					boost::polygon::set_points(polygon90, pts.begin(), pts.end());
+					boost::polygon::get_rectangles(rects, polygon90);
+					for (int k = 0; k < rects.size(); k++) {
+						double xl = rects[k].get(boost::polygon::HORIZONTAL).low();
+						double xh = rects[k].get(boost::polygon::HORIZONTAL).high();
+						double yl = rects[k].get(boost::polygon::VERTICAL).low();
+						double yh = rects[k].get(boost::polygon::VERTICAL).high();;
+						geoDscp->clsBounds.resize(geoDscp->clsBounds.size() + 1);
+						bound = &geoDscp->clsBounds.back();
+						bound->updatePoints(xl, yl, xh, yh);
+					} // end for
+				    // end Mateus @ 2018/09/13	
 					break;
 				default:
 					std::cout << "WARNING: function " << __func__ << " does not supports pin geometry type in the LEF Parser Control.\n";
