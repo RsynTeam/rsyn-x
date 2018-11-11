@@ -151,12 +151,12 @@ public:
 	//!        to be consistent, only the interface pins are returned that is
 	//!        the outer pins of the module's ports.
 	Range<CollectionOfPinsFilteredByDirection>
-	allPins(const Direction direction) const;
+	allPins(const Direction direction, bool filterPG = true) const;
 
 	//! @brief Returns an iterable collection of all interface pins.
 	//! @see allPins(const Direction direction)
 	Range<CollectionOfPins>
-	allPins() const;	
+	allPins(bool filterPG = true) const;	
 
 	//! @brief Returns an iterable collection of all arcs.
 	Range<CollectionOfArcs>

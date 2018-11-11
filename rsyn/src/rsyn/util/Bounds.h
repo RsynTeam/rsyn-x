@@ -125,6 +125,13 @@ public:
 
 		return overlap;
 	} // end method
+	
+	// Returns the dimension length overlap of this and other rectangle. Otherwise, returns zero 
+	DBU overlapDimensionLength(const Bounds &rect, const Dimension dim ) const {
+		const DBU delta = std::max( (*this)[LOWER][dim], rect[LOWER][dim] ) - std::min( (*this)[UPPER][dim], rect[UPPER][dim] );
+		return delta < 0 ? -delta : 0;
+	} // end method
+	
 
 	// Check if a value is in between the lower and upper bounds of this 
 	// rectangle.

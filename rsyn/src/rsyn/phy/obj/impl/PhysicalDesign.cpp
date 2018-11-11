@@ -291,7 +291,8 @@ void PhysicalDesign::addPhysicalSite(const LefSiteDscp & site) {
 	size.scale(static_cast<double> (getDatabaseUnits(LIBRARY_DBU)));
 	phSite->clsSize[X] = static_cast<DBU> (std::round(size[X]));
 	phSite->clsSize[Y] = static_cast<DBU> (std::round(size[Y]));
-	phSite->clsSiteClass = getPhysicalSiteClass(site.clsSiteClass);
+	phSite->clsSiteClass = Rsyn::getPhysicalSiteClass(site.clsSiteClass);
+	phSite->clsSymmetry = Rsyn::getPhysicalSymmetry(site.clsSymmetry);
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -393,6 +394,7 @@ Rsyn::LibraryCell PhysicalDesign::addPhysicalLibraryCell(const LefMacroDscp& mac
 	phlCell.clsSize[X] = static_cast<DBU> (std::round(size[X]));
 	phlCell.clsSize[Y] = static_cast<DBU> (std::round(size[Y]));
 	phlCell.clsMacroClass = Rsyn::getPhysicalMacroClass(macro.clsMacroClass);
+	phlCell.clsSymmetry = Rsyn::getPhysicalSymmetry(macro.clsSymmetry);
 	// Initializing obstacles in the physical library cell
 	phlCell.clsObs.reserve(macro.clsObs.size());
 	for (const LefObsDscp &libObs : macro.clsObs) {
@@ -1042,6 +1044,19 @@ void PhysicalDesign::initLayerViaManager() {
 		topAll.push_back(via);
 		topBottom.push_back(via);
 	} // end for 
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+bool PhysicalDesign::checkEquivalentOrientations(Rsyn::PhysicalSymmetry symmetry, Rsyn::PhysicalOrientation orient1, 
+	Rsyn::PhysicalOrientation orient2) const {
+	
+	std::cout<<"TODO "<<__func__<<" at "<<__FILE__<<"\n";
+//	if(Rsyn::isPhysicalSymmetryX(symmetry)) {
+//		return orient1 == Rsyn::ORIENTATION_N ||
+//	} // end if 
+	
+	return false;
 } // end method 
 
 // -----------------------------------------------------------------------------

@@ -20,12 +20,15 @@ struct LibraryPinData : ObjectData {
 	LibraryCell lcell;
 	std::string name;
 	Direction direction;
+	// Mateus @ 20180917: Adding PinUse
+	PinUse pinUse;
 	int index;
 
 	LibraryPinData() : 
 		design(nullptr),
 		lcell(nullptr),
 		direction(UNKNOWN_DIRECTION),
+		pinUse(UNKNOWN_USE),
 		index(-1) {
 	} // end constructor
 }; // end struct

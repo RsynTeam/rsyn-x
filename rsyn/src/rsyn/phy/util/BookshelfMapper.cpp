@@ -201,7 +201,7 @@ void BookshelfMapper::mapLefCells(const BookshelfDscp & dscp, LefDscp & lef) {
 		} // end if-else 
 		macro.clsSite = "bookshelfSite";
 		macro.clsSize = node.clsSize;
-		macro.clsSymmetry.push_back("X");
+		macro.clsSymmetry ="X Y";
 		
 		int numPins = macroNode.pins.size();
 		macro.clsPins.reserve(numPins);

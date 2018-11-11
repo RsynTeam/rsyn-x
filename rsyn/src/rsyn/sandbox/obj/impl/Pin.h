@@ -360,4 +360,32 @@ SandboxPin::getTopologicalIndex() const {
 	return data->order;
 } // end method
 
+// -----------------------------------------------------------------------------
+
+inline
+PinUse
+SandboxPin::getUse() const {
+	Rsyn::LibraryPin lpin = getLibraryPin();
+	
+	if (!lpin) {
+		return Rsyn::UNKNOWN_USE;
+	} // end if
+	
+	return lpin.getUse();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline
+bool
+SandboxPin::isPowerOrGround() const {
+	Rsyn::LibraryPin lpin = getLibraryPin();
+	
+	if (!lpin) {
+		return false;
+	} // end if
+	
+	return (lpin.getUse() == POWER || lpin.getUse() == GROUND);
+} // end method
+
 } // end namespace

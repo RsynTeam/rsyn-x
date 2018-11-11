@@ -36,8 +36,7 @@ class PhysicalRowData : public PhysicalObject {
 public:
 	Bounds clsBounds;
 	PhysicalSite clsPhysicalSite;
-	PhysicalSymmetry clsRowSymmetry;
-	PhysicalOrientation clsSiteOrientation;
+	PhysicalOrientation clsSiteOrientation = Rsyn::PhysicalOrientation::ORIENTATION_INVALID;
 	DBUxy clsOrigin;
 	int clsNumSites[2] = {0, 0};
 	DBUxy clsStep;

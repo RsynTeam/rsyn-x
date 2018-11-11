@@ -83,7 +83,8 @@ PopulateRsyn::populateRsynLibraryFromLef(
 		Rsyn::CellDescriptor dscp;
 		dscp.setName(macro.clsMacroName);
 		for (const LefPinDscp &pin : macro.clsPins) {
-			dscp.addPin(pin.clsPinName, Legacy::lefPinDirectionFromString(pin.clsPinDirection));
+			// Mateus @ 20180917: Adding PinUse
+			dscp.addPin(pin.clsPinName, Legacy::lefPinDirectionFromString(pin.clsPinDirection), Legacy::lefPinUseFromString(pin.clsPinUse));
 		} // end for
 		rsynDesign.createLibraryCell(dscp, true);
 	} // end for

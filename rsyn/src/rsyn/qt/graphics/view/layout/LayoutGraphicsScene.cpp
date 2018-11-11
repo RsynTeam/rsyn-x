@@ -420,6 +420,9 @@ LayoutGraphicsScene::updateSpotlightObject(const QPointF &pos) {
 			const QPoint cellPos(cell.getX(), cell.getY());
 
 			for (Rsyn::Pin pin : cell.allPins()) {
+				if (pin.isPowerOrGround()) {
+					continue;
+				} // end if
 				const QPainterPath &pinShape = QtPinMgr::get()->getShape(pin.getLibraryPin(),
 						cell.getOrientation());
 				if (pinShape.contains(pos - cellPos)) {
@@ -555,7 +558,7 @@ bool
 LayoutGraphicsScene::selectPin(Rsyn::Pin pin, QRectF &bounds) {
 	if (!pin)
 		return false;
-
+		
 	clearSelection();
 	clsSelectedPin = pin;
 

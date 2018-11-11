@@ -31,8 +31,9 @@ private:
 	// name
 	std::string name;
 
+	// Mateus @ 20180917: Adding PinUse
 	// pin name, pin direction
-	std::vector<std::tuple<std::string, Direction>> pins;
+	std::vector<std::tuple<std::string, Direction, PinUse>> pins;
 	
 	// from -> to
 	std::vector<std::tuple<std::string, std::string>> arcs;
@@ -43,8 +44,9 @@ public:
 		this->name = name; // TODO: ugly
 	} // end method
 	
-	void addPin(const std::string &name, const Direction &direction) {
-		pins.push_back(std::make_tuple(name, direction));
+	// Mateus @ 20180917: Adding PinUse
+	void addPin(const std::string &name, const Direction &direction, const PinUse& pinUse = UNKNOWN_USE) {
+		pins.push_back(std::make_tuple(name, direction, pinUse));
 	} // end method
 	
 	void addArc(const std::string &from, const std::string &to) {

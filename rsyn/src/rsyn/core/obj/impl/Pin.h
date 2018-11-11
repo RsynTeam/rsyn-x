@@ -368,4 +368,32 @@ Pin::isConnectedToClockNetwork() const {
 	return data->net? data->net.isClockNetwork() : false;
 } // end method
 
+// -----------------------------------------------------------------------------
+
+inline
+PinUse
+Pin::getUse() const {
+	Rsyn::LibraryPin lpin = getLibraryPin();
+	
+	if (!lpin) {
+		return Rsyn::UNKNOWN_USE;
+	} // end if
+	
+	return lpin.getUse();
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline
+bool
+Pin::isPowerOrGround() const {
+	Rsyn::LibraryPin lpin = getLibraryPin();
+	
+	if (!lpin) {
+		return false;
+	} // end if
+	
+	return (lpin.getUse() == POWER || lpin.getUse() == GROUND);
+} // end method
+
 } // end namespace

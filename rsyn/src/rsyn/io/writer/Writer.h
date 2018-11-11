@@ -20,6 +20,7 @@
 #include <Rsyn/PhysicalDesign>
 #include "rsyn/session/Service.h"
 #include <Rsyn/Session>
+#include "WriterDEF.h"
 
 namespace Rsyn {
 class PhysicalService;
@@ -43,13 +44,13 @@ private:
 	// Services
 	Timer * clsTimer = nullptr;
 	RoutingEstimator * clsRoutingEstimator = nullptr;
+	
 
 public:
 
 	virtual void start(const Rsyn::Json &params);
 	virtual void stop();
 
-public:
 	void writeVerilog() { writeVerilog(clsDesign.getName() + "-cada085.v");	} // write verilog file
 	void writeTimingFile();
 	void writeTimingFile(ostream &out);

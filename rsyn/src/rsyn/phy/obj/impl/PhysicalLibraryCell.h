@@ -87,6 +87,12 @@ inline PhysicalSite PhysicalLibraryCell::getSite() const {
 
 //-----------------------------------------------------------------------------
 
+inline Rsyn::PhysicalSymmetry PhysicalLibraryCell::getSymmetry() const {
+	return data->clsSymmetry;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
 inline 	bool PhysicalLibraryCell::hasTopLayerObstacle() const{
 	return data->clsTopLayerObs != nullptr;
 } // end  method 

@@ -68,6 +68,7 @@ FloorplanLayoutGraphicsLayer::render(QPainter *painter, const float lod, const Q
 
 	const bool renderCoreBds = getScene()->getVisibility("Floorplan/Core Bounds");
 	const bool renderRows = getScene()->getVisibility("Floorplan/Rows");
+	const bool renderSites = getScene()->getVisibility("Floorplan/Sites");
 	const bool renderRegions = getScene()->getVisibility("Floorplan/Regions");
 	if (renderCoreBds) {
 		renderCoreBounds(painter);
@@ -75,6 +76,10 @@ FloorplanLayoutGraphicsLayer::render(QPainter *painter, const float lod, const Q
 
 	if (renderRows) {
 		renderPhysicalRows(painter);
+	} // end if 
+	
+	if (renderSites) {
+		renderPhysicalSites(painter);
 	} // end if 
 	
 	if (renderRegions) {
@@ -114,6 +119,32 @@ void FloorplanLayoutGraphicsLayer::renderPhysicalRows(QPainter * painter) {
 		const DBUxy length = segBounds.computeLength();
 		QRect rect(segBounds[LOWER][X], segBounds[LOWER][Y], length[X], length[Y]);
 		painter->drawRect(rect);
+	} // end for
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void FloorplanLayoutGraphicsLayer::renderPhysicalSites(QPainter * painter) {
+	Rsyn::Session session;
+	Rsyn::PhysicalDesign phDesign = session.getPhysicalDesign();
+	QPen pen(Qt::green);
+	pen.setWidth(1);
+	pen.setCosmetic(true);
+	painter->setPen(pen);
+
+	QBrush brush(Qt::white);
+	painter->setBrush(brush);
+
+	for (Rsyn::PhysicalRow row : phDesign.allPhysicalRows()) {
+		Rsyn::PhysicalSite site = row.getPhysicalSite();
+		DBU width = site.getWidth();
+		DBU height = site.getHeight();
+		DBUxy pos = row.getCoordinate(LOWER);
+		while(pos[X] < row.getCoordinate(UPPER, X)) {
+			QRect rect(pos[X], pos[Y], width, height);
+			painter->drawRect(rect);
+			pos[X] += width;
+		} // end while
 	} // end for
 } // end method
 

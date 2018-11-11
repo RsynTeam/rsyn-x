@@ -323,27 +323,27 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 						// END TODO 
 						break;
 					case DEFIPATH_MASK:
-						
-						{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
-							static bool warning = false;
-							if (!warning) {
-								warning = true;
-								std::cout << "TODO DEFIPATH_MASK at " << __func__ << "\n";
-							} // end if
-						} // end block
-					
+
+					{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
+						static bool warning = false;
+						if (!warning) {
+							warning = true;
+							std::cout << "TODO DEFIPATH_MASK at " << __func__ << "\n";
+						} // end if
+					} // end block
+
 						break;
 					case DEFIPATH_VIAMASK:
 						// TODO
-						
-						{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
-							static bool warning = false;
-							if (!warning) {
-								warning = true;
-								std::cout << "TODO DEFIPATH_VIAMASK at " << __func__ << "\n";
-							} // end if
-						} // end block
-					
+
+					{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
+						static bool warning = false;
+						if (!warning) {
+							warning = true;
+							std::cout << "TODO DEFIPATH_VIAMASK at " << __func__ << "\n";
+						} // end if
+					} // end block
+
 						break;
 					case DEFIPATH_VIA:
 						point->clsViaName = path->getVia();
@@ -351,15 +351,15 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 						break;
 					case DEFIPATH_VIAROTATION:
 						//TODO
-						
-						{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
-							static bool warning = false;
-							if (!warning) {
-								warning = true;
-								std::cout << "TODO DEFIPATH_VIAROTATION at " << __func__ << "\n";
-							} // end if
-						} // end block
-					
+
+					{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
+						static bool warning = false;
+						if (!warning) {
+							warning = true;
+							std::cout << "TODO DEFIPATH_VIAROTATION at " << __func__ << "\n";
+						} // end if
+					} // end block
+
 						//orientStr(path->getViaRotation());
 						break;
 					case DEFIPATH_RECT:
@@ -374,15 +374,15 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 						break;
 					case DEFIPATH_VIRTUALPOINT:
 						//TODO
-						
-						{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
-							static bool warning = false;
-							if (!warning) {
-								warning = true;
-								std::cout << "TODO DEFIPATH_VIRTUALPOINT at " << __func__ << "\n";
-							} // end if
-						} // end block
-						
+
+					{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
+						static bool warning = false;
+						if (!warning) {
+							warning = true;
+							std::cout << "TODO DEFIPATH_VIRTUALPOINT at " << __func__ << "\n";
+						} // end if
+					} // end block
+
 						//int x, y;
 						//path->getVirtualPoint(&x, &y);
 						//std::cout<<"virtualPoint: "<<netDscp.clsName<<"\n";
@@ -409,40 +409,40 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 						break;
 					case DEFIPATH_TAPER:
 						//std::string taper = "TAPER ";
-						
-						{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
-							static bool warning = false;
-							if (!warning) {
-								warning = true;
-								std::cout << "TODO DEFIPATH_TAPER at " << __func__ << "\n";
-							} // end if
-						} // end block
-					
+
+					{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
+						static bool warning = false;
+						if (!warning) {
+							warning = true;
+							std::cout << "TODO DEFIPATH_TAPER at " << __func__ << "\n";
+						} // end if
+					} // end block
+
 						break;
 					case DEFIPATH_TAPERRULE:
 						//path->getTaperRule();
-//						// TODO
-						
-						{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
-							static bool warning = false;
-							if (!warning) {
-								warning = true;
-								std::cout << "TODO DEFIPATH_TAPERRULE at " << __func__ << "\n";
-							} // end if
-						} // end block
-					
+						//						// TODO
+
+					{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
+						static bool warning = false;
+						if (!warning) {
+							warning = true;
+							std::cout << "TODO DEFIPATH_TAPERRULE at " << __func__ << "\n";
+						} // end if
+					} // end block
+
 						break;
 					case DEFIPATH_STYLE:
 						//path->getStyle();
-						
-						{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
-							static bool warning = false;
-							if (!warning) {
-								warning = true;
-								std::cout << "TODO DEFIPATH_STYLE at " << __func__ << "\n";
-							} // end if
-						} // end block
-						
+
+					{ // TEMPORARY WARNING MESSAGE // mateus @ 180528
+						static bool warning = false;
+						if (!warning) {
+							warning = true;
+							std::cout << "TODO DEFIPATH_STYLE at " << __func__ << "\n";
+						} // end if
+					} // end block
+
 						break;
 				} // end switch
 				pathId = path->next();
@@ -849,14 +849,18 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 	CHECK_STATUS(status);
 	status = defwDesignName(defDscp.clsDesignName.c_str());
 	CHECK_STATUS(status);
-	status = defwUnits(defDscp.clsDatabaseUnits);
-	CHECK_STATUS(status);
-	status = defwDieArea(
-		(int) defDscp.clsDieBounds[LOWER][X],
-		(int) defDscp.clsDieBounds[LOWER][Y],
-		(int) defDscp.clsDieBounds[UPPER][X],
-		(int) defDscp.clsDieBounds[UPPER][Y]);
-	CHECK_STATUS(status);
+	if (defDscp.clsHasDatabaseUnits) {
+		status = defwUnits(defDscp.clsDatabaseUnits);
+		CHECK_STATUS(status);
+	} // end if 
+	if (defDscp.clsHasDieBounds) {
+		status = defwDieArea(
+			(int) defDscp.clsDieBounds[LOWER][X],
+			(int) defDscp.clsDieBounds[LOWER][Y],
+			(int) defDscp.clsDieBounds[UPPER][X],
+			(int) defDscp.clsDieBounds[UPPER][Y]);
+		CHECK_STATUS(status);
+	} // end if 
 	status = defwNewLine();
 	CHECK_STATUS(status);
 
@@ -892,134 +896,138 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 
 	// Write components
 	int numComponents = defDscp.clsComps.size();
-	status = defwStartComponents(numComponents);
-	CHECK_STATUS(status);
-
-	for (const DefComponentDscp & comp : defDscp.clsComps) {
-		//int defwComponent(const char* name, const char* master, const char* eeq, const char* source, const char* status, int statusX, int statusY, int statusOrient, double weight, const char* region);
-		int orient = defOrient(comp.clsOrientation);
-		status = defwComponent(comp.clsName.c_str(), comp.clsMacroName.c_str(), 0, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL,
-			comp.clsIsFixed ? "FIXED" : comp.clsIsPlaced ? "PLACED" : "UNPLACED",
-			(int) comp.clsPos[X], (int) comp.clsPos[Y], orient, 0, NULL, 0, 0, 0, 0);
+	if (numComponents > 0) {
+		status = defwStartComponents(numComponents);
 		CHECK_STATUS(status);
-	} // end for 
 
-	status = defwEndComponents();
-	CHECK_STATUS(status);
+		for (const DefComponentDscp & comp : defDscp.clsComps) {
+			//int defwComponent(const char* name, const char* master, const char* eeq, const char* source, const char* status, int statusX, int statusY, int statusOrient, double weight, const char* region);
+			int orient = defOrient(comp.clsOrientation);
+			status = defwComponent(comp.clsName.c_str(), comp.clsMacroName.c_str(), 0, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL,
+				comp.clsIsFixed ? "FIXED" : comp.clsIsPlaced ? "PLACED" : "UNPLACED",
+				(int) comp.clsPos[X], (int) comp.clsPos[Y], orient, 0, NULL, 0, 0, 0, 0);
+			CHECK_STATUS(status);
+		} // end for 
 
+		status = defwEndComponents();
+		CHECK_STATUS(status);
+	} // end if 
 	status = defwNewLine();
 	CHECK_STATUS(status);
 
 
 	// write ports
 	int numPins = defDscp.clsPorts.size();
-	status = defwStartPins(numPins);
-	CHECK_STATUS(status);
-
-
-	for (const DefPortDscp & port : defDscp.clsPorts) {
-		status = defwPin(port.clsName.c_str(),
-			port.clsNetName.c_str(),
-			(port.clsSpecial ? 1 : 0), // 0 ignores, 1 set net as special
-			(port.clsDirection.compare(INVALID_DEF_NAME) == 0 ? NULL : port.clsDirection.c_str()),
-			(port.clsUse.compare(INVALID_DEF_NAME) == 0 ? NULL : port.clsUse.c_str()),
-			(port.clsLocationType.compare(INVALID_DEF_NAME) == 0 ? NULL : port.clsLocationType.c_str()),
-			(int) port.clsPos[X],
-			(int) port.clsPos[Y],
-			defOrient(port.clsOrientation),
-			(port.clsLayerName.compare(INVALID_DEF_NAME) == 0 ? NULL : port.clsLayerName.c_str()),
-			(int) port.clsLayerBounds[LOWER][X],
-			(int) port.clsLayerBounds[LOWER][Y],
-			(int) port.clsLayerBounds[UPPER][X],
-			(int) port.clsLayerBounds[UPPER][Y]);
+	if (numPins > 0) {
+		status = defwStartPins(numPins);
 		CHECK_STATUS(status);
-	} // end for 
 
-	status = defwEndPins();
-	CHECK_STATUS(status);
+
+		for (const DefPortDscp & port : defDscp.clsPorts) {
+			status = defwPin(port.clsName.c_str(),
+				port.clsNetName.c_str(),
+				(port.clsSpecial ? 1 : 0), // 0 ignores, 1 set net as special
+				(port.clsDirection.compare(INVALID_DEF_NAME) == 0 ? NULL : port.clsDirection.c_str()),
+				(port.clsUse.compare(INVALID_DEF_NAME) == 0 ? NULL : port.clsUse.c_str()),
+				(port.clsLocationType.compare(INVALID_DEF_NAME) == 0 ? NULL : port.clsLocationType.c_str()),
+				(int) port.clsPos[X],
+				(int) port.clsPos[Y],
+				defOrient(port.clsOrientation),
+				(port.clsLayerName.compare(INVALID_DEF_NAME) == 0 ? NULL : port.clsLayerName.c_str()),
+				(int) port.clsLayerBounds[LOWER][X],
+				(int) port.clsLayerBounds[LOWER][Y],
+				(int) port.clsLayerBounds[UPPER][X],
+				(int) port.clsLayerBounds[UPPER][Y]);
+			CHECK_STATUS(status);
+		} // end for 
+
+		status = defwEndPins();
+		CHECK_STATUS(status);
+	} // end if 
 
 	status = defwNewLine();
 	CHECK_STATUS(status);
 
 	int numNets = defDscp.clsNets.size();
-	status = defwStartNets(numNets);
-	CHECK_STATUS(status);
-
-
-	// write nets
-	for (const DefNetDscp & defNet : defDscp.clsNets) {
-		status = defwNet(defNet.clsName.c_str());
+	if (numNets > 0) {
+		status = defwStartNets(numNets);
 		CHECK_STATUS(status);
-		// Writing Net connections
-		for (const DefNetConnection & defConn : defNet.clsConnections) {
-			status = defwNetConnection(defConn.clsComponentName.c_str(), defConn.clsPinName.c_str(), 0);
-			CHECK_STATUS(status);
-		} // end for 
-		if (!defNet.clsWires.empty()) {
-			bool routed = true;
-			status = defwNetPathStart("ROUTED");
-			CHECK_STATUS(status);
-			for (const DefWireDscp & wire : defNet.clsWires) {
-				for (const DefWireSegmentDscp & segment : wire.clsWireSegments) {
-					if (!routed) {
-						status = defwNetPathStart("NEW");
-						CHECK_STATUS(status);
-					}
-					routed = false;
 
-					bool hasVia = false;
-					std::string viaName;
-					bool hasRect = false;
-					Bounds rect;
 
-					status = defwNetPathLayer(segment.clsLayerName.c_str(), 0, NULL);
-					CHECK_STATUS(status);
-					for (const DefRoutingPointDscp & pt : segment.clsRoutingPoints) {
-						double posX = pt.clsPos[X];
-						double posY = pt.clsPos[Y];
-						if (pt.clsHasExtension) {
-							double ext = pt.clsExtension;
-							status = defwNetPathPointWithExt(1, &posX, &posY, &ext);
+		// write nets
+		for (const DefNetDscp & defNet : defDscp.clsNets) {
+			status = defwNet(defNet.clsName.c_str());
+			CHECK_STATUS(status);
+			// Writing Net connections
+			for (const DefNetConnection & defConn : defNet.clsConnections) {
+				status = defwNetConnection(defConn.clsComponentName.c_str(), defConn.clsPinName.c_str(), 0);
+				CHECK_STATUS(status);
+			} // end for 
+			if (!defNet.clsWires.empty()) {
+				bool routed = true;
+				status = defwNetPathStart("ROUTED");
+				CHECK_STATUS(status);
+				for (const DefWireDscp & wire : defNet.clsWires) {
+					for (const DefWireSegmentDscp & segment : wire.clsWireSegments) {
+						if (!routed) {
+							status = defwNetPathStart("NEW");
 							CHECK_STATUS(status);
-						} else {
-							status = defwNetPathPoint(1, &posX, &posY);
-							CHECK_STATUS(status);
-						} // end if-else
-						if (pt.clsHasVia) {
-							hasVia = true;
-							viaName = pt.clsViaName;
 						}
-						if (pt.clsHasRectangle) {
-							hasRect = true;
-							rect = pt.clsRect;
+						routed = false;
+
+						bool hasVia = false;
+						std::string viaName;
+						bool hasRect = false;
+						Bounds rect;
+
+						status = defwNetPathLayer(segment.clsLayerName.c_str(), 0, NULL);
+						CHECK_STATUS(status);
+						for (const DefRoutingPointDscp & pt : segment.clsRoutingPoints) {
+							double posX = pt.clsPos[X];
+							double posY = pt.clsPos[Y];
+							if (pt.clsHasExtension) {
+								double ext = pt.clsExtension;
+								status = defwNetPathPointWithExt(1, &posX, &posY, &ext);
+								CHECK_STATUS(status);
+							} else {
+								status = defwNetPathPoint(1, &posX, &posY);
+								CHECK_STATUS(status);
+							} // end if-else
+							if (pt.clsHasVia) {
+								hasVia = true;
+								viaName = pt.clsViaName;
+							}
+							if (pt.clsHasRectangle) {
+								hasRect = true;
+								rect = pt.clsRect;
+							}
+						} // end for 
+
+						if (hasVia) {
+							status = defwNetPathViaWithOrient(viaName.c_str(), -1);
+							CHECK_STATUS(status);
+						}
+						if (hasRect) {
+							status = defwNetPathRect(rect[LOWER][X], rect[LOWER][Y], rect[UPPER][X], rect[UPPER][Y]);
+							CHECK_STATUS(status);
 						}
 					} // end for 
 
-					if (hasVia) {
-						status = defwNetPathViaWithOrient(viaName.c_str(), -1);
-						CHECK_STATUS(status);
-					}
-					if (hasRect) {
-						status = defwNetPathRect(rect[LOWER][X], rect[LOWER][Y], rect[UPPER][X], rect[UPPER][Y]);
-						CHECK_STATUS(status);
-					}
 				} // end for 
-
-			} // end for 
-			status = defwNetPathEnd();
+				status = defwNetPathEnd();
+				CHECK_STATUS(status);
+			} // end if 
+			status = defwNetEndOneNet();
 			CHECK_STATUS(status);
-		} // end if 
-		status = defwNetEndOneNet();
+			//CHECK_STATUS(status);
+		} // end for 
+
+		status = defwEndNets();
 		CHECK_STATUS(status);
-		//CHECK_STATUS(status);
-	} // end for 
-
-	status = defwEndNets();
-	CHECK_STATUS(status);
-
+	} // end if 
+	
 	status = defwEnd();
 	CHECK_STATUS(status);
-
 	fclose(defFile);
 } // end method
 

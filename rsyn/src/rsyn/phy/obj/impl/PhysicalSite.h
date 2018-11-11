@@ -64,4 +64,10 @@ inline DBU PhysicalSite::getLength(const Dimension dim) const {
 
 // -----------------------------------------------------------------------------
 
+inline Rsyn::PhysicalSymmetry PhysicalSite::getSymmetry() const {
+	return data->clsSymmetry;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
 } // end namespace 

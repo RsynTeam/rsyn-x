@@ -55,6 +55,8 @@ public:
 	DBU getHeight() const;
 	//! @brief Returns site width if Dimension is X. Otherwise, returns the site height.
 	DBU getLength(const Dimension dim) const;
+	//! @brief Returns the site symmetry
+	Rsyn::PhysicalSymmetry getSymmetry() const;
 }; // end class
 
 } // end namespace 

@@ -36,9 +36,8 @@
 #include "lef5.8/lefiDebug.hpp"
 #include "lef5.8/lefiUtil.hpp"
 
-#include <boost/geometry.hpp>
-#include <boost/geometry/geometries/adapted/boost_polygon.hpp>
-#include <boost/geometry/algorithms/correct.hpp>
+#define BOOST_POLYGON_NO_DEPS
+#include <boost/polygon/polygon.hpp>
 
 // -----------------------------------------------------------------------------
 
@@ -186,7 +185,19 @@ int lefMacroCB(lefrCallbackType_e c, lefiMacro* macro, lefiUserData ud) {
 	lefMacro.clsSite = macro->siteName();
 	lefMacro.clsSize[X] = macro->sizeX();
 	lefMacro.clsSize[Y] = macro->sizeY();
-
+	lefMacro.clsSymmetry.clear();
+	if(macro->hasXSymmetry()){
+		lefMacro.clsSymmetry.append("X");
+	} // end if 
+	if(macro->hasYSymmetry()){
+		lefMacro.clsSymmetry.append(" Y");
+	} // end if 
+	if(macro->has90Symmetry()){
+		lefMacro.clsSymmetry.append(" R90");
+	} // end if 
+	if(lefMacro.clsSymmetry.empty()){
+		lefMacro.clsSymmetry = INVALID_LEF_NAME;
+	} // end if 
 	return 0;
 } // end function
 
@@ -297,11 +308,25 @@ int lefSiteCB(lefrCallbackType_e c, lefiSite* site, lefiUserData ud) {
 	lefSite.clsName = site->name();
 
 	lefSite.clsHasClass = site->hasClass();
-	if (site->hasClass())
+	if (site->hasClass()){
 		lefSite.clsSiteClass = site->siteClass();
+	} // end if 
 	lefSite.clsSize[X] = site->sizeX();
 	lefSite.clsSize[Y] = site->sizeY();
-
+	lefSite.clsSymmetry.clear();
+	if(site->hasXSymmetry()){
+		lefSite.clsSymmetry.append("X");
+	} // end if 
+	if(site->hasYSymmetry()){
+		lefSite.clsSymmetry.append(" Y");
+	} // end if 
+	if(site->has90Symmetry()){
+		lefSite.clsSymmetry.append(" R90");
+	} // end if 
+	if(lefSite.clsSymmetry.empty()){
+		lefSite.clsSymmetry = INVALID_LEF_NAME;
+	} // end if 
+		
 	return 0;
 } // end function
 

@@ -109,4 +109,20 @@ LibraryPin::isBidirectional() const {
 	return getDirection() == Rsyn::BIDIRECTIONAL;
 } // end method
 
+// -----------------------------------------------------------------------------
+
+inline
+PinUse
+LibraryPin::getUse() const {
+	return data->pinUse;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline
+bool
+LibraryPin::isPowerOrGround() const {
+	return (getUse() == POWER || getUse() == GROUND);
+} // end method
+
 } // end namespace

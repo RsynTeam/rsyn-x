@@ -40,6 +40,7 @@ private:
 
 	void renderCoreBounds(QPainter * painter);
 	void renderPhysicalRows(QPainter * painter);
+	void renderPhysicalSites(QPainter * painter);
 	void renderLayoutRegions(QPainter * painter);
 	
 	

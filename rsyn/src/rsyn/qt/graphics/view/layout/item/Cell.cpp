@@ -30,6 +30,9 @@ CellGraphicsItem::renderPins(QPainter* painter) const {
 	painter->translate(clsCell.getX(), clsCell.getY());
 	Rsyn::LibraryCell lcell = clsCell.getLibraryCell();
 	for (Rsyn::LibraryPin lpin : lcell.allLibraryPins()) {
+		if (lpin.isPowerOrGround()) {
+			continue;
+		} // end if
 		painter->drawPath(QtPinMgr::get()->getShape(lpin, clsCell.getOrientation()));
 	} // end for
 	painter->restore();

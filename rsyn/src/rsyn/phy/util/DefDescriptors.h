@@ -237,6 +237,11 @@ public:
 
 class DefDscp {
 public:
+	bool clsHasVersion : 1;
+	bool clsHasDevideChar : 1;
+	bool clsHasBusBitChar : 1;
+	bool clsHasDieBounds : 1;
+	bool clsHasDatabaseUnits : 1;
 	double clsVersion = 0.0;
 	std::string clsDeviderChar = INVALID_DEF_NAME;
 	std::string clsBusBitChars = INVALID_DEF_NAME;
@@ -252,7 +257,13 @@ public:
 	std::vector<DefSpecialNetDscp> clsSpecialNets;
 	std::vector<DefViaDscp> clsVias;
 	std::vector<DefTrackDscp> clsTracks;
-	DefDscp() = default;
+	DefDscp() {
+		clsHasVersion = false;
+		clsHasDevideChar = false;
+		clsHasBusBitChar = false;
+		clsHasDieBounds = false;
+		clsHasDatabaseUnits = false;
+	} // end constructor 
 }; // end class 
 
 // -----------------------------------------------------------------------------

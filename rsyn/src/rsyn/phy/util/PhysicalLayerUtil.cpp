@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -131,8 +131,20 @@ std::string getPhysicalMacroClass(const Rsyn::PhysicalMacroClass macroClass) {
 // -----------------------------------------------------------------------------
 
 Rsyn::PhysicalSymmetry getPhysicalSymmetry(const std::string &rowSymmetry) {
-	if (rowSymmetry.compare("X") == 0) return SYMMETRY_X;
-	if (rowSymmetry.compare("Y") == 0) return SYMMETRY_Y;
+	bool hasX = std::string::npos != rowSymmetry.find("X");
+	bool hasY = std::string::npos != rowSymmetry.find("Y");
+	bool hasR90 = std::string::npos != rowSymmetry.find("R90");
+
+
+	if (hasX && hasY && hasR90) return SYMMETRY_XYR90;
+
+	if (hasY && hasR90) return SYMMETRY_YR90;
+	if (hasX && hasR90) return SYMMETRY_XR90;
+	if (hasX && hasY) return SYMMETRY_XY;
+
+	if (hasR90) return SYMMETRY_R90;
+	if (hasY) return SYMMETRY_Y;
+	if (hasX) return SYMMETRY_X;
 
 	return SYMMETRY_INVALID;
 } // end method 
@@ -145,9 +157,42 @@ std::string getPhysicalSymmetry(const Rsyn::PhysicalSymmetry rowSymmetry) {
 			break;
 		case SYMMETRY_Y: return "Y";
 			break;
+		case SYMMETRY_R90: return "R90";
+			break;
+		case SYMMETRY_XY: return "X Y";
+			break;
+		case SYMMETRY_XR90: return "X R90";
+			break;
+		case SYMMETRY_YR90: return "Y R90";
+			break;
+		case SYMMETRY_XYR90: return "X Y R90";
+			break;
 		default: return Rsyn::getPhysicalInvalidName();
 	} // end switch 
 } // end method 
+
+// -----------------------------------------------------------------------------
+
+bool isPhysicalSymmetryX(const Rsyn::PhysicalSymmetry symmetry) {
+	return symmetry == SYMMETRY_X || symmetry == SYMMETRY_XY || 
+		symmetry == SYMMETRY_XR90 || SYMMETRY_XYR90;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+bool isPhysicalSymmetryY(const Rsyn::PhysicalSymmetry symmetry) {
+	return symmetry == SYMMETRY_Y || symmetry == SYMMETRY_XY || 
+		symmetry == SYMMETRY_YR90 || SYMMETRY_XYR90;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+bool isPhysicalSymmetryR90(const Rsyn::PhysicalSymmetry symmetry) {
+	return symmetry == SYMMETRY_R90 || symmetry == SYMMETRY_XR90 || 
+		symmetry == SYMMETRY_YR90 || SYMMETRY_XYR90;
+} // end method 
+
+// -----------------------------------------------------------------------------
 
 Rsyn::PhysicalSiteClass getPhysicalSiteClass(const std::string & siteClass) {
 	if (siteClass.compare("CORE") == 0) return PhysicalSiteClass::CORE;

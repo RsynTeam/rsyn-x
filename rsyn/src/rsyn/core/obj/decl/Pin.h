@@ -189,6 +189,14 @@ public:
 	//!        is raised.
 	bool isConnectedToClockNetwork() const;
 
+	//! @Author Mateus
+	//! @brief Returns the usage of the pins
+	PinUse getUse() const;
+	
+	//! @Author Mateus 
+	//! @brief Returns true if the pin is used for power or ground or false
+	//!        otherwise.
+	bool isPowerOrGround() const;
 }; // end class
 	
 } // end namespace

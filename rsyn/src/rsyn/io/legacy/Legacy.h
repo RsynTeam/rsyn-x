@@ -1,4 +1,4 @@
-/* Copyright 2014-2018 Rsyn
+/* Copyright 2014-2018 Rsyn		
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,19 @@ inline Rsyn::Direction lefPinDirectionFromString(const std::string &direction) {
 	if (direction == "FEEDTHRU") return Rsyn::UNKNOWN_DIRECTION;
 	return Rsyn::UNKNOWN_DIRECTION;
 } // end function
+
+inline Rsyn::PinUse lefPinUseFromString(const std::string &direction) {
+	if (direction == "SIGNAL"   ) return Rsyn::SIGNAL;
+	if (direction == "POWER"    ) return Rsyn::POWER;
+	if (direction == "GROUND"  ) return Rsyn::GROUND;
+	if (direction == "CLOCK") return Rsyn::CLOCK;
+	if (direction == "TIEOFF") return Rsyn::TIEOFF;
+	if (direction == "ANALOG") return Rsyn::ANALOG;
+	if (direction == "SCAN") return Rsyn::SCAN;
+	if (direction == "RESET") return Rsyn::RESET;
+	return Rsyn::UNKNOWN_USE;
+} // end function
+
 
 inline Rsyn::Direction bookshelfPinDirectionFromString(const std::string &direction) {
 	if (direction == "I") return Rsyn::IN;

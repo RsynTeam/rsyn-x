@@ -74,6 +74,15 @@ public:
 	//! @brief Returns true if this library pin is a bidirectional and false
 	//!        otherwise.
 	bool isBidirectional() const;
+	
+	//! @Author Mateus
+	//! @brief Returns the usage of the pin
+	PinUse getUse() const;
+	
+	//! @Author Mateus
+	//! @brief Returns true if the pin is used for power or ground or false
+	//!        otherwise.
+	bool isPowerOrGround() const;
 }; // end class
 	
 } // end namespace

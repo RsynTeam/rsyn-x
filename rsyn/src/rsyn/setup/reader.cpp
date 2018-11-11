@@ -41,5 +41,6 @@ void Session::registerReaders() {
 	registerReader<Rsyn::SizingISPDReader>("sizingISPD");
 	registerReader<Rsyn::GenericReader>("generic");
 	registerReader<Rsyn::ISPD2018Reader>("ispd18");
+	registerReader<Rsyn::ISPD2018Reader>("ispd19"); // ispd19 files are the same from ispd18 contest
 } // end method
 } // end namespace

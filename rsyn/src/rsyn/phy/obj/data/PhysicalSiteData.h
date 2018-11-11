@@ -36,6 +36,7 @@ public:
 	Rsyn::PhysicalSiteClass clsSiteClass = INVALID_SITECLASS;
 	DBUxy clsSize;
 	std::string clsSiteName = Rsyn::getPhysicalInvalidName();
+	Rsyn::PhysicalSymmetry clsSymmetry = Rsyn::PhysicalSymmetry::SYMMETRY_INVALID;
 	PhysicalSiteData() = default;
 }; // end namespace 
 

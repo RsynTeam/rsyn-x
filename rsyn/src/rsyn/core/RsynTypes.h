@@ -93,24 +93,24 @@ enum PhysicalOrientation : std::int8_t {
 	ORIENTATION_INVALID = -1,
 
 	//! @brief North Orientation (R0)
-	ORIENTATION_N,
+	ORIENTATION_N = 0,
 	//! @brief South orientation (R180)
-	ORIENTATION_S,
+	ORIENTATION_S = 1,
 	//! @brief West orientation (R90)
-	ORIENTATION_W,
+	ORIENTATION_W = 2,
 	//! @brief East orientation  (R270)
-	ORIENTATION_E,
+	ORIENTATION_E = 3,
 	//! @brief Flipped-North orientation (MY)
-	ORIENTATION_FN,
+	ORIENTATION_FN = 4,
 	//! @brief Flipped-South orientation (MX)
-	ORIENTATION_FS,
+	ORIENTATION_FS = 5,
 	//! @brief Flipped-West orientation (MX90)
-	ORIENTATION_FW,
+	ORIENTATION_FW = 6,
 	//! @brief Flipped-East orientation (MY90)
-	ORIENTATION_FE,
+	ORIENTATION_FE = 7,
 
 	//! @brief Number of orientations
-	NUM_PHY_ORIENTATION
+	NUM_PHY_ORIENTATION = 8
 }; // end enum
 
 enum BufferType {
@@ -124,6 +124,21 @@ enum TieType {
 	TIE_HIGH,
 	ANY_TIE_TYPE
 }; // end enum
+
+// Mateus @ 20180917: Adding PinUse
+//! @brief Describes the usage of a pin
+//! @note Compatible with LEF/DEF standard 5.8
+enum PinUse {
+	UNKNOWN_USE = -1,
+	SIGNAL,
+	POWER,
+	GROUND,
+	CLOCK,
+	TIEOFF,
+	ANALOG,
+	SCAN,
+	RESET
+};
 
 } // end namespace
 

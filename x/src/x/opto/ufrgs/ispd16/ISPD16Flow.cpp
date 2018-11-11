@@ -15,7 +15,7 @@
  
 #include "ISPD16Flow.h"
 
-#include "rsyn/io/Writer.h"
+#include "rsyn/io/writer/Writer.h"
 #include "rsyn/util/AsciiProgressBar.h"
 #include "rsyn/util/Stepwatch.h"
 #include "x/infra/iccad15/Infrastructure.h"

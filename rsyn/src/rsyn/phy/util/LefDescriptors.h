@@ -105,9 +105,9 @@ public:
 	std::string clsMacroName = INVALID_LEF_NAME;
 	std::string clsMacroClass = INVALID_LEF_NAME;
 	std::string clsSite = INVALID_LEF_NAME;
+	std::string clsSymmetry = INVALID_LEF_NAME;
 	double2 clsOrigin;
 	double2 clsSize;
-	std::vector<std::string> clsSymmetry;
 	std::vector<LefPinDscp> clsPins;
 	std::vector<LefObsDscp> clsObs;
 	LefMacroDscp() = default;
@@ -152,6 +152,7 @@ public:
 	double2 clsSize;
 	bool clsHasClass = false;
 	std::string clsSiteClass = INVALID_LEF_NAME;
+	std::string clsSymmetry = INVALID_LEF_NAME;
 	LefSiteDscp() = default;
 }; // end class 
 

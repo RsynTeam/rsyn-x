@@ -124,7 +124,7 @@ inline Rsyn::PhysicalOrientation PhysicalRow::getSiteOrientation() const {
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalSymmetry PhysicalRow::getSymmetry() const {
-	return data->clsRowSymmetry;
+	return data->clsPhysicalSite ? data->clsPhysicalSite.getSymmetry() : Rsyn::PhysicalSymmetry::SYMMETRY_INVALID;
 } // end method 
 
 // -----------------------------------------------------------------------------

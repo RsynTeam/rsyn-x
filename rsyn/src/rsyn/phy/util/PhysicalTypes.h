@@ -233,8 +233,18 @@ enum PhysicalSymmetry : std::int8_t {
 	SYMMETRY_X = 0,
 	//! @brief Defines the symmetry in the ordinate (Y).
 	SYMMETRY_Y = 1,
+	//! @brief Defines the symmetry 90 degrees rotation.
+	SYMMETRY_R90 = 2,
+	//! @brief Defines the symmetry in the abscissa (X) and ordinate (Y).
+	SYMMETRY_XY = 3,
+	//! @brief Defines the symmetry in the abscissa (X) and 90 degrees rotation.
+	SYMMETRY_XR90 = 4,
+	//! @brief Defines the symmetry in the ordinate (Y) and 90 degrees rotation.
+	SYMMETRY_YR90 = 5,
+	//! @brief Defines the symmetry in the abscissa (X), ordinate (Y) and 90 degrees rotation.
+	SYMMETRY_XYR90 = 6,
 	//! @brief Only used for Rsyn internal control.
-	NUM_PHY_SYMMETRY = 2
+	NUM_PHY_SYMMETRY = 7
 }; // end enum
 
 // -----------------------------------------------------------------------------

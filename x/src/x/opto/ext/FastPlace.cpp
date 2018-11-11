@@ -16,7 +16,7 @@
 #include "FastPlace.h"
 
 #include "rsyn/model/timing/Timer.h"
-#include "rsyn/io/Writer.h"
+#include "rsyn/io/writer/Writer.h"
 
 #include "rsyn/util/AsciiProgressBar.h"
 #include "rsyn/util/Stepwatch.h"

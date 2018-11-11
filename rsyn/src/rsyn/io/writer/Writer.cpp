@@ -21,6 +21,7 @@
 #include <Rsyn/Session>
 #include "rsyn/io/legacy/Legacy.h"
 
+
 // Services
 #include <Rsyn/PhysicalDesign>
 #include "rsyn/model/timing/Timer.h"
@@ -172,7 +173,9 @@ void Writer::writeDEF(const std::string & filename, const bool full) {
 void Writer::writeFullDEF(string filename) {
 	DEFControlParser defParser;
 	DefDscp def;
+	def.clsHasDieBounds = true;
 	def.clsDieBounds = clsPhysicalDesign.getPhysicalDie().getBounds();
+	def.clsHasDatabaseUnits = true;
 	def.clsDatabaseUnits = clsPhysicalDesign.getDatabaseUnits(Rsyn::DESIGN_DBU);
 	def.clsDesignName = clsDesign.getName();
 

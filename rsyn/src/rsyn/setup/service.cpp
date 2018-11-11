@@ -32,7 +32,7 @@
 #include "rsyn/model/routing/RsttRoutingEstimatorModel.h"
 #include "rsyn/model/congestion/DensityGrid/DensityGrid.h"
 #include "rsyn/io/Report.h"
-#include "rsyn/io/Writer.h"
+#include "rsyn/io/writer/Writer.h"
 #include "rsyn/io/Graphics.h"
 #include "rsyn/ispd18/RoutingGuide.h"
 
@@ -53,6 +53,7 @@ void Session::registerServices() {
 	registerService<Rsyn::Writer>("rsyn.writer");
 	registerService<Rsyn::Graphics>("rsyn.graphics");
 	registerService<Rsyn::RoutingGuide>("rsyn.routingGuide");
+	registerService<Rsyn::WriterDEF>("rsyn.writerDEF");
 } // end method
 } // end namespace
 

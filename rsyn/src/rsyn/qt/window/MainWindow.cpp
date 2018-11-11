@@ -360,6 +360,7 @@ void MainWindow::populateObjectVisibility() {
 	tree.add("Floorplan", 1, "", QtUtils::Checked);
 	tree.add("Floorplan/Core Bounds", 1, "", QtUtils::Checked);
 	tree.add("Floorplan/Rows", 1, "", QtUtils::Unchecked);
+	tree.add("Floorplan/Sites", 1, "", QtUtils::Unchecked);
 	tree.add("Floorplan/Regions", 1, "",QtUtils::Unchecked);
 	tree.add("Tracks", 1, "", QtUtils::Unchecked);
 	tree.add("Tracks/Preferred", 1, "", QtUtils::Checked);

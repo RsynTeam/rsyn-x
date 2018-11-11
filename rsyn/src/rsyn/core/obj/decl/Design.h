@@ -334,12 +334,14 @@ protected:
 	std::vector<PinType> &pins;
 	Direction direction;
 	int index;
+	bool filterPG;
 public:
 	CollectionOfGenericPinsFilteredByDirection(std::vector<PinType> &pins,
-			Direction direction) 
-			: pins(pins), direction(direction), index(0) {}
+			Direction direction, bool filterPG = true) 
+			: pins(pins), direction(direction), index(0), filterPG(filterPG) {}
 
-	bool filter() { return current().getDirection() != direction; }
+	bool filter() { return current().getDirection() != direction || 
+			(filterPG && current().isPowerOrGround()); }
 	bool stop() { return index >= pins.size(); }
 	void next() { ++index; }
 	PinType current() {	return pins[index];	}
@@ -353,11 +355,12 @@ class CollectionOfGenericPins {
 protected:
 	std::vector<PinType> &pins;
 	int index;
+	bool filterPG;
 public:
-	CollectionOfGenericPins(std::vector<PinType> &pins)
-			: pins(pins), index(0) {}
+	CollectionOfGenericPins(std::vector<PinType> &pins, bool filterPG = true)
+			: pins(pins), index(0), filterPG(filterPG) {}
 
-	bool filter() { return false; }
+	bool filter() { return filterPG && current().isPowerOrGround(); }
 	bool stop() { return index >= pins.size(); }
 	void next() { ++index; }
 	PinType current() {	return pins[index];	}

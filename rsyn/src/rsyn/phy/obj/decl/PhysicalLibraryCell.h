@@ -62,6 +62,8 @@ public:
 	Rsyn::PhysicalMacroClass getClass() const;
 	//! @brief Returns PhysicalSite object related to the PhysicalLibraryCell.
 	Rsyn::PhysicalSite getSite() const;
+	//! @breif Returns the library cell macro symmetry orientation
+	Rsyn::PhysicalSymmetry getSymmetry() const;
 	//! @breif Returns true if there is a top layer obstacle. The top layer obs is the highest metal layer blockage.
 	bool hasTopLayerObstacle() const;
 	//! @breif Returns the top layer obstacle. The top layer obs is the highest metal layer blockage.
@@ -92,6 +94,8 @@ public:
 	//! i.e., the PhysicalLibaryCellboundaries are defined by metal1 boundaries. 
 	//! @warning This method affects 2015 ICCAD contest benchmark.
 	const std::vector<Bounds> & allLayerObstacles() const;
+	
+	
 	
 	bool hasPolygonBoundaries() const;
 	const Polygon & getPolygonBoundaries() const;

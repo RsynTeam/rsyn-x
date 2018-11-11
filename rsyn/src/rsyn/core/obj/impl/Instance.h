@@ -337,16 +337,16 @@ Instance::getAnyArc() {
 
 inline
 Range<CollectionOfPinsFilteredByDirection>
-Instance::allPins(const Direction direction) const {
-	return CollectionOfPinsFilteredByDirection(data->pins, direction);
+Instance::allPins(const Direction direction, bool filterPG) const {
+	return CollectionOfPinsFilteredByDirection(data->pins, direction, filterPG);
 } // end method
 
 // -----------------------------------------------------------------------------
 
 inline
 Range<CollectionOfPins>
-Instance::allPins() const {
-	return CollectionOfPins(data->pins);
+Instance::allPins(bool filterPG) const {
+	return CollectionOfPins(data->pins, filterPG);
 } // end method
 
 // -----------------------------------------------------------------------------
