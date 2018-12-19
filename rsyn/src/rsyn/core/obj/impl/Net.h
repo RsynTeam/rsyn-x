@@ -181,8 +181,8 @@ Net::hasSink() const {
 
 inline
 Range<CollectionOfPins>
-Net::allPins() const {
-	return CollectionOfPins(data->pins);
+Net::allPins(bool filterPG) const {
+	return CollectionOfPins(data->pins, filterPG);
 } // end method
 
 // -----------------------------------------------------------------------------

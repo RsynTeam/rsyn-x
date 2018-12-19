@@ -99,7 +99,7 @@ public:
 	//! @brief Returns an iterable collection of the pins connected to this
 	//!        net.
 	Range<CollectionOfPins>
-	allPins() const;
+	allPins(bool filterPG = true) const;
 
 	//! @brief Returns an iterable collection of the pins of a given direction
 	//!        connected to this net.
