@@ -187,6 +187,9 @@ public:
 	//! @brief Reports typical values for the library.
 	void reportTypicalValues(std::ostream &out);
 
+	//! @brief Returns the typical leakage of the library.
+	Number getTypicalLeakage() const {return getTypicalDelay()/getTypicalDelayPerLeakage();}
+
 	//! @brief Returns the typical delay for the library. The typical delay is
 	//!        defined as the average fanout-of-4 delay of the inverters in the
 	//!        library.

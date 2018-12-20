@@ -29,6 +29,18 @@ inline DBU PhysicalDesign::getDatabaseUnits(const DBUType type) const {
 
 // -----------------------------------------------------------------------------
 
+inline DBU PhysicalDesign::convertMicronToLibraryDatabaseUnits(const double value) const {
+	return static_cast<DBU> (std::round(value * getDatabaseUnits(LIBRARY_DBU)));
+} // end method  
+
+// -----------------------------------------------------------------------------
+
+inline DBU PhysicalDesign::convertMicronToDesignDatabaseUnits(const double value) const {
+	return static_cast<DBU> (std::round(value * getDatabaseUnits(DESIGN_DBU)));
+} // end method  
+
+// -----------------------------------------------------------------------------
+
 inline DBUxy PhysicalDesign::getHPWL() const {
 	return data->clsHPWL;
 } // end method 
@@ -118,6 +130,35 @@ inline Rsyn::PhysicalVia PhysicalDesign::getPhysicalViaByName(const std::string 
 	if (it == data->clsMapPhysicalVias.end())
 		return nullptr;
 	return data->clsPhysicalVias[it->second];
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline Rsyn::PhysicalViaRuleBase PhysicalDesign::getPhysicalViaRuleBaseByName(const std::string &viaName) {
+	std::unordered_map<std::string, std::size_t>::iterator it = data->clsMapPhysicalViaRuleBases.find(viaName);
+	if (it == data->clsMapPhysicalVias.end())
+		return nullptr;
+	return data->clsPhysicalViaRuleBases[it->second];
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline Rsyn::PhysicalViaRule PhysicalDesign::getPhysicalViaRuleByName(const std::string &viaName) {
+	Rsyn::PhysicalViaRuleBase viaRuleBase = getPhysicalViaRuleBaseByName(viaName);
+	if (viaRuleBase == nullptr) {
+		return nullptr;
+	} // end if 
+	return viaRuleBase.isViaRule() ? viaRuleBase.asViaRule() : nullptr;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline Rsyn::PhysicalViaRuleGenerate PhysicalDesign::getPhysicalViaRuleGenerateByName(const std::string &viaName) {
+	Rsyn::PhysicalViaRuleBase viaRuleBase = getPhysicalViaRuleBaseByName(viaName);
+	if (viaRuleBase == nullptr) {
+		return nullptr;
+	} // end if 
+	return viaRuleBase.isViaRuleGenerate() ? viaRuleBase.asViaRuleGenerate() : nullptr;
 } // end method 
 
 // -----------------------------------------------------------------------------

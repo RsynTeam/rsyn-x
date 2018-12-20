@@ -33,17 +33,36 @@ namespace Rsyn {
 
 class PhysicalViaData : public PhysicalObject {
 public:
+	bool clsIsDefault : 1;
+	bool clsIsViaDesign : 1;
+	bool clsHasViaRule : 1;
+	bool clsHasRowCol : 1;
+	bool clsHasOrigin : 1;
+	bool clsHasOffset : 1;
+	bool clsHasCutResistance : 1;
+	ViaType clsType = INVALID_VIA_TYPE;
+	Rsyn::ViaRuleData * clsViaRuleData = nullptr;
+	DBU clsCutSize [2] = {0, 0}; // xCutSize, yCutSize
+	DBU clsSpacing [2] = {0, 0}; // xSpacing, ySpacing
+	DBU clsEnclosure[NUM_VIA_LEVELS][2]; // bottomXEnclosure, bottomYEnclosure, topXEnclosure, topYEnclosure
+	DBU clsOrigin[2] = {0, 0}; // xOrigin, yOrigin
+	DBU clsOffset[NUM_VIA_LEVELS][2]; // bottomXOffset, bottomYOffset, topXOffset, topYOffset
+	int clsNumRows = 0;
+	int clsNumCols = 0;
+	float clsCutResistance = 0.0;
+	Rsyn::PhysicalLayerData *clsLayers[NUM_VIA_LAYERS]; // bottom, cut, top
+	std::vector<Rsyn::PhysicalViaGeometry>  clsViaGeometries [NUM_VIA_LAYERS]; // bottom, cut, top
 	std::string clsName;
-	Rsyn::PhysicalViaLayerData *clsViaLayers[NUM_VIA_LAYERS];
-	bool clsDesignVia = false;
+	
 	PhysicalViaData() {
-		for (int i = 0; i < NUM_VIA_LAYERS; i++)
-			clsViaLayers[i] = nullptr;
-	}
-	~PhysicalViaData(){
-		for (int i = 0; i < NUM_VIA_LAYERS; i++)
-			delete clsViaLayers[i];
-	} // end destructor 
+		clsIsDefault = false;
+		clsIsViaDesign = false;
+		clsHasViaRule = false;
+		clsHasRowCol = false;
+		clsHasOrigin = false;
+		clsHasOffset = false;
+		clsHasCutResistance = false;
+	} // end constructor 
 }; // end class 
 
 } // end namespace 

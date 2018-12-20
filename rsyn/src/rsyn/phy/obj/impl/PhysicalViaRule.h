@@ -12,45 +12,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /* 
- * File:   PhysicalViaLayer.h
+ * File:   PhysicalViaRule.h
  * Author: jucemar
  *
- * Created on 14 de Maio de 2017, 15:25
+ * Created on November 12, 2018, 9:24 PM
  */
 
 namespace Rsyn {
 
-inline Rsyn::PhysicalLayer PhysicalViaLayer::getLayer() const {
-	return data->clsLayer;
+inline int PhysicalViaRule::getRelativeIndex() const {
+	return data->clsRelativeIndex;
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<Bounds> & PhysicalViaLayer::allBounds() const {
-	return data->clsBounds;
+inline Rsyn::PhysicalLayer PhysicalViaRule::getLayer(const Rsyn::ViaLevel level) const {
+	return Rsyn::PhysicalLayer(data->clsLayers[level]);
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-inline std::size_t PhysicalViaLayer::getNumBounds() const {
-	return data->clsBounds.size();
+inline Rsyn::PhysicalLayerDirection PhysicalViaRule::getLayerDirection(const Rsyn::ViaLevel level) const {
+	return data->clsLayerDirection[level];
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-inline Rsyn::PhysicalVia PhysicalViaLayer::getVia() const {
-	return data->clsPhVia;
+inline const std::vector<Rsyn::PhysicalVia> & PhysicalViaRule::allVias() const {
+	return data->clsVias;
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-} // end namespace 
+}
 

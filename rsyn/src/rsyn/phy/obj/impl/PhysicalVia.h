@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -34,32 +34,140 @@ inline const std::string & PhysicalVia::getName() const {
 
 // -----------------------------------------------------------------------------
 
-inline bool PhysicalVia::isDesignVia() const {
-	return data->clsDesignVia;
+inline Rsyn::PhysicalLayer PhysicalVia::getTopLayer() const {
+	return PhysicalLayer(data->clsLayers[TOP_VIA_LAYER]);
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-inline Rsyn::PhysicalViaLayer PhysicalVia::getTopLayer() const {
-	return PhysicalViaLayer(data->clsViaLayers[TOP_VIA_LAYER]);
+inline Rsyn::PhysicalLayer PhysicalVia::getCutLayer() const {
+	return PhysicalLayer(data->clsLayers[CUT_VIA_LAYER]);
 } // end method 
 
 // -----------------------------------------------------------------------------
 
-inline Rsyn::PhysicalViaLayer PhysicalVia::getCutLayer() const {
-	return PhysicalViaLayer(data->clsViaLayers[CUT_VIA_LAYER]);
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-inline Rsyn::PhysicalViaLayer PhysicalVia::getBottomLayer() const {
-	return PhysicalViaLayer(data->clsViaLayers[BOTTOM_VIA_LAYER]);
+inline Rsyn::PhysicalLayer PhysicalVia::getBottomLayer() const {
+	return PhysicalLayer(data->clsLayers[BOTTOM_VIA_LAYER]);
 } // end method
 
 // -----------------------------------------------------------------------------
 
-inline Rsyn::PhysicalViaLayer PhysicalVia::getLayer(const PhysicalViaLayerType type) const {
-	return PhysicalViaLayer(data->clsViaLayers[type]);
+inline Rsyn::PhysicalLayer PhysicalVia::getLayer(const PhysicalViaLayerType type) const {
+	return PhysicalLayer(data->clsLayers[type]);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline bool PhysicalVia::isViaDesign() const {
+	return data->clsIsViaDesign;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline bool PhysicalVia::isViaRule() const {
+	return data->clsType == VIA_RULE_TYPE;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline bool PhysicalVia::isViaGeometry() const {
+	return data->clsType == VIA_GEOMETRY_TYPE;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline bool PhysicalVia::hasRowCol() const {
+	return data->clsHasRowCol;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline bool PhysicalVia::hasOrigin() const {
+	return data->clsHasOrigin;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline bool PhysicalVia::hasoffset() const {
+	return data->clsHasOffset;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline ViaType PhysicalVia::getViaType() const {
+	return data->clsType;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline Rsyn::PhysicalViaRuleBase PhysicalVia::getViaRule() const {
+	return PhysicalViaRuleBase(data->clsViaRuleData);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBU PhysicalVia::getCutSize(const Dimension dim) const {
+	return data->clsCutSize[dim];
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBU PhysicalVia::getSpacing(const Dimension dim) const {
+	return data->clsSpacing[dim];
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBU PhysicalVia::getEnclosure(const ViaLevel level, const Dimension dim) const {
+	return data->clsEnclosure[level][dim];
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBU PhysicalVia::getOrigin(const Dimension dim) const {
+	return data->clsOrigin[dim];
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline DBU PhysicalVia::getOffset(const ViaLevel level, const Dimension dim) const {
+	return data->clsOffset[level][dim];
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline int PhysicalVia::getNumRows() const {
+	return data->clsNumRows;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline int PhysicalVia::getNumCols() const {
+	return data->clsNumCols;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline const std::vector<Rsyn::PhysicalViaGeometry> & PhysicalVia::allBottomGeometries() const {
+	return allGeometries(BOTTOM_VIA_LAYER);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline const std::vector<Rsyn::PhysicalViaGeometry> & PhysicalVia::allCutGeometries() const {
+	return allGeometries(CUT_VIA_LAYER);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline const std::vector<Rsyn::PhysicalViaGeometry> & PhysicalVia::allTopGeometries() const {
+	return allGeometries(TOP_VIA_LAYER);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline const std::vector<Rsyn::PhysicalViaGeometry> & PhysicalVia::allGeometries(const PhysicalViaLayerType layer) const {
+	return data->clsViaGeometries[layer];
 } // end method
 
 // -----------------------------------------------------------------------------

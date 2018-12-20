@@ -85,6 +85,13 @@ public:
 	//! (e.g. 2000 = 1000 * 2 -> DESIGN_DBU = LIBRARY_DBU * MULT_FACTOR_DBU).
 	//! @return DBU data base resolution of the parameter type.
 	DBU getDatabaseUnits(const DBUType type) const;
+	
+	//! @brief Converts micron value into library database units
+	DBU convertMicronToLibraryDatabaseUnits(const double value) const;
+	
+	//! @brief Converts micron value into design database units
+	DBU convertMicronToDesignDatabaseUnits(const double value) const;
+	
 	//! @brief Returning a DBUxy object that has total nets Bound Box HPWL for abscissa (X dimension in DBUxy) and ordinate (Y dimension in DBUxy).
 	DBUxy getHPWL() const;
 
@@ -206,6 +213,13 @@ public:
 	Rsyn::PhysicalGroup getPhysicalGroupByName(const std::string &siteName);
 	//! @brief	Returns the Rsyn::PhysicalVia object associated to the parameter vias name.
 	Rsyn::PhysicalVia getPhysicalViaByName(const std::string &viaName);
+	
+	//! @brief	Returns the Rsyn::PhysicalViaRuleBase object associated to the parameter via's name.
+	Rsyn::PhysicalViaRuleBase getPhysicalViaRuleBaseByName(const std::string &viaName);
+	//! @brief	Returns the Rsyn::PhysicalViaRule object associated to the parameter via's name.
+	Rsyn::PhysicalViaRule getPhysicalViaRuleByName(const std::string &viaName);
+	//! @brief	Returns the Rsyn::PhysicalViaRuleGenerate object associated to the parameter via's name.
+	Rsyn::PhysicalViaRuleGenerate getPhysicalViaRuleGenerateByName(const std::string &viaName);
 
 	//! @brief	Returns the total number of layers. It is the summation of routing, overlap, cut, and so forth layers.
 	int getNumLayers(const Rsyn::PhysicalLayerType type) const;
@@ -218,6 +232,8 @@ public:
 	//! @brief	Returns a vector reference to the vector of PhysicalVias. 
 	const std::vector<Rsyn::PhysicalVia> & allPhysicalVias() const;
 
+	
+	
 	std::size_t getNumPhysicalTracks()const;
 
 	int getNumPhysicalTracks(Rsyn::PhysicalLayer layer) const;
@@ -279,6 +295,8 @@ protected:
 	Rsyn::PhysicalLayerData * addPhysicalLayer(const LefLayerDscp& layer, Rsyn::PhysicalLayerData * lower);
 	//! @brief initializes the Rsyn::PhysicalVia objects into Rsyn::PhysicalDesign.
 	void addPhysicalVia(const LefViaDscp & via);
+	//! @brief initializes the Rsyn::PhysicalViaRule objects
+	void addPhysicalViaRule(const LefViaRuleDscp & via);
 	//! @brief initializes the Rsyn::PhysicalLibraryCell objects into Rsyn::PhysicalDesign.
 	Rsyn::LibraryCell addPhysicalLibraryCell(const LefMacroDscp& macro);
 	//! @brief initializes the Rsyn::PhysicalLibraryPin objects of the library cell into 
@@ -305,7 +323,7 @@ protected:
 	void addPhysicalTracks(const DefTrackDscp &track);
 	//! @brief Inits routing grid
 	void initRoutingGrid();
-	//! @brief Adds a via.
+	//! @brief Adds design via.
 	void addPhysicalDesignVia(const DefViaDscp & via);
 	//! @brief initializes the Rsyn::PhysicalSpacing objects into Rsyn::PhysicalDesign.
 	void addPhysicalSpacing(const LefSpacingDscp & spacing);

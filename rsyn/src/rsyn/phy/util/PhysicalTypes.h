@@ -100,7 +100,28 @@ enum PhysicalViaLayerType : std::int8_t {
 	TOP_VIA_LAYER = 2,
 
 	NUM_VIA_LAYERS = 3
-};
+}; // end enum 
+
+enum ViaType : std::int8_t {
+	INVALID_VIA_TYPE = -1,
+	VIA_RULE_TYPE = 0,
+	VIA_GEOMETRY_TYPE = 1,
+	NUM_VIA_TYPES = 2
+}; // end enum 
+
+enum ViaLevel : std::int8_t {
+	INVALID_VIA_LEVEL = -1,
+	BOTTOM_VIA_LEVEL = 0,
+	TOP_VIA_LEVEL = 1,
+	NUM_VIA_LEVELS = 2
+}; // end enum 
+
+enum ViaRange : std::int8_t {
+	INVALID_VIA_RANGE = -1,
+	VIA_RANGE_MIN = 0,
+	VIA_RANGE_MAX = 1,
+	NUM_VIA_RANGES = 2
+}; // end enum 
 
 //! @brief Layer direction. 
 

@@ -29,6 +29,7 @@ using std::swap;
 #include <utility>
 using std::pair;
 
+#include "rsyn/util/FloatingPoint.h"
 #include "rsyn/model/timing/types.h"
 
 namespace Rsyn {
@@ -154,6 +155,11 @@ public:
 	void reverse() { return swap(clsValue[RISE], clsValue[FALL]); }
 
 	T aggregate() const { return clsValue[RISE] + clsValue[FALL]; }
+
+	void replaceUninitBy(const T value) {
+		if (FloatingPoint::isUninit(clsValue[RISE])) {clsValue[RISE] = value;}
+		if (FloatingPoint::isUninit(clsValue[FALL])) {clsValue[FALL] = value;}
+	} // end method
 	
 	std::pair<TimingTransition,T> maximum() const {
 		return ( clsValue[RISE] >= clsValue[FALL] )?

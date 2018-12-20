@@ -30,6 +30,8 @@
 #define DEFDESCRIPTORS_H
 
 #include <vector>
+#include <deque>
+#include <map>
 
 #include "rsyn/util/Bounds.h"
 #include "rsyn/util/dbu.h"
@@ -204,31 +206,76 @@ public:
 
 class DefTrackDscp {
 public:
+	bool clsHasRect : 1;
+	bool clsHasPolygon : 1;
 	std::string clsDirection = INVALID_DEF_NAME;
 	DBU clsLocation = 0;
 	int clsNumTracks = 0;
 	std::vector<std::string> clsLayers;
 	DBU clsSpace = 0;
-	DefTrackDscp() = default;
+	DefTrackDscp() {
+		clsHasRect = false;
+		clsHasPolygon = false;
+	} // end constructor
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
 
-class DefViaLayerDscp {
+class DefViaGeometryDscp {
 public:
-	std::string clsLayerName = INVALID_DEF_NAME;
+	bool clsIsPolygon : 1;
+	bool clsIsRect : 1;
+	int clsMask = 0;
+	bool clsHasMask = false;
 	Bounds clsBounds;
-	DefViaLayerDscp() = default;
+	
+	// TODO Polygon
+	DefViaGeometryDscp (){
+		clsIsPolygon = false;
+		clsIsRect = false;
+	} // end constructor
 }; // end class 
 
 // -----------------------------------------------------------------------------
 
 class DefViaDscp {
 public:
+	bool clsHasViaRule : 1;
+	bool clsHasRowCol : 1;
+	bool clsHasOrigin : 1;
+	bool clsHasOffset : 1;
+	bool clsHasMask : 1;
+	DBU clsXOffsetOrigin = 0;
+	DBU clsYOffsetOrigin = 0;
+	DBU clsXCutSize = 0;
+	DBU clsYCutSize = 0;
+	DBU clsXCutSpacing = 0;
+	DBU clsYCutSpacing = 0;
+	DBU clsXBottomEnclosure = 0;
+	DBU clsYBottomEnclosure = 0;
+	DBU clsXTopEnclosure = 0;
+	DBU clsYTopEnclosure = 0;
+	DBU clsXBottomOffset = 0;
+	DBU clsYBottomOffset = 0;
+	DBU clsXTopOffset = 0;
+	DBU clsYTopOffset = 0;
+	int clsNumCutRows = 0;
+	int clsNumCutCols = 0;
 	std::string clsName = INVALID_DEF_NAME;
-	std::vector<DefViaLayerDscp> clsViaLayers;
-	DefViaDscp() = default;
+	std::string clsViaRuleName = INVALID_DEF_NAME;
+	std::string clsBottomLayer;
+	std::string clsCutLayer;
+	std::string clsTopLayer;
+	// map->first = layerName; map->second = list of geometry rects or polygons.
+	std::map<std::string, std::deque<DefViaGeometryDscp>> clsGeometries;
+	DefViaDscp(){
+		clsHasViaRule = false;
+		clsHasRowCol = false;
+		clsHasOrigin = false;
+		clsHasOffset = false;
+		clsHasMask = false;
+	} // end constructor 
 }; // end class
 
 // -----------------------------------------------------------------------------

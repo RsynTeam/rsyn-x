@@ -49,9 +49,9 @@ public:
 
 private:
 
-	void renderLayer(QPainter *painter, Rsyn::PhysicalViaLayer physicalViaLayer);
+	void renderLayer(QPainter *painter, const std::vector<Rsyn::PhysicalViaGeometry> & geometries);
 
-	QRect getBoundingRect(Rsyn::PhysicalViaLayer physicalViaLayer) const;
+	QRect getBoundingRect(const std::vector<Rsyn::PhysicalViaGeometry> & geometries) const;
 
 	PhysicalRoutingVia clsPhysicalRoutingVia;
 

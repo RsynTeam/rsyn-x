@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "LEFControlParser.h"
 
 #ifndef WIN32
@@ -90,6 +90,7 @@ int lefObstructionCB(lefrCallbackType_e c, lefiObstruction* obs, lefiUserData ud
 int lefLayerCB(lefrCallbackType_e c, lefiLayer* layer, lefiUserData ud);
 int lefSpacingCB(lefrCallbackType_e c, lefiSpacing* spacing, lefiUserData ud);
 int lefViaCb(lefrCallbackType_e typ, lefiVia* via, lefiUserData data);
+int lefViaRuleCb(lefrCallbackType_e typ, lefiViaRule* via, lefiUserData data);
 
 LefDscp &getLibraryFromUserData(lefiUserData userData) {
 	return *((LefDscp *) userData);
@@ -128,6 +129,7 @@ void LEFControlParser::parseLEF(const std::string &filename, LefDscp & dscp) {
 	lefrSetLayerCbk(lefLayerCB);
 	lefrSetSpacingCbk(lefSpacingCB);
 	lefrSetViaCbk(lefViaCb);
+	lefrSetViaRuleCbk(lefViaRuleCb);
 	lefrSetRegisterUnusedCallbacks();
 
 	// Open the lef file for the reader to read
@@ -186,16 +188,16 @@ int lefMacroCB(lefrCallbackType_e c, lefiMacro* macro, lefiUserData ud) {
 	lefMacro.clsSize[X] = macro->sizeX();
 	lefMacro.clsSize[Y] = macro->sizeY();
 	lefMacro.clsSymmetry.clear();
-	if(macro->hasXSymmetry()){
+	if (macro->hasXSymmetry()) {
 		lefMacro.clsSymmetry.append("X");
 	} // end if 
-	if(macro->hasYSymmetry()){
+	if (macro->hasYSymmetry()) {
 		lefMacro.clsSymmetry.append(" Y");
 	} // end if 
-	if(macro->has90Symmetry()){
+	if (macro->has90Symmetry()) {
 		lefMacro.clsSymmetry.append(" R90");
 	} // end if 
-	if(lefMacro.clsSymmetry.empty()){
+	if (lefMacro.clsSymmetry.empty()) {
 		lefMacro.clsSymmetry = INVALID_LEF_NAME;
 	} // end if 
 	return 0;
@@ -252,7 +254,7 @@ int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
 			lefiGeomPolygon * poly;
 			LefPolygonDscp * polyDscp;
 			double2 * point;
-			
+
 			std::vector< boost::polygon::rectangle_data<double> > rects;
 			Polygon90 polygon90;
 			std::vector<BoostPoint> pts;
@@ -272,23 +274,24 @@ int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
 					// Mateus @ 2018/09/13:
 					// Support for polygon-shapped pins
 					poly = geometry->getPolygon(i);
-					
+
 					for (int k = 0; k < poly->numPoints; k++) {
 						pts.push_back(boost::polygon::construct<BoostPoint>(poly->x[k], poly->y[k]));
 					} // end for 
-					
+
 					boost::polygon::set_points(polygon90, pts.begin(), pts.end());
 					boost::polygon::get_rectangles(rects, polygon90);
 					for (int k = 0; k < rects.size(); k++) {
 						double xl = rects[k].get(boost::polygon::HORIZONTAL).low();
 						double xh = rects[k].get(boost::polygon::HORIZONTAL).high();
 						double yl = rects[k].get(boost::polygon::VERTICAL).low();
-						double yh = rects[k].get(boost::polygon::VERTICAL).high();;
+						double yh = rects[k].get(boost::polygon::VERTICAL).high();
+						;
 						geoDscp->clsBounds.resize(geoDscp->clsBounds.size() + 1);
 						bound = &geoDscp->clsBounds.back();
 						bound->updatePoints(xl, yl, xh, yh);
 					} // end for
-				    // end Mateus @ 2018/09/13	
+					// end Mateus @ 2018/09/13	
 					break;
 				default:
 					std::cout << "WARNING: function " << __func__ << " does not supports pin geometry type in the LEF Parser Control.\n";
@@ -308,25 +311,25 @@ int lefSiteCB(lefrCallbackType_e c, lefiSite* site, lefiUserData ud) {
 	lefSite.clsName = site->name();
 
 	lefSite.clsHasClass = site->hasClass();
-	if (site->hasClass()){
+	if (site->hasClass()) {
 		lefSite.clsSiteClass = site->siteClass();
 	} // end if 
 	lefSite.clsSize[X] = site->sizeX();
 	lefSite.clsSize[Y] = site->sizeY();
 	lefSite.clsSymmetry.clear();
-	if(site->hasXSymmetry()){
+	if (site->hasXSymmetry()) {
 		lefSite.clsSymmetry.append("X");
 	} // end if 
-	if(site->hasYSymmetry()){
+	if (site->hasYSymmetry()) {
 		lefSite.clsSymmetry.append(" Y");
 	} // end if 
-	if(site->has90Symmetry()){
+	if (site->has90Symmetry()) {
 		lefSite.clsSymmetry.append(" R90");
 	} // end if 
-	if(lefSite.clsSymmetry.empty()){
+	if (lefSite.clsSymmetry.empty()) {
 		lefSite.clsSymmetry = INVALID_LEF_NAME;
 	} // end if 
-		
+
 	return 0;
 } // end function
 
@@ -424,20 +427,113 @@ int lefViaCb(lefrCallbackType_e typ, lefiVia* via, lefiUserData data) {
 	LefDscp & dscp = getLibraryFromUserData(data);
 	dscp.clsLefViaDscps.resize(dscp.clsLefViaDscps.size() + 1);
 	LefViaDscp & viaDscp = dscp.clsLefViaDscps.back();
+	viaDscp.clsIsDefault = via->hasDefault();
 	viaDscp.clsName = via->name();
-	viaDscp.clsHasDefault = via->hasDefault();
-	viaDscp.clsViaLayers.resize(via->numLayers());
+	viaDscp.clsHasViaRule = via->hasViaRule();
+	if (viaDscp.clsHasViaRule) {
+		viaDscp.clsViaRuleName = via->viaRuleName();
+		viaDscp.clsXCutSize = via->xCutSize();
+		viaDscp.clsYCutSize = via->yCutSize();
+		viaDscp.clsXCutSpacing = via->xCutSpacing();
+		viaDscp.clsYCutSpacing = via->yCutSpacing();
+		viaDscp.clsXBottomEnclosure = via->xBotEnc();
+		viaDscp.clsYBottomEnclosure = via->yBotEnc();
+		viaDscp.clsXTopEnclosure = via->xTopEnc();
+		viaDscp.clsYTopEnclosure = via->yTopEnc();
+		viaDscp.clsBottomLayer = via->botMetalLayer();
+		viaDscp.clsCutLayer = via->cutLayer();
+		viaDscp.clsTopLayer = via->topMetalLayer();
+		if (via->hasOrigin()) {
+			viaDscp.clsHasOrigin = true;
+			viaDscp.clsXOrigin = via->xOffset();
+			viaDscp.clsYOrigin = via->yOffset();
+		} // end if 
+		if (via->hasOffset()) {
+			viaDscp.clsHasOffset = true;
+			viaDscp.clsXBottomOffset = via->xBotOffset();
+			viaDscp.clsYBottomOffset = via->yBotOffset();
+			viaDscp.clsXTopOffset = via->xTopOffset();
+			viaDscp.clsYTopOffset = via->yTopOffset();
+		} // end if 
+		if (via->hasRowCol()) {
+			viaDscp.clsHasRowCol = true;
+			viaDscp.clsNumCutRows = via->numCutRows();
+			viaDscp.clsNumCutCols = via->numCutCols();
+		} // end if 
+	} else {
+		if(via->hasResistance()) {
+			viaDscp.clsHasResistance = true;
+			viaDscp.clsCutResistance = via->resistance();
+		} // end if 
+		for (int i = 0; i < via->numLayers(); ++i) {
+			std::string layerName = via->layerName(i);
+			std::deque<LefViaGeometryDscp> & geoDscps = viaDscp.clsGeometries[layerName];
+			for (int j = 0; j < via->numRects(i); ++j) {
+				geoDscps.push_back(LefViaGeometryDscp());
+				LefViaGeometryDscp & geoDscp = geoDscps.back();
+				DoubleRectangle & bounds = geoDscp.clsBounds;
+				bounds[LOWER][X] = via->xl(i, j);
+				bounds[LOWER][Y] = via->yl(i, j);
+				bounds[UPPER][X] = via->xh(i, j);
+				bounds[UPPER][Y] = via->yh(i, j);
+			} // end for 
+		} // end for
+	} // end if-else
+	return 0;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+int lefViaRuleCb(lefrCallbackType_e typ, lefiViaRule* via, lefiUserData data) {
+	LefDscp & dscp = getLibraryFromUserData(data);
+	dscp.clsLefViaRuleDscps.push_back(LefViaRuleDscp());
+	LefViaRuleDscp & viaDscp = dscp.clsLefViaRuleDscps.back();
+	viaDscp.clsName = via->name();
+	viaDscp.clsIsDefault = via->hasDefault();
+	viaDscp.clsIsGenerate = via->hasGenerate();
+	std::vector<LefViaRuleLayerDscp> & layers = viaDscp.clsLayers;
+	layers.resize(via->numLayers());
 	for (int i = 0; i < via->numLayers(); i++) {
-		LefViaLayerDscp & layerDscp = viaDscp.clsViaLayers[i];
-		layerDscp.clsLayerName = via->layerName(i);
-		layerDscp.clsBounds.resize(via->numRects(i));
-		for (int j = 0; j < via->numRects(i); j++) {
-			DoubleRectangle & bounds = layerDscp.clsBounds[j];
-			bounds[LOWER][X] = via->xl(i, j);
-			bounds[LOWER][Y] = via->yl(i, j);
-			bounds[UPPER][X] = via->xh(i, j);
-			bounds[UPPER][Y] = via->yh(i, j);
-		} // end for 
+		LefViaRuleLayerDscp & layer = layers[i];
+		lefiViaRuleLayer * viaLayer = via->layer(i);
+		layer.clsName = viaLayer->name();
+		if (viaLayer->hasDirection()) {
+			layer.clsHasDirection = true;
+			layer.clsIsHorizontal = viaLayer->isHorizontal();
+			layer.clsIsVertical = viaLayer->isVertical();
+		} // end if 
+		if (viaLayer->hasEnclosure()) {
+			layer.clsHasEnclosure = true;
+			layer.clsEnclosure1 = viaLayer->enclosureOverhang1();
+			layer.clsEnclosure2 = viaLayer->enclosureOverhang2();
+		} // end if
+		if (viaLayer->hasRect()) {
+			layer.clsHasRect = true;
+			DoubleRectangle & bounds = layer.clsRect;
+			bounds[LOWER][X] = viaLayer->xl();
+			bounds[LOWER][Y] = viaLayer->yl();
+			bounds[UPPER][X] = viaLayer->xh();
+			bounds[UPPER][Y] = viaLayer->yh();
+		} // end if 
+		if (viaLayer->hasResistance()) {
+			layer.clsHasResistance = true;
+			layer.clsCutResistance = viaLayer->resistance();
+		} // end if 
+		if (viaLayer->hasWidth()) {
+			layer.clsHasWidth = true;
+			layer.clsMinWidth = viaLayer->widthMin();
+			layer.clsMaxWidth = viaLayer->widthMax();
+		} // end if 
+		if (viaLayer->hasSpacing()) {
+			layer.clsHasSpacing = true;
+			layer.clsXSpacing = viaLayer->spacingStepX();
+			layer.clsYSpacing = viaLayer->spacingStepY();
+		} // end if 
+	} // end for 
+	std::vector<std::string> & vias = viaDscp.clsVias;
+	vias.reserve(via->numVias());
+	for (int i = 0; i < via->numVias(); ++i) {
+		vias.push_back(via->viaName(i));
 	} // end for 
 	return 0;
 } // end method 

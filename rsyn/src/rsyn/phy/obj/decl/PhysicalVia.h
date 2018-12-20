@@ -52,17 +52,35 @@ public:
 
 	//! @brief Returns via name
 	const std::string & getName() const;
-	
-	bool isDesignVia() const;
 
 	//! @brief returns the top layer of the via
-	Rsyn::PhysicalViaLayer getTopLayer() const;
+	Rsyn::PhysicalLayer getTopLayer() const;
 	//! @brief returns the cut layer of the via
-	Rsyn::PhysicalViaLayer getCutLayer() const;
+	Rsyn::PhysicalLayer getCutLayer() const;
 	//! @brief returns the bottom layer of the via
-	Rsyn::PhysicalViaLayer getBottomLayer() const;
+	Rsyn::PhysicalLayer getBottomLayer() const;
 	//! @brief returns the respective layer
-	Rsyn::PhysicalViaLayer getLayer(const PhysicalViaLayerType type) const;
+	Rsyn::PhysicalLayer getLayer(const PhysicalViaLayerType type) const;
+	
+	bool isViaDesign() const;
+	bool isViaRule() const;
+	bool isViaGeometry() const;
+	bool hasRowCol() const;
+	bool hasOrigin() const;
+	bool hasoffset() const;
+	ViaType getViaType() const;
+	Rsyn::PhysicalViaRuleBase getViaRule() const;
+	DBU getCutSize(const Dimension dim) const;
+	DBU getSpacing(const Dimension dim) const;
+	DBU getEnclosure(const ViaLevel level, const Dimension dim) const;
+	DBU getOrigin(const Dimension dim) const;
+	DBU getOffset(const ViaLevel level, const Dimension dim) const;
+	int getNumRows() const;
+	int getNumCols() const;
+	const std::vector<Rsyn::PhysicalViaGeometry>  & allBottomGeometries() const;
+	const std::vector<Rsyn::PhysicalViaGeometry>  & allCutGeometries() const;
+	const std::vector<Rsyn::PhysicalViaGeometry>  & allTopGeometries() const;
+	const std::vector<Rsyn::PhysicalViaGeometry>  & allGeometries(const PhysicalViaLayerType layer) const;
 }; // end class 
 
 } // end namespace 

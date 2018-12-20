@@ -16,6 +16,7 @@ declare -a libs=(
 "freeglut3-dev"
 "libglew-dev"
 "libpng16-dev"
+"cmake"
 )
 
 if [[ `lsb_release -rs` == "18.04" ]] # replace 8.04 by the number of release you want

@@ -12,33 +12,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /* 
- * File:   PhysicalViaLayer.h
+ * File:   PhysicalViaGeometry.h
  * Author: jucemar
  *
- * Created on 14 de Maio de 2017, 14:56
+ * Created on November 12, 2018, 10:14 PM
  */
-
-#ifndef PHYSICALDESIGN_PHYSICALVIALAYERDATA_H
-#define PHYSICALDESIGN_PHYSICALVIALAYERDATA_H
 
 namespace Rsyn {
 
-class PhysicalViaLayerData : public PhysicalObject {
-public:
-	Rsyn::PhysicalLayer clsLayer;
-	std::vector<Bounds> clsBounds;
-	Rsyn::PhysicalVia clsPhVia;
-}; // end class 
+inline const Bounds & PhysicalViaGeometry::getBounds() const {
+	return data->clsBounds;
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+inline int PhysicalViaGeometry::getMaskNumber() const {
+	return data->clsMaskNumber;
+} // end method 
+
+// -----------------------------------------------------------------------------
 
 } // end namespace 
-
-#endif /* PHYSICALDESIGN_PHYSICALVIALAYERDATA_H */
 

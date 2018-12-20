@@ -39,29 +39,30 @@ ViaGraphicsItem::render(GraphicsScene *scene, QPainter *painter, const float lod
 
 void
 ViaGraphicsItem::renderBottomLayer(QPainter *painter) {
-	renderLayer(painter, getVia().getBottomLayer());
+	renderLayer(painter, getVia().allBottomGeometries());
 } // end method
 
 // -----------------------------------------------------------------------------
 
 void
 ViaGraphicsItem::renderCutLayer(QPainter *painter) {
-	renderLayer(painter, getVia().getCutLayer());
+	renderLayer(painter, getVia().allCutGeometries());
 } // end method
 
 // -----------------------------------------------------------------------------
 
 void
 ViaGraphicsItem::renderTopLayer(QPainter *painter) {
-	renderLayer(painter, getVia().getTopLayer());
+	renderLayer(painter, getVia().allTopGeometries());
 } // end method
 
 // -----------------------------------------------------------------------------
 
 void
-ViaGraphicsItem::renderLayer(QPainter *painter, Rsyn::PhysicalViaLayer physicalViaLayer) {
+ViaGraphicsItem::renderLayer(QPainter *painter, const std::vector<Rsyn::PhysicalViaGeometry> & geometries) {
 	const DBUxy pos = clsPhysicalRoutingVia.getPosition();
-	for (Bounds bounds : physicalViaLayer.allBounds()) {
+	for (Rsyn::PhysicalViaGeometry geometry : geometries) {
+		Bounds bounds = geometry.getBounds();
 		bounds.translate(pos);
 		painter->drawRect(QtUtils::convert(bounds));
 	} // end for
@@ -72,19 +73,20 @@ ViaGraphicsItem::renderLayer(QPainter *painter, Rsyn::PhysicalViaLayer physicalV
 QRect
 ViaGraphicsItem::getBoundingRect() const {
 	Rsyn::PhysicalVia via = clsPhysicalRoutingVia.getVia();
-	QRect rect = getBoundingRect(via.getCutLayer());
-	rect = rect.united(getBoundingRect(via.getBottomLayer()));
-	rect = rect.united(getBoundingRect(via.getTopLayer()));
+	QRect rect = getBoundingRect(via.allCutGeometries());
+	rect = rect.united(getBoundingRect(via.allBottomGeometries()));
+	rect = rect.united(getBoundingRect(via.allTopGeometries()));
 	return rect;
 } // end method
 
 // -----------------------------------------------------------------------------
 
 QRect
-ViaGraphicsItem::getBoundingRect(Rsyn::PhysicalViaLayer physicalViaLayer) const {
+ViaGraphicsItem::getBoundingRect(const std::vector<Rsyn::PhysicalViaGeometry> & geometries) const {
 	QRect rect;
 	const DBUxy pos = clsPhysicalRoutingVia.getPosition();
-	for (Bounds bounds : physicalViaLayer.allBounds()) {
+	for (Rsyn::PhysicalViaGeometry geometry : geometries) {
+		Bounds bounds = geometry.getBounds();
 		bounds.translate(pos);
 		rect = rect.united(QtUtils::convert(bounds));
 	} // end for

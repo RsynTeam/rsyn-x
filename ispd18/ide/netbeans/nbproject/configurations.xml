@@ -36,6 +36,9 @@
           </df>
         </df>
       </df>
+      <df name="db">
+        <in>Database.cpp</in>
+      </df>
       <df name="io">
         <df name="image">
           <in>DrawingBoard.cpp</in>
@@ -92,6 +95,10 @@
           <in>PopulateRsyn.cpp</in>
           <in>SizingISPDReader.cpp</in>
         </df>
+        <df name="writer">
+          <in>Writer.cpp</in>
+          <in>WriterDEF.cpp</in>
+        </df>
         <in>Graphics.cpp</in>
         <in>Report.cpp</in>
         <in>Writer.cpp</in>
@@ -102,6 +109,7 @@
       <df name="model">
         <df name="congestion">
           <df name="DensityGrid">
+            <in>DensityGrid.cpp</in>
             <in>DensityGridService.cpp</in>
           </df>
         </df>
@@ -176,6 +184,12 @@
             </df>
           </df>
         </df>
+        <df name="overlay">
+          <df name="densityGrid">
+            <in>DensityGridOverlay.cpp</in>
+          </df>
+          <in>Register.cpp</in>
+        </df>
         <df name="window">
           <in>MainWindow.cpp</in>
         </df>
@@ -194,6 +208,7 @@
           <in>Polygon.cpp</in>
           <in>Rect.cpp</in>
         </df>
+        <in>Histogram.cpp</in>
         <in>Logger.cpp</in>
         <in>RCTreeExtractor.cpp</in>
         <in>Stepwatch.cpp</in>
@@ -488,6 +503,13 @@
         <cTool flags="0">
         </cTool>
       </item>
+      <item path="../../../rsyn/src/rsyn/db/Database.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="../../../rsyn/src/rsyn/io/Graphics.cpp"
             ex="false"
             tool="1"
@@ -698,7 +720,28 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="../../../rsyn/src/rsyn/io/writer/Writer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="../../../rsyn/src/rsyn/io/writer/WriterDEF.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="../../../rsyn/src/rsyn/ispd18/RoutingGuide.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="../../../rsyn/src/rsyn/model/congestion/DensityGrid/DensityGrid.cpp"
             ex="false"
             tool="1"
             flavor2="8">
@@ -964,6 +1007,20 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="../../../rsyn/src/rsyn/qt/overlay/Register.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="../../../rsyn/src/rsyn/qt/overlay/densityGrid/DensityGridOverlay.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="../../../rsyn/src/rsyn/qt/window/MainWindow.cpp"
             ex="false"
             tool="1"
@@ -1021,6 +1078,13 @@
         </ccTool>
       </item>
       <item path="../../../rsyn/src/rsyn/shell/Shell.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="../../../rsyn/src/rsyn/util/Histogram.cpp"
             ex="false"
             tool="1"
             flavor2="8">

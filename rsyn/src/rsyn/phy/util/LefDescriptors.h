@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -31,6 +31,7 @@
 #define LEFDESCRIPTORS_H
 
 #include <map>
+#include <deque>
 
 #include "rsyn/util/DoubleRectangle.h"
 #include "rsyn/util/double2.h"
@@ -116,6 +117,7 @@ public:
 // -----------------------------------------------------------------------------
 
 //! Descriptor for LEF Spacing Rule Layer
+
 class LefSpacingRuleDscp {
 public:
 	double clsSpacing = 0.0;
@@ -172,11 +174,11 @@ public:
 
 //! Descriptor for LEF Via Layer. A via layer is composed by a layer and a set of rectangles.
 
-class LefViaLayerDscp {
+class LefViaGeometryDscp {
 public:
-	std::string clsLayerName = INVALID_LEF_NAME;
-	std::vector<DoubleRectangle> clsBounds;
-	LefViaLayerDscp() = default;
+	DoubleRectangle clsBounds;
+	int clsMask = 0;
+	LefViaGeometryDscp() = default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
@@ -185,10 +187,90 @@ public:
 
 class LefViaDscp {
 public:
-	int clsHasDefault = false;
+	bool clsIsDefault : 1;
+	bool clsHasViaRule : 1;
+	bool clsHasRowCol : 1;
+	bool clsHasOrigin : 1;
+	bool clsHasOffset : 1;
+	bool clsHasResistance : 1;
+	double clsXCutSize = 0;
+	double clsYCutSize = 0;
+	double clsXCutSpacing = 0;
+	double clsYCutSpacing = 0;
+	double clsXBottomEnclosure = 0;
+	double clsYBottomEnclosure = 0;
+	double clsXTopEnclosure = 0;
+	double clsYTopEnclosure = 0;
+	double clsXOrigin = 0;
+	double clsYOrigin = 0;
+	double clsXBottomOffset = 0;
+	double clsYBottomOffset = 0;
+	double clsXTopOffset = 0;
+	double clsYTopOffset = 0;
+	double clsCutResistance = 0.0;
+	int clsNumCutRows = 0;
+	int clsNumCutCols = 0;
+	// map->first = layerName; map->second = list of geometry rects or polygons.
+	std::map<std::string, std::deque<LefViaGeometryDscp>> clsGeometries;
 	std::string clsName = INVALID_LEF_NAME;
-	std::vector<LefViaLayerDscp> clsViaLayers;
+	std::string clsViaRuleName = INVALID_LEF_NAME;
+	std::string clsBottomLayer = INVALID_LEF_NAME;
+	std::string clsCutLayer = INVALID_LEF_NAME;
+	std::string clsTopLayer = INVALID_LEF_NAME;
+	
 	LefViaDscp() = default;
+}; // end class 
+
+// -----------------------------------------------------------------------------
+
+//! Descriptor for LEF Layer of Via Rule and Via Rule Generate
+
+class LefViaRuleLayerDscp {
+public:
+	bool clsHasDirection : 1;
+	bool clsHasEnclosure : 1;
+	bool clsHasWidth : 1;
+	bool clsHasResistance : 1;
+	bool clsHasOverhang : 1;
+	bool clsHasMetalOverhang : 1;
+	bool clsHasSpacing : 1;
+	bool clsHasRect : 1;
+	bool clsIsHorizontal : 1;
+	bool clsIsVertical : 1;
+
+	std::string clsName = INVALID_LEF_NAME;
+	double clsEnclosure1 = 0.0;
+	double clsEnclosure2 = 0.0;
+	double clsCutResistance = 0.0;
+	double clsMinWidth = 0.0;
+	double clsMaxWidth = 0.0;
+	double clsXSpacing  = 0.0;
+	double clsYSpacing = 0.0;
+	DoubleRectangle clsRect;
+	LefViaRuleLayerDscp() {
+		clsHasDirection = false;
+		clsHasEnclosure = false;
+		clsHasWidth = false;
+		clsHasResistance = false;
+		clsHasOverhang = false;
+		clsHasMetalOverhang = false;
+		clsHasSpacing = false;
+		clsHasRect = false;
+		clsIsHorizontal = false;
+		clsIsVertical = false;
+	} // end constructor
+}; // end class 
+
+//! Descriptor for LEF Via Rule and Via Rule Generate
+
+class LefViaRuleDscp {
+public:
+	std::string clsName = INVALID_LEF_NAME;
+	bool clsIsGenerate = false;
+	bool clsIsDefault = false;
+	std::vector<LefViaRuleLayerDscp> clsLayers;
+	std::vector<std::string> clsVias;
+	LefViaRuleDscp() = default;
 }; // end class 
 
 // -----------------------------------------------------------------------------
@@ -236,6 +318,7 @@ public:
 	std::vector<LefMacroDscp> clsLefMacroDscps;
 	std::vector<LefSpacingDscp> clsLefSpacingDscps;
 	std::vector<LefViaDscp> clsLefViaDscps;
+	std::deque<LefViaRuleDscp> clsLefViaRuleDscps;
 	LefDscp() = default;
 }; // end class 
 

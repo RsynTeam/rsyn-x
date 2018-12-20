@@ -594,18 +594,69 @@ int defVia(defrCallbackType_e c, defiVia * via, defiUserData ud) {
 	defDscp.clsVias.push_back(DefViaDscp());
 	DefViaDscp & viaDscp = defDscp.clsVias.back();
 	viaDscp.clsName = via->name();
-	viaDscp.clsViaLayers.resize(via->numLayers());
-	int xl, yl, xh, yh;
-	char * layerName;
-	for (int i = 0; i < via->numLayers(); i++) {
-		DefViaLayerDscp & layerDscp = viaDscp.clsViaLayers[i];
-		via->layer(i, &layerName, &xl, &yl, &xh, &yh);
-		layerDscp.clsLayerName = layerName;
-		layerDscp.clsBounds[LOWER][X] = static_cast<DBU> (xl);
-		layerDscp.clsBounds[LOWER][Y] = static_cast<DBU> (yl);
-		layerDscp.clsBounds[UPPER][X] = static_cast<DBU> (xh);
-		layerDscp.clsBounds[UPPER][Y] = static_cast<DBU> (yh);
-	} // end for 
+	if (via->hasViaRule()) {
+		viaDscp.clsHasViaRule = true;
+		char * name;
+		int xSize, ySize, xCutSpacing, yCutSpacing, xBotEnc, yBotEnc, xTopEnc, yTopEnc;
+		char * bottom;
+		char * cut;
+		char * top;
+		via->viaRule(&name, &xSize, &ySize, &bottom, &cut, &top, &xCutSpacing, &yCutSpacing, &xBotEnc, &yBotEnc, &xTopEnc, &yTopEnc);
+		viaDscp.clsViaRuleName = name;
+		viaDscp.clsXCutSize = xSize;
+		viaDscp.clsYCutSize = ySize;
+		viaDscp.clsBottomLayer = bottom;
+		viaDscp.clsCutLayer = cut;
+		viaDscp.clsTopLayer = top;
+		viaDscp.clsXCutSpacing = xCutSpacing;
+		viaDscp.clsYCutSpacing = yCutSpacing;
+		viaDscp.clsXBottomEnclosure = xBotEnc;
+		viaDscp.clsYBottomEnclosure = yBotEnc;
+		viaDscp.clsXTopEnclosure = xTopEnc;
+		viaDscp.clsYTopEnclosure = yTopEnc;
+		if (via->hasRowCol()) {
+			viaDscp.clsHasRowCol = true;
+			via->rowCol(&viaDscp.clsNumCutRows, &viaDscp.clsNumCutCols);
+		} // end if 
+		if (via->hasOrigin()) {
+			viaDscp.clsHasOrigin = true;
+			int xOrigen, yOrigen;
+			via->origin(&xOrigen, &yOrigen);
+			viaDscp.clsXOffsetOrigin = xOrigen;
+			viaDscp.clsYOffsetOrigin = yOrigen;
+		} // end if 
+		if (via->hasOffset()) {
+			viaDscp.clsHasOffset = true;
+			int xBotOffset, yBotOffset, xTopOffset, yTopOffset;
+			via->offset(&xBotOffset, &yBotOffset, &xTopOffset, &yTopOffset);
+			viaDscp.clsXBottomOffset = xBotOffset;
+			viaDscp.clsYBottomOffset = yBotOffset;
+			viaDscp.clsXTopOffset = xTopOffset;
+			viaDscp.clsYTopOffset = yTopOffset;
+		} // end if 
+		// TODO PATTERN
+	} else {
+		viaDscp.clsHasViaRule = false;
+		std::map<std::string, std::deque<DefViaGeometryDscp>> & mapGeos = viaDscp.clsGeometries;
+		int xl, yl, xh, yh;
+		char * layerName;
+		for (int i = 0; i < via->numLayers(); ++i) {
+			via->layer(i, &layerName, &xl, &yl, &xh, &yh);
+			std::string name = layerName;
+			std::deque<DefViaGeometryDscp> & geos = mapGeos[name];
+			geos.push_back(DefViaGeometryDscp());
+			DefViaGeometryDscp & geoDscp = geos.back();
+			geoDscp.clsIsRect = true;
+			geoDscp.clsBounds[LOWER][X] = static_cast<DBU> (xl);
+			geoDscp.clsBounds[LOWER][Y] = static_cast<DBU> (yl);
+			geoDscp.clsBounds[UPPER][X] = static_cast<DBU> (xh);
+			geoDscp.clsBounds[UPPER][Y] = static_cast<DBU> (yh);
+			if(via->hasRectMask(i)) {
+				geoDscp.clsHasMask = true;
+				geoDscp.clsMask = via->rectMask(i);
+			} // end if 
+		} // end for 
+	} // end if-else
 	return 0;
 } // end method
 
@@ -1025,7 +1076,7 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 		status = defwEndNets();
 		CHECK_STATUS(status);
 	} // end if 
-	
+
 	status = defwEnd();
 	CHECK_STATUS(status);
 	fclose(defFile);

@@ -221,21 +221,21 @@ PhysicalRoutingVia::getVia() const {
 
 Rsyn::PhysicalLayer
 PhysicalRoutingVia::getTopLayer() const {
-	return clsVia.getTopLayer().getLayer();
+	return clsVia.getTopLayer();
 } // end method
 
 // -----------------------------------------------------------------------------
 
 Rsyn::PhysicalLayer
 PhysicalRoutingVia::getCutLayer() const {
-	return clsVia.getCutLayer().getLayer();
+	return clsVia.getCutLayer();
 } // end method
 
 // -----------------------------------------------------------------------------
 
 Rsyn::PhysicalLayer
 PhysicalRoutingVia::getBottomLayer() const {
-	return clsVia.getBottomLayer().getLayer();
+	return clsVia.getBottomLayer();
 } // end method
 
 // -----------------------------------------------------------------------------

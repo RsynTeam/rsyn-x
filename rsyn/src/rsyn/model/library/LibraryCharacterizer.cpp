@@ -97,8 +97,10 @@ void LibraryCharacterizer::doTypicalAnalysis() {
 		EdgeArray<Number> delayToSlewSensitivity;
 		computeFanoutOfNDelay(larc, typicalFanout, delay, slew, delayToSlewSensitivity);
 
+		const Number leakage = clsScenario->getLibraryCellLeakagePower(lcell);
+
 		sumDelay += delay;
-		sumDelayPerLeakage += delay / clsScenario->getLibraryCellLeakagePower(lcell);
+		sumDelayPerLeakage += delay / leakage;
 		sumSlew += slew;
 		sumDelayToSlewSensitivity += delayToSlewSensitivity;
 
@@ -534,6 +536,7 @@ void LibraryCharacterizer::reportTypicalValues(std::ostream &out) {
 	out << "Delay per Leakage : " << getTypicalDelayPerLeakage() << "\n";
 	out << "Slew : " << getTypicalSlew() << "\n";
 	out << "Delay to Slew Sensitivity : " << getTypicalDelayToSlewSensitivity() << "\n";
+	out << "Leakage : " << getTypicalLeakage() << "\n";
 	out << "\n";
 } // end method
 

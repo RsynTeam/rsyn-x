@@ -16,6 +16,7 @@
 #ifndef RSYN_FLOATING_POINT_H
 #define	RSYN_FLOATING_POINT_H
 
+#include <limits>
 #include <cmath>
 #include <cassert>
 
@@ -25,20 +26,21 @@ enum RoundingStrategy {
 	ROUND_NEAREST
 }; // end enum
 
+namespace Rsyn {
+class Uninit {
+public:
+	operator float() const { return std::numeric_limits<float>::quiet_NaN();}
+	operator double() const { return std::numeric_limits<double>::quiet_NaN();}
+}; // end class
+
+class Infinity {
+public:
+	operator float() const { return std::numeric_limits<float>::infinity();}
+	operator double() const { return std::numeric_limits<double>::infinity();}
+}; // end class
+} // end namespace
+
 class FloatingPoint {
-private:
-
-	template<typename T, typename R> inline
-	static
-	R round(const T value, const RoundingStrategy roudingStrategy) {
-		switch (roudingStrategy) {
-			case ROUND_DOWN:    return (R) std::floor(value);
-			case ROUND_UP:      return (R) std::ceil (value);
-			case ROUND_NEAREST: return (R) std::round(value);
-			default: assert(false); return 0;
-		} // end switch
-	} // end  function
-
 public:
 
 	template<typename T>
@@ -84,13 +86,49 @@ public:
 				((std::abs(a) < std::abs(b) ? std::abs(b) : std::abs(a)) * precision);
 	} // end method
 
-	static int round(const float value, const RoundingStrategy roudingStrategy) {
-		return round<float, int>(value, roudingStrategy);
-	} // end  function
+	static bool isInit(const float value) {return isInit<float>(value);}
+	static bool isInit(const double value) {return isInit<double>(value);}
 
-	static long round(const double value, const RoundingStrategy roudingStrategy) {
-		return round<double, long>(value, roudingStrategy);
-	} // end  function
+	static bool isUninit(const float value) {return isUninit<float>(value);}
+	static bool isUninit(const double value) {return isUninit<double>(value);}
+
+	static bool isInfinity(const float value) {return isInfinity<float>(value);}
+	static bool isInfinity(const double value) {return isInfinity<double>(value);}
+
+	static int round(const float value, const RoundingStrategy roudingStrategy) {return round<float, int>(value, roudingStrategy);}
+	static long round(const double value, const RoundingStrategy roudingStrategy) {return round<double, long>(value, roudingStrategy);}
+
+	static Rsyn::Infinity getInfinity() {return Rsyn::Infinity();}
+	static Rsyn::Uninit getUninit() {return Rsyn::Uninit();}
+
+private:
+
+	template<typename T, typename R> inline
+	static
+	R round(const T value, const RoundingStrategy roudingStrategy) {
+		switch (roudingStrategy) {
+			case ROUND_DOWN:    return (R) std::floor(value);
+			case ROUND_UP:      return (R) std::ceil (value);
+			case ROUND_NEAREST: return (R) std::round(value);
+			default: assert(false); return 0;
+		} // end switch
+	} // end method
+
+	template<typename T>
+	static bool isInit(const T value) {
+		return !std::isnan(value);
+	} // end method
+
+	template<typename T>
+	static bool isUninit(const T value) {
+		return std::isnan(value);
+	} // end method
+
+	template<typename T>
+	static bool isInfinity(const T value) {
+		return std::isinf(value);
+	} // end method
+
 }; // end class
 
 #endif

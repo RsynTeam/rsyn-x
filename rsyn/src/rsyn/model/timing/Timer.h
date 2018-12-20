@@ -617,6 +617,7 @@ public:
 	//! @param includeFanoutNetsOfSideCells also update the nets driven by the
 	//!        side cells (i.e. those driven by the same driver as the cell).
 	void updateTimingLocally(Rsyn::Instance cell, const bool includeFanoutNetsOfSinkCells = false, const bool includeFanoutNetsOfSideCells = false);
+	void updateTimingLocally(std::vector<Rsyn::Instance> cells, const bool includeFanoutNetsOfSinkCells = false, const bool includeFanoutNetsOfSideCells = false);
 
 	//! @brief Computes the arrival and slew at an primary input.
 	void calculatePrimaryInputTiming(const Rsyn::Pin pin, const TimingMode mode, const EdgeArray<Number> &load, EdgeArray<Number> &arrival, EdgeArray<Number> &slew) const;

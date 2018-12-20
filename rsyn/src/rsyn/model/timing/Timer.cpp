@@ -1759,6 +1759,63 @@ void Timer::updateTimingLocally(Rsyn::Instance cell, const bool includeFanoutNet
 
 // -----------------------------------------------------------------------------
 
+void Timer::updateTimingLocally(std::vector<Rsyn::Instance> cells, const bool includeFanoutNetsOfSinkCells, const bool includeFanoutNetsOfSideCells) {
+	// Process nets in topological order...
+
+	std::unordered_set<Rsyn::Net> visited;
+	std::vector<std::tuple<TopologicalIndex, Rsyn::Net>> nets;
+
+	// [NOTE] The input nets should be processed before output nets in order
+	// to process nets in topological order.
+	for (Rsyn::Instance instance : cells) {
+		for (Rsyn::Pin pin : instance.allPins()) {
+			Rsyn::Net net = pin.getNet();
+			if (net && !visited.count(net)) {
+				nets.push_back(std::make_tuple(net.getTopologicalIndex(), net));
+				visited.insert(net);
+
+				if (includeFanoutNetsOfSinkCells && (pin.isOutput() || includeFanoutNetsOfSideCells)) {
+					for (Rsyn::Pin sink : net.allPins(Rsyn::SINK)) {
+						for (Rsyn::Arc arc : sink.allOutgoingArcs()) {
+							Rsyn::Net sinkNet = arc.getToNet();
+							if (sinkNet) {
+								nets.push_back(std::make_tuple(sinkNet.getTopologicalIndex(), sinkNet));
+							} // end if
+						} // end for
+					} // end for
+				} // end if
+			} // end method
+		} // end for
+	} // end for
+
+	// Sort nets by topological index and update them.
+	std::sort(nets.begin(), nets.end());
+	for (std::tuple<TopologicalIndex, Rsyn::Net> &t : nets) {
+		Rsyn::Net net = std::get<1>(t);
+		updateTiming_Net(net);
+		dirtyNets.insert(net);
+	} // end for
+
+	// If this is a sequential cell update the required time at the data pin.
+	for (Rsyn::Instance cell : cells) {
+		if (cell.isSequential()) {
+			Rsyn::Pin dataPin = getDataPin(cell);
+			if (dataPin) {
+				updateTiming_UpdateTimingTests_SetupHold_DataPin(dataPin);
+
+				Rsyn::Net net = dataPin.getNet();
+				if (net) {
+					dirtyNets.insert(net);
+				} // end if
+			} else {
+				std::cout << "[BUG] Sequential cell without a data pin.\n";
+			} // end else
+		} // end if
+	} // end for
+} // end method
+
+// -----------------------------------------------------------------------------
+
 void Timer::calculatePrimaryInputTiming(const Rsyn::Pin pin, const TimingMode mode, const EdgeArray<Number> &load, EdgeArray<Number> &arrival, EdgeArray<Number> &slew) const {
 	rsynAssert(pin.isPort(Rsyn::IN), "Pin is not a port.");
 

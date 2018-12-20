@@ -36,6 +36,11 @@ namespace Rsyn {
 class PhysicalLayer : public Proxy<PhysicalLayerData> {
 	friend class PhysicalDesign;
 	friend class PhysicalDesignData;
+	friend class PhysicalViaGeometry;
+	friend class PhysicalViaRuleBase;
+	friend class PhysicalViaRule;
+	friend class PhysicalViaRuleGenerate;
+	friend class PhysicalVia;
 	RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 protected:
 	//! @brief Constructs a Rsyn::PhysicalLayer object with a pointer to Rsyn::PhysicalLayerData.

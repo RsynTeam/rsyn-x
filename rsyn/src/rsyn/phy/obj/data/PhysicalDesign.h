@@ -40,6 +40,9 @@ public:
 	std::vector<PhysicalGroup> clsPhysicalGroups;
 	std::vector<PhysicalSite> clsPhysicalSites;
 	std::vector<PhysicalVia> clsPhysicalVias;
+	std::vector<Rsyn::PhysicalViaRuleBase> clsPhysicalViaRuleBases;
+	std::vector<Rsyn::PhysicalViaRule> clsPhysicalViaRules;
+	std::vector<Rsyn::PhysicalViaRuleGenerate> clsPhysicalViaRuleGenerates;
 	std::vector<PhysicalSpecialNet> clsPhysicalSpecialNets;
 	std::vector<PhysicalTracks> clsPhysicalTracks;
 	std::vector<Rsyn::PhysicalRoutingGrid> clsPhysicalRoutingGrids;
@@ -53,6 +56,7 @@ public:
 	//From LEF file
 	std::unordered_map<std::string, std::size_t> clsMapPhysicalLayers;
 	std::unordered_map<std::string, std::size_t> clsMapPhysicalVias;
+	std::unordered_map<std::string, std::size_t> clsMapPhysicalViaRuleBases;
 	std::vector<std::size_t> clsPhysicalRoutingLayerIndeces;
 	//std::vector<PhysicalSpacing> clsPhysicalSpacing;
 
