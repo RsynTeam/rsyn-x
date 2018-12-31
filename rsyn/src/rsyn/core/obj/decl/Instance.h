@@ -127,6 +127,9 @@ public:
 	//!        have only one arc.
 	Arc getAnyArc();
 
+	//! @brief Returns the library cell associated to this instance if any.
+	LibraryCell getLibraryCell() const;
+
 	//! @brief Returns the topological index of this instance.
 	//! @note  Since the topological index of an instance may be ambiguous (e.g.
 	//!        for register), some choice needed to be made here. Currently,

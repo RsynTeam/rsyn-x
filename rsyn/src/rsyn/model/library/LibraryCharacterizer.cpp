@@ -22,6 +22,7 @@
 #include <Rsyn/Session>
 #include <Rsyn/Debug>
 #include "rsyn/model/scenario/Scenario.h"
+#include "rsyn/util/StreamStateSaver.h"
 
 namespace Rsyn {
 
@@ -55,7 +56,8 @@ void LibraryCharacterizer::runLibraryCharacterization(TimingModel * timingModel)
 	// Creates an attribute to hold the characterization data.
 	clsLibraryArcCharacterizations = clsDesign.createAttribute();
 
-	doTypicalAnalysis();
+	clsTypicalValues = doTypicalAnalysis(4);
+	doGainBasedSlewModelAnalysis();
 	doLogicalEffortAnalysis();
 
 	clsAnalysisPerformed = true;
@@ -63,14 +65,10 @@ void LibraryCharacterizer::runLibraryCharacterization(TimingModel * timingModel)
 
 // -----------------------------------------------------------------------------
 
-void LibraryCharacterizer::doTypicalAnalysis() {
-	const int typicalFanout = 4;
-
-	clsTypicalDelay = 0;
-	clsTypicalDelayPerLeakage = 0;
-	clsTypicalSlew = 0;
-	clsTypicalDelayToSlewSensitivity =  0;
-
+LibraryCharacterizer::TypicalValues LibraryCharacterizer::doTypicalAnalysis(const float typicalFanout) {
+	TypicalValues result;
+	result.fanout = typicalFanout;
+	
 	int counter = 0;
 	EdgeArray<Number> sumDelay(0, 0);
 	EdgeArray<Number> sumDelayPerLeakage(0, 0);
@@ -114,10 +112,30 @@ void LibraryCharacterizer::doTypicalAnalysis() {
 	const EdgeArray<Number> avgSlew = sumSlew / counter;
 	const EdgeArray<Number> avgDelayToSlewSensitivity = sumDelayToSlewSensitivity / counter;
 
-	clsTypicalDelay = avgDelay.getAvg();
-	clsTypicalDelayPerLeakage = avgDelayPerLeakage.getAvg();
-	clsTypicalSlew = avgSlew.getAvg();
-	clsTypicalDelayToSlewSensitivity = avgDelayToSlewSensitivity.getAvg();
+	result.delay = avgDelay.getAvg();
+	result.delayPerLeakage = avgDelayPerLeakage.getAvg();
+	result.slew = avgSlew.getAvg();
+	result.delayToSlewSensitivity = avgDelayToSlewSensitivity.getAvg();
+	return result;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+void LibraryCharacterizer::doGainBasedSlewModelAnalysis() {
+	const int N = 32;
+
+	std::vector<Number> gains;
+	std::vector<Number> slews;
+	for (int gain = 1; gain <= N; gain *= 2) {
+		const TypicalValues typicalValues = doTypicalAnalysis(gain);
+		gains.push_back(gain);
+		slews.push_back(typicalValues.slew);
+	} // end for
+
+	Number a, b;
+	logicalEffort_LinearLeastSquares(gains, slews, a, b);
+	clsGainBasedSlewSlope = a;
+	clsGainBasedSlewConstant = b;
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -539,5 +557,27 @@ void LibraryCharacterizer::reportTypicalValues(std::ostream &out) {
 	out << "Leakage : " << getTypicalLeakage() << "\n";
 	out << "\n";
 } // end method
+
+// -----------------------------------------------------------------------------
+
+void LibraryCharacterizer::reportGainBasedSlewModel(std::ostream &out) {
+	StreamStateSaver sss(out);
+	out << std::setprecision(2) << std::fixed;
+
+	out << std::string(80, '-') << "\n";
+	out << "Gain Based Model\n";
+	out << std::string(80, '-') << "\n";
+	out << "Slope : " << getGainBasedSlewSlope() << "\n";
+	out << "Constant : " << getGainBasedSlewConstant() << "\n";
+	out << "\n";
+
+	out << std::setw(4) << "Gain" << " " << std::setw(10) << "Slew" << "\n";
+	for (int i = 1; i <= 32; i *=2 ) {
+		out << std::setw(4) << i << " " << std::setw(10) << getGainBasedSlew(i) << "\n";
+	} // end for
+	out << "\n";
+} // end method
+
+
 
 } // end namespace

@@ -1018,6 +1018,12 @@ public:
 		return from.state[mode].slew[iedge];
 	} // end method		
 
+	//! @brief Returns the slew at the input pin of an arc.
+	EdgeArray<Number> getArcInputSlew(Rsyn::Arc arc, const TimingMode mode) const {
+		const TimingPin &from = getTimingPin(arc.getFromPin());
+		return from.state[mode].slew;
+	} // end method
+
 	//! @brief Returns the slew at the input pin of an arc given a specific
 	//!        edge transition at the output.
 	//! @note  If this is a negative-unate arc, and the fall transition is
@@ -1046,6 +1052,16 @@ public:
 		Rsyn::Pin to = arc.getToPin();
 		return getPinLoadCapacitance(to, oedge) / getPinInputCapacitance(from);
 	} // end method	
+
+	//! @brief Returns the ratio between the input capacitance and output load
+	//!        of an arc.
+	//! @todo  This method does not handle net arcs.
+	EdgeArray<Number> getArcGain(Rsyn::Arc arc, const TimingMode mode) const {
+		Rsyn::Pin from = arc.getFromPin();
+		Rsyn::Pin to = arc.getToPin();
+		return getPinLoadCapacitance(to) / getPinInputCapacitance(from);
+	} // end method
+
 
 	//! @brief Returns the wire delay (i.e. the delay between driver and sink)
 	//!        at the input pin of an arc.
