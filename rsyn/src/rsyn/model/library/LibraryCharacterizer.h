@@ -102,6 +102,7 @@ private:
 		Number delay = 0;
 		Number delayPerLeakage = 0;
 		Number slew = 0;
+		Number resistance = 0;
 		Number delayToSlewSensitivity = 0;
 	}; // end struct
 
@@ -217,6 +218,14 @@ public:
 	//!        library.
 	Number getTypicalSlew() const {return clsTypicalValues.slew;}
 
+	//! @brief Returns the typical resistance derived from RC = d --> R = d/C,
+	//!        where d is the typical delay.
+	Number getTypicalResistance() const {return clsTypicalValues.resistance;}
+
+	//! @brief Returns the typical capacitance derived from RC = d --> C = d/R,
+	//!        where d is the typical delay and R is the typical resistance.
+	Number getTypicalCapacitance() const {return getTypicalDelay() / getTypicalResistance();}
+
 	//! @brief Returns the typical delay to slew sensitivity (i.e. how much
 	//!        the delay will change given a change in the input slew) for the
 	//!        library. The sensitivity is computed based on the typical slew.
@@ -293,7 +302,7 @@ public:
 	//!        n times the input pin capacitance. The delay is computed
 	//!        iteratively where the input slew of iteration k is the output
 	//!        slew of iteration k-1.
-	void computeFanoutOfNDelay(Rsyn::LibraryArc larc, const int n, EdgeArray<Number> &delay, EdgeArray<Number> &slew, EdgeArray<Number> &delayToSlewSensitivity, const int numIterations = 5) const;
+	void computeFanoutOfNDelay(Rsyn::LibraryArc larc, const int n, EdgeArray<Number> &delay, EdgeArray<Number> &slew, EdgeArray<Number> &resistance, EdgeArray<Number> &delayToSlewSensitivity, const int numIterations = 5) const;
 
 }; // end class
 

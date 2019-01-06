@@ -73,6 +73,7 @@ LibraryCharacterizer::TypicalValues LibraryCharacterizer::doTypicalAnalysis(cons
 	EdgeArray<Number> sumDelay(0, 0);
 	EdgeArray<Number> sumDelayPerLeakage(0, 0);
 	EdgeArray<Number> sumSlew(0, 0);
+	EdgeArray<Number> sumResistance(0, 0);
 	EdgeArray<Number> sumDelayToSlewSensitivity(0, 0);
 
 	// Compute the logical effort for each timing arc.
@@ -92,14 +93,16 @@ LibraryCharacterizer::TypicalValues LibraryCharacterizer::doTypicalAnalysis(cons
 		// Compute fanout-of-n.
 		EdgeArray<Number> delay;
 		EdgeArray<Number> slew;
+		EdgeArray<Number> resistance;
 		EdgeArray<Number> delayToSlewSensitivity;
-		computeFanoutOfNDelay(larc, typicalFanout, delay, slew, delayToSlewSensitivity);
+		computeFanoutOfNDelay(larc, typicalFanout, delay, slew, resistance, delayToSlewSensitivity);
 
 		const Number leakage = clsScenario->getLibraryCellLeakagePower(lcell);
 
 		sumDelay += delay;
 		sumDelayPerLeakage += delay / leakage;
 		sumSlew += slew;
+		sumResistance += resistance;
 		sumDelayToSlewSensitivity += delayToSlewSensitivity;
 
 		counter++;
@@ -110,11 +113,13 @@ LibraryCharacterizer::TypicalValues LibraryCharacterizer::doTypicalAnalysis(cons
 	const EdgeArray<Number> avgDelay = sumDelay / counter;
 	const EdgeArray<Number> avgDelayPerLeakage = sumDelayPerLeakage / counter;
 	const EdgeArray<Number> avgSlew = sumSlew / counter;
+	const EdgeArray<Number> avgResistance = sumResistance / counter;
 	const EdgeArray<Number> avgDelayToSlewSensitivity = sumDelayToSlewSensitivity / counter;
 
 	result.delay = avgDelay.getAvg();
 	result.delayPerLeakage = avgDelayPerLeakage.getAvg();
 	result.slew = avgSlew.getAvg();
+	result.resistance = avgResistance.getAvg();
 	result.delayToSlewSensitivity = avgDelayToSlewSensitivity.getAvg();
 	return result;
 } // end method
@@ -439,6 +444,7 @@ void LibraryCharacterizer::logicalEffort_TimingArc(
 void LibraryCharacterizer::computeFanoutOfNDelay(Rsyn::LibraryArc larc, const int n,
 		EdgeArray<Number> &delay,
 		EdgeArray<Number> &slew,
+		EdgeArray<Number> &resistance,
 		EdgeArray<Number> &delayToSlewSensitivity,
 		const int numIterations
 ) const {
@@ -456,10 +462,12 @@ void LibraryCharacterizer::computeFanoutOfNDelay(Rsyn::LibraryArc larc, const in
 	// make the slew converge.
 	delay.set(0, 0);
 	slew.set(0, 0);
+	resistance.set(0, 0);
 	for (int i = 0; i < numIterations; i++) {
 		for (const Rsyn::TimingTransition oedge : allTimingTransitions()) {
 			const TimingTransition iedge = sense == POSITIVE_UNATE? oedge : Rsyn::REVERSE_EDGE_TYPE[oedge];
 			clsTimingModel->calculateLibraryArcTiming(larc, Rsyn::LATE, oedge, slew[iedge], load, delay[oedge], slew[oedge]);
+			resistance[oedge] = delay[oedge] / load; // RC = d --> R = d/C
 		} // end for
 	} // end for
 
@@ -550,11 +558,13 @@ void LibraryCharacterizer::reportTypicalValues(std::ostream &out) {
 	out << std::string(80, '-') << "\n";
 	out << "Typical Library Values\n";
 	out << std::string(80, '-') << "\n";
-	out << "Delay : " << getTypicalDelay() << "\n";
-	out << "Delay per Leakage : " << getTypicalDelayPerLeakage() << "\n";
-	out << "Slew : " << getTypicalSlew() << "\n";
+	out << "Delay : " << getTypicalDelay() << Units::getDefaultInternalUnitString(MEASURE_TIME) << "\n";
+	out << "Delay per Leakage : " << getTypicalDelayPerLeakage() << Units::getDefaultInternalUnitString(MEASURE_TIME) << "/" << Units::getDefaultInternalUnitString(MEASURE_POWER) << "\n";
+	out << "Slew : " << getTypicalSlew() << Units::getDefaultInternalUnitString(MEASURE_TIME) << "\n";
+	out << "Resistance : " << getTypicalResistance() << Units::getDefaultInternalUnitString(MEASURE_RESISTANCE) << "\n";
+	out << "Capacitance : " << getTypicalCapacitance() << Units::getDefaultInternalUnitString(MEASURE_CAPACITANCE) << "\n";
 	out << "Delay to Slew Sensitivity : " << getTypicalDelayToSlewSensitivity() << "\n";
-	out << "Leakage : " << getTypicalLeakage() << "\n";
+	out << "Leakage : " << getTypicalLeakage() << Units::getDefaultInternalUnitString(MEASURE_POWER) << "\n";
 	out << "\n";
 } // end method
 

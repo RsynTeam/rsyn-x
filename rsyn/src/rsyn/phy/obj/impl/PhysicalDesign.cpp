@@ -570,6 +570,7 @@ Rsyn::LibraryCell PhysicalDesign::addPhysicalLibraryCell(const LefMacroDscp& mac
 	phlCell.clsSize[Y] = static_cast<DBU> (std::round(size[Y]));
 	phlCell.clsMacroClass = Rsyn::getPhysicalMacroClass(macro.clsMacroClass);
 	phlCell.clsSymmetry = Rsyn::getPhysicalSymmetry(macro.clsSymmetry);
+	lCell.data->size = phlCell.clsSize;
 	// Initializing obstacles in the physical library cell
 	phlCell.clsObs.reserve(macro.clsObs.size());
 	for (const LefObsDscp &libObs : macro.clsObs) {
