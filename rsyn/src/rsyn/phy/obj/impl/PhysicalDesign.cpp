@@ -909,16 +909,46 @@ void PhysicalDesign::addPhysicalNet(const DefNetDscp & netDscp) {
 // -----------------------------------------------------------------------------
 
 void PhysicalDesign::addPhysicalSpecialNet(const DefSpecialNetDscp & specialNet) {
-	std::cout << "TODO: Handle special nets.\n";
-	//	data->clsPhysicalSpecialNets.push_back(PhysicalSpecialNet(new PhysicalSpecialNetData()));
-	//	Rsyn::PhysicalSpecialNet phSpecialNet = data->clsPhysicalSpecialNets.back();
-	//	phSpecialNet->id = data->clsPhysicalSpecialNets.size() - 1;
-	//	data->clsMapPhysicalSpecialNets[specialNet.clsName] = data->clsPhysicalSpecialNets.size() - 1;
-	//	for (const DefWireDscp & wire : specialNet.clsWires) {
-	//		phSpecialNet->clsWires.push_back(PhysicalWire(new PhysicalWireData()));
-	//		PhysicalWire phWire = phSpecialNet->clsWires.back();
-	//		addSpecialWireNet(wire, phWire, true);
-	//	} // end for
+	Rsyn::Net net = data->clsDesign.findNetByName(specialNet.clsName);
+	PhysicalNetData & netData = data->clsPhysicalNets[net];
+	Rsyn::PhysicalRouting & routing = netData.clsRouting;
+	netData.clsNet = net;
+	for (const DefWireDscp & wireDscp : specialNet.clsWires) {
+		for (const DefWireSegmentDscp & segmentDscp : wireDscp.clsWireSegments) {
+			Rsyn::PhysicalLayer physicalLayer = getPhysicalLayerByName(segmentDscp.clsLayerName);
+
+			int numPoints = segmentDscp.clsRoutingPoints.size();
+			Rsyn::PhysicalRoutingWire wire;
+			for (const DefRoutingPointDscp & point : segmentDscp.clsRoutingPoints) {
+				if (point.clsHasRectangle) {
+					Bounds bds = point.clsRect;
+					bds.translate(point.clsPos);
+					routing.addRect(physicalLayer, bds);
+				} else if (point.clsHasVia) {
+					DBUxy pos = segmentDscp.clsRoutingPoints.back().clsPos;
+					Rsyn::PhysicalVia physicalVia = getPhysicalViaByName(point.clsViaName);
+					routing.addVia(physicalVia, pos);
+				} // end if-else 
+				if (numPoints > 1) {
+					wire.addRoutingPoint(point.clsPos);
+				} // end if 
+			} // end for 
+			// it is a wire 
+			if (numPoints > 1) {
+				wire.setLayer(physicalLayer);
+				const DefRoutingPointDscp & source = segmentDscp.clsRoutingPoints.front();
+				const DefRoutingPointDscp & target = segmentDscp.clsRoutingPoints.back();
+				if (source.clsHasExtension)
+					wire.setSourceExtension(source.clsExtension);
+				if (target.clsHasExtension)
+					wire.setTargetExtension(target.clsExtension);
+				if (segmentDscp.clsRoutedWidth > 0) {
+					wire.setWidth(segmentDscp.clsRoutedWidth);
+				} // end if
+				routing.addWire(wire);
+			} // end if 
+		} // end for
+	} // end for
 } // end method 
 
 //// -----------------------------------------------------------------------------

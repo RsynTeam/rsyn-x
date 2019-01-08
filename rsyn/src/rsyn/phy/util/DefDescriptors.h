@@ -170,7 +170,9 @@ public:
  class DefSpecialNetDscp {
 public:
 	std::string clsName = INVALID_DEF_NAME;
+	std::vector<DefNetConnection> clsConnections;
 	std::vector<DefWireDscp> clsWires;
+	DefSpecialNetDscp() = default;
 }; // end class 
 
 // -----------------------------------------------------------------------------

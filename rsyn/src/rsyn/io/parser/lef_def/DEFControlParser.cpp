@@ -468,6 +468,14 @@ int defSpecialNet(defrCallbackType_e c, defiNet* net, void* ud) {
 	DefSpecialNetDscp & specialNet = defDscp.clsSpecialNets.back();
 	specialNet.clsName = net->name();
 	specialNet.clsWires.resize(net->numWires());
+	DefSpecialNetDscp& netDscp = defDscp.clsSpecialNets.back();
+	netDscp.clsConnections.resize(net->numConnections());
+	for (int i = 0; i < net->numConnections(); i++) {
+		DefNetConnection &connection = netDscp.clsConnections[i];
+		connection.clsPinName = net->pin(i);
+		connection.clsComponentName = DEFControlParser::unescape(net->instance(i));
+	} // end for
+
 	for (int i = 0; i < net->numWires(); i++) {
 		DefWireDscp & specialWire = specialNet.clsWires[i];
 		defiWire * wire = net->wire(i);
@@ -553,6 +561,9 @@ int defSpecialNet(defrCallbackType_e c, defiNet* net, void* ud) {
 					case DEFIPATH_STYLE:
 						//path->getStyle();
 						std::cout << "TODO DEFIPATH_STYLE at " << __func__ << "\n";
+						break;
+					case DEFIPATH_SHAPE:
+						// Not being read yet
 						break;
 				} // end switch
 				pathId = path->next();
