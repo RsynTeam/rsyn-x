@@ -751,7 +751,7 @@ void PhysicalDesign::addPhysicalCell(Rsyn::Instance cell, const DefComponentDscp
 	physicalCell.clsInstance = cell;
 	Rsyn::InstanceTag tag = data->clsDesign.getTag(cell);
 	tag.setFixed(component.clsIsFixed);
-	tag.setMacroBlock(phLibCell.clsMacroClass == Rsyn::MACRO_BLOCK);
+	tag.setMacroBlock(phLibCell.clsMacroClass == Rsyn::MACRO_BLOCK || phLibCell.clsMacroClass == Rsyn::MACRO_RING);
 	if (component.clsIsFixed) {
 		if (phLibCell.clsLayerBoundIndex > -1) {
 			PhysicalObstacle obs = phLibCell.clsObs[phLibCell.clsLayerBoundIndex];

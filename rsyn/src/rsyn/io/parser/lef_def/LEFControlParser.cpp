@@ -218,7 +218,7 @@ int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
 	LefMacroDscp & lefMacro = dscp.clsLefMacroDscps.back();
 	lefMacro.clsPins.resize(lefMacro.clsPins.size() + 1);
 	LefPinDscp & lefPin = lefMacro.clsPins.back();
-
+	
 	lefPin.clsPinName = pin->name();
 	lefPin.clsPinDirection = pin->direction();
 	lefPin.clsPinUse = pin->use();

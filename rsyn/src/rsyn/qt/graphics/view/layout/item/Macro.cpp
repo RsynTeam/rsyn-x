@@ -38,7 +38,16 @@ MacroGraphicsItem::MacroGraphicsItem(Rsyn::Cell cell) : CellGraphicsItem(cell) {
 			clsShape += shape;
 		} // end for
 	} else {
-		Bounds bounds(DBUxy(), cell.getSize());
+		Bounds bounds;
+		if (cell.getOrientation() == Rsyn::ORIENTATION_E  || 
+			cell.getOrientation() == Rsyn::ORIENTATION_FE ||
+			cell.getOrientation() == Rsyn::ORIENTATION_W  ||
+			cell.getOrientation() == Rsyn::ORIENTATION_FW ) {
+			bounds = Bounds(DBUxy(), DBUxy(cell.getHeight(), cell.getWidth()));
+		} else {
+			bounds = Bounds(DBUxy(), cell.getSize());
+		} // end if
+		
 		QRect rect = QtUtils::convert(bounds);
 		QPainterPath shape;
 		shape.addRect(rect);
