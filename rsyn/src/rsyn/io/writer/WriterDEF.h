@@ -76,12 +76,12 @@ public:
 	virtual void start(const Rsyn::Json &params) override;
 	virtual void stop() override;
 	
-	
 	void writeDEF();
 	
 	// contest mode
 	void writeICCAD15();
 	void writeISPD18();
+	void writeISPD19();
 
 	
 	void reset() {
@@ -373,7 +373,6 @@ protected:
 	
 	// enable contest mode
 	void enableICCAD15();
-	void enableISPD18();
 
 	
 	// load Def Descriptor

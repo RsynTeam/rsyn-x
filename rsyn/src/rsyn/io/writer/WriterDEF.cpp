@@ -86,6 +86,7 @@ void WriterDEF::start(const Rsyn::Json &params) {
 			//					enableAll();
 			//				} // end if 
 			//			} // end if 
+			
 			writeDEF();
 		}); // end command 
 	} // end block
@@ -177,14 +178,24 @@ void WriterDEF::writeDEF() {
 void WriterDEF::writeICCAD15() {
 
 	enableICCAD15();
-	clsFilename = clsDesign.getName() + "-cad085";
+	clsFilename = clsDesign.getName() + "-cada085";
 	writeDEF();
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 void WriterDEF::writeISPD18() {
+	enableAll();
+	clsFilename = clsDesign.getName() + "-ispd18";
+	writeDEF();
+} // end method 
 
+// -----------------------------------------------------------------------------
+
+void WriterDEF::writeISPD19() {
+	enableAll();
+	clsFilename = clsDesign.getName() + "-ispd19";
+	writeDEF();
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -282,12 +293,6 @@ void WriterDEF::enableICCAD15() {
 	setRows(true);
 	setComponents(true);
 	setPins(true);
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-void WriterDEF::enableISPD18() {
-
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -502,6 +507,12 @@ void WriterDEF::loadDEFFills(DefDscp & def) {
 // -----------------------------------------------------------------------------
 
 void WriterDEF::loadDEFSpecialNets(DefDscp & def) {
+	// TODO 
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+void WriterDEF::loadDEFNets(DefDscp & def) {
 	int numNets = clsDesign.getNumNets();
 	def.clsNets.reserve(numNets);
 	for (Rsyn::Net net : clsModule.allNets()) {
@@ -603,12 +614,6 @@ void WriterDEF::loadDEFSpecialNets(DefDscp & def) {
 		} // end for 
 
 	} // end for
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-void WriterDEF::loadDEFNets(DefDscp & def) {
-	// TODO 
 } // end method 
 
 // -----------------------------------------------------------------------------
