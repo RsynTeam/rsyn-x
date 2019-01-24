@@ -86,10 +86,14 @@ void WriterDEF::start(const Rsyn::Json &params) {
 			//					enableAll();
 			//				} // end if 
 			//			} // end if 
-			
 			writeDEF();
 		}); // end command 
 	} // end block
+	
+	// standard 
+	enableAll();
+	setPath("./");
+	setFilename(clsDesign.getName());
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -201,7 +205,6 @@ void WriterDEF::writeISPD19() {
 // -----------------------------------------------------------------------------
 
 void WriterDEF::enableAll() {
-
 	setVersion(true);
 	setDeviderChar(true);
 	setBusBitChar(true);
@@ -220,6 +223,7 @@ void WriterDEF::enableAll() {
 	setRegions(true);
 	setComponentMaskShift(true);
 	setComponents(true);
+	setUplacedComponents(false);
 	setPins(true);
 	setPinProperties(true);
 	setBlockages(true);
@@ -235,7 +239,6 @@ void WriterDEF::enableAll() {
 // -----------------------------------------------------------------------------
 
 void WriterDEF::disableAll() {
-
 	setVersion(false);
 	setDeviderChar(false);
 	setBusBitChar(false);

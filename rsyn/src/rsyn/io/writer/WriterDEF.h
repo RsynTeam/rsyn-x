@@ -91,6 +91,7 @@ public:
 		enableAll();
 	} // end method 
 
+	// enable to write all available DEF data in Rsyn database.
 	void enableAll();
 	void disableAll();
 	void enableFloorplan();
