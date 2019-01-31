@@ -549,8 +549,9 @@ void WriterDEF::loadDEFNets(DefDscp & def) {
 
 		Rsyn::PhysicalNet phNet = clsPhDesign.getPhysicalNet(net);
 		const PhysicalRouting & phRouting = phNet.getRouting();
-		if (!phRouting.isValid())
-			continue;
+//		if (!phRouting.isValid()) {
+//                    continue;
+//                }
 
 
 		std::vector<DefWireDscp> & wires = defNet.clsWires;
