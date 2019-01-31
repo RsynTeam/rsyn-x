@@ -48,6 +48,12 @@ public:
 	Rsyn::PhysicalLayer getLayer() const {
 		return clsPhLayer;
 	} // end method 
+        void setBounds(Bounds bounds) {
+            clsBounds = bounds;
+        } // end method 
+        void setLayer(Rsyn::PhysicalLayer layer) {
+            clsPhLayer = layer;
+        } // end method 
 }; // end class
 
 class NetGuide {
@@ -59,6 +65,9 @@ public:
 	const std::vector<LayerGuide> & allLayerGuides() const { 
 		return clsLayerGuides;
 	} // end method 
+        void setLayerGuides(std::vector<LayerGuide> guides) {
+            clsLayerGuides = guides;
+        }
 }; // end class 
 
 } // end namespace 
