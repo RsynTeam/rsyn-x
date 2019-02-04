@@ -291,6 +291,10 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 	defDscp.clsNets.push_back(DefNetDscp());
 	DefNetDscp & netDscp = defDscp.clsNets.back();
 	netDscp.clsName = net->name();
+	const char* use = net->use();
+	if (use) {
+		netDscp.clsUse = use;
+	} // end if
 	netDscp.clsConnections.resize(net->numConnections());
 	for (int i = 0; i < net->numConnections(); i++) {
 		DefNetConnection &connection = netDscp.clsConnections[i];
@@ -467,6 +471,10 @@ int defSpecialNet(defrCallbackType_e c, defiNet* net, void* ud) {
 	defDscp.clsSpecialNets.push_back(DefSpecialNetDscp());
 	DefSpecialNetDscp & specialNet = defDscp.clsSpecialNets.back();
 	specialNet.clsName = net->name();
+	const char* use = net->use();
+	if (use) {
+		specialNet.clsUse = use;
+	} // end if
 	specialNet.clsWires.resize(net->numWires());
 	DefSpecialNetDscp& netDscp = defDscp.clsSpecialNets.back();
 	netDscp.clsConnections.resize(net->numConnections());

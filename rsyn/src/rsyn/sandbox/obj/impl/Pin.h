@@ -363,7 +363,7 @@ SandboxPin::getTopologicalIndex() const {
 // -----------------------------------------------------------------------------
 
 inline
-PinUse
+Use
 SandboxPin::getUse() const {
 	Rsyn::LibraryPin lpin = getLibraryPin();
 	

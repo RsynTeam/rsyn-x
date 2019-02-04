@@ -272,4 +272,20 @@ NetTag::setIdeal(const bool value) {
 	data->ideal = value;
 } // end method
 
+// -----------------------------------------------------------------------------
+
+inline
+Use
+Net::getUse() const {
+	return data->netUse;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline
+void
+Net::setUse(const Use use) {
+	data->netUse = use;
+} // end method
+
 } // end namespace

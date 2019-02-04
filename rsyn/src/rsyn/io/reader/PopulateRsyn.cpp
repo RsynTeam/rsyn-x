@@ -396,6 +396,25 @@ void PopulateRsyn::populateRsyn(
 
 		Rsyn::Net rsynNet = top.createNet(net.clsName);
 
+		const string use = net.clsUse;
+		if (use == "ANALOG") {
+			rsynNet.setUse(Rsyn::ANALOG);
+		} else if (use == "CLOCK") {
+			rsynNet.setUse(Rsyn::CLOCK);
+		} else if (use == "GROUND") {
+			rsynNet.setUse(Rsyn::GROUND);
+		} else if (use == "POWER") {
+			rsynNet.setUse(Rsyn::POWER);
+		} else if (use == "RESET") {
+			rsynNet.setUse(Rsyn::RESET);
+		} else if (use == "SCAN") {
+			rsynNet.setUse(Rsyn::SCAN);
+		} else if (use == "SIGNAL") {
+			rsynNet.setUse(Rsyn::SIGNAL);
+		} else if (use == "TIEOFF") {
+			rsynNet.setUse(Rsyn::TIEOFF);
+		} // end if
+			
 		for (const DefNetConnection &connection : net.clsConnections) {
 
 			if (connection.clsComponentName == "PIN") {
@@ -434,7 +453,26 @@ void PopulateRsyn::populateRsyn(
 		} // end if
 
 		Rsyn::Net rsynNet = top.createNet(net.clsName);
-
+		
+		const string use = net.clsUse;
+		if (use == "ANALOG") {
+			rsynNet.setUse(Rsyn::ANALOG);
+		} else if (use == "CLOCK") {
+			rsynNet.setUse(Rsyn::CLOCK);
+		} else if (use == "GROUND") {
+			rsynNet.setUse(Rsyn::GROUND);
+		} else if (use == "POWER") {
+			rsynNet.setUse(Rsyn::POWER);
+		} else if (use == "RESET") {
+			rsynNet.setUse(Rsyn::RESET);
+		} else if (use == "SCAN") {
+			rsynNet.setUse(Rsyn::SCAN);
+		} else if (use == "SIGNAL") {
+			rsynNet.setUse(Rsyn::SIGNAL);
+		} else if (use == "TIEOFF") {
+			rsynNet.setUse(Rsyn::TIEOFF);
+		} // end if
+				
 		for (const DefNetConnection &connection : net.clsConnections) {
 			if (connection.clsComponentName == "PIN") {
 				Rsyn::Port rsynCell =
