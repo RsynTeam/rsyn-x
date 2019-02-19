@@ -29,6 +29,8 @@
 
 #include "rsyn/util/StreamLogger.h"
 
+#define ISPD18_BIN
+
 // -----------------------------------------------------------------------------
 
 #ifdef ISPD18_BIN
@@ -37,10 +39,10 @@
 void runISPD18Flow(const boost::program_options::variables_map& vm) {
 	Rsyn::Session session;
 	
-	std::cout << "Team number: 09\n";
-	std::cout << "Team name: UFRGS-Brazil\n";
-	std::cout << "Member: Mateus Fogaca, Jucemar Monteiro, Henrique Placido, Andre Oliveira, Isadora Oliveira, Eder Matheus Monteiro, Marcelo Johann, Ricardo Reis\n";
-	std::cout << "Affiliation: Universidade Federal do Rio Grande do Sul\n";
+	std::cout << "Team number: 21\n";
+	std::cout << "Team name: RsynRouter\n";
+	std::cout << "Member: Andre Oliveira (1), Erfan Aghaeekiasaraee (2), Jorge Ferreira (3), Marcelo Danigno (3), Eder Monteiro (1), Mateus Fogaca (1), Paulo Butzen (3), Laleh Behjat (2), Ricardo Reis (1)\n";
+	std::cout << "Affiliation: (1) UFRGS, (2) U. Calgary, (3) Furg\n";
 			
 	std::string lefFile;
 	if (!vm.count("lef")) {
@@ -64,9 +66,14 @@ void runISPD18Flow(const boost::program_options::variables_map& vm) {
 	guideFile = vm.at("guide").as<std::string>();
 	
 	if (!vm.count("threads"))
-		session.setSessionVariable("ispd18.numThreads", 1);
+		session.setSessionVariable("ispd19.numThreads", 1);
 	else
-		session.setSessionVariable("ispd18.numThreads", vm.at("threads").as<int>());
+		session.setSessionVariable("ispd19.numThreads", vm.at("threads").as<int>());
+	
+	if (!vm.count("tat"))
+		session.setSessionVariable("ispd19.tat", 86400);
+	else
+		session.setSessionVariable("ispd19.tat", vm.at("tat").as<int>());
 	
 	std::string outputFile = "solution.def";
 	if (vm.count("output"))
@@ -82,7 +89,9 @@ void runISPD18Flow(const boost::program_options::variables_map& vm) {
 	std::cout << std::setw(18) << "Output file:";
 	std::cout << outputFile << "\n";
 	std::cout << std::setw(18) << "# of threads:";
-	std::cout << session.getSessionVariableAsInteger("ispd18.numThreads") << "\n";
+	std::cout << session.getSessionVariableAsInteger("ispd19.numThreads") << "\n";
+	std::cout << std::setw(18) << "tat:";
+	std::cout << session.getSessionVariableAsInteger("ispd19.tat") << "\n";
 	std::cout << "----------------------------- \n\n";
 	
 	Rsyn::ISPD2018Reader reader;
@@ -94,9 +103,18 @@ void runISPD18Flow(const boost::program_options::variables_map& vm) {
 	};
 	reader.load(params);
 	
-	std::stringstream cmd;
-	cmd << "run \"ispd18.flow\" {\"output\": \"" << outputFile << "\"};";
+	std::string path = outputFile.substr(0, outputFile.find_last_of('/')+1);
+	std::string file = outputFile.substr(outputFile.find_last_of('/')+1, outputFile.size());
+	
 	Rsyn::Shell shell;
+	
+	std::stringstream cmd;
+	cmd << "start \"rsyn.writerDEF\" {\"path\" : \"" << path << "\", \"filename\" : \"" +
+			file + "\"};";
+	shell.runCommand(cmd.str());
+		
+	cmd = std::stringstream();
+	cmd << "writeDEFFile;";
 	shell.runCommand(cmd.str());
 } // end function
 #endif
@@ -167,6 +185,7 @@ int main(int argc, char *argv[]) {
 				("def", value<std::string>(), "Input .def file.")
 				("guide", value<std::string>(), "Input .guide file.")
 				("threads", value<int>(), "# of threads.")
+				("tat", value<int>(), "Runtime limit (s).")
 				("output", value<std::string>(), "Output file name.");
 		#else
 			desc.add_options()

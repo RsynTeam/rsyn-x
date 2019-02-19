@@ -171,7 +171,6 @@ void WriterDEF::writeDEF() {
 
 	std::string path = clsPath.empty() ? "./" : clsPath;
 	path += isFilenameSet() ? getFilename() : clsDesign.getName();
-	path += ".def";
 	defParser.writeFullDEF(path, def);
 } // end method 
 
