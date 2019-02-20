@@ -29,8 +29,6 @@
 
 #include "rsyn/util/StreamLogger.h"
 
-#define ISPD18_BIN
-
 // -----------------------------------------------------------------------------
 
 #ifdef ISPD18_BIN
