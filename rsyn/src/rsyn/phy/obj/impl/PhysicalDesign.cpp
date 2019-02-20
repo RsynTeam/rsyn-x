@@ -1082,14 +1082,16 @@ void PhysicalDesign::addPhysicalDesignVia(const DefViaDscp & via) {
 
 	if (via.clsHasViaRule) {
 		Rsyn::PhysicalViaRuleBase phViaRuleBase = getPhysicalViaRuleBaseByName(via.clsViaRuleName);
+		phVia->clsHasViaRule = true;
+		phVia->clsType = VIA_RULE_TYPE;
 		phVia->clsViaRuleData = phViaRuleBase.data;
 		phVia->clsCutSize[X] = via.clsXCutSize;
 		phVia->clsCutSize[Y] = via.clsYCutSize;
 		phVia->clsSpacing[X] = via.clsXCutSpacing;
 		phVia->clsSpacing[Y] = via.clsYCutSpacing;
 		phVia->clsEnclosure[BOTTOM_VIA_LEVEL][X] = via.clsXBottomEnclosure;
-		phVia->clsEnclosure[TOP_VIA_LEVEL][Y] = via.clsYBottomEnclosure;
-		phVia->clsEnclosure[BOTTOM_VIA_LEVEL][X] = via.clsXTopEnclosure;
+		phVia->clsEnclosure[BOTTOM_VIA_LEVEL][Y] = via.clsYBottomEnclosure;
+		phVia->clsEnclosure[TOP_VIA_LEVEL][X] = via.clsXTopEnclosure;
 		phVia->clsEnclosure[TOP_VIA_LEVEL][Y] = via.clsYTopEnclosure;
 
 		Rsyn::PhysicalLayer bottom = getPhysicalLayerByName(via.clsBottomLayer);
@@ -1117,6 +1119,8 @@ void PhysicalDesign::addPhysicalDesignVia(const DefViaDscp & via) {
 			phVia->clsOffset[TOP_VIA_LEVEL][Y] = via.clsYTopOffset;
 		} // end if 
 	} else {
+		phVia->clsHasViaRule = false;
+		phVia->clsType = VIA_GEOMETRY_TYPE;
 		std::vector<std::tuple<int, PhysicalLayerData *>> layers;
 		for (const std::pair < std::string, std::deque < DefViaGeometryDscp>> &geoPair : via.clsGeometries) {
 			const std::string & layerName = geoPair.first;

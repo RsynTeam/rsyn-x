@@ -391,19 +391,84 @@ void WriterDEF::loadDEFGCellGrid(DefDscp & def) {
 
 // -----------------------------------------------------------------------------
 
-void WriterDEF::loadDEFVias(DefDscp & def) {
-	// TODO 
-	//	std::vector<DefViaDscp> & defVias = def.clsVias;
-	//	defVias.reserve(clsPhDesign.getNumPhysicalVias());
-	//	for (Rsyn::PhysicalVia phVia : clsPhDesign.allPhysicalVias()) {
-	//		if (!phVia.isDesignVia()) {
-	//			continue;
-	//		} // end if 
-	//		defVias.push_back(DefViaDscp());
-	//		DefViaDscp & dscpVia = defVias.back();
-	//		dscpVia.clsName = phVia.getName();
-	//		
-	//	} // end for 
+void WriterDEF::loadDEFVias(DefDscp & def) { 
+		std::vector<DefViaDscp> & defVias = def.clsVias;
+		defVias.reserve(clsPhDesign.getNumPhysicalVias());
+		for (Rsyn::PhysicalVia phVia : clsPhDesign.allPhysicalVias()) {
+			if (!phVia.isViaDesign()) {
+				continue;
+			} // end if 
+			defVias.push_back(DefViaDscp());
+			DefViaDscp & dscpVia = defVias.back();
+			dscpVia.clsName = phVia.getName();
+			if (phVia.isViaRule()) {
+				dscpVia.clsHasViaRule = true;
+				dscpVia.clsViaRuleName = phVia.getViaRule().getName();
+				dscpVia.clsXCutSize = phVia.getCutSize(X);
+				dscpVia.clsYCutSize = phVia.getCutSize(Y);
+				dscpVia.clsBottomLayer = phVia.getBottomLayer().getName();
+				dscpVia.clsCutLayer = phVia.getCutLayer().getName();
+				dscpVia.clsTopLayer = phVia.getTopLayer().getName();
+				dscpVia.clsXCutSpacing = phVia.getSpacing(X);
+				dscpVia.clsYCutSpacing = phVia.getSpacing(Y);
+				dscpVia.clsXBottomEnclosure = phVia.getEnclosure(BOTTOM_VIA_LEVEL, X);
+				dscpVia.clsYBottomEnclosure = phVia.getEnclosure(BOTTOM_VIA_LEVEL, Y);
+				dscpVia.clsXTopEnclosure = phVia.getEnclosure(TOP_VIA_LEVEL, X);
+				dscpVia.clsYTopEnclosure = phVia.getEnclosure(TOP_VIA_LEVEL, Y);
+				if (phVia.hasRowCol()) {
+					dscpVia.clsHasRowCol = true;
+					dscpVia.clsNumCutCols = phVia.getNumCols();
+					dscpVia.clsNumCutRows = phVia.getNumRows();
+				} // end if 
+				if (phVia.hasOrigin()) {
+					dscpVia.clsHasOrigin = true;
+					dscpVia.clsXOffsetOrigin = phVia.getOrigin(X);
+					dscpVia.clsYOffsetOrigin = phVia.getOrigin(Y);
+				} // end if 
+				if (phVia.hasoffset()) {
+					dscpVia.clsHasOffset = true;
+					dscpVia.clsXBottomOffset = phVia.getOffset(BOTTOM_VIA_LEVEL, X);
+					dscpVia.clsYBottomOffset = phVia.getOffset(BOTTOM_VIA_LEVEL, Y);
+					dscpVia.clsXTopOffset = phVia.getOffset(TOP_VIA_LEVEL, X);
+					dscpVia.clsYTopOffset = phVia.getOffset(TOP_VIA_LEVEL, Y);
+				} // end if 
+			} else {
+				std::map<std::string, std::deque<DefViaGeometryDscp>> & mapGeos = dscpVia.clsGeometries;
+				
+				const std::string bottomLayerName = phVia.getBottomLayer().getName();
+				for (Rsyn::PhysicalViaGeometry phGeometry: phVia.allBottomGeometries()) {
+					std::deque<DefViaGeometryDscp> & geos = mapGeos[bottomLayerName];
+					geos.push_back(DefViaGeometryDscp());
+					DefViaGeometryDscp & geoDscp = geos.back();
+					geoDscp.clsBounds = phGeometry.getBounds();
+					geoDscp.clsHasMask = phGeometry.getMaskNumber() != -1;
+					geoDscp.clsMask = phGeometry.getMaskNumber();
+					geoDscp.clsIsRect = true;
+				} // end for
+				
+				const std::string cutLayerName = phVia.getCutLayer().getName();
+				for (Rsyn::PhysicalViaGeometry phGeometry: phVia.allCutGeometries()) {
+					std::deque<DefViaGeometryDscp> & geos = mapGeos[cutLayerName];
+					geos.push_back(DefViaGeometryDscp());
+					DefViaGeometryDscp & geoDscp = geos.back();
+					geoDscp.clsBounds = phGeometry.getBounds();
+					geoDscp.clsHasMask = phGeometry.getMaskNumber() != -1;
+					geoDscp.clsMask = phGeometry.getMaskNumber();
+					geoDscp.clsIsRect = true;
+				} // end for
+				
+				const std::string topLayerName = phVia.getTopLayer().getName();
+				for (Rsyn::PhysicalViaGeometry phGeometry: phVia.allTopGeometries()) {
+					std::deque<DefViaGeometryDscp> & geos = mapGeos[topLayerName];
+					geos.push_back(DefViaGeometryDscp());
+					DefViaGeometryDscp & geoDscp = geos.back();
+					geoDscp.clsBounds = phGeometry.getBounds();
+					geoDscp.clsHasMask = phGeometry.getMaskNumber() != -1;
+					geoDscp.clsMask = phGeometry.getMaskNumber();
+					geoDscp.clsIsRect = true;
+				} // end for
+			} // end if
+		} // end for 
 } // end method 
 
 // -----------------------------------------------------------------------------

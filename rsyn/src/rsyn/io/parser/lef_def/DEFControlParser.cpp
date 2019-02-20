@@ -128,7 +128,7 @@ void DEFControlParser::parseDEF(const std::string &filename, DefDscp &defDscp) {
 
 	// register track call back
 	defrSetTrackCbk(defTrack);
-
+		
 	// register special net call backs
 	defrSetSNetStartCbk(defSpecialNetStart);
 	defrSetSNetCbk(defSpecialNet);
@@ -963,7 +963,73 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 	status = defwNewLine();
 	CHECK_STATUS(status);
 
-
+	status = defwStartVias(defDscp.clsVias.size());
+	CHECK_STATUS(status);
+	for (const DefViaDscp & via : defDscp.clsVias) {
+		status = defwViaName(via.clsName.c_str());
+		CHECK_STATUS(status);
+		if (via.clsHasViaRule) {
+			status = defwViaViarule(
+				via.clsViaRuleName.c_str(),
+				via.clsXCutSize,
+				via.clsYCutSize,
+				via.clsBottomLayer.c_str(),
+				via.clsCutLayer.c_str(), 
+				via.clsTopLayer.c_str(),
+				via.clsXCutSpacing,
+				via.clsYCutSpacing,
+				via.clsXBottomEnclosure,
+				via.clsYBottomEnclosure,
+				via.clsXTopEnclosure,
+				via.clsYTopEnclosure
+			);
+			CHECK_STATUS(status);
+			
+			if (via.clsHasRowCol) {
+				status = defwViaViaruleRowCol(via.clsNumCutRows, via.clsNumCutCols);
+				CHECK_STATUS(status);
+			} // end if 
+			if (via.clsHasOrigin) {
+				status = defwViaViaruleOrigin(via.clsXOffsetOrigin, via.clsYOffsetOrigin);
+				CHECK_STATUS(status);
+			} // end if 
+			if (via.clsHasOffset) {
+				status = defwViaViaruleOffset(via.clsXBottomOffset, via.clsYBottomOffset, via.clsXTopOffset, via.clsYTopOffset);
+				CHECK_STATUS(status);
+			} // end if 
+		} else {
+			const std::map<std::string, std::deque<DefViaGeometryDscp>> & mapGeos = via.clsGeometries;
+			for (auto& pair : mapGeos) {
+				const std::string layer = pair.first;
+				const std::deque<DefViaGeometryDscp>& geometries = pair.second;
+				for (size_t i = 0; i < geometries.size(); i++) {
+					const DefViaGeometryDscp & geo = geometries[i];
+					if (geo.clsHasMask) {
+						defwViaRect(
+								layer.c_str(),
+								geo.clsBounds[LOWER][X],
+								geo.clsBounds[LOWER][Y], 
+								geo.clsBounds[UPPER][X],
+								geo.clsBounds[UPPER][Y],
+								geo.clsMask);
+					} else {
+						defwViaRect(
+								layer.c_str(),
+								geo.clsBounds[LOWER][X],
+								geo.clsBounds[LOWER][Y], 
+								geo.clsBounds[UPPER][X],
+								geo.clsBounds[UPPER][Y]);
+					}
+				}
+			}
+		} // end if
+		
+		status = defwOneViaEnd();
+		CHECK_STATUS(status);
+	} // end for
+	status = defwEndVias();
+	CHECK_STATUS(status);
+			
 	// Write components
 	int numComponents = defDscp.clsComps.size();
 	if (numComponents > 0) {
@@ -1121,5 +1187,14 @@ std::string DEFControlParser::unescape(const std::string &str) {
 
 	return result;
 } // end method
+
+// -----------------------------------------------------------------------------
+
+int defVia(defrCallbackType_e c, int num, void* ud) {
+	std::cout << "Entered here!\n";
+	DefDscp & defDscp = getDesignFromUserData(ud);
+	defDscp.clsVias.reserve(num);
+	return 0;
+}// end method
 
 // -----------------------------------------------------------------------------
