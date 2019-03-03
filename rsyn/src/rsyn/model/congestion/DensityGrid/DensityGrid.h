@@ -76,12 +76,21 @@ protected:
 	const double clsAbu5Weight = 4.0;
 	const double clsAbu10Weight = 2.0;
 	const double clsAbu20Weight = 1.0;
+	double clsAbu1 = 0.0;
 	double clsAbu2 = 0.0;
 	double clsAbu5 = 0.0;
 	double clsAbu10 = 0.0;
 	double clsAbu20 = 0.0;
 	double clsAbu = 0.0;
 	double clsAbuPenalty = 0.0;
+	
+	int clsNumAbuBins = 0;
+	int clsNumAbu1Bins = 0;
+	int clsNumAbu2Bins = 0;
+	int clsNumAbu5Bins = 0;
+	int clsNumAbu10Bins = 0;
+	int clsNumAbu20Bins = 0;
+	int clsNumAbu100Bins = 0;
 	
 	bool clsShowDetails : 1;
 	bool clsKeepRowBounds : 1;
@@ -222,6 +231,7 @@ public:
 	void updateAbu();
 
 	void reportAbu(std::ostream & out);
+	void reportAbuBins(std::ostream & out);
 
 protected:
 	// Adding out of row bound region to fixed area of the bin

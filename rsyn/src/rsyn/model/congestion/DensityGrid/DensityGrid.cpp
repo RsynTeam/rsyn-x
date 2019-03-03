@@ -59,7 +59,18 @@ void DensityGrid::start(const Json &params) {
 			reportAbu(std::cout);
 		});
 	} // end block
-	
+
+	{ // run legalization of global placement solution to minimize cell displacement.
+		ScriptParsing::CommandDescriptor dscp;
+		dscp.setName("reportDensityAbuBins");
+		dscp.setDescription("Report ABU from density grid");
+
+		session.registerCommand(dscp, [&](const ScriptParsing::Command & command) {
+			updateAbu();
+			reportAbuBins(std::cout);
+		});
+	} // end block
+
 	{ // run legalization of global placement solution to minimize cell displacement.
 		ScriptParsing::CommandDescriptor dscp;
 		dscp.setName("updateDensityAbu");
@@ -598,6 +609,21 @@ void DensityGrid::updateAbu() {
 	ratioUsage.reserve(numBins);
 	const double areaThreshold = getBinSize(X) * getBinSize(Y) * clsBinAreaThreshold;
 
+	clsAbu1 = 0.0;
+	clsAbu2 = 0.0;
+	clsAbu5 = 0.0;
+	clsAbu10 = 0.0;
+	clsAbu20 = 0.0;
+	clsAbu = 0.0;
+	clsAbuPenalty = 0.0;
+
+	clsNumAbuBins = 0;
+	clsNumAbu1Bins = 0;
+	clsNumAbu2Bins = 0;
+	clsNumAbu5Bins = 0;
+	clsNumAbu10Bins = 0;
+	clsNumAbu20Bins = 0;
+	clsNumAbu100Bins = 0;
 
 	for (const DensityGridBin & bin : clsBins) {
 		double binArea = bin.clsBounds.computeArea();
@@ -606,6 +632,9 @@ void DensityGrid::updateAbu() {
 			if (freeArea > clsFreeSpaceThreshold * binArea) {
 				double ratio = bin.getArea(MOVABLE_AREA) / freeArea;
 				ratioUsage.push_back(ratio);
+				if (ratio > getTargetDensity()) {
+					clsNumAbu100Bins++;
+				} // end if
 			} // end if 
 		} // end if 
 	} // end for 
@@ -617,37 +646,60 @@ void DensityGrid::updateAbu() {
 		}); // end sort 
 
 
-	clsAbu2 = 0.0;
-	clsAbu5 = 0.0;
-	clsAbu10 = 0.0;
-	clsAbu20 = 0.0;
-	clsAbu = 0.0;
-	clsAbuPenalty = 0.0;
+	clsNumAbuBins = numBins;
 
+	const int index1 = static_cast<int> (0.01 * numBins);
 	const int index2 = static_cast<int> (0.02 * numBins);
 	const int index5 = static_cast<int> (0.05 * numBins);
 	const int index10 = static_cast<int> (0.10 * numBins);
 	const int index20 = static_cast<int> (0.20 * numBins);
 
-	for (int j = 0; j < index2; ++j) {
+	
+	
+	for (int j = 0; j < index1; ++j) {
+		clsAbu1 += ratioUsage[j];
+		if (ratioUsage[j] > getTargetDensity()) {
+			clsNumAbu1Bins++;
+		} // end if 
+	} // end for
+	
+	clsAbu2 = clsAbu1;
+	clsNumAbu2Bins = clsNumAbu1Bins;
+	for (int j = index1; j < index2; ++j) {
 		clsAbu2 += ratioUsage[j];
+		if (ratioUsage[j] > getTargetDensity()) {
+			clsNumAbu2Bins++;
+		} // end if 
 	} // end for
 
 	clsAbu5 = clsAbu2;
+	clsNumAbu5Bins = clsNumAbu2Bins;
 	for (int j = index2; j < index5; ++j) {
 		clsAbu5 += ratioUsage[j];
+		if (ratioUsage[j] > getTargetDensity()) {
+			clsNumAbu5Bins++;
+		} // end if 
 	} // end for
 
 	clsAbu10 = clsAbu5;
+	clsNumAbu10Bins = clsNumAbu5Bins;
 	for (int j = index5; j < index10; ++j) {
 		clsAbu10 += ratioUsage[j];
+		if (ratioUsage[j] > getTargetDensity()) {
+			clsNumAbu10Bins++;
+		} // end if 
 	} // end for
 
 	clsAbu20 = clsAbu10;
+	clsNumAbu20Bins = clsNumAbu10Bins;
 	for (int j = index10; j < index20; ++j) {
 		clsAbu20 += ratioUsage[j];
+		if (ratioUsage[j] > getTargetDensity()) {
+			clsNumAbu20Bins++;
+		} // end if
 	} // end for
 
+	clsAbu1 = (index1) ? clsAbu1 / index1 : 0.0;
 	clsAbu2 = (index2) ? clsAbu2 / index2 : 0.0;
 	clsAbu5 = (index5) ? clsAbu5 / index5 : 0.0;
 	clsAbu10 = (index10) ? clsAbu10 / index10 : 0.0;
@@ -702,6 +754,7 @@ void DensityGrid::reportAbu(std::ostream & out) {
 	out << "\n";
 	out << "                  ";
 	out << std::setw(N) << "Design";
+	out << std::setw(N) << "Abu1%";
 	out << std::setw(N) << "Abu2%";
 	out << std::setw(N) << "Abu5%";
 	out << std::setw(N) << "Abu10%";
@@ -712,12 +765,49 @@ void DensityGrid::reportAbu(std::ostream & out) {
 
 	out << "DGrid (ABU):      "; // make it easy to grep
 	out << std::setw(N) << clsDesign.getName();
+	out << std::setw(N) << clsAbu1;
 	out << std::setw(N) << clsAbu2;
 	out << std::setw(N) << clsAbu5;
 	out << std::setw(N) << clsAbu10;
 	out << std::setw(N) << clsAbu20;
 	out << std::setw(N) << clsAbu;
 	out << std::setw(N) << clsAbuPenalty;
+	out << "\n";
+
+	sss.restore();
+
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+void DensityGrid::reportAbuBins(std::ostream & out) {
+	StreamStateSaver sss(out);
+	const int N = 15;
+
+	out << std::left;
+	out << "\n";
+	out << "                  ";
+	out << std::setw(N) << "Design";
+	out << std::setw(N) << "Abu1%";
+	out << std::setw(N) << "Abu2%";
+	out << std::setw(N) << "Abu5%";
+	out << std::setw(N) << "Abu10%";
+	out << std::setw(N) << "Abu20%";
+	out << std::setw(N) << "Abu100%";
+	out << std::setw(N) << "AbuBins";
+	out << std::setw(N) << "Total";
+	out << "\n";
+
+	out << "DGrid (ABUBins):  "; // make it easy to grep
+	out << std::setw(N) << clsDesign.getName();
+	out << std::setw(N) << clsNumAbu1Bins;
+	out << std::setw(N) << clsNumAbu2Bins;
+	out << std::setw(N) << clsNumAbu5Bins;
+	out << std::setw(N) << clsNumAbu10Bins;
+	out << std::setw(N) << clsNumAbu20Bins;
+	out << std::setw(N) << clsNumAbu100Bins;
+	out << std::setw(N) << clsNumAbuBins;
+	out << std::setw(N) << getNumBins();
 	out << "\n";
 
 	sss.restore();
