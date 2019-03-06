@@ -84,6 +84,7 @@ public:
 	const std::vector<LayerGuide> & allLayerGuides() const { 
 		return clsLayerGuides;
 	} // end method 
+        
         void setLayerGuides(std::vector<LayerGuide> guides) {
             clsLayerGuides = guides;
         }
