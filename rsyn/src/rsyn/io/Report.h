@@ -66,6 +66,10 @@ public:
 	virtual void start(const Rsyn::Json &params);
 	virtual void stop();	
 	
+	//Design
+	void reportLogicDesign();
+	void reportPhysicalDesign();
+	
 	// Objects
 	void reportPin(Rsyn::Pin pin, const bool late = true, const bool early = false);
 	void reportCell(Rsyn::Cell cell, const bool late = true, const bool early = false);
