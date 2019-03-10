@@ -83,6 +83,7 @@ protected:
 	double clsAbu20 = 0.0;
 	double clsAbu = 0.0;
 	double clsAbuPenalty = 0.0;
+	double clsAbuNPA = 0.0; // abu of bins with non placeable area. A bin which has huge amount of fixed are is a non placeable bin.
 	
 	int clsNumAbuBins = 0;
 	int clsNumAbu1Bins = 0;
@@ -91,6 +92,7 @@ protected:
 	int clsNumAbu10Bins = 0;
 	int clsNumAbu20Bins = 0;
 	int clsNumAbu100Bins = 0;
+	int clsNumAbuNpaBins = 0; // abu of bins with non placeable area. A bin which has huge amount of fixed are is a non placeable bin.
 	
 	bool clsShowDetails : 1;
 	bool clsKeepRowBounds : 1;

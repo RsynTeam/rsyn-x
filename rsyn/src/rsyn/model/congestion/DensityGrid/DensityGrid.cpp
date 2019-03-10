@@ -616,6 +616,7 @@ void DensityGrid::updateAbu() {
 	clsAbu20 = 0.0;
 	clsAbu = 0.0;
 	clsAbuPenalty = 0.0;
+	clsAbuNPA = 0.0;
 
 	clsNumAbuBins = 0;
 	clsNumAbu1Bins = 0;
@@ -624,6 +625,10 @@ void DensityGrid::updateAbu() {
 	clsNumAbu10Bins = 0;
 	clsNumAbu20Bins = 0;
 	clsNumAbu100Bins = 0;
+	clsNumAbuNpaBins = 0;
+	
+	DBU totalNPA = 0;
+	DBU totalBinArea = 0;
 
 	for (const DensityGridBin & bin : clsBins) {
 		double binArea = bin.clsBounds.computeArea();
@@ -635,6 +640,10 @@ void DensityGrid::updateAbu() {
 				if (ratio > getTargetDensity()) {
 					clsNumAbu100Bins++;
 				} // end if
+			} else if (bin.getArea(MOVABLE_AREA) > 0) {
+				clsNumAbuNpaBins++;
+				totalNPA += bin.getArea(MOVABLE_AREA);
+				totalBinArea += bin.getBounds().computeArea();
 			} // end if 
 		} // end if 
 	} // end for 
@@ -704,6 +713,7 @@ void DensityGrid::updateAbu() {
 	clsAbu5 = (index5) ? clsAbu5 / index5 : 0.0;
 	clsAbu10 = (index10) ? clsAbu10 / index10 : 0.0;
 	clsAbu20 = (index20) ? clsAbu20 / index20 : 0.0;
+	clsAbuNPA = clsNumAbuNpaBins ? totalNPA / static_cast<double>(totalBinArea) : 0.0;
 
 	const double wAbu2 = clsAbu2Weight * clsAbu2;
 	const double wAbu5 = clsAbu5Weight * clsAbu5;
@@ -760,6 +770,7 @@ void DensityGrid::reportAbu(std::ostream & out) {
 	out << std::setw(N) << "Abu10%";
 	out << std::setw(N) << "Abu20%";
 	out << std::setw(N) << "Abu";
+	out << std::setw(N) << "AbuNPA";
 	out << std::setw(N) << "AbuPenalty";
 	out << "\n";
 
@@ -771,6 +782,7 @@ void DensityGrid::reportAbu(std::ostream & out) {
 	out << std::setw(N) << clsAbu10;
 	out << std::setw(N) << clsAbu20;
 	out << std::setw(N) << clsAbu;
+	out << std::setw(N) << clsAbuNPA;
 	out << std::setw(N) << clsAbuPenalty;
 	out << "\n";
 
@@ -795,6 +807,7 @@ void DensityGrid::reportAbuBins(std::ostream & out) {
 	out << std::setw(N) << "Abu20%";
 	out << std::setw(N) << "Abu100%";
 	out << std::setw(N) << "AbuBins";
+	out << std::setw(N) << "NpaBins";
 	out << std::setw(N) << "Total";
 	out << "\n";
 
@@ -807,6 +820,7 @@ void DensityGrid::reportAbuBins(std::ostream & out) {
 	out << std::setw(N) << clsNumAbu20Bins;
 	out << std::setw(N) << clsNumAbu100Bins;
 	out << std::setw(N) << clsNumAbuBins;
+	out << std::setw(N) << clsNumAbuNpaBins;
 	out << std::setw(N) << getNumBins();
 	out << "\n";
 

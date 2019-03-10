@@ -31,9 +31,17 @@ namespace Rsyn {
 void Report::start(const Rsyn::Json &params) {
 	Rsyn::Session session;
 
-	clsTimer = session.getService("rsyn.timer");
-	clsLibraryCharacterizer = session.getService("rsyn.libraryCharacterizer");
-	clsRoutingEstimator = session.getService("rsyn.routingEstimator");
+	if (session.isServiceRunning("rsyn.timer")) {
+		clsTimer = session.getService("rsyn.timer");
+	} // end if 
+
+	if (session.isServiceRunning("rsyn.libraryCharacterizer")) {
+		clsLibraryCharacterizer = session.getService("rsyn.libraryCharacterizer");
+	} // end if 
+
+	if (session.isServiceRunning("rsyn.routingEstimator")) {
+		clsRoutingEstimator = session.getService("rsyn.routingEstimator");
+	} // end if 
 
 	clsDesign = session.getDesign();
 	clsModule = session.getTopModule();
@@ -208,6 +216,26 @@ void Report::start(const Rsyn::Json &params) {
 			if (clsTimer) {
 				clsTimer->reportCriticalPath(Rsyn::LATE, std::cout);
 			} // end if
+		});
+	} // end block
+
+	{ // reportLogicDesign
+		ScriptParsing::CommandDescriptor dscp;
+		dscp.setName("reportLogicDesign");
+		dscp.setDescription("Report logic design.");
+
+		clsSession.registerCommand(dscp, [&](const ScriptParsing::Command & command) {
+			reportLogicDesign();
+		});
+	} // end block
+
+	{ // reportPhysicalDesign
+		ScriptParsing::CommandDescriptor dscp;
+		dscp.setName("reportPhysicalDesign");
+		dscp.setDescription("Report physical design.");
+
+		clsSession.registerCommand(dscp, [&](const ScriptParsing::Command & command) {
+			reportPhysicalDesign();
 		});
 	} // end block
 
@@ -433,11 +461,11 @@ void Report::reportLogicDesign() {
 	std::cout << "================================================================================\n";
 	std::cout << "Report Logic Design" << "\n";
 	std::cout << "================================================================================\n";
-	std::cout << "Name         : " << clsDesign.getName() << "\n";
-	std::cout << "#Cells       : " << clsDesign.getNumInstances(Rsyn::CELL) << "\n";
-	std::cout << "#Nets        : " << clsDesign.getNumNets() << "\n";
-	std::cout << "#IOs         : " << clsDesign.getNumInstances(Rsyn::PORT) << "\n";
-	std::cout << "#Modules     : " << clsDesign.getNumInstances(Rsyn::MODULE) << "\n";
+	std::cout << "Name             : " << clsDesign.getName() << "\n";
+	std::cout << "#Cells           : " << clsDesign.getNumInstances(Rsyn::CELL) << "\n";
+	std::cout << "#Nets            : " << clsDesign.getNumNets() << "\n";
+	std::cout << "#IOs             : " << clsDesign.getNumInstances(Rsyn::PORT) << "\n";
+	std::cout << "#Modules         : " << clsDesign.getNumInstances(Rsyn::MODULE) << "\n";
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -446,11 +474,13 @@ void Report::reportPhysicalDesign() {
 	std::cout << "================================================================================\n";
 	std::cout << "Report Physical Design" << "\n";
 	std::cout << "================================================================================\n";
-	std::cout << "Name         : " << clsDesign.getName() << "\n";
-//	std::cout << "#Cells       : " << clsDesign.getNumInstances(Rsyn::CELL) << "\n";
-//	std::cout << "#Nets        : " << clsDesign.getNumNets() << "\n";
-//	std::cout << "#IOs         : " << clsDesign.getNumInstances(Rsyn::PORT) << "\n";
-//	std::cout << "#Modules     : " << clsDesign.getNumInstances(Rsyn::MODULE) << "\n";
+	std::cout << "Name             : " << clsDesign.getName() << "\n";
+	std::cout << "#Fixed           : " << clsPhysicalDesign.getNumElements(Rsyn::PHYSICAL_FIXED) << "\n";
+	std::cout << "#Movables        : " << clsPhysicalDesign.getNumElements(Rsyn::PHYSICAL_MOVABLE) << "\n";
+	std::cout << "#Blocks          : " << clsPhysicalDesign.getNumElements(Rsyn::PHYSICAL_BLOCK) << "\n";
+	std::cout << "Design Area (um2): " << clsPhysicalDesign.getPhysicalModule(clsModule).getArea() / std::pow(clsPhysicalDesign.getDatabaseUnits(DESIGN_DBU), 2) << "\n";
+	std::cout << "Fixed Area (um2) : " << clsPhysicalDesign.getArea(Rsyn::PHYSICAL_FIXED) / std::pow(clsPhysicalDesign.getDatabaseUnits(DESIGN_DBU), 2) << "\n";
+	std::cout << "Cell Area (mm2)  : " << clsPhysicalDesign.getArea(Rsyn::PHYSICAL_MOVABLE) / std::pow(clsPhysicalDesign.getDatabaseUnits(DESIGN_DBU), 2) << "\n";
 } // end method
 
 // -----------------------------------------------------------------------------
