@@ -614,9 +614,10 @@ void DensityGrid::updateAbu() {
 	clsAbu5 = 0.0;
 	clsAbu10 = 0.0;
 	clsAbu20 = 0.0;
-	clsAbu = 0.0;
+	clsAbuOverfilled = 0.0;
 	clsAbuPenalty = 0.0;
 	clsAbuNPA = 0.0;
+	clsAbuMaxNpa = 0.0;
 
 	clsNumAbuBins = 0;
 	clsNumAbu1Bins = 0;
@@ -639,11 +640,16 @@ void DensityGrid::updateAbu() {
 				ratioUsage.push_back(ratio);
 				if (ratio > getTargetDensity()) {
 					clsNumAbu100Bins++;
+					clsAbuOverfilled += ratio;
 				} // end if
 			} else if (bin.getArea(MOVABLE_AREA) > 0) {
 				clsNumAbuNpaBins++;
-				totalNPA += bin.getArea(MOVABLE_AREA);
-				totalBinArea += bin.getBounds().computeArea();
+				DBU areaMovable = bin.getArea(MOVABLE_AREA);
+				DBU binArea = bin.getBounds().computeArea();
+				totalNPA += areaMovable;
+				double areaRatio = areaMovable / static_cast<double>(binArea);
+				clsAbuMaxNpa = std::max(clsAbuMaxNpa, areaRatio);
+				totalBinArea += binArea;
 			} // end if 
 		} // end if 
 	} // end for 
@@ -707,21 +713,22 @@ void DensityGrid::updateAbu() {
 			clsNumAbu20Bins++;
 		} // end if
 	} // end for
-
+	
 	clsAbu1 = (index1) ? clsAbu1 / index1 : 0.0;
 	clsAbu2 = (index2) ? clsAbu2 / index2 : 0.0;
 	clsAbu5 = (index5) ? clsAbu5 / index5 : 0.0;
 	clsAbu10 = (index10) ? clsAbu10 / index10 : 0.0;
 	clsAbu20 = (index20) ? clsAbu20 / index20 : 0.0;
+	clsAbuOverfilled = clsNumAbu100Bins ? clsAbuOverfilled / clsNumAbu100Bins  :0.0;
 	clsAbuNPA = clsNumAbuNpaBins ? totalNPA / static_cast<double>(totalBinArea) : 0.0;
-
+	
 	const double wAbu2 = clsAbu2Weight * clsAbu2;
 	const double wAbu5 = clsAbu5Weight * clsAbu5;
 	const double wAbu10 = clsAbu10Weight * clsAbu10;
 	const double wAbu20 = clsAbu20Weight * clsAbu20;
 
-	clsAbu = (wAbu2 + wAbu5 + wAbu10 + wAbu20) /
-		(clsAbu2Weight + clsAbu5Weight + clsAbu10Weight + clsAbu20Weight);
+//	clsAbu = (wAbu2 + wAbu5 + wAbu10 + wAbu20) /
+//		(clsAbu2Weight + clsAbu5Weight + clsAbu10Weight + clsAbu20Weight);
 
 	double penaltyAbu2 = (clsAbu2 / getTargetDensity()) - 1.0;
 	penaltyAbu2 = std::max(0.0, penaltyAbu2);
@@ -769,9 +776,11 @@ void DensityGrid::reportAbu(std::ostream & out) {
 	out << std::setw(N) << "Abu5%";
 	out << std::setw(N) << "Abu10%";
 	out << std::setw(N) << "Abu20%";
-	out << std::setw(N) << "Abu";
-	out << std::setw(N) << "AbuNPA";
+	out << std::setw(N) << "AbuOverfilled";
 	out << std::setw(N) << "AbuPenalty";
+	out << std::setw(N) << "AvgNPA";
+	out << std::setw(N) << "maxNPA";
+	
 	out << "\n";
 
 	out << "DGrid (ABU):      "; // make it easy to grep
@@ -781,9 +790,11 @@ void DensityGrid::reportAbu(std::ostream & out) {
 	out << std::setw(N) << clsAbu5;
 	out << std::setw(N) << clsAbu10;
 	out << std::setw(N) << clsAbu20;
-	out << std::setw(N) << clsAbu;
-	out << std::setw(N) << clsAbuNPA;
+	out << std::setw(N) << clsAbuOverfilled;
 	out << std::setw(N) << clsAbuPenalty;
+	out << std::setw(N) << clsAbuNPA;
+	out << std::setw(N) << clsAbuMaxNpa;
+	
 	out << "\n";
 
 	sss.restore();
@@ -805,8 +816,8 @@ void DensityGrid::reportAbuBins(std::ostream & out) {
 	out << std::setw(N) << "Abu5%";
 	out << std::setw(N) << "Abu10%";
 	out << std::setw(N) << "Abu20%";
-	out << std::setw(N) << "Abu100%";
-	out << std::setw(N) << "AbuBins";
+	out << std::setw(N) << "Overfilled%";
+	out << std::setw(N) << "Valid";
 	out << std::setw(N) << "NpaBins";
 	out << std::setw(N) << "Total";
 	out << "\n";

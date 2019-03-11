@@ -81,9 +81,10 @@ protected:
 	double clsAbu5 = 0.0;
 	double clsAbu10 = 0.0;
 	double clsAbu20 = 0.0;
-	double clsAbu = 0.0;
+	double clsAbuOverfilled = 0.0;
 	double clsAbuPenalty = 0.0;
 	double clsAbuNPA = 0.0; // abu of bins with non placeable area. A bin which has huge amount of fixed are is a non placeable bin.
+	double clsAbuMaxNpa = 0.0;
 	
 	int clsNumAbuBins = 0;
 	int clsNumAbu1Bins = 0;
@@ -160,8 +161,8 @@ public:
 		return clsTargetDensity;
 	} // end method 
 
-	double getAbu() const {
-		return clsAbu;
+	double getAbuOverfilled() const {
+		return clsAbuOverfilled;
 	} // end method 
 
 	double getAbuPenalty() const {
