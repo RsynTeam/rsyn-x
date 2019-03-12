@@ -875,24 +875,6 @@ public:
 				criticalInputTransition, criticalOutputTransition);
 	} // end method
 
-	//! @brief   Returns the percentage of the worst path delay passing through
-	//!          this cell due to this cell.
-	//! @details For instance, if the worst path delay is 100 and the cell delay
-	//!          is 25, returns 0.25 (i.e. 25% of the path delay is due to
-	//!          the cell).
-	Number getCellWorstPercentageDelay(const Rsyn::Instance cell, const TimingMode mode) const {
-		const std::tuple<Rsyn::Arc, TimingTransition, TimingTransition> t = 
-				getCellCriticalArc(cell, mode);
-		
-		Rsyn::Arc arc = std::get<0>(t);
-		if (arc) {
-			const TimingTransition oedge = std::get<2>(t);
-			return getArcWorstPercentageDelay(arc, mode, oedge);
-		} else {
-			return 0;
-		} // end else
-	} // end method
-
 	//! @brief Returns the worst negative slack at the cell's output pins.
 	//! @note  If the worst slack is positive, returns zero.
 	Number getCellWorstNegativeSlack(const Rsyn::Instance cell, const TimingMode mode) const {
@@ -974,17 +956,54 @@ public:
 		return getPinWorstPathDelay(getTimingPin(pin), mode, edge);
 	} // end method
 
+	//! @brief Returns the worst (maximum for late, minimum for early) path
+	//!        delay of all paths passing through this pin.
+	Rsyn::EdgeArray<Number> getPinWorstPathDelay(Rsyn::Pin pin, const TimingMode mode) const {
+		Rsyn::EdgeArray<Number> delay;
+		for (Rsyn::TimingTransition edge : allTimingTransitions()) {
+			delay[edge] = getPinWorstPathDelay(getTimingPin(pin), mode, edge);
+		} // end for
+		return delay;
+	} // end method
+
+	//! @brief Returns the worst (maximum for late, minimum for early) path
+	//!        delay of all paths passing through this arc.
+	Number getArcWorstPathDelay(Rsyn::Arc arc, const TimingMode mode, const TimingTransition oedge) const {
+		return getPinWorstPathDelay(arc.getToPin(), mode, oedge);
+	} // end method
+
+	//! @brief Returns the worst (maximum for late, minimum for early) path
+	//!        delay of all paths passing through this arc.
+	Rsyn::EdgeArray<Number> getArcWorstPathDelay(Rsyn::Arc arc, const TimingMode mode) const {
+		return getPinWorstPathDelay(arc.getToPin(), mode);
+	} // end method
+
 	//! @brief   Returns the percentage of the worst path delay passing through
 	//!          an arc due to the arc delay.
 	//! @details For instance, if the worst path delay is 100 and the cell delay
 	//!          is 25, returns 0.25 (i.e. 25% of the path delay is due to
 	//!          the cell).
-	Number getArcWorstPercentageDelay(Rsyn::Arc arc, const TimingMode mode, const TimingTransition oedge) const {
-		Rsyn::Pin to = arc.getToPin();
+	Number getArcWorstPathDelayPercentage(Rsyn::Arc arc, const TimingMode mode, const TimingTransition oedge) const {
 		const Number arcDelay = getArcDelay(arc, mode, oedge);
-		const Number pathDelay = getPinWorstPathDelay(to, mode, oedge);
+		const Number pathDelay = getArcWorstPathDelay(arc, mode, oedge);
 		return pathDelay != 0? arcDelay / pathDelay : 0;
 	} // end method	
+
+	//! @brief   Returns the percentage of the worst path delay passing through
+	//!          an arc due to the arc delay.
+	//! @details For instance, if the worst path delay is 100 and the cell delay
+	//!          is 25, returns 0.25 (i.e. 25% of the path delay is due to
+	//!          the cell).
+	Rsyn::EdgeArray<Number> getArcWorstPathDelayPercentage(Rsyn::Arc arc, const TimingMode mode) const {
+		const Rsyn::EdgeArray<Number> arcDelay = getArcDelay(arc, mode);
+		const Rsyn::EdgeArray<Number> pathDelay = getArcWorstPathDelay(arc, mode);
+
+		Rsyn::EdgeArray<Number> percentage;
+		for (Rsyn::TimingTransition edge : allTimingTransitions()) {
+			percentage[edge] = pathDelay[edge] != 0? arcDelay[edge] / pathDelay[edge] : 0;
+		} // end for
+		return percentage;
+	} // end method
 
 	//! @brief Returns the current delay of an arc.
 	Number getArcDelay(Rsyn::Arc arc, const TimingMode mode, const TimingTransition oedge) const {

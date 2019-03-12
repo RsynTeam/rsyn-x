@@ -56,7 +56,6 @@ set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Werror=return-type")
 ######################
 find_package(Boost COMPONENTS system filesystem program_options REQUIRED)
 find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
 find_package(PNG REQUIRED)
 find_package(COIN)
 find_package(GLPK)
@@ -186,7 +185,7 @@ target_link_libraries(rsyn emon) # not a typo
 # OpenGL
 include_directories(${OPENGL_INCLUDE_DIR})
 target_link_libraries(rsyn ${OPENGL_gl_LIBRARY})
-target_link_libraries(rsyn ${OPENGL_glu_LIBRARY})
+#target_link_libraries(rsyn ${OPENGL_glu_LIBRARY})
 
 # Boost   
 target_include_directories(rsyn PUBLIC ${Boost_INCLUDE_DIR})

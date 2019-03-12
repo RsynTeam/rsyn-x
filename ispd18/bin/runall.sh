@@ -1,1 +1,0 @@
-../script/iccad15/runall.sh
