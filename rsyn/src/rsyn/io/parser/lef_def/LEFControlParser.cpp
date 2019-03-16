@@ -362,6 +362,7 @@ int lefUnits(lefrCallbackType_e c, lefiUnits* units, lefiUserData ud) {
 // -----------------------------------------------------------------------------
 
 int lefObstructionCB(lefrCallbackType_e c, lefiObstruction* obs, lefiUserData ud) {
+	//std::cout << "Reading lef obstacles\n";
 	LefDscp & dscp = getLibraryFromUserData(ud);
 	LefMacroDscp & lefMacro = dscp.clsLefMacroDscps.back();
 
@@ -382,6 +383,10 @@ int lefObstructionCB(lefrCallbackType_e c, lefiObstruction* obs, lefiUserData ud
 			lefObs.clsBounds.push_back(libRect);
 		} // end if-else 
 	} // end for 
+	
+//	if (lefMacro.clsMacroName == "bufx2" || lefMacro.clsMacroName == "BUFX2") {
+//		std::cout << "#Obstacles" << lefMacro.clsObs.size() << "\n";
+//	}
 	return 0;
 } // end method 
 

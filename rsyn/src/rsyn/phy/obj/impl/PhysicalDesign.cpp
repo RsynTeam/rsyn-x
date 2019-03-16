@@ -591,6 +591,10 @@ Rsyn::LibraryCell PhysicalDesign::addPhysicalLibraryCell(const LefMacroDscp& mac
 		} // end for
 
 		phlCell.clsObs.push_back(phObs);
+//		if (macro.clsMacroName == "bufx2" || macro.clsMacroName == "BUFX2") {
+//			std::cout << "----#Obstacles: " << macro.clsObs.size() << "\n";
+//			std::cout << "" << macro.clsObs[0].clsBounds.size() << "\n";
+//		}
 		if (data->clsEnableMergeRectangles && libObs.clsBounds.size() > 1) {
 			std::vector<Bounds> bounds;
 			mergeBounds(scaledBounds, bounds);
