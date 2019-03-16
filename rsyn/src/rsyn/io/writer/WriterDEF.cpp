@@ -532,7 +532,26 @@ void WriterDEF::loadDEFPins(DefDscp & def) {
 		def.clsPorts.push_back(DefPortDscp());
 		DefPortDscp & defPort = def.clsPorts.back();
 		defPort.clsName = port.getName();
+		// Mateus @ 190316 -- bug fix -- get the actual net name...
 		defPort.clsNetName = port.getName();
+		if (port.getDirection() == Rsyn::IN) {
+			for (Rsyn::Pin pin: port.allPins(Rsyn::OUT)) {
+				Rsyn::Net net = pin.getNet();
+				if (net != nullptr) {
+					defPort.clsNetName = net.getName();
+					break;
+				}
+			}
+		} else if (port.getDirection() == Rsyn::OUT) {
+			for (Rsyn::Pin pin: port.allPins(Rsyn::IN)) {
+				Rsyn::Net net = pin.getNet();
+				if (net != nullptr) {
+					defPort.clsNetName = net.getName();
+					break;
+				}
+			}
+		}
+		// --
 		if (port.getDirection() == Rsyn::IN)
 			defPort.clsDirection = "INPUT";
 		else if (port.getDirection() == Rsyn::OUT)
