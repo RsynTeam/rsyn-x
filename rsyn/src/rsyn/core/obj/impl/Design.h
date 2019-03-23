@@ -225,7 +225,7 @@ Design::createLibraryCell(const CellDescriptor &dscp, const bool ignoreDuplicate
 	std::map<std::string, int> mapping;
 
 	for (int i = 0; i < numPins; i++) {
-		const std::tuple<std::string, Direction, PinUse> &t = dscp.pins[i];
+		const std::tuple<std::string, Direction, Use> &t = dscp.pins[i];
 		mapping[std::get<0>(t)] = i;
 	} // end for	
 
@@ -233,7 +233,7 @@ Design::createLibraryCell(const CellDescriptor &dscp, const bool ignoreDuplicate
 	lcell->pins.resize(numPins);
 	for (auto element : mapping) {
 		const int index = element.second;
-		const std::tuple<std::string, Direction, PinUse> &t = dscp.pins[index];
+		const std::tuple<std::string, Direction, Use> &t = dscp.pins[index];
 
 		LibraryPinData * lpin = &(data->libraryPins.create()->value); // TODO: awful
 		lpin->id = data->libraryPins.lastId();

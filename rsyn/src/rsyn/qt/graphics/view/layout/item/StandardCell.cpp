@@ -34,7 +34,14 @@ StandardCellGraphicsItem::render(GraphicsScene *scene, QPainter *painter, const 
 				QtUtils::convert(layoutScene->getColor((Instance)getCell())));
 	} // end if
 
-	painter->drawRect(cell.getX(), cell.getY(), cell.getWidth(), cell.getHeight());
+	if (cell.getOrientation() == Rsyn::ORIENTATION_E  || 
+			cell.getOrientation() == Rsyn::ORIENTATION_FE ||
+			cell.getOrientation() == Rsyn::ORIENTATION_W  ||
+			cell.getOrientation() == Rsyn::ORIENTATION_FW ) {
+		painter->drawRect(cell.getX(), cell.getY(), cell.getHeight(), cell.getWidth());
+	} else {
+		painter->drawRect(cell.getX(), cell.getY(), cell.getWidth(), cell.getHeight());
+	}
 
 	// Draw pins.
 	if (lod > 50) {
