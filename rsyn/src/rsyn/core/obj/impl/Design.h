@@ -747,6 +747,24 @@ Design::getNumInstances() const {
 // -----------------------------------------------------------------------------
 
 inline
+Range<ReferenceListCollection<Cell>>
+Design::getAllCells() const {
+    for (Instance inst : data->topModule.allInstances()){
+        if (inst.getType() != CELL)
+            continue;
+        data->cells.add(inst.asCell());
+    }
+    Range<ReferenceListCollection<Cell>> a = ReferenceListCollection<Cell>(data->cells);
+    for (Cell c : a){
+        std::cout << c.getName() << "\n";
+        break;
+    }
+        return ReferenceListCollection<Cell>(data->cells); 
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline
 int
 Design::getNumInstances(const InstanceType type) const {
 	return data->instanceCount[type];

@@ -581,6 +581,82 @@ PhysicalDesign::createPhysicalAttribute(const DefaultPhysicalValueType &defaultV
 
 // -----------------------------------------------------------------------------
 
+inline Rsyn::PhysicalOrientation PhysicalDesign::checkOrientation(Rsyn::PhysicalPort physicalPort, 
+        const DBU x, const DBU y){
+        
+        Rsyn::PhysicalDie die = getPhysicalDie();
+        Bounds dieBounds = die.getBounds();
+        DBU lowerXBound = dieBounds[LOWER][X];
+        DBU lowerYBound = dieBounds[LOWER][Y];
+        DBU upperXBound = dieBounds[UPPER][X];
+        DBU upperYBound = dieBounds[UPPER][Y];
+        
+        if (x == lowerXBound){
+            if (y == upperYBound)
+                return ORIENTATION_S;
+            return ORIENTATION_E;
+        }
+        if (x == upperXBound){
+            if (y == lowerYBound)
+                return ORIENTATION_N;
+            return ORIENTATION_W;
+        }
+        if (y == lowerYBound)
+            return ORIENTATION_N;
+        if (y == upperYBound)
+            return ORIENTATION_S;
+        
+        return physicalPort.getOrientation();
+}
+
+inline void PhysicalDesign::placePort(Rsyn::PhysicalPort physicalPort, const DBU x, const DBU y, 
+        Rsyn::PhysicalOrientation orient, const bool dontNotifyObservers) {
+        Rsyn::PhysicalOrientation newOrient;
+	const bool moved = (x != physicalPort.getPosition(X)) ||
+		(y != physicalPort.getPosition(Y));
+        
+        if (orient != ORIENTATION_INVALID) {
+            newOrient = orient;
+	} else {
+            newOrient = checkOrientation(physicalPort, x, y);
+        }// end if
+        
+        physicalPort->clsInstance->clsOrientation = newOrient;
+        
+	// Notify observers.
+	if (moved) {
+                physicalPort->clsInstance->clsPortPos.set(x, y);
+		if (!dontNotifyObservers) {
+			data->clsDesign.notifyInstancePlaced(physicalPort.getInstance());
+		} // end if
+	} // end if 	
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline void PhysicalDesign::placePort(Rsyn::Port port, const DBU x, const DBU y,
+	Rsyn::PhysicalOrientation orient, const bool dontNotifyObservers) {
+	placePort(getPhysicalPort(port), x, y, orient, dontNotifyObservers);
+} // end method	
+
+
+// -----------------------------------------------------------------------------
+
+inline void PhysicalDesign::placePort(Rsyn::PhysicalPort physicalPort, const DBUxy pos,
+	Rsyn::PhysicalOrientation orient, const bool dontNotifyObservers) {
+	placePort(physicalPort, pos[X], pos[Y], orient, dontNotifyObservers);
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline void PhysicalDesign::placePort(Rsyn::Port port, const DBUxy pos,
+	Rsyn::PhysicalOrientation orient, const bool dontNotifyObservers) {
+	placePort(getPhysicalPort(port), pos[X], pos[Y], orient, dontNotifyObservers);
+} // end method
+
+
+// -----------------------------------------------------------------------------
+
 // Caution when using dontNotifyObservers.
 // We can use it when you may expect the move to be rolled back, but it is
 // not, recall to mark the cell as dirty.
