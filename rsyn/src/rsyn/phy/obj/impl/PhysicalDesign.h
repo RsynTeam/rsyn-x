@@ -609,49 +609,108 @@ inline Rsyn::PhysicalOrientation PhysicalDesign::checkOrientation(Rsyn::Physical
         return physicalPort.getOrientation();
 }
 
+// -----------------------------------------------------------------------------
+
+inline DBUxy PhysicalDesign::checkPosition(const DBU x, const DBU y) {
+    std::cout << "----Checking position for snapping\n";
+    std::cout << "----Position before snapping: " << x << ", " << y << "\n";
+    
+        DBUxy newPosition(x, y);
+        Rsyn::PhysicalDie die = getPhysicalDie();
+        Bounds dieBounds = die.getBounds();
+        DBU lowerXBound = dieBounds[LOWER][X];
+        DBU lowerYBound = dieBounds[LOWER][Y];
+        DBU upperXBound = dieBounds[UPPER][X];
+        DBU upperYBound = dieBounds[UPPER][Y];
+        
+        int distToLowerX = std::abs(lowerXBound - x);
+        int distToLowerY = std::abs(lowerYBound - y);
+        int distToUpperX = std::abs(upperXBound - x);
+        int distToUpperY = std::abs(upperYBound - y);
+  
+        if ((3*distToLowerX) <= (distToLowerY + distToUpperX + distToUpperY)) {
+            newPosition = DBUxy(lowerXBound, y);
+        } else if ((3*distToLowerY) <= (distToLowerX + distToUpperX + distToUpperY)) {
+            newPosition = DBUxy(x, lowerYBound);
+        } else if ((3*distToUpperX) <= (distToLowerX + distToLowerY + distToUpperY)) {
+            newPosition = DBUxy(upperXBound, y);
+        } else if ((3*distToUpperY) <= (distToLowerX + distToLowerY + distToUpperX)) {
+            newPosition = DBUxy(x, upperYBound);
+        } // end if-else
+        
+        std::cout << "New position after snapping: " << newPosition << "\n\n ------------------- \n\n";
+        return newPosition;
+} // end method
+
+// -----------------------------------------------------------------------------
+
+inline bool Rsyn::PhysicalDesign::getPhysicalPortByName(std::string name, Rsyn::PhysicalPort &phPort) {
+    for (Rsyn::Port port : data->clsModule.allPorts()) {
+        if (port.getName() == name) {
+            phPort = getPhysicalPort(port);
+            return true;
+        }
+    }
+    return false;
+} // end method
+
+// -----------------------------------------------------------------------------
+
 inline void PhysicalDesign::placePort(Rsyn::PhysicalPort physicalPort, const DBU x, const DBU y, 
-        Rsyn::PhysicalOrientation orient, const bool dontNotifyObservers) {
+        Rsyn::PhysicalOrientation orient, const bool disableSnapping, 
+        const bool dontNotifyObservers) {
         Rsyn::PhysicalOrientation newOrient;
-	const bool moved = (x != physicalPort.getPosition(X)) ||
+        const bool moved = (x != physicalPort.getPosition(X)) ||
 		(y != physicalPort.getPosition(Y));
+        DBUxy finalPosition;
+        
+        if (disableSnapping) {
+            finalPosition = DBUxy(x, y);
+        } else {
+            finalPosition = checkPosition(x, y);
+        } // end if
         
         if (orient != ORIENTATION_INVALID) {
             newOrient = orient;
-	} else {
-            newOrient = checkOrientation(physicalPort, x, y);
+        } else {
+            newOrient = checkOrientation(physicalPort, finalPosition[X], finalPosition[Y]);
         }// end if
-        
+
         physicalPort->clsInstance->clsOrientation = newOrient;
-        
-	// Notify observers.
-	if (moved) {
-                physicalPort->clsInstance->clsPortPos.set(x, y);
-		if (!dontNotifyObservers) {
-			data->clsDesign.notifyInstancePlaced(physicalPort.getInstance());
-		} // end if
-	} // end if 	
+
+        // Notify observers.
+        if (moved) {
+                physicalPort->clsInstance->clsPortPos.set(finalPosition[X], finalPosition[Y]);
+                if (!dontNotifyObservers) {
+                        data->clsDesign.notifyInstancePlaced(physicalPort.getInstance());
+                } // end if
+        } // end if 	
+            
 } // end method
 
 // -----------------------------------------------------------------------------
 
 inline void PhysicalDesign::placePort(Rsyn::Port port, const DBU x, const DBU y,
-	Rsyn::PhysicalOrientation orient, const bool dontNotifyObservers) {
-	placePort(getPhysicalPort(port), x, y, orient, dontNotifyObservers);
+	Rsyn::PhysicalOrientation orient, const bool disableSnapping, 
+        const bool dontNotifyObservers) {
+	placePort(getPhysicalPort(port), x, y, orient, disableSnapping, dontNotifyObservers);
 } // end method	
 
 
 // -----------------------------------------------------------------------------
 
 inline void PhysicalDesign::placePort(Rsyn::PhysicalPort physicalPort, const DBUxy pos,
-	Rsyn::PhysicalOrientation orient, const bool dontNotifyObservers) {
-	placePort(physicalPort, pos[X], pos[Y], orient, dontNotifyObservers);
+	Rsyn::PhysicalOrientation orient, const bool disableSnapping, 
+        const bool dontNotifyObservers) {
+	placePort(physicalPort, pos[X], pos[Y], orient, disableSnapping, dontNotifyObservers);
 } // end method
 
 // -----------------------------------------------------------------------------
 
 inline void PhysicalDesign::placePort(Rsyn::Port port, const DBUxy pos,
-	Rsyn::PhysicalOrientation orient, const bool dontNotifyObservers) {
-	placePort(getPhysicalPort(port), pos[X], pos[Y], orient, dontNotifyObservers);
+	Rsyn::PhysicalOrientation orient, const bool disableSnapping, 
+        const bool dontNotifyObservers) {
+	placePort(getPhysicalPort(port), pos[X], pos[Y], orient, disableSnapping, dontNotifyObservers);
 } // end method
 
 
