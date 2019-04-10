@@ -97,13 +97,20 @@ private:
 	Number clsLibraryMaxDriverResistance[NUM_TIMING_MODES];
 	Number clsLibraryMinDriverResistance[NUM_TIMING_MODES];
 
-	Number clsTypicalDelay = 0;
-	Number clsTypicalDelayPerLeakage = 0;
-	Number clsTypicalSlew = 0;
-	Number clsTypicalDelayToSlewSensitivity = 0;
+	struct TypicalValues {
+		Number fanout = 0;
+		Number delay = 0;
+		Number delayPerLeakage = 0;
+		Number slew = 0;
+		Number resistance = 0;
+		Number delayToSlewSensitivity = 0;
+	}; // end struct
 
+	TypicalValues clsTypicalValues;
+	Number clsGainBasedSlewSlope = 0;
+	Number clsGainBasedSlewConstant = 0;
 
-	void doTypicalAnalysis();
+	TypicalValues doTypicalAnalysis(const float typicalFanout);
 	void doGainBasedSlewModelAnalysis();
 	void doLogicalEffortAnalysis();
 
@@ -198,18 +205,18 @@ public:
 	//! @brief Returns the typical delay for the library. The typical delay is
 	//!        defined as the average fanout-of-4 delay of the inverters in the
 	//!        library.
-	Number getTypicalDelay() const {return clsTypicalDelay;}
+	Number getTypicalDelay() const {return clsTypicalValues.delay;}
 
 	//! @brief Returns the typical delay per leakage for the library. The
 	//!        typical delay per leakage is defined as the average fanout-of-4
 	//!        delay divided by the (state-independent) leakage of the inverters
 	//!        in the library.
-	Number getTypicalDelayPerLeakage() const {return clsTypicalDelayPerLeakage;}
+	Number getTypicalDelayPerLeakage() const {return clsTypicalValues.delayPerLeakage;}
 
 	//! @brief Returns the typical slew for the library. The typical slew is
 	//!        defined as the average fanout-of-4 slew of the inverters in the
 	//!        library.
-	Number getTypicalSlew() const {return clsTypicalSlew;}
+	Number getTypicalSlew() const {return clsTypicalValues.slew;}
 
 	//! @brief Returns the typical resistance derived from RC = d --> R = d/C,
 	//!        where d is the typical delay.
@@ -222,7 +229,7 @@ public:
 	//! @brief Returns the typical delay to slew sensitivity (i.e. how much
 	//!        the delay will change given a change in the input slew) for the
 	//!        library. The sensitivity is computed based on the typical slew.
-	Number getTypicalDelayToSlewSensitivity() const {return clsTypicalDelayToSlewSensitivity;}
+	Number getTypicalDelayToSlewSensitivity() const {return clsTypicalValues.delayToSlewSensitivity;}
 
 	//! @brief Returns a slew given a gain.
 	Number getGainBasedSlew(const Number gain) const { return clsGainBasedSlewSlope * gain + clsGainBasedSlewConstant;}
@@ -295,7 +302,7 @@ public:
 	//!        n times the input pin capacitance. The delay is computed
 	//!        iteratively where the input slew of iteration k is the output
 	//!        slew of iteration k-1.
-	void computeFanoutOfNDelay(Rsyn::LibraryArc larc, const int n, EdgeArray<Number> &delay, EdgeArray<Number> &slew, EdgeArray<Number> &delayToSlewSensitivity, const int numIterations = 5) const;
+	void computeFanoutOfNDelay(Rsyn::LibraryArc larc, const int n, EdgeArray<Number> &delay, EdgeArray<Number> &slew, EdgeArray<Number> &resistance, EdgeArray<Number> &delayToSlewSensitivity, const int numIterations = 5) const;
 
 }; // end class
 

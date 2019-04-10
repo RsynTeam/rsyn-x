@@ -256,9 +256,6 @@ public:
 	//! @todo remove
 	DBU getCoordinate(const Boundary bound, const Dimension dim) const;
 
-	//! @brief Returns the center of this instance.
-	DBU getArea() const;
-
 	//! @brief Returns the central point of the PhysicalInstance boundaries.
 	DBUxy getCenter() const;
 

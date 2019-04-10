@@ -509,12 +509,6 @@ inline DBU Instance::getSize(const Dimension dimension) const {
 
 // -----------------------------------------------------------------------------
 
-inline DBU Instance::getArea() const {
-	return data->clsBounds.computeArea();
-} // end method
-
-// -----------------------------------------------------------------------------
-
 inline DBUxy Instance::getPosition() const {
 	if (isPort())
 		return data->clsPortPos;

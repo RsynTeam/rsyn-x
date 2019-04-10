@@ -661,11 +661,11 @@ void DensityGrid::updateAbu() {
 		}); // end sort 
 
 
+	clsAbu1 = 0.0;
 	clsAbu2 = 0.0;
 	clsAbu5 = 0.0;
 	clsAbu10 = 0.0;
 	clsAbu20 = 0.0;
-	clsAbu = 0.0;
 
 	clsNumAbuBins = numBins;
 

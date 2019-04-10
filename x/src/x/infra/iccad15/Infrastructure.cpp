@@ -45,7 +45,6 @@
 
 #include "rsyn/io/parser/verilog/SimplifiedVerilogReader.h"
 #include "x/util/BlockageControl.h"
-#include "rsyn/io/image/SVGDrawingBoard.h"
 #include "x/util/BlockageControl.h"
 
 namespace ICCAD15 {
