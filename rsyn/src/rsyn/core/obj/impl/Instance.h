@@ -547,6 +547,12 @@ inline DBU Instance::getCoordinate(const Boundary bound, const Dimension dim) co
 
 // -----------------------------------------------------------------------------
 
+inline DBU Instance::getArea() const {
+	return data->clsBounds.computeArea();
+} // end method
+
+// -----------------------------------------------------------------------------
+
 inline DBUxy Instance::getCenter() const {
 	if (isPort())
 		return getPosition();

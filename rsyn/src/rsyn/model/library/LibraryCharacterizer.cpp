@@ -56,8 +56,7 @@ void LibraryCharacterizer::runLibraryCharacterization(TimingModel * timingModel)
 	// Creates an attribute to hold the characterization data.
 	clsLibraryArcCharacterizations = clsDesign.createAttribute();
 
-	clsTypicalValues = doTypicalAnalysis(4);
-	doGainBasedSlewModelAnalysis();
+	doTypicalAnalysis();
 	doLogicalEffortAnalysis();
 
 	clsAnalysisPerformed = true;
@@ -65,10 +64,14 @@ void LibraryCharacterizer::runLibraryCharacterization(TimingModel * timingModel)
 
 // -----------------------------------------------------------------------------
 
-LibraryCharacterizer::TypicalValues LibraryCharacterizer::doTypicalAnalysis(const float typicalFanout) {
-	TypicalValues result;
-	result.fanout = typicalFanout;
-	
+void LibraryCharacterizer::doTypicalAnalysis() {
+	const int typicalFanout = 4;
+
+	clsTypicalDelay = 0;
+	clsTypicalDelayPerLeakage = 0;
+	clsTypicalSlew = 0;
+	clsTypicalDelayToSlewSensitivity =  0;
+
 	int counter = 0;
 	EdgeArray<Number> sumDelay(0, 0);
 	EdgeArray<Number> sumDelayPerLeakage(0, 0);
@@ -95,7 +98,7 @@ LibraryCharacterizer::TypicalValues LibraryCharacterizer::doTypicalAnalysis(cons
 		EdgeArray<Number> slew;
 		EdgeArray<Number> resistance;
 		EdgeArray<Number> delayToSlewSensitivity;
-		computeFanoutOfNDelay(larc, typicalFanout, delay, slew, resistance, delayToSlewSensitivity);
+		computeFanoutOfNDelay(larc, typicalFanout, delay, slew, delayToSlewSensitivity);
 
 		const Number leakage = clsScenario->getLibraryCellLeakagePower(lcell);
 
@@ -116,12 +119,11 @@ LibraryCharacterizer::TypicalValues LibraryCharacterizer::doTypicalAnalysis(cons
 	const EdgeArray<Number> avgResistance = sumResistance / counter;
 	const EdgeArray<Number> avgDelayToSlewSensitivity = sumDelayToSlewSensitivity / counter;
 
-	result.delay = avgDelay.getAvg();
-	result.delayPerLeakage = avgDelayPerLeakage.getAvg();
-	result.slew = avgSlew.getAvg();
-	result.resistance = avgResistance.getAvg();
-	result.delayToSlewSensitivity = avgDelayToSlewSensitivity.getAvg();
-	return result;
+	clsTypicalDelay = avgDelay.getAvg();
+	clsTypicalDelayPerLeakage = avgDelayPerLeakage.getAvg();
+	clsTypicalSlew = avgSlew.getAvg();
+	clsTypicalDelayToSlewSensitivity = avgDelayToSlewSensitivity.getAvg();
+
 } // end method
 
 // -----------------------------------------------------------------------------
@@ -558,13 +560,13 @@ void LibraryCharacterizer::reportTypicalValues(std::ostream &out) {
 	out << std::string(80, '-') << "\n";
 	out << "Typical Library Values\n";
 	out << std::string(80, '-') << "\n";
-	out << "Delay : " << getTypicalDelay() << Units::getDefaultInternalUnitString(MEASURE_TIME) << "\n";
-	out << "Delay per Leakage : " << getTypicalDelayPerLeakage() << Units::getDefaultInternalUnitString(MEASURE_TIME) << "/" << Units::getDefaultInternalUnitString(MEASURE_POWER) << "\n";
-	out << "Slew : " << getTypicalSlew() << Units::getDefaultInternalUnitString(MEASURE_TIME) << "\n";
+	out << "Delay : " << getTypicalDelay() << "\n";
+	out << "Delay per Leakage : " << getTypicalDelayPerLeakage() << "\n";
+	out << "Slew : " << getTypicalSlew() << "\n";
 	out << "Resistance : " << getTypicalResistance() << Units::getDefaultInternalUnitString(MEASURE_RESISTANCE) << "\n";
 	out << "Capacitance : " << getTypicalCapacitance() << Units::getDefaultInternalUnitString(MEASURE_CAPACITANCE) << "\n";
 	out << "Delay to Slew Sensitivity : " << getTypicalDelayToSlewSensitivity() << "\n";
-	out << "Leakage : " << getTypicalLeakage() << Units::getDefaultInternalUnitString(MEASURE_POWER) << "\n";
+	out << "Leakage : " << getTypicalLeakage() << "\n";
 	out << "\n";
 } // end method
 

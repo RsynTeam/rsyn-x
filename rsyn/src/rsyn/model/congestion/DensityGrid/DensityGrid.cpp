@@ -661,6 +661,12 @@ void DensityGrid::updateAbu() {
 		}); // end sort 
 
 
+	clsAbu2 = 0.0;
+	clsAbu5 = 0.0;
+	clsAbu10 = 0.0;
+	clsAbu20 = 0.0;
+	clsAbu = 0.0;
+
 	clsNumAbuBins = numBins;
 
 	const int index1 = static_cast<int> (0.01 * numBins);

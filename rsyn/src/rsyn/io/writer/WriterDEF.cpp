@@ -204,6 +204,7 @@ void WriterDEF::writeISPD19() {
 // -----------------------------------------------------------------------------
 
 void WriterDEF::enableAll() {
+
 	setVersion(true);
 	setDeviderChar(true);
 	setBusBitChar(true);
@@ -238,6 +239,7 @@ void WriterDEF::enableAll() {
 // -----------------------------------------------------------------------------
 
 void WriterDEF::disableAll() {
+
 	setVersion(false);
 	setDeviderChar(false);
 	setBusBitChar(false);
@@ -295,6 +297,12 @@ void WriterDEF::enableICCAD15() {
 	setRows(true);
 	setComponents(true);
 	setPins(true);
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+void WriterDEF::enableISPD18() {
+
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -593,19 +601,44 @@ void WriterDEF::loadDEFFills(DefDscp & def) {
 // -----------------------------------------------------------------------------
 
 void WriterDEF::loadDEFSpecialNets(DefDscp & def) {
-	// TODO 
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-void WriterDEF::loadDEFNets(DefDscp & def) {
-	int numNets = clsDesign.getNumNets();
-	def.clsNets.reserve(numNets);
 	for (Rsyn::Net net : clsModule.allNets()) {
-
-		def.clsNets.push_back(DefNetDscp());
-		DefNetDscp & defNet = def.clsNets.back();
+		if (net.getUse() != Rsyn::GROUND && net.getUse() != Rsyn::POWER) {
+			continue;
+		} // end if
+			
+		def.clsSpecialNets.push_back(DefSpecialNetDscp());
+		DefSpecialNetDscp& defNet = def.clsSpecialNets.back();
 		defNet.clsName = net.getName();
+		
+		switch (net.getUse()) {
+			case Rsyn::ANALOG:
+				defNet.clsUse = "ANALOG";
+				break;
+			case Rsyn::CLOCK:
+				defNet.clsUse = "CLOCK";
+				break;
+			case Rsyn::GROUND:
+				defNet.clsUse = "GROUND";
+				break;
+			case Rsyn::POWER:
+				defNet.clsUse = "POWER";
+				break;
+			case Rsyn::RESET:
+				defNet.clsUse = "RESET";
+				break;
+			case Rsyn::SCAN:
+				defNet.clsUse = "SCAN";
+				break;
+			case Rsyn::SIGNAL:
+				defNet.clsUse = "SIGNAL";
+				break;
+			case Rsyn::TIEOFF:
+				defNet.clsUse = "TIEOFF";
+				break;
+			default:
+				defNet.clsUse = INVALID_DEF_NAME;
+		} // end switch
+		
 		defNet.clsConnections.reserve(net.getNumPins());
 		for (Rsyn::Pin pin : net.allPins()) {
 			if (!pin.isPort())
@@ -632,10 +665,9 @@ void WriterDEF::loadDEFNets(DefDscp & def) {
 
 		Rsyn::PhysicalNet phNet = clsPhDesign.getPhysicalNet(net);
 		const PhysicalRouting & phRouting = phNet.getRouting();
-//		if (!phRouting.isValid()) {
-//                    continue;
-//                }
-
+		if (!phRouting.isValid()) {
+			continue;
+		} // end if
 
 		std::vector<DefWireDscp> & wires = defNet.clsWires;
 		wires.push_back(DefWireDscp());
@@ -646,6 +678,147 @@ void WriterDEF::loadDEFNets(DefDscp & def) {
 			segments.push_back(DefWireSegmentDscp());
 			DefWireSegmentDscp & segment = segments.back();
 			segment.clsLayerName = phWire.getLayer().getName();
+			segment.clsRoutedWidth = phWire.getWidth();
+			std::vector<DefRoutingPointDscp> & points = segment.clsRoutingPoints;
+			points.reserve(phWire.getNumPoints());
+			for (const DBUxy point : phWire.allPoints()) {
+				points.push_back(DefRoutingPointDscp());
+				DefRoutingPointDscp & routing = points.back();
+				routing.clsPos = point;
+			} // end for 
+			if (phWire.hasNonDefaultSourceExtension()) {
+				DefRoutingPointDscp & routing = points.front();
+				DBUxy ext = phWire.getExtendedSourcePosition();
+				ext -= routing.clsPos;
+				routing.clsExtension = ext[X] ? ext[X] : ext[Y];
+				routing.clsHasExtension = true;
+			} // end if 
+
+			if (phWire.hasNonDefaultTargetExtension()) {
+				DefRoutingPointDscp & routing = points.back();
+				DBUxy ext = phWire.getExtendedTargetPosition();
+				ext -= routing.clsPos;
+				routing.clsExtension = ext[X] ? ext[X] : ext[Y];
+				routing.clsHasExtension = true;
+			} // end if 
+		} // end for 
+
+		for (const PhysicalRoutingVia & phVia : phRouting.allVias()) {
+			if (!phVia.isValid())
+				continue;
+
+			std::vector<DefWireSegmentDscp> & segments = wire.clsWireSegments;
+			segments.push_back(DefWireSegmentDscp());
+			DefWireSegmentDscp & segment = segments.back();
+			segment.clsLayerName = phVia.getTopLayer().getName();
+			std::vector<DefRoutingPointDscp> & points = segment.clsRoutingPoints;
+			points.push_back(DefRoutingPointDscp());
+			DefRoutingPointDscp & routing = points.back();
+			routing.clsPos = phVia.getPosition();
+			routing.clsHasVia = true;
+			routing.clsViaName = phVia.getVia().getName();
+		} // end for 
+
+		for (const PhysicalRoutingRect & rect : phRouting.allRects()) {
+			std::vector<DefWireSegmentDscp> & segments = wire.clsWireSegments;
+			segments.push_back(DefWireSegmentDscp());
+			DefWireSegmentDscp & segment = segments.back();
+			segment.clsLayerName = rect.getLayer().getName();
+			segment.clsNew = true;
+			segment.clsRoutingPoints.push_back(DefRoutingPointDscp());
+			DefRoutingPointDscp & point = segment.clsRoutingPoints.back();
+			point.clsHasRectangle = true;
+			const Bounds &bds = rect.getRect();
+			point.clsPos = bds[LOWER];
+			point.clsRect[UPPER] = bds[UPPER] - point.clsPos;
+		} // end for 
+
+	} // end for
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+void WriterDEF::loadDEFNets(DefDscp & def) {
+	int numNets = clsDesign.getNumNets();
+	def.clsNets.reserve(numNets);
+	for (Rsyn::Net net : clsModule.allNets()) {
+		if (net.getUse() == Rsyn::GROUND || net.getUse() == Rsyn::POWER) {
+			continue;
+		} // end if
+		
+		def.clsNets.push_back(DefNetDscp());
+		DefNetDscp & defNet = def.clsNets.back();
+		defNet.clsName = net.getName();
+		
+		switch (net.getUse()) {
+			case Rsyn::ANALOG:
+				defNet.clsUse = "ANALOG";
+				break;
+			case Rsyn::CLOCK:
+				defNet.clsUse = "CLOCK";
+				break;
+			case Rsyn::GROUND:
+				defNet.clsUse = "GROUND";
+				break;
+			case Rsyn::POWER:
+				defNet.clsUse = "POWER";
+				break;
+			case Rsyn::RESET:
+				defNet.clsUse = "RESET";
+				break;
+			case Rsyn::SCAN:
+				defNet.clsUse = "SCAN";
+				break;
+			case Rsyn::SIGNAL:
+				defNet.clsUse = "SIGNAL";
+				break;
+			case Rsyn::TIEOFF:
+				defNet.clsUse = "TIEOFF";
+				break;
+			default:
+				defNet.clsUse = INVALID_DEF_NAME;
+		} // end switch
+		
+		defNet.clsConnections.reserve(net.getNumPins());
+		for (Rsyn::Pin pin : net.allPins()) {
+			if (!pin.isPort())
+				continue;
+			defNet.clsConnections.push_back(DefNetConnection());
+			DefNetConnection & netConnection = defNet.clsConnections.back();
+			netConnection.clsComponentName = "PIN";
+			netConnection.clsPinName = pin.getInstanceName();
+		} // end for 
+		for (Rsyn::Pin pin : net.allPins()) {
+			if (pin.isPort())
+				continue;
+			defNet.clsConnections.push_back(DefNetConnection());
+			DefNetConnection & netConnection = defNet.clsConnections.back();
+			netConnection.clsComponentName = pin.getInstanceName();
+			netConnection.clsPinName = pin.getName();
+		} // end for
+
+
+		if (!isRoutedNetsEnabled()) {
+			continue;
+		} // end if 
+
+
+		Rsyn::PhysicalNet phNet = clsPhDesign.getPhysicalNet(net);
+		const PhysicalRouting & phRouting = phNet.getRouting();
+		if (!phRouting.isValid()) {
+			continue;
+		} // end if
+
+		std::vector<DefWireDscp> & wires = defNet.clsWires;
+		wires.push_back(DefWireDscp());
+		DefWireDscp & wire = wires.back();
+
+		for (const PhysicalRoutingWire & phWire : phRouting.allWires()) {
+			std::vector<DefWireSegmentDscp> & segments = wire.clsWireSegments;
+			segments.push_back(DefWireSegmentDscp());
+			DefWireSegmentDscp & segment = segments.back();
+			segment.clsLayerName = phWire.getLayer().getName();
+			segment.clsRoutedWidth = phWire.getWidth();
 			std::vector<DefRoutingPointDscp> & points = segment.clsRoutingPoints;
 			points.reserve(phWire.getNumPoints());
 			for (const DBUxy point : phWire.allPoints()) {
