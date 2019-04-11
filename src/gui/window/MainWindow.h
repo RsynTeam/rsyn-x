@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_QT_MAIN_WINDOW_H
 #define RSYN_QT_MAIN_WINDOW_H
 
@@ -43,97 +43,97 @@ class GraphicsView;
 //! @bried Worker to run Rsyn commands in a separate thread allowing the
 //! interface to stay responsive.
 class WorkerThread : public QThread {
-	Q_OBJECT
-public:
-	WorkerThread(const std::string &cmd) : command(cmd) {}
-	void run() override;
-signals:
-	void resultReady(const QString &s);
+        Q_OBJECT
+       public:
+        WorkerThread(const std::string &cmd) : command(cmd) {}
+        void run() override;
+       signals:
+        void resultReady(const QString &s);
 
-private:
-	std::string command;
-}; // end class
+       private:
+        std::string command;
+};  // end class
 
 // -----------------------------------------------------------------------------
 
-class MainWindow : public QMainWindow, public Ui::MainWindow, public Rsyn::SessionObserver {
-    Q_OBJECT
-public:
-    MainWindow(QWidget *parent = 0);
-	virtual ~MainWindow();
+class MainWindow : public QMainWindow,
+                   public Ui::MainWindow,
+                   public Rsyn::SessionObserver {
+        Q_OBJECT
+       public:
+        MainWindow(QWidget *parent = 0);
+        virtual ~MainWindow();
 
-	// Rsyn::Session notifications.
-	virtual void onDesignLoaded() override;
-	virtual void onServiceStarted(const std::string &serviceName) override;
+        // Rsyn::Session notifications.
+        virtual void onDesignLoaded() override;
+        virtual void onServiceStarted(const std::string &serviceName) override;
 
-protected:
+       protected:
+        virtual void keyPressEvent(QKeyEvent *event) override;
+        virtual void keyReleaseEvent(QKeyEvent *event) override;
 
-	virtual void keyPressEvent(QKeyEvent * event) override;
-	virtual void keyReleaseEvent(QKeyEvent * event) override;
+       public slots:
 
-public slots:
+        void onExit();
+        void onUpdateLog();
+        void onRunScript();
+        void onChangeObjectVisibility(QTreeWidgetItem *item, int column);
+        void onChangeLayerVisibility(QTreeWidgetItem *item, int column);
+        void onUnselectAllRoutingLayers();
+        void onZoomIn();
+        void onZoomOut();
+        void onZoomToFit();
+        void onShowConnectivity(bool enable);
+        void onShowRoutingGuides(bool enable);
+        void onSaveSnapshot();
+        void onToggleOpenGL(bool enable);
+        void onToggleConsole(bool enable);
+        void onExecuteCommand();
+        void onSearch();
+        void onRunFlow();
+        void onUpdateRoutingEstimation();
+        void onUpdateTiming();
+        void onRunGlobalPlacement();
+        void onRunLegalization();
+        void onRunDetailedPlacement();
+        void onRunGlobalRouting();
+        void onRunDetailedRouting();
 
-	void onExit();
-	void onUpdateLog();
-	void onRunScript();
-	void onChangeObjectVisibility(QTreeWidgetItem* item, int column);
-	void onChangeLayerVisibility(QTreeWidgetItem* item, int column);
-	void onUnselectAllRoutingLayers();
-	void onZoomIn();
-	void onZoomOut();
-	void onZoomToFit();
-	void onShowConnectivity(bool enable);
-	void onShowRoutingGuides(bool enable);
-	void onSaveSnapshot();
-	void onToggleOpenGL(bool enable);
-	void onToggleConsole(bool enable);
-	void onExecuteCommand();
-	void onSearch();
-	void onRunFlow();
-	void onUpdateRoutingEstimation();
-	void onUpdateTiming();
-	void onRunGlobalPlacement();
-	void onRunLegalization();
-	void onRunDetailedPlacement();
-	void onRunGlobalRouting();
-	void onRunDetailedRouting();
+        void handleResults(const QString &);
 
-	void handleResults(const QString &);
+        bool eventFilter(QObject *obj, QEvent *event);
 
-	bool eventFilter(QObject* obj, QEvent *event);
+       private:
+        void loadCommandHistory();
+        void saveCommandHistory();
 
-private:
+        void createCommands();
 
-	void loadCommandHistory();
-	void saveCommandHistory();
+        void setupMatrix();
+        void populate();
+        void populateScene();
 
-	void createCommands();
+        void populateDesignProperties();
+        void populateObjectVisibility();
+        void populateLayerVisibility();
 
-    void setupMatrix();
-    void populate();
-	void populateScene();
+        void runRsynCommand(const std::string &cmd);
 
-	void populateDesignProperties();
-	void populateObjectVisibility();
-	void populateLayerVisibility();
+        Rsyn::Graphics *rsynGraphics = nullptr;
 
-	void runRsynCommand(const std::string &cmd);
-	
-	Rsyn::Graphics *rsynGraphics = nullptr;
+        GraphicsScene *scene = nullptr;
+        GraphicsView *view = nullptr;
 
-    GraphicsScene *scene = nullptr;
-	GraphicsView *view = nullptr;
+        QSettings clsSettings;
+        int clsCurrentCommandHistoryIndex = 0;
 
-	QSettings clsSettings;
-	int clsCurrentCommandHistoryIndex = 0;
+        int clsNextLogLineIndex = 0;
 
-	int clsNextLogLineIndex = 0;
+        bool clsNotificationDesignLoaded = false;
+        bool clsNotificationServiceStarted = false;
 
-	bool clsNotificationDesignLoaded = false;
-	bool clsNotificationServiceStarted = false;
+};  // end clas
 
-}; // end clas
-
-} // end namespace
+}  // end namespace
 
 #endif

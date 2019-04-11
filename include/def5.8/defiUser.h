@@ -40,7 +40,6 @@
  * or defwWriter.h.
  */
 
-
 #ifndef CDEFIUSER_H
 #define CDEFIUSER_H
 
@@ -68,7 +67,6 @@
 #include "defiSlot.h"
 #include "defiTimingDisable.h"
 #include "defiVia.h"
-
 
 /* General utilities. */
 /* #include "defiMalloc.hpp" */

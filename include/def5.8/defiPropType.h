@@ -23,13 +23,12 @@
 /* For updates, support, or to become part of the LEF/DEF Community,          */
 /* check www.openeda.org for details.                                         */
 /*                                                                            */
-/*  $Author: icftcm $                                                                  */
-/*  $Revision: #1 $                                                                */
-/*  $Date: 2014/02/10 $                                                                    */
+/*  $Author: icftcm $ */
+/*  $Revision: #1 $ */
+/*  $Date: 2014/02/10 $ */
 /*  $State:  $                                                                */
 /* ************************************************************************** */
 /* ************************************************************************** */
-
 
 #ifndef CDEFIPROPTYPE_H
 #define CDEFIPROPTYPE_H
@@ -40,6 +39,6 @@
 /* Struct holds the data type for one property, if the property is            */
 /* either REAL or INTEGER.                                                    */
 
-EXTERN const char defiPropType_propType (const defiPropType* obj, char*  name);
+EXTERN const char defiPropType_propType(const defiPropType* obj, char* name);
 
 #endif

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -22,21 +22,21 @@
 namespace Rsyn {
 
 inline PhysicalLayer PhysicalSpacing::getLayer1() const {
-	return data->clsLayer1;
-} // end method 
+        return data->clsLayer1;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline PhysicalLayer PhysicalSpacing::getLayer2() const {
-	return data->clsLayer2;
-} // end method 
+        return data->clsLayer2;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalSpacing::getDistance() const {
-	return data->clsDistance;
-} // end method 
+        return data->clsDistance;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace 
+}  // end namespace

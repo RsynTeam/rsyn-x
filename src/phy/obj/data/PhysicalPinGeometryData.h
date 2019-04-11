@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalPinGeometryData.h
  * Author: jucemar
  *
@@ -32,20 +32,22 @@
 namespace Rsyn {
 
 class PhysicalPinGeometryData : public PhysicalObject {
-public:
-	//! @brief An enum PhysicalPinGeometryClass that determines the class of the PhysicalPinGeometry object.
-	PhysicalPinGeometryClass clsPinPortClass = PINGEOMETRYCLASS_NONE;
-	//! @brief PhysicalPinLayers associated to the PhysicalPinGeometry.
-	std::vector<PhysicalPinLayer> clsPinLayers;
-	//! @brief Default constructor.
-	//! @details Users do not have access to this constructor. The reference to 
-	//! PhysicalPinGeometryData is a protected variable in PhysicalPinGeometry.
+       public:
+        //! @brief An enum PhysicalPinGeometryClass that determines the class of
+        //! the PhysicalPinGeometry object.
+        PhysicalPinGeometryClass clsPinPortClass = PINGEOMETRYCLASS_NONE;
+        //! @brief PhysicalPinLayers associated to the PhysicalPinGeometry.
+        std::vector<PhysicalPinLayer> clsPinLayers;
+        //! @brief Default constructor.
+        //! @details Users do not have access to this constructor. The reference
+        //! to
+        //! PhysicalPinGeometryData is a protected variable in
+        //! PhysicalPinGeometry.
 
-	PhysicalPinGeometryData() = default;
+        PhysicalPinGeometryData() = default;
 
-}; // end class 
+};  // end class
 
-} // end namespace 
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALPINGEOMETRYDATA_H */
-

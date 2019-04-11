@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "Cell.h"
 
 #include "gui/QtUtils.h"
@@ -24,59 +24,58 @@ namespace Rsyn {
 
 // -----------------------------------------------------------------------------
 
-void
-CellGraphicsItem::renderPins(QPainter* painter) const {
-	painter->save();
-	painter->translate(clsCell.getX(), clsCell.getY());
-	Rsyn::LibraryCell lcell = clsCell.getLibraryCell();
-	for (Rsyn::LibraryPin lpin : lcell.allLibraryPins()) {
-		if (lpin.isPowerOrGround()) {
-			continue;
-		} // end if
-		painter->drawPath(QtPinMgr::get()->getShape(lpin, clsCell.getOrientation()));
-	} // end for
-	painter->restore();
-} // end method
+void CellGraphicsItem::renderPins(QPainter* painter) const {
+        painter->save();
+        painter->translate(clsCell.getX(), clsCell.getY());
+        Rsyn::LibraryCell lcell = clsCell.getLibraryCell();
+        for (Rsyn::LibraryPin lpin : lcell.allLibraryPins()) {
+                if (lpin.isPowerOrGround()) {
+                        continue;
+                }  // end if
+                painter->drawPath(
+                    QtPinMgr::get()->getShape(lpin, clsCell.getOrientation()));
+        }  // end for
+        painter->restore();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-void
-CellGraphicsItem::renderName(QPainter* painter, const QRectF &exposedRect) const {
-	// Save painter state.
-	painter->save();
+void CellGraphicsItem::renderName(QPainter* painter,
+                                  const QRectF& exposedRect) const {
+        // Save painter state.
+        painter->save();
 
-	// Get cell position and size in pixels.
-	const QRect cellRect = painter->worldTransform().mapRect(
-		QRect(clsCell.getX(), clsCell.getY(), clsCell.getWidth(), clsCell.getHeight()));
+        // Get cell position and size in pixels.
+        const QRect cellRect = painter->worldTransform().mapRect(
+            QRect(clsCell.getX(), clsCell.getY(), clsCell.getWidth(),
+                  clsCell.getHeight()));
 
-	// Set the world transform to the identity matrix so that everything is
-	// rendered in viewport (i.e. pixels) coordinates.
-	painter->setWorldTransform(QTransform());
+        // Set the world transform to the identity matrix so that everything is
+        // rendered in viewport (i.e. pixels) coordinates.
+        painter->setWorldTransform(QTransform());
 
-	// Compute the width of the text (in pixels).
-	const QString text(QString::fromStdString(clsCell.getName()));
-	const int fontSize = 10;
+        // Compute the width of the text (in pixels).
+        const QString text(QString::fromStdString(clsCell.getName()));
+        const int fontSize = 10;
 
-	const QFont font("Times", fontSize);
-	painter->setFont(font);
+        const QFont font("Times", fontSize);
+        painter->setFont(font);
 
-	const QFontMetrics fm = painter->fontMetrics();
-	const int textWidth = fm.width(text);
+        const QFontMetrics fm = painter->fontMetrics();
+        const int textWidth = fm.width(text);
 
-	// Draw cell name if it fits the cell widths.
-	if (textWidth < cellRect.width()) {
-		const int offsetX = 2; // in pixels
-		const int offsetY = fontSize + 2; // in pixels
+        // Draw cell name if it fits the cell widths.
+        if (textWidth < cellRect.width()) {
+                const int offsetX = 2;             // in pixels
+                const int offsetY = fontSize + 2;  // in pixels
 
-		painter->setPen(QColor(0, 0, 0));
-		painter->drawText(
-				cellRect.x() + offsetX,
-				cellRect.y() + offsetY,
-				text);
-	} // end if
+                painter->setPen(QColor(0, 0, 0));
+                painter->drawText(cellRect.x() + offsetX,
+                                  cellRect.y() + offsetY, text);
+        }  // end if
 
-	// Restore painter state.
-	painter->restore();
-} // end method
+        // Restore painter state.
+        painter->restore();
+}  // end method
 
-} // end namespace
+}  // end namespace

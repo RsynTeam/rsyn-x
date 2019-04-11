@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalVia.h
  * Author: jucemar
  *
@@ -32,58 +32,61 @@
 namespace Rsyn {
 
 class PhysicalVia : public Proxy<PhysicalViaData> {
-	friend class PhysicalDesign;
-	friend class PhysicalDesignData;
-	RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
-protected:
-	//! @brief Constructs a Rsyn::PhysicalVia object with a pointer to Rsyn::PhysicalViaData.
+        friend class PhysicalDesign;
+        friend class PhysicalDesignData;
+        RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 
-	PhysicalVia(PhysicalViaData * data) : Proxy(data) {
-	}
-public:
-	//! @brief Constructs a Rsyn::PhysicalVia object with a null pointer to Rsyn::PhysicalViaData.
+       protected:
+        //! @brief Constructs a Rsyn::PhysicalVia object with a pointer to
+        //! Rsyn::PhysicalViaData.
 
-	PhysicalVia() : Proxy(nullptr) {
-	}
-	//! @brief Constructs a Rsyn::PhysicalVia object with a null pointer to Rsyn::PhysicalViaData.
+        PhysicalVia(PhysicalViaData* data) : Proxy(data) {}
 
-	PhysicalVia(std::nullptr_t) : Proxy(nullptr) {
-	}
+       public:
+        //! @brief Constructs a Rsyn::PhysicalVia object with a null pointer to
+        //! Rsyn::PhysicalViaData.
 
-	//! @brief Returns via name
-	const std::string & getName() const;
+        PhysicalVia() : Proxy(nullptr) {}
+        //! @brief Constructs a Rsyn::PhysicalVia object with a null pointer to
+        //! Rsyn::PhysicalViaData.
 
-	//! @brief returns the top layer of the via
-	Rsyn::PhysicalLayer getTopLayer() const;
-	//! @brief returns the cut layer of the via
-	Rsyn::PhysicalLayer getCutLayer() const;
-	//! @brief returns the bottom layer of the via
-	Rsyn::PhysicalLayer getBottomLayer() const;
-	//! @brief returns the respective layer
-	Rsyn::PhysicalLayer getLayer(const PhysicalViaLayerType type) const;
-	
-	bool isViaDesign() const;
-	bool isViaRule() const;
-	bool isViaGeometry() const;
-	bool hasRowCol() const;
-	bool hasOrigin() const;
-	bool hasoffset() const;
-	ViaType getViaType() const;
-	Rsyn::PhysicalViaRuleBase getViaRule() const;
-	DBU getCutSize(const Dimension dim) const;
-	DBU getSpacing(const Dimension dim) const;
-	DBU getEnclosure(const ViaLevel level, const Dimension dim) const;
-	DBU getOrigin(const Dimension dim) const;
-	DBU getOffset(const ViaLevel level, const Dimension dim) const;
-	int getNumRows() const;
-	int getNumCols() const;
-	const std::vector<Rsyn::PhysicalViaGeometry>  & allBottomGeometries() const;
-	const std::vector<Rsyn::PhysicalViaGeometry>  & allCutGeometries() const;
-	const std::vector<Rsyn::PhysicalViaGeometry>  & allTopGeometries() const;
-	const std::vector<Rsyn::PhysicalViaGeometry>  & allGeometries(const PhysicalViaLayerType layer) const;
-}; // end class 
+        PhysicalVia(std::nullptr_t) : Proxy(nullptr) {}
 
-} // end namespace 
+        //! @brief Returns via name
+        const std::string& getName() const;
+
+        //! @brief returns the top layer of the via
+        Rsyn::PhysicalLayer getTopLayer() const;
+        //! @brief returns the cut layer of the via
+        Rsyn::PhysicalLayer getCutLayer() const;
+        //! @brief returns the bottom layer of the via
+        Rsyn::PhysicalLayer getBottomLayer() const;
+        //! @brief returns the respective layer
+        Rsyn::PhysicalLayer getLayer(const PhysicalViaLayerType type) const;
+
+        bool isViaDesign() const;
+        bool isViaRule() const;
+        bool isViaGeometry() const;
+        bool hasRowCol() const;
+        bool hasOrigin() const;
+        bool hasoffset() const;
+        ViaType getViaType() const;
+        Rsyn::PhysicalViaRuleBase getViaRule() const;
+        DBU getCutSize(const Dimension dim) const;
+        DBU getSpacing(const Dimension dim) const;
+        DBU getEnclosure(const ViaLevel level, const Dimension dim) const;
+        DBU getOrigin(const Dimension dim) const;
+        DBU getOffset(const ViaLevel level, const Dimension dim) const;
+        int getNumRows() const;
+        int getNumCols() const;
+        const std::vector<Rsyn::PhysicalViaGeometry>& allBottomGeometries()
+            const;
+        const std::vector<Rsyn::PhysicalViaGeometry>& allCutGeometries() const;
+        const std::vector<Rsyn::PhysicalViaGeometry>& allTopGeometries() const;
+        const std::vector<Rsyn::PhysicalViaGeometry>& allGeometries(
+            const PhysicalViaLayerType layer) const;
+};  // end class
+
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALVIA_H */
-

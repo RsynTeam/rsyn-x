@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * OperationsControlParser.h
  *
@@ -24,19 +24,18 @@
 #define PARSER_OPERATIONS_OPERATIONSCONTROLPARSER_H_
 
 #include <string>
-	using std::string;
+using std::string;
 #include <iostream>
-	using std::cout;
-	using std::endl;
+using std::cout;
+using std::endl;
 
 #include "ispd13/global.h"
 
-
 class OperationsControlParser {
-public:
-	OperationsControlParser();
-	void parseOperations(const string& opsFile, ISPD13::OpsInfo &opsInfo);
-	virtual ~OperationsControlParser();
+       public:
+        OperationsControlParser();
+        void parseOperations(const string& opsFile, ISPD13::OpsInfo& opsInfo);
+        virtual ~OperationsControlParser();
 };
 
 #endif /* PARSER_OPERATIONS_OPERATIONSCONTROLPARSER_H_ */

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_SHELL_H
 #define RSYN_SHELL_H
 
@@ -22,13 +22,15 @@
 namespace Rsyn {
 
 class Shell {
-private:
-	Rsyn::Session clsSession;
-public:
-	void runScript(const std::string &script, const bool interactive = false);
-	void runCommand(const std::string cmd, const bool interactive = false);
-}; // end class
+       private:
+        Rsyn::Session clsSession;
 
-} // end namespace
+       public:
+        void runScript(const std::string &script,
+                       const bool interactive = false);
+        void runCommand(const std::string cmd, const bool interactive = false);
+};  // end class
+
+}  // end namespace
 
 #endif

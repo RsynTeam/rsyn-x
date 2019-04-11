@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalTracksData.h
  * Author: jucemar
  *
@@ -32,15 +32,14 @@
 namespace Rsyn {
 
 class PhysicalTracksData : public PhysicalObject {
-public:
-	PhysicalTrackDirection clsDirection = PhysicalTrackDirection::INVALID_PHY_TRACK_DIRECTION;
-	DBU clsLocation = 0;
-	DBU clsSpace = 0;
-	int clsNumTracks = 0;
-	std::vector<PhysicalLayer> clsLayers;
-}; // end class 
-} // end namespace 
-
+       public:
+        PhysicalTrackDirection clsDirection =
+            PhysicalTrackDirection::INVALID_PHY_TRACK_DIRECTION;
+        DBU clsLocation = 0;
+        DBU clsSpace = 0;
+        int clsNumTracks = 0;
+        std::vector<PhysicalLayer> clsLayers;
+};  // end class
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALTRACKSDATA_H */
-

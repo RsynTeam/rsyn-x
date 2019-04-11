@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_QT_GRAPHICS_VIEW_H
 #define RSYN_QT_GRAPHICS_VIEW_H
 
@@ -34,110 +34,120 @@ class GraphicsLayer;
 class GraphicsItem;
 
 class GraphicsView : public QGraphicsView {
-    Q_OBJECT
-public:
-    GraphicsView(QWidget *parent = 0);
-	~GraphicsView();
+        Q_OBJECT
+       public:
+        GraphicsView(QWidget *parent = 0);
+        ~GraphicsView();
 
-	void init();
+        void init();
 
-	virtual void drawBackground(QPainter *painter, const QRectF &rect) override;
-    virtual void drawForeground(QPainter *painter, const QRectF &rect) override;
-    virtual void drawItems(QPainter *painter, int numItems,
-                           QGraphicsItem *items[],
-                           const QStyleOptionGraphicsItem options[]) override;
+        virtual void drawBackground(QPainter *painter,
+                                    const QRectF &rect) override;
+        virtual void drawForeground(QPainter *painter,
+                                    const QRectF &rect) override;
+        virtual void drawItems(
+            QPainter *painter, int numItems, QGraphicsItem *items[],
+            const QStyleOptionGraphicsItem options[]) override;
 
-	virtual void paintEvent(QPaintEvent *event) override;
+        virtual void paintEvent(QPaintEvent *event) override;
 
-	GraphicsScene *getScene() const;
+        GraphicsScene *getScene() const;
 
-	qreal getZoom() const;
-	qreal getSceneWidth() const;
-	qreal getSceneHeight() const;
+        qreal getZoom() const;
+        qreal getSceneWidth() const;
+        qreal getSceneHeight() const;
 
-    void zoomIn(int level = 1);
-    void zoomOut(int level = 1);
+        void zoomIn(int level = 1);
+        void zoomOut(int level = 1);
 
-	void resetView();
-    void togglePointerMode(const bool enable);
-    void toggleOpenGL(const bool enable);
-    void toggleAntialiasing(const bool enable);
-    void print();
+        void resetView();
+        void togglePointerMode(const bool enable);
+        void toggleOpenGL(const bool enable);
+        void toggleAntialiasing(const bool enable);
+        void print();
 
-	bool isInitialized() const {return initialized;}
+        bool isInitialized() const { return initialized; }
 
-	//! @brief Returns the level of detail (lod), in number of physical rows, to
-	//! be used to draw objects. An lod = 10, means that current 10 rows fit in
-	//! the viewport.
-	float getNumExposedRows() const;
+        //! @brief Returns the level of detail (lod), in number of physical
+        //! rows, to
+        //! be used to draw objects. An lod = 10, means that current 10 rows fit
+        //! in
+        //! the viewport.
+        float getNumExposedRows() const;
 
-	//! @brief Gets a brush respective to a fill pattern. You need to provide
-	//! the position, (dx, dy), of the object that will be draw, in order to
-	//! make the fill pattern invariant with the object's position.
-	QBrush getStippleBrush(const FillStippleMask &mask, const qreal dx, const qreal dy) const;
+        //! @brief Gets a brush respective to a fill pattern. You need to
+        //! provide
+        //! the position, (dx, dy), of the object that will be draw, in order to
+        //! make the fill pattern invariant with the object's position.
+        QBrush getStippleBrush(const FillStippleMask &mask, const qreal dx,
+                               const qreal dy) const;
 
-	//! @brief Returns the top most item at position (x, y) in view coordinates.
-	GraphicsItem *getItemAt(const int x, const int y) const;
+        //! @brief Returns the top most item at position (x, y) in view
+        //! coordinates.
+        GraphicsItem *getItemAt(const int x, const int y) const;
 
-	//! @todo move to GraphicsScene
-	FillStippleMask getRoutingLayerStipple(const int routingLayerId) const {
-		return rsynGraphics->getRoutingLayerRendering(routingLayerId).getFillPattern();
-	} // end method
+        //! @todo move to GraphicsScene
+        FillStippleMask getRoutingLayerStipple(const int routingLayerId) const {
+                return rsynGraphics->getRoutingLayerRendering(routingLayerId)
+                    .getFillPattern();
+        }  // end method
 
-	//! @todo move to GraphicsScene
-	QColor getRoutingLayerColor(const int routingLayerId) const  {
-		const Color &c = rsynGraphics->getRoutingLayerRendering(routingLayerId).getColor();
-		return QColor(c.r, c.g, c.b);
-	} // end method
+        //! @todo move to GraphicsScene
+        QColor getRoutingLayerColor(const int routingLayerId) const {
+                const Color &c =
+                    rsynGraphics->getRoutingLayerRendering(routingLayerId)
+                        .getColor();
+                return QColor(c.r, c.g, c.b);
+        }  // end method
 
-protected:
-	
+       protected:
 #ifndef QT_NO_WHEELEVENT
-    virtual void wheelEvent(QWheelEvent *) override;
+        virtual void wheelEvent(QWheelEvent *) override;
 #endif
 
-    virtual void mousePressEvent(QMouseEvent *event) override;
-    virtual void mouseMoveEvent(QMouseEvent *event) override;
-    virtual void mouseReleaseEvent(QMouseEvent *event) override;
-	virtual void mouseDoubleClickEvent(QMouseEvent * e) override;
+        virtual void mousePressEvent(QMouseEvent *event) override;
+        virtual void mouseMoveEvent(QMouseEvent *event) override;
+        virtual void mouseReleaseEvent(QMouseEvent *event) override;
+        virtual void mouseDoubleClickEvent(QMouseEvent *e) override;
 
-	virtual void enterEvent(QEvent *event) override;
-	virtual void leaveEvent(QEvent *event) override;
+        virtual void enterEvent(QEvent *event) override;
+        virtual void leaveEvent(QEvent *event) override;
 
-	virtual void resizeEvent(QResizeEvent * event) override;
-private:
+        virtual void resizeEvent(QResizeEvent *event) override;
 
-	void updateAdjustedSceneRect();
+       private:
+        void updateAdjustedSceneRect();
 
-	//! @brief Updates the transformation matrix of the view.
-	void updateViewMatrix();
+        //! @brief Updates the transformation matrix of the view.
+        void updateViewMatrix();
 
-	//! @brief Indicates whether or not this graphics view was already
-	//! initialized.
-	bool initialized = false;
+        //! @brief Indicates whether or not this graphics view was already
+        //! initialized.
+        bool initialized = false;
 
-	// Current zoom.
-	qreal zoomScaling;
-	qreal initialZoomScaling = 1;
+        // Current zoom.
+        qreal zoomScaling;
+        qreal initialZoomScaling = 1;
 
-	// The bounds of the scene (user space) adjusted to the aspect ratio of the
-	// viewport. When zoom = 1, it means the adjustedSceneRect fits exactly
-	// into the viewport.
-	QRectF adjustedSceneRect;
+        // The bounds of the scene (user space) adjusted to the aspect ratio of
+        // the
+        // viewport. When zoom = 1, it means the adjustedSceneRect fits exactly
+        // into the viewport.
+        QRectF adjustedSceneRect;
 
-	// The scaling required to map user coordinates to viewport coordinates.
-	qreal sceneToViewportScalingFactor;
-	qreal rowHeight;
+        // The scaling required to map user coordinates to viewport coordinates.
+        qreal sceneToViewportScalingFactor;
+        qreal rowHeight;
 
-	QTransform invertedTransform;
+        QTransform invertedTransform;
 
-	Rsyn::PhysicalDesign physicalDesign;
-	Rsyn::Graphics *rsynGraphics = nullptr;
+        Rsyn::PhysicalDesign physicalDesign;
+        Rsyn::Graphics *rsynGraphics = nullptr;
 
-}; // end method
+};  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace
+}  // end namespace
 
-#endif 
+#endif

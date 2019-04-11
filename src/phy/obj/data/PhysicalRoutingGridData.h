@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/* 
+/*
  * File:   PhysicalRoutingGridData.h
  * Author: jucemar
  *
@@ -26,19 +26,19 @@
 namespace Rsyn {
 
 class PhysicalRoutingGridData : public PhysicalObject {
-	friend class PhysicalDesign;
-public:
-	std::vector<Rsyn::PhysicalTracks> clsTracks;
-	Rsyn::PhysicalLayer clsLayer;
-	DBUxy clsSpacing;
-	int clsNumTracks[2];
-	Bounds clsBounds;
-	Rsyn::PhysicalRoutingGrid clsBottomRoutingGrid;
-	Rsyn::PhysicalRoutingGrid clsTopRoutingGrid;
-	PhysicalRoutingGridData() = default;
-}; // end class
+        friend class PhysicalDesign;
 
-} // end namespace
+       public:
+        std::vector<Rsyn::PhysicalTracks> clsTracks;
+        Rsyn::PhysicalLayer clsLayer;
+        DBUxy clsSpacing;
+        int clsNumTracks[2];
+        Bounds clsBounds;
+        Rsyn::PhysicalRoutingGrid clsBottomRoutingGrid;
+        Rsyn::PhysicalRoutingGrid clsTopRoutingGrid;
+        PhysicalRoutingGridData() = default;
+};  // end class
+
+}  // end namespace
 
 #endif /* PHYSICALROUTINGGRIDDATA_H */
-

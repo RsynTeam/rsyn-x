@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalSite.h
  * Author: jucemar
  *
@@ -29,45 +29,45 @@
 namespace Rsyn {
 
 inline std::string PhysicalSite::getName() const {
-	return data->clsSiteName;
-} // end method 
+        return data->clsSiteName;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalSiteClass PhysicalSite::getClass() const {
-	return data->clsSiteClass;
-} // end method 
+        return data->clsSiteClass;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalSite::getSize() const {
-	return data->clsSize;
-} // end method 
+        return data->clsSize;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalSite::getWidth() const {
-	return data->clsSize[X];
-} // end method 
+        return data->clsSize[X];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalSite::getHeight() const {
-	return data->clsSize[Y];
-} // end method 
+        return data->clsSize[Y];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalSite::getLength(const Dimension dim) const {
-	return data->clsSize[dim];
-} // end method 
+        return data->clsSize[dim];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalSymmetry PhysicalSite::getSymmetry() const {
-	return data->clsSymmetry;
-} // end method 
+        return data->clsSymmetry;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace 
+}  // end namespace

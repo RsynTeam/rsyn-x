@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "DefaultTimingModel.h"
 
 #include "session/Session.h"
@@ -21,29 +21,27 @@
 namespace Rsyn {
 
 void DefaultTimingModel::start(const Rsyn::Json &params) {
-	Rsyn::Session session;
-	
-	clsDesign = session.getDesign();
+        Rsyn::Session session;
 
-	clsScenario = session.getService("rsyn.scenario");
-	clsRoutingEstimator = session.getService("rsyn.routingEstimator");
-	clsTimer = session.getService("rsyn.timer");
+        clsDesign = session.getDesign();
 
-	clsDesign.registerObserver(this);
-} // end method
+        clsScenario = session.getService("rsyn.scenario");
+        clsRoutingEstimator = session.getService("rsyn.routingEstimator");
+        clsTimer = session.getService("rsyn.timer");
+
+        clsDesign.registerObserver(this);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-void DefaultTimingModel::stop() {
-
-} // end method
+void DefaultTimingModel::stop() {}  // end method
 
 // -----------------------------------------------------------------------------
 
 void DefaultTimingModel::onPostInstanceMove(Rsyn::Instance instance) {
-	clsTimer->dirtyInstance(instance);
-} // end method
+        clsTimer->dirtyInstance(instance);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace
+}  // end namespace

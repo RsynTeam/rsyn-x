@@ -754,13 +754,13 @@ double EarlyOpto::runEarlySpreading_ComputeCost(Rsyn::Cell cell) {
                 cost += timer->getPinCriticality(pin, Rsyn::EARLY);
 
                 //		// Add the criticality of the sink pin if it is
-                //an
+                // an
                 // endpoint.
                 //		for (Rsyn::Pin sink : net.allPins(Rsyn::SINK)) {
                 //			if (sink.isPort() || isSequential(sink))
                 //{
                 //				cost +=
-                //timer.getPinCriticality(sink,
+                // timer.getPinCriticality(sink,
                 // Rsyn::EARLY);
                 //			} // end if
                 //		} // end if

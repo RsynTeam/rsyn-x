@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalRoutingPointData.h
  * Author: jucemar
  *
@@ -32,23 +32,23 @@
 namespace Rsyn {
 
 class PhysicalRoutingPointData : public PhysicalObject {
-public:
-	PhysicalVia clsVia;
-	DBUxy clsPos;
-	Bounds clsRectangle;
-	DBU clsExtension = -1;
-	PhysicalOrientation clsOrientation = ORIENTATION_N; // default routing point orientation
-	bool clsHasRectangle : 1;
-	bool clsHasMask : 1;
-	bool clsHasVirtual : 1;
-	PhysicalRoutingPointData() {
-		clsHasRectangle = false;
-		clsHasMask = false;
-		clsHasVirtual = false;
-	} // end constructor 
-}; // end class 
+       public:
+        PhysicalVia clsVia;
+        DBUxy clsPos;
+        Bounds clsRectangle;
+        DBU clsExtension = -1;
+        PhysicalOrientation clsOrientation =
+            ORIENTATION_N;  // default routing point orientation
+        bool clsHasRectangle : 1;
+        bool clsHasMask : 1;
+        bool clsHasVirtual : 1;
+        PhysicalRoutingPointData() {
+                clsHasRectangle = false;
+                clsHasMask = false;
+                clsHasVirtual = false;
+        }  // end constructor
+};         // end class
 
-} // end namespace 
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALROUTINGPOINTDATA_H */
-

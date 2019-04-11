@@ -20,21 +20,19 @@ namespace Rsyn {
 
 // -----------------------------------------------------------------------------
 
-bool
-Rect::overlaps(const Polygon &polygon) const {
-	return polygon.overlaps(*this);
-} // end method
+bool Rect::overlaps(const Polygon &polygon) const {
+        return polygon.overlaps(*this);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-Polygon
-Rect::toPolygon() const {
-	Polygon polygon;
-	polygon.addPoint(getLower().getX(), getLower().getY());
-	polygon.addPoint(getUpper().getX(), getLower().getY());
-	polygon.addPoint(getUpper().getX(), getUpper().getY());
-	polygon.addPoint(getLower().getX(), getUpper().getY());
-	return polygon;
-} // end method
+Polygon Rect::toPolygon() const {
+        Polygon polygon;
+        polygon.addPoint(getLower().getX(), getLower().getY());
+        polygon.addPoint(getUpper().getX(), getLower().getY());
+        polygon.addPoint(getUpper().getX(), getUpper().getY());
+        polygon.addPoint(getLower().getX(), getUpper().getY());
+        return polygon;
+}  // end method
 
-} // end namespace
+}  // end namespace

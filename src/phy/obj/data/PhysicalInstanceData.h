@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalCellData.h
  * Author: jucemar
  *
@@ -31,27 +31,28 @@
 namespace Rsyn {
 
 class PhysicalInstanceData {
-	friend class PhysicalDesign;
-public:
-	bool clsBlock : 1;
-	bool clsPlaced : 1;
-	bool clsPort : 1;
-	bool clsHasLayerBounds : 1; //  the bounds of a cell is defined by one of the layers. 
+        friend class PhysicalDesign;
 
-	DBUxy clsInitialPos; // Initial position from global placement when in detailed placement has maximal displacement
-	PhysicalLayer clsPortLayer;
-	Rsyn::Instance clsInstance;
+       public:
+        bool clsBlock : 1;
+        bool clsPlaced : 1;
+        bool clsPort : 1;
+        bool clsHasLayerBounds : 1;  //  the bounds of a cell is defined by one
+                                     //  of the layers.
 
-	PhysicalInstanceData() {
-		clsBlock = false;
-		clsPlaced = false;
-		clsPort = false;
-		clsHasLayerBounds = false;
-	} // end constructor 
-}; // end class
+        DBUxy clsInitialPos;  // Initial position from global placement when in
+                              // detailed placement has maximal displacement
+        PhysicalLayer clsPortLayer;
+        Rsyn::Instance clsInstance;
 
-} // end namespace 
+        PhysicalInstanceData() {
+                clsBlock = false;
+                clsPlaced = false;
+                clsPort = false;
+                clsHasLayerBounds = false;
+        }  // end constructor
+};         // end class
 
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALINSTANCEDATA_H */
-

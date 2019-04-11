@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalRowData.h
  * Author: jucemar
  *
@@ -29,37 +29,36 @@
 #ifndef PHYSICALDESIGN_PHYSICALROWDATA_H
 #define PHYSICALDESIGN_PHYSICALROWDATA_H
 
-
 namespace Rsyn {
 
 class PhysicalRowData : public PhysicalObject {
-public:
-	Bounds clsBounds;
-	PhysicalSite clsPhysicalSite;
-	PhysicalOrientation clsSiteOrientation = Rsyn::PhysicalOrientation::ORIENTATION_INVALID;
-	DBUxy clsOrigin;
-	int clsNumSites[2] = {0, 0};
-	DBUxy clsStep;
-	std::string clsRowName;
+       public:
+        Bounds clsBounds;
+        PhysicalSite clsPhysicalSite;
+        PhysicalOrientation clsSiteOrientation =
+            Rsyn::PhysicalOrientation::ORIENTATION_INVALID;
+        DBUxy clsOrigin;
+        int clsNumSites[2] = {0, 0};
+        DBUxy clsStep;
+        std::string clsRowName;
 
-	PhysicalRowData() {
-		clsRowName = Rsyn::getPhysicalInvalidName();
-	} // end constructor 
+        PhysicalRowData() {
+                clsRowName = Rsyn::getPhysicalInvalidName();
+        }  // end constructor
 
-	// these methods are required in several parts of Physical Design.
-	// Therefore, they are provided by physical row data
-	// another solution was to create a variable to store each information.
+        // these methods are required in several parts of Physical Design.
+        // Therefore, they are provided by physical row data
+        // another solution was to create a variable to store each information.
 
-	inline DBU getWidth() const {
-		return clsNumSites[X] * clsStep[X];
-	} // end method 
+        inline DBU getWidth() const {
+                return clsNumSites[X] * clsStep[X];
+        }  // end method
 
-	inline DBU getHeight() const {
-		return clsNumSites[Y] * clsStep[Y];
-	} // end method 
-}; // end class  
+        inline DBU getHeight() const {
+                return clsNumSites[Y] * clsStep[Y];
+        }  // end method
+};         // end class
 
-} // end namespace 
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALROWDATA_H */
-

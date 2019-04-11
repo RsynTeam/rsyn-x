@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/* 
+/*
  * File:   LayerViaManager.h
  * Author: jucemar
  *
@@ -26,34 +26,38 @@
 namespace Rsyn {
 
 class LayerViaManager : public Proxy<LayerViaManagerData> {
-	friend class PhysicalDesign;
-	friend class PhysicalDesignData;
-	RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
-protected:
-	//! @brief Constructs a Rsyn::LayerViaManager object with a pointer to Rsyn::LayerViaManagerData.
+        friend class PhysicalDesign;
+        friend class PhysicalDesignData;
+        RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 
-	LayerViaManager(LayerViaManagerData * data) : Proxy(data) {
-	}
-public:
-	//! @brief Constructs a Rsyn::LayerViaManager object with a null pointer to Rsyn::LayerViaManagerData.
+       protected:
+        //! @brief Constructs a Rsyn::LayerViaManager object with a pointer to
+        //! Rsyn::LayerViaManagerData.
 
-	LayerViaManager() : Proxy(nullptr) {
-	}
-	//! @brief Constructs a Rsyn::LayerViaManager object with a null pointer to Rsyn::LayerViaManagerData.
+        LayerViaManager(LayerViaManagerData* data) : Proxy(data) {}
 
-	LayerViaManager(std::nullptr_t) : Proxy(nullptr) {
-	}
-	
-	const std::vector<Rsyn::PhysicalVia> & allVias(Rsyn::PhysicalLayer layer) const;
-	const std::vector<Rsyn::PhysicalVia> & allBottomVias(Rsyn::PhysicalLayer layer) const;
-	const std::vector<Rsyn::PhysicalVia> & allTopVias(Rsyn::PhysicalLayer layer) const;
-	bool hasVias(Rsyn::PhysicalLayer layer) const;
-	bool hasBottomVias(Rsyn::PhysicalLayer layer) const;
-	bool hasTopVias(Rsyn::PhysicalLayer layer) const;
-	
-}; // end class
+       public:
+        //! @brief Constructs a Rsyn::LayerViaManager object with a null pointer
+        //! to Rsyn::LayerViaManagerData.
 
-} // end namespace 
+        LayerViaManager() : Proxy(nullptr) {}
+        //! @brief Constructs a Rsyn::LayerViaManager object with a null pointer
+        //! to Rsyn::LayerViaManagerData.
+
+        LayerViaManager(std::nullptr_t) : Proxy(nullptr) {}
+
+        const std::vector<Rsyn::PhysicalVia>& allVias(
+            Rsyn::PhysicalLayer layer) const;
+        const std::vector<Rsyn::PhysicalVia>& allBottomVias(
+            Rsyn::PhysicalLayer layer) const;
+        const std::vector<Rsyn::PhysicalVia>& allTopVias(
+            Rsyn::PhysicalLayer layer) const;
+        bool hasVias(Rsyn::PhysicalLayer layer) const;
+        bool hasBottomVias(Rsyn::PhysicalLayer layer) const;
+        bool hasTopVias(Rsyn::PhysicalLayer layer) const;
+
+};  // end class
+
+}  // end namespace
 
 #endif /* LAYERVIAMANAGER_H */
-

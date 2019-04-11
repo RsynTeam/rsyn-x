@@ -28,25 +28,24 @@
 namespace Rsyn {
 
 class PortGraphicsItem : public GraphicsItem {
-public:
-	PortGraphicsItem(Rsyn::Port port);
+       public:
+        PortGraphicsItem(Rsyn::Port port);
 
-	virtual void render(GraphicsScene *scene, QPainter *painter, const float lod, const QRectF &exposedRect) override;
+        virtual void render(GraphicsScene *scene, QPainter *painter,
+                            const float lod,
+                            const QRectF &exposedRect) override;
 
-	virtual QRect getBoundingRect() const override {
-		return clsRect;
-	} // end method
+        virtual QRect getBoundingRect() const override {
+                return clsRect;
+        }  // end method
 
-	Rsyn::Port getPort() const {
-		return clsPort;
-	} // end method
+        Rsyn::Port getPort() const { return clsPort; }  // end method
 
-private:
-	Rsyn::Port clsPort;
-	QRect clsRect;
-}; // end class
+       private:
+        Rsyn::Port clsPort;
+        QRect clsRect;
+};  // end class
 
-} // end namespace
+}  // end namespace
 
 #endif
-

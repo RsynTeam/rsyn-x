@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_PHYSICAL_SERVICE_H
 #define RSYN_PHYSICAL_SERVICE_H
 
@@ -22,30 +22,27 @@
 namespace Rsyn {
 
 class PhysicalService : public Rsyn::Service, public DesignObserver {
-private:
-	
-	Rsyn::PhysicalDesign clsPhysicalDesign;
-	Rsyn::Design clsDesign;
-	
-public:
-	
-	//! @brief Start method to the Rsyn::PhysicalDesign service
-	virtual void start(const Rsyn::Json &params);
-	
-	//! @brief Stop method to the Rsyn::PhysicalDesign service
-	virtual void stop();
-	
-	//! @brief Getting the Rsyn::PhysicalDesign object.
-	Rsyn::PhysicalDesign getPhysicalDesign() { return clsPhysicalDesign; }
-	
-	// Events
-	virtual void
-	onPostCellRemap(Rsyn::Cell cell, Rsyn::LibraryCell oldLibraryCell) override;
-	
-	virtual void 
-	onPostInstanceCreate(Rsyn::Instance instance) override;
-}; // end class
+       private:
+        Rsyn::PhysicalDesign clsPhysicalDesign;
+        Rsyn::Design clsDesign;
 
-} // end namespace
+       public:
+        //! @brief Start method to the Rsyn::PhysicalDesign service
+        virtual void start(const Rsyn::Json &params);
+
+        //! @brief Stop method to the Rsyn::PhysicalDesign service
+        virtual void stop();
+
+        //! @brief Getting the Rsyn::PhysicalDesign object.
+        Rsyn::PhysicalDesign getPhysicalDesign() { return clsPhysicalDesign; }
+
+        // Events
+        virtual void onPostCellRemap(Rsyn::Cell cell,
+                                     Rsyn::LibraryCell oldLibraryCell) override;
+
+        virtual void onPostInstanceCreate(Rsyn::Instance instance) override;
+};  // end class
+
+}  // end namespace
 
 #endif

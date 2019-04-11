@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalTracks.h
  * Author: jucemar
  *
@@ -32,33 +32,34 @@
 namespace Rsyn {
 
 class PhysicalTracks : public Proxy<PhysicalTracksData> {
-	friend class PhysicalDesign;
-	friend class PhysicalDesignData;
-	RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
-protected:
-	//! @brief Constructs a Rsyn::PhysicalTracks object with a pointer to Rsyn::PhysicalTracksData.
+        friend class PhysicalDesign;
+        friend class PhysicalDesignData;
+        RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 
-	PhysicalTracks(PhysicalTracksData * data) : Proxy(data) {
-	}
-public:
-	//! @brief Constructs a Rsyn::PhysicalTracks object with a null pointer to Rsyn::PhysicalTracksData.
+       protected:
+        //! @brief Constructs a Rsyn::PhysicalTracks object with a pointer to
+        //! Rsyn::PhysicalTracksData.
 
-	PhysicalTracks() : Proxy(nullptr) {
-	}
-	//! @brief Constructs a Rsyn::PhysicalTracks object with a null pointer to Rsyn::PhysicalTracksData.
+        PhysicalTracks(PhysicalTracksData* data) : Proxy(data) {}
 
-	PhysicalTracks(std::nullptr_t) : Proxy(nullptr) {
-	}
-	
-	PhysicalTrackDirection getDirection() const;
-	DBU getLocation() const;
-	DBU getSpace() const;
-	int getNumberOfTracks() const;
-	std::size_t getNumberOfLayers() const;
-	const std::vector<PhysicalLayer> & allLayers() const;
-}; // end class 
+       public:
+        //! @brief Constructs a Rsyn::PhysicalTracks object with a null pointer
+        //! to Rsyn::PhysicalTracksData.
 
-} // end namespace 
+        PhysicalTracks() : Proxy(nullptr) {}
+        //! @brief Constructs a Rsyn::PhysicalTracks object with a null pointer
+        //! to Rsyn::PhysicalTracksData.
+
+        PhysicalTracks(std::nullptr_t) : Proxy(nullptr) {}
+
+        PhysicalTrackDirection getDirection() const;
+        DBU getLocation() const;
+        DBU getSpace() const;
+        int getNumberOfTracks() const;
+        std::size_t getNumberOfLayers() const;
+        const std::vector<PhysicalLayer>& allLayers() const;
+};  // end class
+
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALTRACKS_H */
-

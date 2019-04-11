@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_WRITER_H
 #define RSYN_WRITER_H
 
@@ -32,45 +32,47 @@ class Timer;
 class RoutingEstimator;
 
 class Writer : public Service {
-private:
-	// Circuitry
-	Rsyn::Design clsDesign;
-	Rsyn::Library clsLibrary;
-	Rsyn::Module clsModule;
+       private:
+        // Circuitry
+        Rsyn::Design clsDesign;
+        Rsyn::Library clsLibrary;
+        Rsyn::Module clsModule;
 
-	// Physical Design
-	Rsyn::PhysicalDesign clsPhysicalDesign;
+        // Physical Design
+        Rsyn::PhysicalDesign clsPhysicalDesign;
 
-	// Services
-	Timer * clsTimer = nullptr;
-	RoutingEstimator * clsRoutingEstimator = nullptr;
-	
+        // Services
+        Timer *clsTimer = nullptr;
+        RoutingEstimator *clsRoutingEstimator = nullptr;
 
-public:
+       public:
+        virtual void start(const Rsyn::Json &params);
+        virtual void stop();
 
-	virtual void start(const Rsyn::Json &params);
-	virtual void stop();
+        void writeVerilog() {
+                writeVerilog(clsDesign.getName() + "-cada085.v");
+        }  // write verilog file
+        void writeTimingFile();
+        void writeTimingFile(ostream &out);
+        void writeDEF(const std::string &filename = "",
+                      const bool full = false);
+        void writeICCAD15DEF(std::string fileName);
+        void writeFullDEF(std::string filename);
+        void writeSPEF() { writeSPEF(clsDesign.getName() + ".spef"); };
+        void writeSPEF(const std::string fileName);
+        void writeOPS(std::string filename);
+        void writeVerilog(std::string filename);
+        void writeBookshelf(const std::string &path = ".",
+                            const bool enablePinDisp = true);
+        void writeBookshelf2(const std::string &path = ".");
+        void writePlacedBookshelf(const std::string &path = ".");
+        void writeSPEFFile(ostream &out, const bool onlyFixed = false);
 
-	void writeVerilog() { writeVerilog(clsDesign.getName() + "-cada085.v");	} // write verilog file
-	void writeTimingFile();
-	void writeTimingFile(ostream &out);
-	void writeDEF(const std::string & filename = "", const bool full = false);
-	void writeICCAD15DEF(std::string fileName);
-	void writeFullDEF(std::string filename);
-	void writeSPEF() { writeSPEF(clsDesign.getName() + ".spef"); };
-	void writeSPEF(const std::string fileName);
-	void writeOPS(std::string filename);
-	void writeVerilog(std::string filename);
-	void writeBookshelf(const std::string &path = ".", const bool enablePinDisp = true);
-	void writeBookshelf2(const std::string &path = ".");
-	void writePlacedBookshelf(const std::string & path = ".");
-	void writeSPEFFile(ostream &out, const bool onlyFixed = false);
+        // Debug function. Should be rethought...
+        void printTimingPropagation(ostream &out, bool newLine = false);
 
-	// Debug function. Should be rethought...
-	void printTimingPropagation(ostream &out, bool newLine = false);
+};  // end class
 
-}; // end class
-
-} // end namespace
+}  // end namespace
 
 #endif

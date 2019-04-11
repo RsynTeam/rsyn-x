@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef BOOKSHELF_PARSER_H
-#define	BOOKSHELF_PARSER_H
+#define BOOKSHELF_PARSER_H
 
 #include "phy/util/BookshelfDscp.h"
 
@@ -25,72 +25,78 @@
 // -----------------------------------------------------------------------------
 
 class BookshelfParser {
-private:
+       private:
+        std::string clsBaseFilename;  // obtained from aux filename
+        std::string clsPath;          // path to aux file (without filename)
 
-	std::string clsBaseFilename; // obtained from aux filename
-	std::string clsPath; // path to aux file (without filename)	
-	
-	std::ifstream      clsCurrentFile;
-	std::string        clsCurrentFilename; // the file currently being parsed
-	int           clsCurrentLine;
-	
-	std::vector<std::string> clsTokens;
-	int clsCurrentToken;
+        std::ifstream clsCurrentFile;
+        std::string clsCurrentFilename;  // the file currently being parsed
+        int clsCurrentLine;
 
-	std::string clsFilenameNodes;
-	std::string clsFilenameNets;
-	std::string clsFilenamePL;
-	std::string clsFilenameSCL;
-	std::string clsFilenameWTS;
-	std::string clsFilenameColors;
+        std::vector<std::string> clsTokens;
+        int clsCurrentToken;
 
-	void parseAuxiliary( const std::string &filename, BookshelfDscp &dscp );
-	void parsePL( const std::string &filename, BookshelfDscp &dscp );
-	void parseSCL( const std::string &filename, BookshelfDscp &dscp );
-	void parseNets( const std::string &filename, BookshelfDscp &dscp );
-	void parseNodes( const std::string &filename, BookshelfDscp &dscp );
-	void parseWTS( const std::string &filename, BookshelfDscp &dscp );
+        std::string clsFilenameNodes;
+        std::string clsFilenameNets;
+        std::string clsFilenamePL;
+        std::string clsFilenameSCL;
+        std::string clsFilenameWTS;
+        std::string clsFilenameColors;
 
-	void parsingError( const std::string &msg );
+        void parseAuxiliary(const std::string &filename, BookshelfDscp &dscp);
+        void parsePL(const std::string &filename, BookshelfDscp &dscp);
+        void parseSCL(const std::string &filename, BookshelfDscp &dscp);
+        void parseNets(const std::string &filename, BookshelfDscp &dscp);
+        void parseNodes(const std::string &filename, BookshelfDscp &dscp);
+        void parseWTS(const std::string &filename, BookshelfDscp &dscp);
 
-	bool openFile( const std::string &filename );
-	
-	void nextLine( const bool skipDummyLines = true, const bool tokenize = true ); // dummy lines = comment lines, blank lines
-	bool tryNextLine( const bool skipDummyLines = true, const bool tokenize = true ); // dummy lines = comment lines, blank lines
-	bool tryNextToken( std::string &token );
+        void parsingError(const std::string &msg);
 
-	void readSign( const std::string &sign );
-	void readString( std::string &value );
-	void readInteger( int &value );
-	void readDouble( double &value );
-	void readColon();
-	void readKeyword( const std::string &keyword );
-	void readIntegerAssignment( const std::string &keyword, int &value );
-	void readStringAssignment( const std::string &keyword, std::string &value );
+        bool openFile(const std::string &filename);
 
-	bool tryReadString( std::string &value );
-	bool tryReadInteger( int &value );
-	bool tryReadDouble( double &value );
-	bool tryReadColon();
-	bool tryReadKeyword( const std::string &keyword );
+        void nextLine(const bool skipDummyLines = true,
+                      const bool tokenize =
+                          true);  // dummy lines = comment lines, blank lines
+        bool tryNextLine(const bool skipDummyLines = true,
+                         const bool tokenize =
+                             true);  // dummy lines = comment lines, blank lines
+        bool tryNextToken(std::string &token);
 
-	// Remove path from a path + filename string.
-	std::string removePath( const std::string &str ) const;
+        void readSign(const std::string &sign);
+        void readString(std::string &value);
+        void readInteger(int &value);
+        void readDouble(double &value);
+        void readColon();
+        void readKeyword(const std::string &keyword);
+        void readIntegerAssignment(const std::string &keyword, int &value);
+        void readStringAssignment(const std::string &keyword,
+                                  std::string &value);
 
-	// Remove extension from filename string.
-	std::string removeExtension( const std::string &str ) const;
+        bool tryReadString(std::string &value);
+        bool tryReadInteger(int &value);
+        bool tryReadDouble(double &value);
+        bool tryReadColon();
+        bool tryReadKeyword(const std::string &keyword);
 
-	// Obtain the extension from a filename.
-	std::string obtainExtension( const std::string &str ) const;
+        // Remove path from a path + filename string.
+        std::string removePath(const std::string &str) const;
 
-	// Obtain the path from a filename.
-	std::string obtainPath( const std::string &str ) const;
-public:
-	
-	const std::string &getBaseFilename() const { return clsBaseFilename; }
-	const std::string &getPath() const { return clsPath; }
-	void parsePlaced(const std::string & filename, BookshelfDscp & dscp) { parsePL(filename, dscp); }
-	void parse( const std::string &filename, BookshelfDscp &dscp );
-}; // end class
+        // Remove extension from filename string.
+        std::string removeExtension(const std::string &str) const;
+
+        // Obtain the extension from a filename.
+        std::string obtainExtension(const std::string &str) const;
+
+        // Obtain the path from a filename.
+        std::string obtainPath(const std::string &str) const;
+
+       public:
+        const std::string &getBaseFilename() const { return clsBaseFilename; }
+        const std::string &getPath() const { return clsPath; }
+        void parsePlaced(const std::string &filename, BookshelfDscp &dscp) {
+                parsePL(filename, dscp);
+        }
+        void parse(const std::string &filename, BookshelfDscp &dscp);
+};  // end class
 
 #endif

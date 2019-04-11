@@ -12,77 +12,78 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 //! @brief A proxy class representing a library arc.
 class LibraryPin : public Proxy<LibraryPinData> {
-	
-RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
+        RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 
-friend class RawPointer;
-friend class Design;
-friend class Cell;
-friend class Sandbox;
-friend class SandboxCell;
+        friend class RawPointer;
+        friend class Design;
+        friend class Cell;
+        friend class Sandbox;
+        friend class SandboxCell;
 
-private:
-	LibraryPin(LibraryPinData * data) : Proxy(data) {}
-	
-public:
+       private:
+        LibraryPin(LibraryPinData *data) : Proxy(data) {}
 
-	//! @brief Default constructor.
-	LibraryPin() {}
+       public:
+        //! @brief Default constructor.
+        LibraryPin() {}
 
-	//! @brief Assignment constructor to allow null values.
-	LibraryPin(std::nullptr_t) {}	
+        //! @brief Assignment constructor to allow null values.
+        LibraryPin(std::nullptr_t) {}
 
-	//! @brief Returns the design in which this library pin was created.
-	Design getDesign();
+        //! @brief Returns the design in which this library pin was created.
+        Design getDesign();
 
-	//! @brief Returns the design in which this library pin was created.
-	const Design getDesign() const;	
+        //! @brief Returns the design in which this library pin was created.
+        const Design getDesign() const;
 
-	//! @brief Returns the name of this library pin.
-	const std::string &getName() const;
+        //! @brief Returns the name of this library pin.
+        const std::string &getName() const;
 
-	//! @brief Returns the names of this library cell and pin .
-	std::string getHierarchicalName(const std::string & separator = ":") const;
-	
-	//! @brief Returns the direction name of this library pin.
-	const std::string &getDirectionName() const;
+        //! @brief Returns the names of this library cell and pin .
+        std::string getHierarchicalName(
+            const std::string &separator = ":") const;
 
-	//! @brief Returns the library cell name associated to this library pin.
-	const std::string &getLibraryCellName() const;
+        //! @brief Returns the direction name of this library pin.
+        const std::string &getDirectionName() const;
 
-	//! @brief Returns the direction of this library pin.
-	Direction getDirection() const;
+        //! @brief Returns the library cell name associated to this library pin.
+        const std::string &getLibraryCellName() const;
 
-	//! @brief Returns the library cell of this library pin.
-	LibraryCell getLibraryCell() const;
+        //! @brief Returns the direction of this library pin.
+        Direction getDirection() const;
 
-	//! @brief Returns the index of this library pin inside its library cell.
-	int getIndex() const;
+        //! @brief Returns the library cell of this library pin.
+        LibraryCell getLibraryCell() const;
 
-	//! @brief Returns true if this library pin is an input and false otherwise.
-	bool isInput() const;
+        //! @brief Returns the index of this library pin inside its library
+        //! cell.
+        int getIndex() const;
 
-	//! @brief Returns true if this library pin is an output and false
-	//!        otherwise.
-	bool isOutput() const;
+        //! @brief Returns true if this library pin is an input and false
+        //! otherwise.
+        bool isInput() const;
 
-	//! @brief Returns true if this library pin is a bidirectional and false
-	//!        otherwise.
-	bool isBidirectional() const;
-	
-	//! @Author Mateus
-	//! @brief Returns the usage of the pin
-	Use getUse() const;
-	
-	//! @Author Mateus
-	//! @brief Returns true if the pin is used for power or ground or false
-	//!        otherwise.
-	bool isPowerOrGround() const;
-}; // end class
-	
-} // end namespace
+        //! @brief Returns true if this library pin is an output and false
+        //!        otherwise.
+        bool isOutput() const;
+
+        //! @brief Returns true if this library pin is a bidirectional and false
+        //!        otherwise.
+        bool isBidirectional() const;
+
+        //! @Author Mateus
+        //! @brief Returns the usage of the pin
+        Use getUse() const;
+
+        //! @Author Mateus
+        //! @brief Returns true if the pin is used for power or ground or false
+        //!        otherwise.
+        bool isPowerOrGround() const;
+};  // end class
+
+}  // end namespace

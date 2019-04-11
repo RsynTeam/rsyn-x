@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalRegionData.h
  * Author: jucemar
  *
@@ -29,19 +29,16 @@
 #ifndef PHYSICALDESIGN_PHYSICALREGIONDATA_H
 #define PHYSICALDESIGN_PHYSICALREGIONDATA_H
 
-
 namespace Rsyn {
 
 class PhysicalRegionData : public PhysicalObject {
-public:
+       public:
+        std::string clsName = Rsyn::getPhysicalInvalidName();
+        RegionType clsType = RegionType::INVALID;  // FENCE or GUIDE
+        std::vector<Bounds> clsBounds;
+        PhysicalRegionData() = default;
+};  // end class
 
-	std::string clsName = Rsyn::getPhysicalInvalidName();
-	RegionType clsType = RegionType::INVALID; // FENCE or GUIDE
-	std::vector<Bounds> clsBounds;
-	PhysicalRegionData() = default;
-}; // end class  
-
-} // end namespace 
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALREGIONDATA_H */
-

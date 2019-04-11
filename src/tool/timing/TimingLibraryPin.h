@@ -12,31 +12,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_TIMING_LIBRARY_PIN_H
-#define	RSYN_TIMING_LIBRARY_PIN_H
+#define RSYN_TIMING_LIBRARY_PIN_H
 
 #include "TimingTypes.h"
 
 namespace Rsyn {
-	
+
 struct TimingLibraryPin {
-	int index;
+        int index;
 
-	// Indicates if this pin is the clock pin of a register.
-	bool clocked;
-	
-	// For non-sequential pins, always = -1
-	// For sequential pins,
-	//     if clocked = true; indicates the index of the data pin;
-	//     if clocked = false; indicates the index of the clock pin;
-	int control;
-	
-	TimingLibraryPin() : index(-1), control(-1), clocked(false) {}
-}; // end class
+        // Indicates if this pin is the clock pin of a register.
+        bool clocked;
 
-} // end namespace
+        // For non-sequential pins, always = -1
+        // For sequential pins,
+        //     if clocked = true; indicates the index of the data pin;
+        //     if clocked = false; indicates the index of the clock pin;
+        int control;
 
+        TimingLibraryPin() : index(-1), control(-1), clocked(false) {}
+};  // end class
 
-#endif	/* TIMINGLIBRARYPIN_H */
+}  // end namespace
 
+#endif /* TIMINGLIBRARYPIN_H */

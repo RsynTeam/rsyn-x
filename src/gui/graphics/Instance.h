@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_INSTANCE_GRAPHICS_LAYER_H
 #define RSYN_INSTANCE_GRAPHICS_LAYER_H
 
@@ -30,23 +30,23 @@ namespace Rsyn {
 class LayoutGraphicsScene;
 
 class InstanceLayoutGraphicsLayer : public LayoutGraphicsLayer {
-public:
+       public:
+        InstanceLayoutGraphicsLayer();
+        ~InstanceLayoutGraphicsLayer();
 
-    InstanceLayoutGraphicsLayer();
-	~InstanceLayoutGraphicsLayer();
+        virtual bool init(
+            LayoutGraphicsScene *scene,
+            std::vector<GraphicsLayerDescriptor> &visibilityItems) override;
 
-	virtual bool init(LayoutGraphicsScene *scene, std::vector<GraphicsLayerDescriptor> &visibilityItems) override;
+        GraphicsItem *getItem(Rsyn::Instance instance) const {
+                return clsInstanceMap[instance];
+        }  // end method
 
-	GraphicsItem *getItem(Rsyn::Instance instance) const {
-		return clsInstanceMap[instance];
-	} // end method
+       private:
+        Rsyn::Attribute<Rsyn::Instance, GraphicsItem *> clsInstanceMap;
 
-private:
+};  // end class
 
-	Rsyn::Attribute<Rsyn::Instance, GraphicsItem *> clsInstanceMap;
-
-}; // end class
-
-} // end namespace
+}  // end namespace
 
 #endif

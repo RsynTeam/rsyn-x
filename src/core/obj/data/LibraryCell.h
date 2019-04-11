@@ -12,45 +12,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 struct LibraryCellTagData {
-	LogicTypeTag logicType : 2;
-	BufferTypeTag bufferType : 2;
-	TieTypeTag tieType : 2;
+        LogicTypeTag logicType : 2;
+        BufferTypeTag bufferType : 2;
+        TieTypeTag tieType : 2;
 
-	LibraryCellTagData() :
-		logicType(LOGIC_TYPE_TAG_NOT_SPECIFIED),
-		bufferType(BUFFER_TYPE_TAG_NOT_SPECIFIED),
-		tieType(TIE_TYPE_TAG_NOT_SPECIFIED) {
-	} // end constructor
-}; // end struct
+        LibraryCellTagData()
+            : logicType(LOGIC_TYPE_TAG_NOT_SPECIFIED),
+              bufferType(BUFFER_TYPE_TAG_NOT_SPECIFIED),
+              tieType(TIE_TYPE_TAG_NOT_SPECIFIED) {}  // end constructor
+};                                                    // end struct
 
 // -----------------------------------------------------------------------------
 
 struct LibraryCellData : ObjectData {
-	Design design;
-	std::string name;
-	std::vector<LibraryPin> pins;
-	std::vector<LibraryArc> arcs;
-	DBUxy size;
+        Design design;
+        std::string name;
+        std::vector<LibraryPin> pins;
+        std::vector<LibraryArc> arcs;
+        DBUxy size;
 
-	// User flags.
-	LibraryCellTagData tag;
+        // User flags.
+        LibraryCellTagData tag;
 
-	// TODO: use array
-	int numInputPins;
-	int numOutputPins;
-	int numInOutPins;
+        // TODO: use array
+        int numInputPins;
+        int numOutputPins;
+        int numInOutPins;
 
-	LibraryCellData() : 
-		design(nullptr),
-		numInputPins(0),
-		numOutputPins(0), 
-		numInOutPins(0),
-		size(0, 0) {
-	} // constructor
-}; // end struct
+        LibraryCellData()
+            : design(nullptr),
+              numInputPins(0),
+              numOutputPins(0),
+              numInOutPins(0),
+              size(0, 0) {}  // constructor
+};                           // end struct
 
-} // end namespace
+}  // end namespace

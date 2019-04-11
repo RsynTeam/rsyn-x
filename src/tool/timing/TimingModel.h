@@ -30,11 +30,11 @@ namespace Rsyn {
 // TODO: Update description...
 //
 // User must override these methods to implement any desired timing model,
-// including very simple ones (e.g. lumped capacitance) to complex ones (e.g 
+// including very simple ones (e.g. lumped capacitance) to complex ones (e.g
 // Arnoldi).
 //
 // The timer will call these methods in a specific order during a topological
-// traverse of netlist (from inputs to output). The protocol for timing 
+// traverse of netlist (from inputs to output). The protocol for timing
 // calculation:
 //
 // 1) calculateArcTiming(...)
@@ -60,148 +60,96 @@ namespace Rsyn {
 // step (3) for a specific sink pair.
 
 class TimingModel {
-public:
-	
-	// This method is called before a timing update is issued.
-	virtual
-	void
-	beforeTimingUpdate() = 0;
+       public:
+        // This method is called before a timing update is issued.
+        virtual void beforeTimingUpdate() = 0;
 
-	////////////////////////////////////////////////////////////////////////////
-	// Library
-	////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////
+        // Library
+        ////////////////////////////////////////////////////////////////////////////
 
-	virtual
-	TimingSense
-	getLibraryArcSense(
-	const Rsyn::LibraryArc libraryArc) = 0;
-	
-	virtual
-	void
-	calculateInputDriverTiming(
-	Rsyn::Instance port, // TODO changed to Rsyn::Port after migration to the new Rsyn
-	const TimingMode mode,
-	const EdgeArray<Number> &load,
-	EdgeArray<Number> &inputDelay,
-	EdgeArray<Number> &inputSlew) = 0;
-	
-	virtual
-	void 
-	calculateLibraryArcTiming(
-	const Rsyn::LibraryArc libraryArc,
-	const TimingMode mode,
-	const TimingTransition oedge,
-	const Number islew,
-	const Number load,
-	Number &delay,
-	Number &slew) = 0;
+        virtual TimingSense getLibraryArcSense(
+            const Rsyn::LibraryArc libraryArc) = 0;
 
-	virtual
-	Number getPinInputCapacitance(Rsyn::Pin pin) const = 0;
+        virtual void calculateInputDriverTiming(
+            Rsyn::Instance port,  // TODO changed to Rsyn::Port after migration
+                                  // to the new Rsyn
+            const TimingMode mode, const EdgeArray<Number> &load,
+            EdgeArray<Number> &inputDelay, EdgeArray<Number> &inputSlew) = 0;
 
-	////////////////////////////////////////////////////////////////////////////
-	// Design
-	////////////////////////////////////////////////////////////////////////////
+        virtual void calculateLibraryArcTiming(
+            const Rsyn::LibraryArc libraryArc, const TimingMode mode,
+            const TimingTransition oedge, const Number islew, const Number load,
+            Number &delay, Number &slew) = 0;
 
-	virtual
-	void 
-	calculateLoadCapacitance(
-	const Rsyn::Pin pin,
-	const TimingMode mode,
-	EdgeArray<Number> &load) = 0;
-	
-	virtual
-	void
-	prepareNet(
-	const Rsyn::Net net,
-	const TimingMode mode,
-	const EdgeArray<Number> &slew) = 0;
+        virtual Number getPinInputCapacitance(Rsyn::Pin pin) const = 0;
 
-	virtual
-	void
-	calculateCellArcTiming(
-	const Rsyn::Arc arc,
-	const TimingMode mode,
-	const TimingTransition oedge,
-	const Number islew,
-	const Number load,
-	Number &delay,
-	Number &slew) {
-		calculateLibraryArcTiming(arc.getLibraryArc(), mode, oedge, islew, load, delay, slew);
-	}
+        ////////////////////////////////////////////////////////////////////////////
+        // Design
+        ////////////////////////////////////////////////////////////////////////////
 
-	virtual
-	void
-	calculateNetArcTiming(
-	const Rsyn::Pin driver,
-	const Rsyn::Pin sink,
-	const TimingMode mode,
-	const EdgeArray<Number> &slewAtDriver,
-	EdgeArray<Number> &delay,
-	EdgeArray<Number> &slew) = 0;
-	
-	virtual
-	EdgeArray<Number> 
-	getSetupTime(Rsyn::Pin data) const = 0;
+        virtual void calculateLoadCapacitance(const Rsyn::Pin pin,
+                                              const TimingMode mode,
+                                              EdgeArray<Number> &load) = 0;
 
-	virtual
-	EdgeArray<Number> 
-	getHoldTime(Rsyn::Pin data) const = 0;
+        virtual void prepareNet(const Rsyn::Net net, const TimingMode mode,
+                                const EdgeArray<Number> &slew) = 0;
 
-	virtual
-	Number getLibraryPinInputCapacitance(Rsyn::LibraryPin lpin) const = 0;
+        virtual void calculateCellArcTiming(const Rsyn::Arc arc,
+                                            const TimingMode mode,
+                                            const TimingTransition oedge,
+                                            const Number islew,
+                                            const Number load, Number &delay,
+                                            Number &slew) {
+                calculateLibraryArcTiming(arc.getLibraryArc(), mode, oedge,
+                                          islew, load, delay, slew);
+        }
 
-	////////////////////////////////////////////////////////////////////////////
-	// Sandbox
-	////////////////////////////////////////////////////////////////////////////
+        virtual void calculateNetArcTiming(
+            const Rsyn::Pin driver, const Rsyn::Pin sink, const TimingMode mode,
+            const EdgeArray<Number> &slewAtDriver, EdgeArray<Number> &delay,
+            EdgeArray<Number> &slew) = 0;
 
-	virtual
-	void
-	calculateLoadCapacitance(
-	const Rsyn::SandboxPin pin,
-	const TimingMode mode,
-	EdgeArray<Number> &load) = 0;
+        virtual EdgeArray<Number> getSetupTime(Rsyn::Pin data) const = 0;
 
-	virtual
-	void
-	prepareNet(
-	const Rsyn::SandboxNet net,
-	const TimingMode mode,
-	const EdgeArray<Number> &slew) = 0;
+        virtual EdgeArray<Number> getHoldTime(Rsyn::Pin data) const = 0;
 
-	virtual
-	void
-	calculateCellArcTiming(
-	const Rsyn::SandboxArc arc,
-	const TimingMode mode,
-	const TimingTransition oedge,
-	const Number islew,
-	const Number load,
-	Number &delay,
-	Number &slew) {
-		calculateLibraryArcTiming(arc.getLibraryArc(), mode, oedge, islew, load, delay, slew);
-	}
-	
-	virtual
-	void
-	calculateNetArcTiming(
-	const Rsyn::SandboxPin driver,
-	const Rsyn::SandboxPin sink,
-	const TimingMode mode,
-	const EdgeArray<Number> &slewAtDriver,
-	EdgeArray<Number> &delay,
-	EdgeArray<Number> &slew) = 0;
+        virtual Number getLibraryPinInputCapacitance(
+            Rsyn::LibraryPin lpin) const = 0;
 
-	virtual
-	EdgeArray<Number>
-	getSetupTime(Rsyn::SandboxPin data) const = 0;
+        ////////////////////////////////////////////////////////////////////////////
+        // Sandbox
+        ////////////////////////////////////////////////////////////////////////////
 
-	virtual
-	EdgeArray<Number>
-	getHoldTime(Rsyn::SandboxPin data) const = 0;
-	
-}; // end class
+        virtual void calculateLoadCapacitance(const Rsyn::SandboxPin pin,
+                                              const TimingMode mode,
+                                              EdgeArray<Number> &load) = 0;
 
-} // end namespace
+        virtual void prepareNet(const Rsyn::SandboxNet net,
+                                const TimingMode mode,
+                                const EdgeArray<Number> &slew) = 0;
+
+        virtual void calculateCellArcTiming(const Rsyn::SandboxArc arc,
+                                            const TimingMode mode,
+                                            const TimingTransition oedge,
+                                            const Number islew,
+                                            const Number load, Number &delay,
+                                            Number &slew) {
+                calculateLibraryArcTiming(arc.getLibraryArc(), mode, oedge,
+                                          islew, load, delay, slew);
+        }
+
+        virtual void calculateNetArcTiming(
+            const Rsyn::SandboxPin driver, const Rsyn::SandboxPin sink,
+            const TimingMode mode, const EdgeArray<Number> &slewAtDriver,
+            EdgeArray<Number> &delay, EdgeArray<Number> &slew) = 0;
+
+        virtual EdgeArray<Number> getSetupTime(Rsyn::SandboxPin data) const = 0;
+
+        virtual EdgeArray<Number> getHoldTime(Rsyn::SandboxPin data) const = 0;
+
+};  // end class
+
+}  // end namespace
 
 #endif

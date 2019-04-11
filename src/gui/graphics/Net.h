@@ -25,19 +25,17 @@ class Net;
 class PhysicalLayer;
 
 //! @brief A graphics item representing a cell.
-class NetGraphicsItem : public GraphicsItem  {
-public:
+class NetGraphicsItem : public GraphicsItem {
+       public:
+        NetGraphicsItem(Rsyn::Net net) : clsNet(net) {}
 
-	NetGraphicsItem(Rsyn::Net net) : clsNet(net) {}
+        Rsyn::Net getNet() const { return clsNet; }
+        virtual Rsyn::PhysicalLayer getPhysicalLayer() const = 0;
 
-	Rsyn::Net getNet() const {return clsNet;}
-	virtual Rsyn::PhysicalLayer getPhysicalLayer() const = 0;
+       private:
+        Rsyn::Net clsNet;
+};  // end class
 
-private:
-	Rsyn::Net clsNet;
-}; // end class
-
-} // end namespace
+}  // end namespace
 
 #endif
-

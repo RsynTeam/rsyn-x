@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef ISPD16_FLOW_OPTO_H
 #define ISPD16_FLOW_OPTO_H
 
@@ -21,28 +21,26 @@
 namespace Rsyn {
 class Timer;
 class Writer;
-} // end namespace
+}  // end namespace
 
 namespace ICCAD15 {
 
 class Infrastructure;
 
 class ISPD16Flow : public Rsyn::Process {
-private:
-	Rsyn::Session session;
-	Infrastructure * infra;
-	Rsyn::Design design;
-	Rsyn::Module module;
-	Rsyn::Timer *timer;
-	Rsyn::Writer* writer;
-	
-	void runFlow();
-	
-public:
-	
-	virtual bool run(const Rsyn::Json &params);
-	
-}; // end class
+       private:
+        Rsyn::Session session;
+        Infrastructure *infra;
+        Rsyn::Design design;
+        Rsyn::Module module;
+        Rsyn::Timer *timer;
+        Rsyn::Writer *writer;
 
+        void runFlow();
+
+       public:
+        virtual bool run(const Rsyn::Json &params);
+
+};  // end class
 }
 #endif

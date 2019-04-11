@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   Guide.h
  * Author: jucemar
  *
@@ -35,62 +35,55 @@
 namespace Rsyn {
 
 class LayerGuide {
-	friend class RoutingGuide;
-	friend class NetGuide;
-protected:
-	Rsyn::PhysicalLayer  clsPhLayer;
-	Bounds clsBounds;
+        friend class RoutingGuide;
+        friend class NetGuide;
+
+       protected:
+        Rsyn::PhysicalLayer clsPhLayer;
+        Bounds clsBounds;
         int clsId;
-public:
-	LayerGuide() = default;
-	const Bounds & getBounds() const { 
-		return clsBounds;
-	} // end method 
-	Rsyn::PhysicalLayer getLayer() const {
-		return clsPhLayer;
-	} // end method 
-        int getId() const 
-        {
-            return clsId;
-        }
-        void setBounds(Bounds bounds) {
-            clsBounds = bounds;
-        } // end method 
+
+       public:
+        LayerGuide() = default;
+        const Bounds& getBounds() const { return clsBounds; }  // end method
+        Rsyn::PhysicalLayer getLayer() const {
+                return clsPhLayer;
+        }  // end method
+        int getId() const { return clsId; }
+        void setBounds(Bounds bounds) { clsBounds = bounds; }  // end method
         void setLayer(Rsyn::PhysicalLayer layer) {
-            clsPhLayer = layer;
-        } // end method 
-        void setId(int id)
-        {
-            clsId = id;
-        }//end method 
-}; // end class
+                clsPhLayer = layer;
+        }                                   // end method
+        void setId(int id) { clsId = id; }  // end method
+};                                          // end class
 
 class NetGuide {
-	friend class RoutingGuide;
-protected:
-	std::vector<LayerGuide> clsLayerGuides;
-public:
-	NetGuide() = default;
-        const LayerGuide& getGuide(int id) const { 
-            if(id > clsLayerGuides.size())
-            {
-                std::cout << "Invalid access to net guide";
-                std::cout << "layer guide vector size is: " << clsLayerGuides.size()
-                        << ", index is: " << id << std::endl;
-                getchar();
-            }//
-            return clsLayerGuides[id];
-	} // end method 
-	const std::vector<LayerGuide> & allLayerGuides() const { 
-		return clsLayerGuides;
-	} // end method 
-        
+        friend class RoutingGuide;
+
+       protected:
+        std::vector<LayerGuide> clsLayerGuides;
+
+       public:
+        NetGuide() = default;
+        const LayerGuide& getGuide(int id) const {
+                if (id > clsLayerGuides.size()) {
+                        std::cout << "Invalid access to net guide";
+                        std::cout << "layer guide vector size is: "
+                                  << clsLayerGuides.size()
+                                  << ", index is: " << id << std::endl;
+                        getchar();
+                }  //
+                return clsLayerGuides[id];
+        }  // end method
+        const std::vector<LayerGuide>& allLayerGuides() const {
+                return clsLayerGuides;
+        }  // end method
+
         void setLayerGuides(std::vector<LayerGuide> guides) {
-            clsLayerGuides = guides;
+                clsLayerGuides = guides;
         }
-}; // end class 
+};  // end class
 
-} // end namespace 
-
+}  // end namespace
 
 #endif /* ISPD18_ROUTINGGUIDE */

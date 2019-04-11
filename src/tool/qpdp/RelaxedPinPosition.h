@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   RelaxedPinPosition.h
  * Author: jucemar
  *
@@ -33,54 +33,55 @@
 #include "phy/PhysicalDesign.h"
 namespace ICCAD15 {
 
-//Jucemar Monteiro 2017/02/24
-// Removed relaxed pin position of the PhysicalService 
+// Jucemar Monteiro 2017/02/24
+// Removed relaxed pin position of the PhysicalService
 class RelaxedPinPosition {
-protected:
-	Rsyn::PhysicalDesign clsPhysicalDesign;
-public:
-	RelaxedPinPosition() {}
-	RelaxedPinPosition(Rsyn::PhysicalDesign phDsg) : clsPhysicalDesign(phDsg) {}
-	virtual ~RelaxedPinPosition() {}
-	
-	// Get the net bounding box using the cell positions. However, for macro-
-	// blocks the pin position is used instead.
-	void getNetBoundingBoxUsingRelaxedPinPositions(Rsyn::Net net, 
-			DBU &xmin,
-			DBU &ymin,
-			DBU &xmax,
-			DBU &ymax);
-	
-	// Get the boundary cells of the net.
-	void getNetBoundaryPinsUsingRelaxedPinPositions(Rsyn::Net net, 
-			Rsyn::Pin &left, 
-			Rsyn::Pin &right, 
-			Rsyn::Pin &bottom, 
-			Rsyn::Pin &top);	
+       protected:
+        Rsyn::PhysicalDesign clsPhysicalDesign;
 
-	void getNetBoundaryPinsUsingRelaxedPinPositions(Rsyn::Net net, 
-			const Dimension dim,
-			Rsyn::Pin &lower, 
-			Rsyn::Pin &upper);
+       public:
+        RelaxedPinPosition() {}
+        RelaxedPinPosition(Rsyn::PhysicalDesign phDsg)
+            : clsPhysicalDesign(phDsg) {}
+        virtual ~RelaxedPinPosition() {}
 
-	// Get the pins of net sorted by their (relaxed) position.
-	// If there's a tie in the pin position, the internal pin ordering provided 
-	// by Rsyn is used.
-	//
-	//  -------------------
-	// | 0 | 1 | 2 |...| n |
-	//  -------------------	
-	// 0        : lower boundary pin
-	// [1, n-1] : inner pins
-	// n        : upper boundary pin
-	
-	void getNetPinsSortedByRelaxedPinPositions(Rsyn::Net net, 
-			const Dimension dimension, 
-			std::vector<std::tuple<double, Rsyn::Pin>> &pins);	
+        // Get the net bounding box using the cell positions. However, for
+        // macro-
+        // blocks the pin position is used instead.
+        void getNetBoundingBoxUsingRelaxedPinPositions(Rsyn::Net net, DBU &xmin,
+                                                       DBU &ymin, DBU &xmax,
+                                                       DBU &ymax);
 
-}; // end class 
+        // Get the boundary cells of the net.
+        void getNetBoundaryPinsUsingRelaxedPinPositions(Rsyn::Net net,
+                                                        Rsyn::Pin &left,
+                                                        Rsyn::Pin &right,
+                                                        Rsyn::Pin &bottom,
+                                                        Rsyn::Pin &top);
 
-} // end namespace 
+        void getNetBoundaryPinsUsingRelaxedPinPositions(Rsyn::Net net,
+                                                        const Dimension dim,
+                                                        Rsyn::Pin &lower,
+                                                        Rsyn::Pin &upper);
+
+        // Get the pins of net sorted by their (relaxed) position.
+        // If there's a tie in the pin position, the internal pin ordering
+        // provided
+        // by Rsyn is used.
+        //
+        //  -------------------
+        // | 0 | 1 | 2 |...| n |
+        //  -------------------
+        // 0        : lower boundary pin
+        // [1, n-1] : inner pins
+        // n        : upper boundary pin
+
+        void getNetPinsSortedByRelaxedPinPositions(
+            Rsyn::Net net, const Dimension dimension,
+            std::vector<std::tuple<double, Rsyn::Pin>> &pins);
+
+};  // end class
+
+}  // end namespace
 
 #endif /* RELAXEDPINPOSITION_H */
-

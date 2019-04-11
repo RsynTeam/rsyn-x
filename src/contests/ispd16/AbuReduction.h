@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef ABU_REDUCTION_OPTO_H
 #define ABU_REDUCTION_OPTO_H
 
@@ -30,26 +30,25 @@ namespace ICCAD15 {
 class Infrastructure;
 
 class AbuReduction : public Rsyn::Process {
-private:
-	Rsyn::Session  session;
-	Infrastructure * infra;
-	Rsyn::Design design;
-	Rsyn::Module module;
-	Rsyn::PhysicalDesign phDesign;
-	Rsyn::Timer *timer;
-	Rsyn::RoutingEstimator *routingEstimator;
+       private:
+        Rsyn::Session session;
+        Infrastructure *infra;
+        Rsyn::Design design;
+        Rsyn::Module module;
+        Rsyn::PhysicalDesign phDesign;
+        Rsyn::Timer *timer;
+        Rsyn::RoutingEstimator *routingEstimator;
 
-	std::vector<std::tuple<Rsyn::Cell, std::tuple<Number, int>>> clsABUViolationCells;
-	void computeABUVioaltionCells( const double alpha = 0);
-	void moveABUViolationCells();    	
-	
-	void runAbuReduction();
-	
-public:
-	
-	virtual bool run(const Rsyn::Json &params);
-	
-}; // end class
+        std::vector<std::tuple<Rsyn::Cell, std::tuple<Number, int>>>
+            clsABUViolationCells;
+        void computeABUVioaltionCells(const double alpha = 0);
+        void moveABUViolationCells();
 
+        void runAbuReduction();
+
+       public:
+        virtual bool run(const Rsyn::Json &params);
+
+};  // end class
 }
 #endif

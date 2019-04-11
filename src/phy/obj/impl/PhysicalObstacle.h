@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -22,27 +22,27 @@
 namespace Rsyn {
 
 inline Rsyn::PhysicalLayer PhysicalObstacle::getLayer() const {
-	return data->clsLayer;
-} // end method 
+        return data->clsLayer;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<Bounds> & PhysicalObstacle::allBounds() const {
-	return data->clsBounds;
-} // end method 
+inline const std::vector<Bounds>& PhysicalObstacle::allBounds() const {
+        return data->clsBounds;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline std::size_t PhysicalObstacle::getNumObs() const {
-	return data->clsBounds.size();
-} // end method 
+        return data->clsBounds.size();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline bool PhysicalObstacle::hasLayer() const {
-	return data->clsLayer != nullptr;
-} // end method 
+        return data->clsLayer != nullptr;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace 
+}  // end namespace

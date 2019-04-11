@@ -12,29 +12,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef PHYSICALGCELLDATA_H
 #define PHYSICALGCELLDATA_H
 
 namespace Rsyn {
 
 class PhysicalGCellData {
-	friend class PhysicalDesign;
-public:
-	//! @brief Direction of the GCell
-	//! HORIZONTAL is equal to Y in DEF and VERTICAL is equal to X in DEF
-	PhysicalGCellDirection clsDirection;
-	//! @brief Each GCELLGRID statement specifies the location of the first vertical (x) and first horizontal (y) track. Source: DEF Manual.
-	DBU clsLocation = 0;
-	//! @brief Specifies the number of columns in the grid if Direction is VERTICAL
-	//! Specifies the number of rows in the grid if Direction is HORIZONTAL
-	int clsNumTracks = 0;
-	//! @brief Specifies the spacing between tracks.
-	DBU clsStep = 0;
-	//! @brief	default constructor
-	PhysicalGCellData() = default;
-}; // end class 
-} // end namespace 
+        friend class PhysicalDesign;
+
+       public:
+        //! @brief Direction of the GCell
+        //! HORIZONTAL is equal to Y in DEF and VERTICAL is equal to X in DEF
+        PhysicalGCellDirection clsDirection;
+        //! @brief Each GCELLGRID statement specifies the location of the first
+        //! vertical (x) and first horizontal (y) track. Source: DEF Manual.
+        DBU clsLocation = 0;
+        //! @brief Specifies the number of columns in the grid if Direction is
+        //! VERTICAL
+        //! Specifies the number of rows in the grid if Direction is HORIZONTAL
+        int clsNumTracks = 0;
+        //! @brief Specifies the spacing between tracks.
+        DBU clsStep = 0;
+        //! @brief	default constructor
+        PhysicalGCellData() = default;
+};  // end class
+}  // end namespace
 
 #endif /* PHYSICALGCELLDATA_H */
-

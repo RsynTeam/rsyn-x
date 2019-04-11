@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalGCell.h
  * Author: jucemar
  *
@@ -30,8 +30,8 @@ namespace Rsyn {
 //! @brief Returns GCell direction
 
 inline Rsyn::PhysicalGCellDirection PhysicalGCell::getDirection() const {
-	return data->clsDirection;
-} // end method 
+        return data->clsDirection;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
@@ -39,25 +39,25 @@ inline Rsyn::PhysicalGCellDirection PhysicalGCell::getDirection() const {
 //! If direction is Horizontal, then numTracks means the number of rows
 
 inline int PhysicalGCell::getNumTracks() const {
-	return data->clsNumTracks;
-} // end method 
+        return data->clsNumTracks;
+}  // end method
 
 // -----------------------------------------------------------------------------
 //! @brief If direction is Horizontal, then location is Y value.
 //! If direction is vertical, then location is X value.
 
 inline DBU PhysicalGCell::getLocation() const {
-	return data->clsLocation;
-} // end method 
+        return data->clsLocation;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-//! @brief Returns the spacing between GCell tracks. 
+//! @brief Returns the spacing between GCell tracks.
 
 inline DBU PhysicalGCell::getStep() const {
-	return data->clsStep;
-} // end method 
+        return data->clsStep;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace 
+}  // end namespace

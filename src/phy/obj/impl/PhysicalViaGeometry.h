@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/* 
+/*
  * File:   PhysicalViaGeometry.h
  * Author: jucemar
  *
@@ -22,17 +22,16 @@
 
 namespace Rsyn {
 
-inline const Bounds & PhysicalViaGeometry::getBounds() const {
-	return data->clsBounds;
-} // end method 
+inline const Bounds& PhysicalViaGeometry::getBounds() const {
+        return data->clsBounds;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline int PhysicalViaGeometry::getMaskNumber() const {
-	return data->clsMaskNumber;
-} // end method 
+        return data->clsMaskNumber;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace 
-
+}  // end namespace

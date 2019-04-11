@@ -12,11 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
-struct CellData {
-	
-}; // end struct
+struct CellData {};  // end struct
 
-} // end namespace
+}  // end namespace

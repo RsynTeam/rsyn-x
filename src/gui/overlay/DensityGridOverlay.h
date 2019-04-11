@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/* 
+/*
  * File:   DensityGridOverlay.h
  * Author: jucemar
  *
@@ -34,33 +34,35 @@
 #include <vector>
 #include <map>
 
-
 namespace Rsyn {
 
 class DensityGridOverlay : public Rsyn::LayoutGraphicsLayer {
-private:
-	Rsyn::Design clsDesign;
-	Rsyn::Module clsModule;
-	Rsyn::PhysicalDesign clsPhDesign;
-//	Rsyn::Graphics *clsRsynGraphics = nullptr;
-	QRectF bounds;
-	Rsyn::DensityGrid * clsDensityGrid = nullptr;
-public:
-	DensityGridOverlay() = default;
-	DensityGridOverlay(const DensityGridOverlay& orig) = default;
-	~DensityGridOverlay() = default;
+       private:
+        Rsyn::Design clsDesign;
+        Rsyn::Module clsModule;
+        Rsyn::PhysicalDesign clsPhDesign;
+        //	Rsyn::Graphics *clsRsynGraphics = nullptr;
+        QRectF bounds;
+        Rsyn::DensityGrid *clsDensityGrid = nullptr;
 
-	virtual bool init(Rsyn::LayoutGraphicsScene *scene, std::vector<Rsyn::GraphicsLayerDescriptor> &visibilityItems) override;
+       public:
+        DensityGridOverlay() = default;
+        DensityGridOverlay(const DensityGridOverlay &orig) = default;
+        ~DensityGridOverlay() = default;
 
-	virtual void render(QPainter *painter, const float lod, const QRectF &exposedRect) override;
+        virtual bool init(Rsyn::LayoutGraphicsScene *scene,
+                          std::vector<Rsyn::GraphicsLayerDescriptor>
+                              &visibilityItems) override;
 
-protected:
-	void renderBins(QPainter *painter);
-	void renderOverflow(QPainter *painter);
-	void renderFreeArea(QPainter *painter);
-}; // end class 
+        virtual void render(QPainter *painter, const float lod,
+                            const QRectF &exposedRect) override;
 
-} // end namespace 
+       protected:
+        void renderBins(QPainter *painter);
+        void renderOverflow(QPainter *painter);
+        void renderFreeArea(QPainter *painter);
+};  // end class
+
+}  // end namespace
 
 #endif /* DENSITYGRIDOVERLAY_H */
-

@@ -12,9 +12,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-namespace Rsyn {
 
-
-	
-} // end namespace
+namespace Rsyn {}  // end namespace

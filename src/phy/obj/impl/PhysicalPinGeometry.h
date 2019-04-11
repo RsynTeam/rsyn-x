@@ -12,13 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-/* 
+/*
  * File:   PhysicalPinGeometry.h
  * Author: jucemar
  *
@@ -27,45 +27,45 @@
 
 namespace Rsyn {
 
-inline PhysicalPinGeometryClass PhysicalPinGeometry::getPinGeometryClass() const {
-	return data->clsPinPortClass;
-} // end method 
+inline PhysicalPinGeometryClass PhysicalPinGeometry::getPinGeometryClass()
+    const {
+        return data->clsPinPortClass;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline bool PhysicalPinGeometry::hasPinLayer() const {
-	return !data->clsPinLayers.empty();
-} // end method 
+        return !data->clsPinLayers.empty();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline std::size_t PhysicalPinGeometry::getNumPinLayers() const{
-	return data->clsPinLayers.size();
-} // end method 
+inline std::size_t PhysicalPinGeometry::getNumPinLayers() const {
+        return data->clsPinLayers.size();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<Rsyn::PhysicalPinLayer> &  PhysicalPinGeometry::allPinLayers() const {
-	return data->clsPinLayers;
-} // end method 
+inline const std::vector<Rsyn::PhysicalPinLayer>&
+PhysicalPinGeometry::allPinLayers() const {
+        return data->clsPinLayers;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalPinLayer PhysicalPinGeometry::getLowerPinLayer() const {
-	if(data->clsPinLayers.empty())
-		return Rsyn::PhysicalPinLayer(nullptr);
-	return data->clsPinLayers.front();
-} // end method 
+        if (data->clsPinLayers.empty()) return Rsyn::PhysicalPinLayer(nullptr);
+        return data->clsPinLayers.front();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalPinLayer PhysicalPinGeometry::getUpperPinLayer() const {
-	if(data->clsPinLayers.empty())
-		return Rsyn::PhysicalPinLayer(nullptr);
-	return data->clsPinLayers.back();
+        if (data->clsPinLayers.empty()) return Rsyn::PhysicalPinLayer(nullptr);
+        return data->clsPinLayers.back();
 
-} // end method 
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace 
+}  // end namespace

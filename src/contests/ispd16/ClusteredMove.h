@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef CLUSTERED_MOVE_OPTO_H
 #define CLUSTERED_MOVE_OPTO_H
 
@@ -29,26 +29,26 @@ namespace ICCAD15 {
 class Infrastructure;
 
 class ClusteredMove : public Rsyn::Process {
-private:
-	Rsyn::Session session;
-	Infrastructure * infra;
-	Rsyn::Design design;
-	Rsyn::Module module;
-	Rsyn::PhysicalDesign phDesign;
-	Rsyn::Timer *timer;
-	
-	Rsyn::Attribute<Rsyn::Instance, bool> moved;
-	
-	void runClusteredMovement(const int N);
-	void clusterNeighborCriticalNets( Rsyn::Pin criticalPin, const bool dontMoveRegisters = false );
-	
-	Number getWorstSlack(const Rsyn::Cell cell, const Rsyn::TimingMode mode);
-	
-public:
-	
-	virtual bool run(const Rsyn::Json &params);
-	
-}; // end class
+       private:
+        Rsyn::Session session;
+        Infrastructure *infra;
+        Rsyn::Design design;
+        Rsyn::Module module;
+        Rsyn::PhysicalDesign phDesign;
+        Rsyn::Timer *timer;
 
+        Rsyn::Attribute<Rsyn::Instance, bool> moved;
+
+        void runClusteredMovement(const int N);
+        void clusterNeighborCriticalNets(Rsyn::Pin criticalPin,
+                                         const bool dontMoveRegisters = false);
+
+        Number getWorstSlack(const Rsyn::Cell cell,
+                             const Rsyn::TimingMode mode);
+
+       public:
+        virtual bool run(const Rsyn::Json &params);
+
+};  // end class
 }
 #endif

@@ -12,34 +12,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 struct ModuleData {
-	Design design;
-	
-	// Pointers to instances and nets in this hierarchy level (objects above and
-	// below this hierarchy level are not stored). We don't need to store
-	// pin and arc pointers as they can be deduced from cell pointers. Nets
-	// on the other may exist without connecting any cell (pin) so can not be 
-	// completely deduced from cells.
-	//
-	// TODO: Find a better way to store module-specific data. It seems we are
-	// spending too much memory to keep this.
-	List<Instance> instances;
-	List<Net> nets;
-	
-	// Ports.
-	// Redundant with instances, but allow faster access to ports.
-	List<Port> ports;
-	std::set<Port> portsByDirection[Rsyn::NUM_SIGNAL_DIRECTIONS]; // TODO: unify these too
-	
-	// Used for some netlist traversing...
-	mutable int sign;
-	
-	ModuleData() :
-		sign(0) {}
-	
-}; // end struct
+        Design design;
 
-} // end namespace
+        // Pointers to instances and nets in this hierarchy level (objects above
+        // and
+        // below this hierarchy level are not stored). We don't need to store
+        // pin and arc pointers as they can be deduced from cell pointers. Nets
+        // on the other may exist without connecting any cell (pin) so can not
+        // be
+        // completely deduced from cells.
+        //
+        // TODO: Find a better way to store module-specific data. It seems we
+        // are
+        // spending too much memory to keep this.
+        List<Instance> instances;
+        List<Net> nets;
+
+        // Ports.
+        // Redundant with instances, but allow faster access to ports.
+        List<Port> ports;
+        std::set<Port> portsByDirection[Rsyn::NUM_SIGNAL_DIRECTIONS];  // TODO:
+                                                                       // unify
+                                                                       // these
+                                                                       // too
+
+        // Used for some netlist traversing...
+        mutable int sign;
+
+        ModuleData() : sign(0) {}
+
+};  // end struct
+
+}  // end namespace

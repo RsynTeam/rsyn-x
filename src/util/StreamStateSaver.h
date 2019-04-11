@@ -12,44 +12,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef STREAM_STATE_SAVER_H
-#define	STREAM_STATE_SAVER_H
+#define STREAM_STATE_SAVER_H
 
 #include <iostream>
 
-// Inpired by Boost. 
+// Inpired by Boost.
 
 // Helper class to store output stream configuration (flags, precision, width)
 // and restore them. Automatically restore the configuration and this class
 // is destructred.
 
 class StreamStateSaver {
-private:
-	std::ostream &out;
-	std::ios_base::fmtflags	flags;
-	std::streamsize precision;
-	std::streamsize width;
-	
-public:
-	
-	StreamStateSaver(std::ostream &out) : out(out) {
-		flags = out.flags();
-		precision = out.precision();
-		width = out.width();
-	} // end constructor
-	
-	~StreamStateSaver() {
-		restore();
-	} // end destructor
-	
-	void restore() {
-		out.flags(flags);
-		out.precision(precision);
-		out.width(width);		
-	} // end method
-	
-}; // end class
+       private:
+        std::ostream &out;
+        std::ios_base::fmtflags flags;
+        std::streamsize precision;
+        std::streamsize width;
+
+       public:
+        StreamStateSaver(std::ostream &out) : out(out) {
+                flags = out.flags();
+                precision = out.precision();
+                width = out.width();
+        }  // end constructor
+
+        ~StreamStateSaver() { restore(); }  // end destructor
+
+        void restore() {
+                out.flags(flags);
+                out.precision(precision);
+                out.width(width);
+        }  // end method
+
+};  // end class
 
 #endif
-

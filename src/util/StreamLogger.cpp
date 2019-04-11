@@ -12,18 +12,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "StreamLogger.h"
 
 namespace Rsyn {
 
-StreamLogger * StreamLogger::instance = nullptr;
+StreamLogger *StreamLogger::instance = nullptr;
 
 // -----------------------------------------------------------------------------
 
 void StreamLogger::capture(std::ostream &out) {
-	streams.push_back(std::make_tuple(&out, out.rdbuf()));
-	out.rdbuf(this);
-} // end method
+        streams.push_back(std::make_tuple(&out, out.rdbuf()));
+        out.rdbuf(this);
+}  // end method
 
-} // end namespace
+}  // end namespace

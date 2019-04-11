@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_SANDBOX_H
 #define RSYN_SANDBOX_H
 
@@ -39,26 +39,27 @@ class SandboxPort;
 class Sandbox;
 
 class SandboxAttributeInitializer;
-template<typename DefaultValueType> class SandboxAttributeInitializerWithDefaultValue;
+template <typename DefaultValueType>
+class SandboxAttributeInitializerWithDefaultValue;
 
 typedef CollectionOfGenericPinsFilteredByDirection<SandboxPin>
-		CollectionOfSandboxPinsFilteredByDirection;
-typedef CollectionOfGenericPins<SandboxPin>
-		CollectionOfSandboxPins;
-typedef CollectionOfGenericArcs<SandboxArc>
-		CollectionOfSandboxArcs;
+    CollectionOfSandboxPinsFilteredByDirection;
+typedef CollectionOfGenericPins<SandboxPin> CollectionOfSandboxPins;
+typedef CollectionOfGenericArcs<SandboxArc> CollectionOfSandboxArcs;
 typedef CollectionOfGenericPredecessorPins<SandboxPin, SandboxNet, SandboxArc>
-		CollectionOfPredecessorSandboxPins;
+    CollectionOfPredecessorSandboxPins;
 typedef CollectionOfGenericSuccessorPins<SandboxPin, SandboxNet, SandboxArc>
-		CollectionOfSuccessorSandboxPins;
+    CollectionOfSuccessorSandboxPins;
 
-template<class Object, class Reference>
-using SandboxListCollection = GenericListCollection<Object, Reference, RSYN_SANDBOX_LIST_CHUNCK_SIZE>;
+template <class Object, class Reference>
+using SandboxListCollection =
+    GenericListCollection<Object, Reference, RSYN_SANDBOX_LIST_CHUNCK_SIZE>;
 
-template<class Reference>
-using SandboxReferenceListCollection = GenericReferenceListCollection<Reference, RSYN_SANDBOX_LIST_CHUNCK_SIZE>;
+template <class Reference>
+using SandboxReferenceListCollection =
+    GenericReferenceListCollection<Reference, RSYN_SANDBOX_LIST_CHUNCK_SIZE>;
 
-} // end namespace
+}  // end namespace
 
 // =============================================================================
 // Objects

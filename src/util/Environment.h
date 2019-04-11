@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-/* 
+
+/*
  * File:   Environment.h
  * Author: gaflach
  *
@@ -27,32 +27,42 @@
 #include <cstdlib>
 
 class Environment {
-private:
-	
-	template<typename T>
-	static bool parse(const string &str, T &data) {
-		std::istringstream iss( str );
-		iss >> data;
-		return !iss.fail();
-	} // end method		
-	
-	template<typename T>
-	static T get(const std::string &name, const T &defaultValue) {
-		T data;
-		const char *value = std::getenv(name.c_str());
-		return value && parse(value, data)? data : defaultValue;
-	} // end method
-		
-public:
+       private:
+        template <typename T>
+        static bool parse(const string &str, T &data) {
+                std::istringstream iss(str);
+                iss >> data;
+                return !iss.fail();
+        }  // end method
 
-	static int getBoolean(const std::string &name, const bool defaultValue) { return get(name, defaultValue); }
-	static int getInteger(const std::string &name, const int defaultValue) { return get(name, defaultValue); }
-	static float getFloat(const std::string &name, const float defaultValue) { return get(name, defaultValue); }
-	static double getDouble(const std::string &name, const double defaultValue) { return get(name, defaultValue); }
-	static std::string getString(const std::string &name, const std::string &defaultValue) { return get(name, defaultValue); }
-	
-}; // end class
+        template <typename T>
+        static T get(const std::string &name, const T &defaultValue) {
+                T data;
+                const char *value = std::getenv(name.c_str());
+                return value && parse(value, data) ? data : defaultValue;
+        }  // end method
 
+       public:
+        static int getBoolean(const std::string &name,
+                              const bool defaultValue) {
+                return get(name, defaultValue);
+        }
+        static int getInteger(const std::string &name, const int defaultValue) {
+                return get(name, defaultValue);
+        }
+        static float getFloat(const std::string &name,
+                              const float defaultValue) {
+                return get(name, defaultValue);
+        }
+        static double getDouble(const std::string &name,
+                                const double defaultValue) {
+                return get(name, defaultValue);
+        }
+        static std::string getString(const std::string &name,
+                                     const std::string &defaultValue) {
+                return get(name, defaultValue);
+        }
+
+};  // end class
 
 #endif
-

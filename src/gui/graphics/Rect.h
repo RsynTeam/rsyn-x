@@ -26,23 +26,26 @@
 namespace Rsyn {
 
 class RectGraphicsItem : public NetGraphicsItem {
-public:
-	RectGraphicsItem(Rsyn::Net net, const Rsyn::PhysicalRoutingRect &rect);
+       public:
+        RectGraphicsItem(Rsyn::Net net, const Rsyn::PhysicalRoutingRect &rect);
 
-	virtual Rsyn::PhysicalLayer getPhysicalLayer() const override {return clsPhysicalLayer;}
+        virtual Rsyn::PhysicalLayer getPhysicalLayer() const override {
+                return clsPhysicalLayer;
+        }
 
-	virtual void render(GraphicsScene *scene, QPainter *painter, const float lod, const QRectF &exposedRect) override;
+        virtual void render(GraphicsScene *scene, QPainter *painter,
+                            const float lod,
+                            const QRectF &exposedRect) override;
 
-	virtual QRect getBoundingRect() const override {
-		return clsRect;
-	} // end method
+        virtual QRect getBoundingRect() const override {
+                return clsRect;
+        }  // end method
 
-private:
-	Rsyn::PhysicalLayer clsPhysicalLayer;
-	QRect clsRect;
-}; // end class
+       private:
+        Rsyn::PhysicalLayer clsPhysicalLayer;
+        QRect clsRect;
+};  // end class
 
-} // end namespace
+}  // end namespace
 
 #endif
-

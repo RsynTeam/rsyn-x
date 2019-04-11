@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_DIM_H
 #define RSYN_DIM_H
 
@@ -28,34 +28,35 @@
 
 // -----------------------------------------------------------------------------
 
-enum Dimension {
-	X = 0,
-	Y = 1
-}; // end enum
+enum Dimension { X = 0, Y = 1 };  // end enum
 
-inline std::string getDimension(const Dimension dim ) {
-	switch(dim) {
-		case X  : return "X";
-		case Y  : return "Y";
-		default : return "?";
-	} // end switch
-} // end method
+inline std::string getDimension(const Dimension dim) {
+        switch (dim) {
+                case X:
+                        return "X";
+                case Y:
+                        return "Y";
+                default:
+                        return "?";
+        }  // end switch
+}  // end method
 
-const Dimension REVERSE_DIMENSION[2] = {Y,X};
+const Dimension REVERSE_DIMENSION[2] = {Y, X};
 
-#define for_each_dimension(variable) for ( int variable = 0; variable < 2; variable++ )
+#define for_each_dimension(variable) \
+        for (int variable = 0; variable < 2; variable++)
 
 // -----------------------------------------------------------------------------
 
 enum Boundary {
-	LOWER = 0,
-	UPPER = 1,
+        LOWER = 0,
+        UPPER = 1,
 
-	INNER = 2,
-	OUTER = 3
-}; // end enum
+        INNER = 2,
+        OUTER = 3
+};  // end enum
 
-#define for_each_boundary(variable) for ( int variable = 0; variable < 2; variable++ )
+#define for_each_boundary(variable) \
+        for (int variable = 0; variable < 2; variable++)
 
 #endif /* DIM_H */
-

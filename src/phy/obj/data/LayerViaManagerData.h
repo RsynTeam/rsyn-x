@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/* 
+/*
  * File:   PhysicalLayerViaManagerData.h
  * Author: jucemar
  *
@@ -26,15 +26,15 @@
 namespace Rsyn {
 
 class LayerViaManagerData : public PhysicalObject {
-public:
-	std::map<Rsyn::PhysicalLayer, std::vector<Rsyn::PhysicalVia>>  clsVias;
-	std::map<Rsyn::PhysicalLayer, std::vector<Rsyn::PhysicalVia>>  clsBottomVias;
-	std::map<Rsyn::PhysicalLayer, std::vector<Rsyn::PhysicalVia>>  clsTopVias;
-	LayerViaManagerData() = default;
-}; // end class 
+       public:
+        std::map<Rsyn::PhysicalLayer, std::vector<Rsyn::PhysicalVia>> clsVias;
+        std::map<Rsyn::PhysicalLayer, std::vector<Rsyn::PhysicalVia>>
+            clsBottomVias;
+        std::map<Rsyn::PhysicalLayer, std::vector<Rsyn::PhysicalVia>>
+            clsTopVias;
+        LayerViaManagerData() = default;
+};  // end class
 
-} // end namespace 
-
+}  // end namespace
 
 #endif /* PHYSICALLAYERVIAMANAGERDATA_H */
-

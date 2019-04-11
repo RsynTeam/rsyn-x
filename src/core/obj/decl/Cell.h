@@ -12,44 +12,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 //! @brief A proxy class representing a netlist cell.
 class Cell : public Instance {
-friend class RawPointer;
-friend class Design;
-friend class Instance;
-private:	
-	Cell(InstanceData * data) : Instance(data) {}
-public:
+        friend class RawPointer;
+        friend class Design;
+        friend class Instance;
 
-	//! @brief Default constructor.
-	Cell() : Instance(nullptr) {}
+       private:
+        Cell(InstanceData *data) : Instance(data) {}
 
-	//! @brief Assignment constructor to allow null values.
-	Cell(std::nullptr_t) : Instance(nullptr) {}
+       public:
+        //! @brief Default constructor.
+        Cell() : Instance(nullptr) {}
 
-	//! @brief Returns the name of the library cell associated to this cell.
-	const std::string &getLibraryCellName() const;
+        //! @brief Assignment constructor to allow null values.
+        Cell(std::nullptr_t) : Instance(nullptr) {}
 
-	//! @brief Returns the library cell associated to this cell.
-	LibraryCell getLibraryCell() const;
+        //! @brief Returns the name of the library cell associated to this cell.
+        const std::string &getLibraryCellName() const;
 
-	//! @brief Returns the respective pin in this cell associated to a library
-	//!        pin if any.
-	Pin getPinByLibraryPin(LibraryPin lpin) const;
+        //! @brief Returns the library cell associated to this cell.
+        LibraryCell getLibraryCell() const;
 
-	//! @brief Changes the library cell of this cell. The new library cell must
-	//!        have the same interface (i.e. pin names and directions) as the
-	//!        old one.
-	void remap(LibraryCell libraryCell);
+        //! @brief Returns the respective pin in this cell associated to a
+        //! library
+        //!        pin if any.
+        Pin getPinByLibraryPin(LibraryPin lpin) const;
 
-	//! @brief Changes the library cell of this cell. The new library cell must
-	//!        have the same interface (i.e. pin names and directions) as the
-	//!        old one.
-	void remap(const std::string &libraryCellName);
-	
-}; // end class
-	
-} // end namespace
+        //! @brief Changes the library cell of this cell. The new library cell
+        //! must
+        //!        have the same interface (i.e. pin names and directions) as
+        //!        the
+        //!        old one.
+        void remap(LibraryCell libraryCell);
+
+        //! @brief Changes the library cell of this cell. The new library cell
+        //! must
+        //!        have the same interface (i.e. pin names and directions) as
+        //!        the
+        //!        old one.
+        void remap(const std::string &libraryCellName);
+
+};  // end class
+
+}  // end namespace

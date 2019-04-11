@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_TIMING_ARC_H
 #define RSYN_TIMING_ARC_H
 
@@ -23,43 +23,44 @@
 namespace Rsyn {
 
 struct TimingLibraryArc;
-	
+
 struct TimingArcState {
-	// Scaling factor in the range [0, 1] indicating how much of the centrality
-	// at the "to" pin should be passed to the "from" pin. The sum of scaling
-	// factor of timing arcs ending at a same "to" pin should add up to 1.
-	Number flow;
-	
-	// Timing.
-	EdgeArray<Number> delay; // delay thru this timing arc
-	EdgeArray<Number> oslew; // output slew at this timing arc	
+        // Scaling factor in the range [0, 1] indicating how much of the
+        // centrality
+        // at the "to" pin should be passed to the "from" pin. The sum of
+        // scaling
+        // factor of timing arcs ending at a same "to" pin should add up to 1.
+        Number flow;
 
-	// When walking thru a timing arc the signal may be either inverted or
-	// keep the same logical value. This property indicates whether or not 
-	// the signal must be inverted. Note that for positive and negative 
-	// unate senses this property is actually constant, however for
-	// non-unate timing arc it will depend on the current timing context.
-	EdgeArray<TimingTransition> backtrack;
+        // Timing.
+        EdgeArray<Number> delay;  // delay thru this timing arc
+        EdgeArray<Number> oslew;  // output slew at this timing arc
 
-	// Constructor.
-	TimingArcState() : backtrack(TIMING_TRANSITION_INVALID){
-		delay.set(0, 0);
-		oslew.set(0, 0);
-		flow = 0;
-	} // end constructor
-}; // end struct
+        // When walking thru a timing arc the signal may be either inverted or
+        // keep the same logical value. This property indicates whether or not
+        // the signal must be inverted. Note that for positive and negative
+        // unate senses this property is actually constant, however for
+        // non-unate timing arc it will depend on the current timing context.
+        EdgeArray<TimingTransition> backtrack;
+
+        // Constructor.
+        TimingArcState() : backtrack(TIMING_TRANSITION_INVALID) {
+                delay.set(0, 0);
+                oslew.set(0, 0);
+                flow = 0;
+        }  // end constructor
+};         // end struct
 
 // -----------------------------------------------------------------------------
-	
-struct TimingArc {	
-	// State
-	std::array<TimingArcState, NUM_TIMING_MODES> state;
 
-	// Constructor.
-	TimingArc() {
-	} // end constructor
-}; // end struct
+struct TimingArc {
+        // State
+        std::array<TimingArcState, NUM_TIMING_MODES> state;
 
-} // end namespace
+        // Constructor.
+        TimingArc() {}  // end constructor
+};                      // end struct
+
+}  // end namespace
 
 #endif

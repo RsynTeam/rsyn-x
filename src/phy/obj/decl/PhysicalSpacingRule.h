@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalSpacingRule.h
  * Author: jucemar
  *
@@ -32,26 +32,30 @@
 namespace Rsyn {
 
 class PhysicalSpacingRule : public Proxy<PhysicalSpacingRuleData> {
-	friend class PhysicalDesign;
-	friend class PhysicalDesignData;
-	RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
-protected:
-	//! @brief Constructs a Rsyn::PhysicalSpacingRule object with a pointer to Rsyn::PhysicalSpacingRuleData.
-	PhysicalSpacingRule(PhysicalSpacingRuleData * data) : Proxy(data) {}
-public:
-	//! @brief Constructs a Rsyn::PhysicalSpacingRule object with a null pointer to Rsyn::PhysicalSpacingRuleData.
-	PhysicalSpacingRule() : Proxy(nullptr) {}
-	//! @brief Constructs a Rsyn::PhysicalSpacingRule object with a null pointer to Rsyn::PhysicalSpacingRuleData.
-	PhysicalSpacingRule(std::nullptr_t) : Proxy(nullptr) {}
-	// @brief Returning default space
-	DBU getSpacing() const;
-	// @brief Returning end of line 
-	DBU getEndOfLine() const;
-	// @brief Returning end of line within
-	DBU getEndOfLineWithin() const;
-}; // end class 
+        friend class PhysicalDesign;
+        friend class PhysicalDesignData;
+        RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 
-} // end namespace 
+       protected:
+        //! @brief Constructs a Rsyn::PhysicalSpacingRule object with a pointer
+        //! to Rsyn::PhysicalSpacingRuleData.
+        PhysicalSpacingRule(PhysicalSpacingRuleData* data) : Proxy(data) {}
+
+       public:
+        //! @brief Constructs a Rsyn::PhysicalSpacingRule object with a null
+        //! pointer to Rsyn::PhysicalSpacingRuleData.
+        PhysicalSpacingRule() : Proxy(nullptr) {}
+        //! @brief Constructs a Rsyn::PhysicalSpacingRule object with a null
+        //! pointer to Rsyn::PhysicalSpacingRuleData.
+        PhysicalSpacingRule(std::nullptr_t) : Proxy(nullptr) {}
+        // @brief Returning default space
+        DBU getSpacing() const;
+        // @brief Returning end of line
+        DBU getEndOfLine() const;
+        // @brief Returning end of line within
+        DBU getEndOfLineWithin() const;
+};  // end class
+
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALSPACINGRULE_H */
-

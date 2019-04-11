@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_GRAPHICS_H
 #define RSYN_GRAPHICS_H
 
@@ -33,151 +33,170 @@ namespace Rsyn {
 class Timer;
 
 enum CanvasTheme {
-	CANVAS_THEME_WHITE,
-	CANVAS_THEME_BLACK,
+        CANVAS_THEME_WHITE,
+        CANVAS_THEME_BLACK,
 
-	NUM_CANVAS_THEMES
-}; // end enum
+        NUM_CANVAS_THEMES
+};  // end enum
 
 class RenderingStyle {
-public:
+       public:
+        RenderingStyle()
+            : clsColor(255, 255, 255),
+              clsFillPattern(STIPPLE_MASK_EMPTY),
+              clsLineStyle(LINE_STIPPLE_NONE) {}  // end constructor
 
-	RenderingStyle() :
-		clsColor(255, 255, 255),
-		clsFillPattern(STIPPLE_MASK_EMPTY),
-		clsLineStyle(LINE_STIPPLE_NONE) {
-	} // end constructor
+        RenderingStyle(const Color &color, const LineStippleMask &lineStyle,
+                       const FillStippleMask &fillPattern)
+            : clsColor(color),
+              clsFillPattern(fillPattern),
+              clsLineStyle(lineStyle) {}  // end constructor
 
-	RenderingStyle(const Color &color, const LineStippleMask &lineStyle, const FillStippleMask &fillPattern) :
-		clsColor(color),
-		clsFillPattern(fillPattern),
-		clsLineStyle(lineStyle) {
-	} // end constructor
+        Color getColor() const { return clsColor; }
+        FillStippleMask getFillPattern() const { return clsFillPattern; }
+        LineStippleMask getLineStyle() const { return clsLineStyle; }
 
-	Color getColor() const {return clsColor;}
-	FillStippleMask getFillPattern() const {return clsFillPattern;}
-	LineStippleMask getLineStyle() const {return clsLineStyle;}
+        void setColor(const Color &color) { clsColor = color; }
+        void setFillPattern(const FillStippleMask &pattern) {
+                clsFillPattern = pattern;
+        }
+        void setLineStyle(const LineStippleMask &style) {
+                clsLineStyle = style;
+        }
 
-	void setColor(const Color &color) {clsColor = color;}
-	void setFillPattern(const FillStippleMask &pattern) {clsFillPattern = pattern;}
-	void setLineStyle(const LineStippleMask &style) {clsLineStyle = style;}
+       private:
+        Color clsColor;
+        FillStippleMask clsFillPattern;
+        LineStippleMask clsLineStyle;
 
-private:
-
-	Color clsColor;
-	FillStippleMask clsFillPattern;
-	LineStippleMask clsLineStyle;
-
-}; // end class
+};  // end class
 
 enum GraphicsLayerZ {
-	GRAPHICS_LAYER_BACKGROUND,
-	GRAPHICS_LAYER_FLOORPLAN,
-	GRAPHICS_LAYER_INSTANCE,
-	GRAPHICS_LAYER_PIN,
-	GRAPHICS_LAYER_ROUTING,
-	GRAPHICS_LAYER_FOREGROUND,
+        GRAPHICS_LAYER_BACKGROUND,
+        GRAPHICS_LAYER_FLOORPLAN,
+        GRAPHICS_LAYER_INSTANCE,
+        GRAPHICS_LAYER_PIN,
+        GRAPHICS_LAYER_ROUTING,
+        GRAPHICS_LAYER_FOREGROUND,
 
-	NUM_GRAPHICS_LAYERS
-}; // end enum
+        NUM_GRAPHICS_LAYERS
+};  // end enum
 
 class Graphics : public Service, public Rsyn::DesignObserver {
-public:
+       public:
+        virtual void start(const Rsyn::Json &params);
+        virtual void stop();
 
-	virtual void start(const Rsyn::Json &params);
-	virtual void stop();
+        virtual void onPostInstanceCreate(Rsyn::Instance instance) override;
 
-	virtual void onPostInstanceCreate(Rsyn::Instance instance) override;
+        bool isColoringEnabled() const { return clsColoringEnabled; }
+        void setColoringEnabled(const bool coloringEnabled) {
+                clsColoringEnabled = coloringEnabled;
+        }
 
-	bool isColoringEnabled() const { return clsColoringEnabled; }
-	void setColoringEnabled(const bool coloringEnabled) { 
-		clsColoringEnabled = coloringEnabled;
-	}
-	
-	//! @brief Get the color associated to an instance
-	Color &getCellColor(Rsyn::Instance instance) {return clsInstanceColors[instance];}
+        //! @brief Get the color associated to an instance
+        Color &getCellColor(Rsyn::Instance instance) {
+                return clsInstanceColors[instance];
+        }
 
-	//! @brief Returns the z-order of a tech layer.
-	float getPhysicalLayerZ(const Rsyn::PhysicalLayer layer) const {
-		return getGraphicsLayerZ(GRAPHICS_LAYER_ROUTING, layer.getIndex());
-	} // end method
+        //! @brief Returns the z-order of a tech layer.
+        float getPhysicalLayerZ(const Rsyn::PhysicalLayer layer) const {
+                return getGraphicsLayerZ(GRAPHICS_LAYER_ROUTING,
+                                         layer.getIndex());
+        }  // end method
 
-	//! @brief Returns a z order for a specific graphics layer.
-	float getGraphicsLayerZ(const GraphicsLayerZ &layer) const {
-		return (layer / NUM_GRAPHICS_LAYERS);
-	} // end method
+        //! @brief Returns a z order for a specific graphics layer.
+        float getGraphicsLayerZ(const GraphicsLayerZ &layer) const {
+                return (layer / NUM_GRAPHICS_LAYERS);
+        }  // end method
 
-	//! @brief Returns a z order for a specific graphics layer accounting for
-	//! sub layers. The offset z order is given in the interval [layer z order,
-	//! layer z order + 1).
-	float getGraphicsLayerZ(const GraphicsLayerZ &layer, const int offset) const {
-		return (layer / NUM_GRAPHICS_LAYERS) + (offset/(offset+1));
-	} // end method
+        //! @brief Returns a z order for a specific graphics layer accounting
+        //! for
+        //! sub layers. The offset z order is given in the interval [layer z
+        //! order,
+        //! layer z order + 1).
+        float getGraphicsLayerZ(const GraphicsLayerZ &layer,
+                                const int offset) const {
+                return (layer / NUM_GRAPHICS_LAYERS) + (offset / (offset + 1));
+        }  // end method
 
-	//! @brief Returns the current background color.
-	Color getBackgroundColor() const {return clsBackgroundColor[clsCanvasTheme];}
+        //! @brief Returns the current background color.
+        Color getBackgroundColor() const {
+                return clsBackgroundColor[clsCanvasTheme];
+        }
 
-	//! @brief Returns the rendering style of instances.
-	const RenderingStyle &getInstanceRendering() const {return clsInstanceColor[clsCanvasTheme];}
+        //! @brief Returns the rendering style of instances.
+        const RenderingStyle &getInstanceRendering() const {
+                return clsInstanceColor[clsCanvasTheme];
+        }
 
-	//! @brief Returns the rendering style of the highlighted objects.
-	const RenderingStyle &getHighlightRendering() const {return clsHighlightColor[clsCanvasTheme];}
+        //! @brief Returns the rendering style of the highlighted objects.
+        const RenderingStyle &getHighlightRendering() const {
+                return clsHighlightColor[clsCanvasTheme];
+        }
 
-	//! @brief Returns the rendering style of the select objects.
-	const RenderingStyle &getSelectionRendering() const {return clsSelectionColor[clsCanvasTheme];}
+        //! @brief Returns the rendering style of the select objects.
+        const RenderingStyle &getSelectionRendering() const {
+                return clsSelectionColor[clsCanvasTheme];
+        }
 
-	//! @brief Returns the rendering style of a routing layer.
-	const RenderingStyle &getRoutingLayerRendering(const int routingLayerId) const {
-		return routingLayerId >= techLayerMasks.size()?
-			techLayerMasks.back() : techLayerMasks[routingLayerId];
-	} // end method
+        //! @brief Returns the rendering style of a routing layer.
+        const RenderingStyle &getRoutingLayerRendering(
+            const int routingLayerId) const {
+                return routingLayerId >= techLayerMasks.size()
+                           ? techLayerMasks.back()
+                           : techLayerMasks[routingLayerId];
+        }  // end method
 
-	//! @brief Sets the current canvas theme.
-	void setCanvasTheme(const CanvasTheme &theme) {
-		clsCanvasTheme = theme;
-	} // end method
+        //! @brief Sets the current canvas theme.
+        void setCanvasTheme(const CanvasTheme &theme) {
+                clsCanvasTheme = theme;
+        }  // end method
 
-	// Coloring schemes.
-	void coloringRandomBlue();
-	void coloringRandomGray();
-	void coloringByCellType();
-	void coloringColorful();
-	void coloringGray();
-	void coloringSlack(TimingMode mode);
-	void coloringCriticality(const TimingMode mode, const double threshold);
-	void coloringRelativity(const TimingMode mode);
-	void coloringCentrality(const TimingMode mode, const double threshold);
-	void coloringCriticalPath(const TimingMode mode, const bool showNeighbors);
-	void coloringQDPMoved();
-	void colorNeighbours(Rsyn::Instance);
+        // Coloring schemes.
+        void coloringRandomBlue();
+        void coloringRandomGray();
+        void coloringByCellType();
+        void coloringColorful();
+        void coloringGray();
+        void coloringSlack(TimingMode mode);
+        void coloringCriticality(const TimingMode mode, const double threshold);
+        void coloringRelativity(const TimingMode mode);
+        void coloringCentrality(const TimingMode mode, const double threshold);
+        void coloringCriticalPath(const TimingMode mode,
+                                  const bool showNeighbors);
+        void coloringQDPMoved();
+        void colorNeighbours(Rsyn::Instance);
 
-private:
-	// Circuitry
-	Rsyn::Design clsDesign;
-	Rsyn::Module clsModule;	
-	
-	// Physical Design
-	Rsyn::PhysicalDesign clsPhysicalDesign;
+       private:
+        // Circuitry
+        Rsyn::Design clsDesign;
+        Rsyn::Module clsModule;
 
-	// Services
-	Timer * clsTimer = nullptr;
+        // Physical Design
+        Rsyn::PhysicalDesign clsPhysicalDesign;
 
-	// Store instance colors.
-	Rsyn::Attribute<Rsyn::Instance, Color> clsInstanceColors;
+        // Services
+        Timer *clsTimer = nullptr;
 
-	CanvasTheme clsCanvasTheme = CANVAS_THEME_WHITE;
-	
-	bool clsColoringEnabled;
+        // Store instance colors.
+        Rsyn::Attribute<Rsyn::Instance, Color> clsInstanceColors;
 
-	static const std::array<Color, NUM_CANVAS_THEMES> clsBackgroundColor;
-	static const std::array<RenderingStyle, NUM_CANVAS_THEMES> clsInstanceColor;
-	static const std::array<RenderingStyle, NUM_CANVAS_THEMES> clsHighlightColor;
-	static const std::array<RenderingStyle, NUM_CANVAS_THEMES> clsSelectionColor;
-	static const std::array<RenderingStyle, 16> techLayerMasks;
+        CanvasTheme clsCanvasTheme = CANVAS_THEME_WHITE;
 
-}; // end class
+        bool clsColoringEnabled;
 
-} // end namespace
+        static const std::array<Color, NUM_CANVAS_THEMES> clsBackgroundColor;
+        static const std::array<RenderingStyle, NUM_CANVAS_THEMES>
+            clsInstanceColor;
+        static const std::array<RenderingStyle, NUM_CANVAS_THEMES>
+            clsHighlightColor;
+        static const std::array<RenderingStyle, NUM_CANVAS_THEMES>
+            clsSelectionColor;
+        static const std::array<RenderingStyle, 16> techLayerMasks;
+
+};  // end class
+
+}  // end namespace
 
 #endif /* GRAPHICS_H */
-

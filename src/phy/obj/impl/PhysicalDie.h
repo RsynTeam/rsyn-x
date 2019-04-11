@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalDie.h
  * Author: jucemar
  *
@@ -29,47 +29,46 @@
 namespace Rsyn {
 
 inline DBUxy PhysicalDie::getCoordinate(const Boundary bound) const {
-	return data->clsBounds[bound];
-} // end method 
+        return data->clsBounds[bound];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline DBU PhysicalDie::getCoordinate(const Boundary bound, const Dimension dim) const {
-	return data->clsBounds[bound][dim];
-} // end method 
+inline DBU PhysicalDie::getCoordinate(const Boundary bound,
+                                      const Dimension dim) const {
+        return data->clsBounds[bound][dim];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline const Bounds & PhysicalDie::getBounds() const {
-	return data->clsBounds;
-} // end method 
+inline const Bounds& PhysicalDie::getBounds() const {
+        return data->clsBounds;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalDie::getLength(const Dimension dim) const {
-	return data->clsBounds.computeLength(dim);
-} // end method 
+        return data->clsBounds.computeLength(dim);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalDie::getPosition(const Boundary boundary) const {
-	return data->clsBounds[boundary];
-} // end method 
+        return data->clsBounds[boundary];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalDie::getCenterPosition() const {
-	return data->clsBounds.computeCenter();
-} // end method 
+        return data->clsBounds.computeCenter();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalDie::getArea() const {
-	return data->clsBounds.computeArea();
-} // end method 
+        return data->clsBounds.computeArea();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace 
-
-
+}  // end namespace

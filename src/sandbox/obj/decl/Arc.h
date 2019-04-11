@@ -12,43 +12,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 class SandboxArc : public Proxy<SandboxArcData> {
-RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
+        RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 
-friend class Sandbox;
-private:
-	SandboxArc(SandboxArcData * data) : Proxy(data) {}
-	
-public:
-	
-	SandboxArc() {}
-	SandboxArc(std::nullptr_t) {}	
-		
-	std::string getName() const;
-	std::string getFullName() const;
-	
-	const std::string getFromName() const;
-	const std::string getToName() const;	
+        friend class Sandbox;
 
-	Design getDesign();
-	const Design getDesign() const;
+       private:
+        SandboxArc(SandboxArcData* data) : Proxy(data) {}
 
-	Arc getRelated() const;
+       public:
+        SandboxArc() {}
+        SandboxArc(std::nullptr_t) {}
 
-	ArcType getType() const;
-	
-	SandboxInstance getInstance() const;
-	SandboxNet getNet() const;
-	LibraryArc getLibraryArc() const;
-	
-	SandboxPin getFromPin() const;
-	SandboxPin getToPin() const;
-	
-	SandboxNet getFromNet() const;
-	SandboxNet getToNet() const;	
-}; // end class
-	
-} // end namespace
+        std::string getName() const;
+        std::string getFullName() const;
+
+        const std::string getFromName() const;
+        const std::string getToName() const;
+
+        Design getDesign();
+        const Design getDesign() const;
+
+        Arc getRelated() const;
+
+        ArcType getType() const;
+
+        SandboxInstance getInstance() const;
+        SandboxNet getNet() const;
+        LibraryArc getLibraryArc() const;
+
+        SandboxPin getFromPin() const;
+        SandboxPin getToPin() const;
+
+        SandboxNet getFromNet() const;
+        SandboxNet getToNet() const;
+};  // end class
+
+}  // end namespace

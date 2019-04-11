@@ -12,46 +12,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 struct SandboxData {
-	Module module;
-	std::string name;
+        Module module;
+        std::string name;
 
-	List<SandboxPinData, RSYN_SANDBOX_LIST_CHUNCK_SIZE> pins;
-	List<SandboxArcData, RSYN_SANDBOX_LIST_CHUNCK_SIZE> arcs;
-	List<SandboxNetData, RSYN_SANDBOX_LIST_CHUNCK_SIZE> nets;
-	List<SandboxInstanceData, RSYN_SANDBOX_LIST_CHUNCK_SIZE> instances;
+        List<SandboxPinData, RSYN_SANDBOX_LIST_CHUNCK_SIZE> pins;
+        List<SandboxArcData, RSYN_SANDBOX_LIST_CHUNCK_SIZE> arcs;
+        List<SandboxNetData, RSYN_SANDBOX_LIST_CHUNCK_SIZE> nets;
+        List<SandboxInstanceData, RSYN_SANDBOX_LIST_CHUNCK_SIZE> instances;
 
-	std::vector<std::string> instanceNames;
-	std::vector<std::string> netNames;
+        std::vector<std::string> instanceNames;
+        std::vector<std::string> netNames;
 
-	int anonymousInstanceId;
-	int anonymousNetId;
+        int anonymousInstanceId;
+        int anonymousNetId;
 
-	bool dirty;
-	bool initialized;
+        bool dirty;
+        bool initialized;
 
-	// Used for some netlist traversing (e.g. update topological ordering)...
-	int sign;
-	
-	std::unordered_map<std::string, SandboxInstance> instanceNameMapping;
-	std::unordered_map<std::string, SandboxNet> netMapping;
-	std::map<Instance, SandboxInstance> mappingInstance;
-	std::map<Net, SandboxNet> mappingNet;
+        // Used for some netlist traversing (e.g. update topological
+        // ordering)...
+        int sign;
 
-	List<SandboxPort, RSYN_SANDBOX_LIST_CHUNCK_SIZE> ports;
-	std::set<SandboxPort> portsByDirection[Rsyn::NUM_SIGNAL_DIRECTIONS];
+        std::unordered_map<std::string, SandboxInstance> instanceNameMapping;
+        std::unordered_map<std::string, SandboxNet> netMapping;
+        std::map<Instance, SandboxInstance> mappingInstance;
+        std::map<Net, SandboxNet> mappingNet;
 
-	SandboxData() :
-		initialized(false),
-		dirty(false),
-		anonymousInstanceId(0),
-		anonymousNetId(0),
-		sign(0) {
-	} // end constructor
+        List<SandboxPort, RSYN_SANDBOX_LIST_CHUNCK_SIZE> ports;
+        std::set<SandboxPort> portsByDirection[Rsyn::NUM_SIGNAL_DIRECTIONS];
 
-}; // end struct
+        SandboxData()
+            : initialized(false),
+              dirty(false),
+              anonymousInstanceId(0),
+              anonymousNetId(0),
+              sign(0) {}  // end constructor
 
-} // end namespace
+};  // end struct
+
+}  // end namespace

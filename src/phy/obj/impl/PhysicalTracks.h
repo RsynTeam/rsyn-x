@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalTracks.h
  * Author: jucemar
  *
@@ -29,39 +29,38 @@
 namespace Rsyn {
 
 inline PhysicalTrackDirection PhysicalTracks::getDirection() const {
-	return data->clsDirection;
-} // end method 
+        return data->clsDirection;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalTracks::getLocation() const {
-	return data->clsLocation;
-} // end method 
+        return data->clsLocation;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalTracks::getSpace() const {
-	return data->clsSpace;
-} // end method 
+        return data->clsSpace;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline int PhysicalTracks::getNumberOfTracks() const {
-	return data->clsNumTracks;
-} // end method 
+        return data->clsNumTracks;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline std::size_t PhysicalTracks::getNumberOfLayers() const {
-	return data->clsLayers.size();
-} // end method 
+        return data->clsLayers.size();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<PhysicalLayer> & PhysicalTracks::allLayers() const {
-	return data->clsLayers;
-} // end method 
+inline const std::vector<PhysicalLayer>& PhysicalTracks::allLayers() const {
+        return data->clsLayers;
+}  // end method
 
 // -----------------------------------------------------------------------------
-} // end namespace 
-
+}  // end namespace

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef ICCAD15_EARLY_OPTO_H
 #define ICCAD15_EARLY_OPTO_H
 
@@ -23,43 +23,42 @@ namespace Rsyn {
 class LibraryCharacterizer;
 class Timer;
 class RoutingEstimator;
-} // end namespace
+}  // end namespace
 
 namespace ICCAD15 {
 
 class Infrastructure;
 
 class EarlyOpto : public Rsyn::Process {
-private:
-	Rsyn::Session session;
-	Infrastructure *infra;
-	Rsyn::Design design;
-	Rsyn::Module module;
-	Rsyn::PhysicalDesign phDesign;
-	Rsyn::Timer *timer;
-	Rsyn::RoutingEstimator *routingEstimator;
-	const Rsyn::LibraryCharacterizer * libc;
+       private:
+        Rsyn::Session session;
+        Infrastructure *infra;
+        Rsyn::Design design;
+        Rsyn::Module module;
+        Rsyn::PhysicalDesign phDesign;
+        Rsyn::Timer *timer;
+        Rsyn::RoutingEstimator *routingEstimator;
+        const Rsyn::LibraryCharacterizer *libc;
 
-	void stepSkewOptimization();
-	void stepIterativeSpreading();
-	void stepRegisterSwap();
-	void stepRegisterToRegisterPathFix();	
-	
-	void runEarlySkewOptimization();
-	void runEarlyWireOptimization();
-	void runEarlyLocalSkewOptimizationByFlipFlopSwapping();
-	void runEarlySpreadingIterative(const bool dontMoveLcbs);
-	int runEarlySpreading(const bool dontMoveLcbs);
-	
-	void doLocalSkewOptimization(Rsyn::Cell lcb);
-	double runEarlySpreading_ComputeCost(Rsyn::Cell cell);
-	
-public:
-	
-	virtual bool run(const Rsyn::Json &params);
-	
-}; // end class
+        void stepSkewOptimization();
+        void stepIterativeSpreading();
+        void stepRegisterSwap();
+        void stepRegisterToRegisterPathFix();
 
-} // end namespace
+        void runEarlySkewOptimization();
+        void runEarlyWireOptimization();
+        void runEarlyLocalSkewOptimizationByFlipFlopSwapping();
+        void runEarlySpreadingIterative(const bool dontMoveLcbs);
+        int runEarlySpreading(const bool dontMoveLcbs);
+
+        void doLocalSkewOptimization(Rsyn::Cell lcb);
+        double runEarlySpreading_ComputeCost(Rsyn::Cell cell);
+
+       public:
+        virtual bool run(const Rsyn::Json &params);
+
+};  // end class
+
+}  // end namespace
 
 #endif

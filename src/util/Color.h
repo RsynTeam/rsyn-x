@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-/* 
+
+/*
  * File:   Color.h
  * Author: jucemar
  *
@@ -21,40 +21,42 @@
  */
 
 #ifndef COLOR_H
-#define	COLOR_H
+#define COLOR_H
 
 class Color {
-public:
-	unsigned char r, g, b;
+       public:
+        unsigned char r, g, b;
 
-	bool operator == (const Color& c) const { return r == c.r && g == c.g && b == c.b; };
-	
-	bool transparent;
-	
-	Color() {
-		r = 255;
-		g = 255;
-		b = 255;
-		transparent = false;
-	}
+        bool operator==(const Color& c) const {
+                return r == c.r && g == c.g && b == c.b;
+        };
 
-	Color(const unsigned char red, const unsigned char green, const unsigned char blue) {
-		setRGB(red, green, blue);
-	}
+        bool transparent;
 
-	void setRGB(const unsigned char red, const unsigned char green, const unsigned char blue) {
-		r = red;
-		g = green;
-		b = blue;
-	} // end method
-	
-	void setRGB(Color color) {
-		r = color.r;
-		g = color.g;
-		b = color.b;
-	} // end method
-}; // end class
+        Color() {
+                r = 255;
+                g = 255;
+                b = 255;
+                transparent = false;
+        }
 
+        Color(const unsigned char red, const unsigned char green,
+              const unsigned char blue) {
+                setRGB(red, green, blue);
+        }
 
-#endif	/* COLOR_H */
+        void setRGB(const unsigned char red, const unsigned char green,
+                    const unsigned char blue) {
+                r = red;
+                g = green;
+                b = blue;
+        }  // end method
 
+        void setRGB(Color color) {
+                r = color.r;
+                g = color.g;
+                b = color.b;
+        }  // end method
+};         // end class
+
+#endif /* COLOR_H */

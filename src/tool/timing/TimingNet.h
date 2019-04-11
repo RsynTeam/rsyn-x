@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_TIMING_NET_H
 #define RSYN_TIMING_NET_H
 
@@ -23,42 +23,43 @@ namespace Rsyn {
 
 struct TimingArc;
 struct TimingPin;
-	
-struct TimingNetState {
-	// Indicates which timing arc we should walk thru when backtracking to 
-	// the from pin of the timing arc.		
-	EdgeArray<TimingArc *> backtrackArc;
 
-	// Constructor
-	TimingNetState() {
-		backtrackArc.set(NULL, NULL);
-	} // end constructor
-}; // end struct
+struct TimingNetState {
+        // Indicates which timing arc we should walk thru when backtracking to
+        // the from pin of the timing arc.
+        EdgeArray<TimingArc *> backtrackArc;
+
+        // Constructor
+        TimingNetState() { backtrackArc.set(NULL, NULL); }  // end constructor
+};                                                          // end struct
 
 struct TimingNet {
-	// Incremental timing analysis signature.
-	int sign;
-	
-	// Indicates that the timing of this net was update outside a complete
-	// timing update. For instance, when timing is update only locally.
-	// If the timing was updated locally, it may happen that the current timing
-	// matches the propagated timing, which lead to the propagation to be
-	// pruned. However, as the timing was updated only locally, that means that
-	// it was not propagated, therefore we should not prune. So we need a flag 
-	// to avoid pruning in such cases.
-	bool dirty;
-	
-	// State
-	TimingNetState state[NUM_TIMING_MODES];
+        // Incremental timing analysis signature.
+        int sign;
 
-	// Constructor
-	TimingNet() {
-		sign = 0;
-		dirty = false;
-	} // end constructor
-	
-}; // end struct
+        // Indicates that the timing of this net was update outside a complete
+        // timing update. For instance, when timing is update only locally.
+        // If the timing was updated locally, it may happen that the current
+        // timing
+        // matches the propagated timing, which lead to the propagation to be
+        // pruned. However, as the timing was updated only locally, that means
+        // that
+        // it was not propagated, therefore we should not prune. So we need a
+        // flag
+        // to avoid pruning in such cases.
+        bool dirty;
 
-} // end namespace
+        // State
+        TimingNetState state[NUM_TIMING_MODES];
+
+        // Constructor
+        TimingNet() {
+                sign = 0;
+                dirty = false;
+        }  // end constructor
+
+};  // end struct
+
+}  // end namespace
 
 #endif

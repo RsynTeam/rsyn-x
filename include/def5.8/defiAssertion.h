@@ -23,13 +23,12 @@
 /* For updates, support, or to become part of the LEF/DEF Community,          */
 /* check www.openeda.org for details.                                         */
 /*                                                                            */
-/*  $Author: icftcm $                                                                  */
-/*  $Revision: #1 $                                                                */
-/*  $Date: 2014/02/10 $                                                                    */
+/*  $Author: icftcm $ */
+/*  $Revision: #1 $ */
+/*  $Date: 2014/02/10 $ */
 /*  $State:  $                                                                */
 /* ************************************************************************** */
 /* ************************************************************************** */
-
 
 #ifndef CDEFIASSERTION_H
 #define CDEFIASSERTION_H
@@ -55,28 +54,31 @@
 /*  as just one list).                                                        */
 /*                                                                            */
 
-EXTERN int defiAssertion_isAssertion (const defiAssertion* obj);
-EXTERN int defiAssertion_isConstraint (const defiAssertion* obj);
-EXTERN int defiAssertion_isWiredlogic (const defiAssertion* obj);
-EXTERN int defiAssertion_isDelay (const defiAssertion* obj);
-EXTERN int defiAssertion_isSum (const defiAssertion* obj);
-EXTERN int defiAssertion_isDiff (const defiAssertion* obj);
-EXTERN int defiAssertion_hasRiseMin (const defiAssertion* obj);
-EXTERN int defiAssertion_hasRiseMax (const defiAssertion* obj);
-EXTERN int defiAssertion_hasFallMin (const defiAssertion* obj);
-EXTERN int defiAssertion_hasFallMax (const defiAssertion* obj);
-EXTERN double defiAssertion_riseMin (const defiAssertion* obj);
-EXTERN double defiAssertion_riseMax (const defiAssertion* obj);
-EXTERN double defiAssertion_fallMin (const defiAssertion* obj);
-EXTERN double defiAssertion_fallMax (const defiAssertion* obj);
-EXTERN const char* defiAssertion_netName (const defiAssertion* obj);
-EXTERN double defiAssertion_distance (const defiAssertion* obj);
-EXTERN int defiAssertion_numItems (const defiAssertion* obj);
-EXTERN int defiAssertion_isPath (const defiAssertion* obj, int  index);
-EXTERN int defiAssertion_isNet (const defiAssertion* obj, int  index);
-EXTERN void defiAssertion_path (const defiAssertion* obj, int  index, char**  fromInst, char**  fromPin, char**  toInst, char**  toPin);
-EXTERN void defiAssertion_net (const defiAssertion* obj, int  index, char**  netName);
+EXTERN int defiAssertion_isAssertion(const defiAssertion* obj);
+EXTERN int defiAssertion_isConstraint(const defiAssertion* obj);
+EXTERN int defiAssertion_isWiredlogic(const defiAssertion* obj);
+EXTERN int defiAssertion_isDelay(const defiAssertion* obj);
+EXTERN int defiAssertion_isSum(const defiAssertion* obj);
+EXTERN int defiAssertion_isDiff(const defiAssertion* obj);
+EXTERN int defiAssertion_hasRiseMin(const defiAssertion* obj);
+EXTERN int defiAssertion_hasRiseMax(const defiAssertion* obj);
+EXTERN int defiAssertion_hasFallMin(const defiAssertion* obj);
+EXTERN int defiAssertion_hasFallMax(const defiAssertion* obj);
+EXTERN double defiAssertion_riseMin(const defiAssertion* obj);
+EXTERN double defiAssertion_riseMax(const defiAssertion* obj);
+EXTERN double defiAssertion_fallMin(const defiAssertion* obj);
+EXTERN double defiAssertion_fallMax(const defiAssertion* obj);
+EXTERN const char* defiAssertion_netName(const defiAssertion* obj);
+EXTERN double defiAssertion_distance(const defiAssertion* obj);
+EXTERN int defiAssertion_numItems(const defiAssertion* obj);
+EXTERN int defiAssertion_isPath(const defiAssertion* obj, int index);
+EXTERN int defiAssertion_isNet(const defiAssertion* obj, int index);
+EXTERN void defiAssertion_path(const defiAssertion* obj, int index,
+                               char** fromInst, char** fromPin, char** toInst,
+                               char** toPin);
+EXTERN void defiAssertion_net(const defiAssertion* obj, int index,
+                              char** netName);
 
-EXTERN void defiAssertion_print (const defiAssertion* obj, FILE*  f);
+EXTERN void defiAssertion_print(const defiAssertion* obj, FILE* f);
 
 #endif

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/* 
+/*
  * File:   PhysicalViaRule.h
  * Author: jucemar
  *
@@ -26,37 +26,40 @@
 namespace Rsyn {
 
 class PhysicalViaRule : public PhysicalViaRuleBase {
-	friend class PhysicalDesign;
-	friend class PhysicalViaRuleBase;
-	RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
-protected:
-	//! @brief Constructs a Rsyn::PhysicalViaRule object with a pointer to Rsyn::ViaRuleData.
+        friend class PhysicalDesign;
+        friend class PhysicalViaRuleBase;
+        RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 
-	PhysicalViaRule(ViaRuleData * data) : PhysicalViaRuleBase(data) {
-	}
-public:
-	//! @brief Constructs a Rsyn::PhysicalViaRule object with a null pointer to Rsyn::ViaRuleData.
+       protected:
+        //! @brief Constructs a Rsyn::PhysicalViaRule object with a pointer to
+        //! Rsyn::ViaRuleData.
 
-	PhysicalViaRule() : PhysicalViaRuleBase(nullptr) {
-	}
-	//! @brief Constructs a Rsyn::PhysicalViaRule object with a null pointer to Rsyn::ViaRuleData.
+        PhysicalViaRule(ViaRuleData* data) : PhysicalViaRuleBase(data) {}
 
-	PhysicalViaRule(std::nullptr_t) : PhysicalViaRuleBase(nullptr) {
-	}
-	
-	//! @brief Returns the via rule relative index
-	int getRelativeIndex() const;
-	
-	//! @brief Returns the top or bottom routing layers in the via rule.
-	Rsyn::PhysicalLayer getLayer(const Rsyn::ViaLevel level) const;
-	//! @brief Returns the top or bottom routing layer directions in the via rule.
-	Rsyn::PhysicalLayerDirection getLayerDirection(const Rsyn::ViaLevel level) const;
-	//! @brief Returns all cut layers defined in via rule.
-	const std::vector<Rsyn::PhysicalVia> & allVias() const;
+       public:
+        //! @brief Constructs a Rsyn::PhysicalViaRule object with a null pointer
+        //! to Rsyn::ViaRuleData.
 
-}; // end class
+        PhysicalViaRule() : PhysicalViaRuleBase(nullptr) {}
+        //! @brief Constructs a Rsyn::PhysicalViaRule object with a null pointer
+        //! to Rsyn::ViaRuleData.
 
-} // end namespace
+        PhysicalViaRule(std::nullptr_t) : PhysicalViaRuleBase(nullptr) {}
+
+        //! @brief Returns the via rule relative index
+        int getRelativeIndex() const;
+
+        //! @brief Returns the top or bottom routing layers in the via rule.
+        Rsyn::PhysicalLayer getLayer(const Rsyn::ViaLevel level) const;
+        //! @brief Returns the top or bottom routing layer directions in the via
+        //! rule.
+        Rsyn::PhysicalLayerDirection getLayerDirection(
+            const Rsyn::ViaLevel level) const;
+        //! @brief Returns all cut layers defined in via rule.
+        const std::vector<Rsyn::PhysicalVia>& allVias() const;
+
+};  // end class
+
+}  // end namespace
 
 #endif /* RSYN_DATABASE_PHYSICALVIARULE_H */
-

@@ -229,7 +229,7 @@ class AddrCell {
 //
 //			int counter = 0;
 //			for (set<string >::iterator its =
-//optionParameters.begin();
+// optionParameters.begin();
 // its!=optionParameters.end(); ++its) {
 //				if ( counter++ == index )
 //					return *its;
@@ -253,7 +253,7 @@ class AddrCell {
 // clsOptions.find(currentOption);
 //				if ( it == clsOptions.end() )
 //					clsOptions.insert(
-//make_pair(currentOption,
+// make_pair(currentOption,
 // set<string>() ));
 //			} else {
 //				OptionMap::iterator it =
@@ -275,7 +275,7 @@ class AddrCell {
 //			bool first = true;
 //			set<string> &optionParameters = it->second;
 //			for (set<string >::iterator its =
-//optionParameters.begin();
+// optionParameters.begin();
 // its!=optionParameters.end(); ++its) {
 //				if ( !first )
 //					out << " ";
@@ -524,6 +524,6 @@ class OpsInfo {
         vector<QueryStruct> queries;
 };
 
-} // end namespace
+}  // end namespace
 
 #endif  //_GLOBAL_H_

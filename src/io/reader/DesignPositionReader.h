@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   DesignPositionReader.h
  * Author: jucemar
  *
@@ -36,24 +36,23 @@
 namespace Rsyn {
 
 class DesignPositionReader : public Process {
-protected:
-	Rsyn::Session session;
-	Rsyn::Design clsDesign;
-	Rsyn::Module clsModule;
-	Rsyn::PhysicalDesign clsPhysicalDesign;
+       protected:
+        Rsyn::Session session;
+        Rsyn::Design clsDesign;
+        Rsyn::Module clsModule;
+        Rsyn::PhysicalDesign clsPhysicalDesign;
 
-public:
-	DesignPositionReader() {}
-	DesignPositionReader(const DesignPositionReader& orig) {}
-	virtual ~DesignPositionReader() {}
-	virtual bool run(const Rsyn::Json &params) override;
-protected:
-	bool load(const Rsyn::Json &params);
-	void openDef(std::string & path);
-	void openBookshelf(std::string & path);
-}; // end class 
+       public:
+        DesignPositionReader() {}
+        DesignPositionReader(const DesignPositionReader &orig) {}
+        virtual ~DesignPositionReader() {}
+        virtual bool run(const Rsyn::Json &params) override;
 
+       protected:
+        bool load(const Rsyn::Json &params);
+        void openDef(std::string &path);
+        void openBookshelf(std::string &path);
+};  // end class
 }
 
 #endif /* RSYN_DESIGNPOSITIONREADER_H */
-

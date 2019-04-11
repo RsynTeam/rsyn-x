@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_TIMING_LIBRARY_CELL_H
 #define RSYN_TIMING_LIBRARY_CELL_H
 
@@ -20,15 +20,14 @@
 #include "TimingArc.h"
 
 namespace Rsyn {
-	
-struct TimingLibraryCell {
-	// Store the pins in library cell that have no timing arc to it. 
-	std::vector<Rsyn::LibraryPin> floatingPins;
-	
-	TimingLibraryCell() {}
-}; // end class
 
-} // end namespace
+struct TimingLibraryCell {
+        // Store the pins in library cell that have no timing arc to it.
+        std::vector<Rsyn::LibraryPin> floatingPins;
+
+        TimingLibraryCell() {}
+};  // end class
+
+}  // end namespace
 
 #endif
-

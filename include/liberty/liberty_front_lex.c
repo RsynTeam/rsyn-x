@@ -12,20 +12,15 @@
    And so, this file is born...
 
 */
- 
- /* defined in the token.l file */
+
+/* defined in the token.l file */
 extern int liberty_parser2_lex(void);
 int token_q_empty(void);
 int injected_token(void);
 
-
-int liberty_parser_lex(void)
-{
-	if( !token_q_empty() )
-	{
-		return injected_token();
-	}
-	else
-		return liberty_parser2_lex();
-	
+int liberty_parser_lex(void) {
+        if (!token_q_empty()) {
+                return injected_token();
+        } else
+                return liberty_parser2_lex();
 }

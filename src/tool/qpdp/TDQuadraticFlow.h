@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   TDQuadraticFlow.h
  * Author: mpfogaca
  *
@@ -38,25 +38,24 @@ class Timer;
 }
 
 namespace ICCAD15 {
-   
+
 class Infrastructure;
-	
+
 class TDQuadraticFlow : public Rsyn::Process {
-	Rsyn::Session clsSession;
-	Rsyn::Timer *clsTimer;
-	Infrastructure* clsInfra;
-	Jezz* clsJezz;
-	
-public:
-    TDQuadraticFlow(){};
-    
-    bool run(const Rsyn::Json& params);
-	void defaultFlow();
-	void overlapFlow();
-	void overlapFlowMIP();
+        Rsyn::Session clsSession;
+        Rsyn::Timer* clsTimer;
+        Infrastructure* clsInfra;
+        Jezz* clsJezz;
+
+       public:
+        TDQuadraticFlow(){};
+
+        bool run(const Rsyn::Json& params);
+        void defaultFlow();
+        void overlapFlow();
+        void overlapFlowMIP();
 };
 
-} // end class
+}  // end class
 
 #endif /* TDQUADRATICFLOW_H */
-

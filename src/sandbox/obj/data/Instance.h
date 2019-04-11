@@ -12,30 +12,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 struct SandboxInstanceData : SandboxObjectData {
-	Sandbox sandbox;
-	InstanceType type;
-	Instance related;
-		
-	std::vector<SandboxPin> pins;
-	std::vector<SandboxArc> arcs;
-		
-	// Extra data for different types of instances.
-	union {
-		void * extra; // place holder to initialize the other pointers.
+        Sandbox sandbox;
+        InstanceType type;
+        Instance related;
 
-		SandboxPinData * attachedPin;
-		LibraryCellData * lcell;
-	}; // end union
-	
-	// Constructor
-	SandboxInstanceData() :
-		type(UNKNOWN_INSTANCE_TYPE),
-		extra(nullptr) {
-	} // end constructor
-}; // end struct
+        std::vector<SandboxPin> pins;
+        std::vector<SandboxArc> arcs;
 
-} // end namespace
+        // Extra data for different types of instances.
+        union {
+                void* extra;  // place holder to initialize the other pointers.
+
+                SandboxPinData* attachedPin;
+                LibraryCellData* lcell;
+        };  // end union
+
+        // Constructor
+        SandboxInstanceData()
+            : type(UNKNOWN_INSTANCE_TYPE), extra(nullptr) {}  // end constructor
+};                                                            // end struct
+
+}  // end namespace

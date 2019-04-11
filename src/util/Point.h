@@ -25,54 +25,52 @@
 namespace Rsyn {
 
 class Point {
-public:
+       public:
+        Point() {}
+        Point(const DBU x, const DBU y) : clsX(x), clsY(y) {}
+        Point(const DBUxy p) : clsX(p.x), clsY(p.y) {}
 
-	Point() {}
-	Point(const DBU x, const DBU y) : clsX(x), clsY(y) {}
-	Point(const DBUxy p) : clsX(p.x), clsY(p.y) {}
+        DBU getX() const { return clsX; }
+        DBU getY() const { return clsY; }
 
-	DBU getX() const {return clsX;}
-	DBU getY() const {return clsY;}
+        void setX(const DBU x) { clsX = x; }
+        void setY(const DBU y) { clsY = y; }
 
-	void setX(const DBU x) {clsX = x;}
-	void setY(const DBU y) {clsY = y;}
+        //! @brief Translates this point by (dx, dy).
+        void translate(const DBU dx, const DBU dy) {
+                clsX += dx;
+                clsY += dy;
+        }  // end method
 
-	//! @brief Translates this point by (dx, dy).
-	void translate(const DBU dx, const DBU dy) {
-		clsX += dx;
-		clsY += dy;
-	} // end method
+        //! @brief Translates this point by displacement.
+        void translate(const DBUxy displacement) {
+                translate(displacement.x, displacement.y);
+        }  // end method
 
-	//! @brief Translates this point by displacement.
-	void translate(const DBUxy displacement) {
-		translate(displacement.x, displacement.y);
-	} // end method
+        //! @brief Returns copy of this point translated by (dx, dy).
+        Point translated(const DBU dx, const DBU dy) const {
+                Point point = *this;
+                point.translate(dx, dy);
+                return point;
+        }  // end method
 
-	//! @brief Returns copy of this point translated by (dx, dy).
-	Point translated(const DBU dx, const DBU dy) const {
-		Point point = *this;
-		point.translate(dx, dy);
-		return point;
-	} // end method
+        //! @brief Returns copy of this point translated by displacement.
+        Point translated(const DBUxy displacement) const {
+                return translated(displacement.x, displacement.y);
+        }  // end method
 
-	//! @brief Returns copy of this point translated by displacement.
-	Point translated(const DBUxy displacement) const {
-		return translated(displacement.x, displacement.y);
-	} // end method
+        operator DBUxy() const { return DBUxy(clsX, clsY); }
 
-	operator DBUxy() const {return DBUxy(clsX, clsY);}
+       private:
+        DBU clsX = 0;
+        DBU clsY = 0;
 
-private:
+};  // end class
 
-	DBU clsX = 0;
-	DBU clsY = 0;
+}  // end namespace
 
-}; // end class
-
-} // end namespace
-
-BOOST_GEOMETRY_REGISTER_POINT_2D_GET_SET(Rsyn::Point, DBU, 
-		boost::geometry::cs::cartesian, getX, getY, setX, setY);
+BOOST_GEOMETRY_REGISTER_POINT_2D_GET_SET(Rsyn::Point, DBU,
+                                         boost::geometry::cs::cartesian, getX,
+                                         getY, setX, setY);
 
 #endif
-

@@ -12,61 +12,61 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
-struct DesignData {  
-	std::string name;
+struct DesignData {
+        std::string name;
 
-	Rsyn::Module topModule;
+        Rsyn::Module topModule;
 
-	List<InstanceData> instances;
-	List<PinData> pins;
-	List<ArcData> arcs;
-	List<NetData> nets;
+        List<InstanceData> instances;
+        List<PinData> pins;
+        List<ArcData> arcs;
+        List<NetData> nets;
         List<Cell> cells;
-	
-	List<LibraryCellData> libraryCells;
-	List<LibraryPinData> libraryPins;
-	List<LibraryArcData> libraryArcs;
 
-	std::vector<std::string> instanceNames;
-	std::vector<std::string> netNames;
-	
-	int anonymousInstanceId;
-	int anonymousNetId;
-	
-	std::unordered_map<std::string, Instance> instanceMapping;
-	std::unordered_map<std::string, Net> netMapping;
-	std::unordered_map<std::string, LibraryCell> libraryCellMapping;
-	
-	std::array<LibraryCell, NUM_SIGNAL_DIRECTIONS> portLibraryCells;
-	std::set<Cell> ports[NUM_SIGNAL_DIRECTIONS];
-	
-	std::array<int, NUM_INSTANCE_TYPES> instanceCount;
-	
-	std::vector<Pin> structuralStartpoints;
-	std::vector<Pin> structuralEndpoints;	
-	std::vector<Net> netsInTopologicalOrder;
-	
-	bool dirty;	
-	bool initialized;
-	
-	// Used for some netlist traversing (e.g. update topological ordering)...
-	int sign;	
-	
-	// Observers
-	std::array<std::list<DesignObserver *>, NUM_DESIGN_EVENTS> observers;
-	
-	// Constructor
-	DesignData() :
-		initialized(false),
-		dirty(false),
-		anonymousInstanceId(0),
-		anonymousNetId(0),
-		instanceCount({0, 0, 0}),
-		sign(0) {
-	} // end constructor
-}; // end class
+        List<LibraryCellData> libraryCells;
+        List<LibraryPinData> libraryPins;
+        List<LibraryArcData> libraryArcs;
 
-} // end namespace
+        std::vector<std::string> instanceNames;
+        std::vector<std::string> netNames;
+
+        int anonymousInstanceId;
+        int anonymousNetId;
+
+        std::unordered_map<std::string, Instance> instanceMapping;
+        std::unordered_map<std::string, Net> netMapping;
+        std::unordered_map<std::string, LibraryCell> libraryCellMapping;
+
+        std::array<LibraryCell, NUM_SIGNAL_DIRECTIONS> portLibraryCells;
+        std::set<Cell> ports[NUM_SIGNAL_DIRECTIONS];
+
+        std::array<int, NUM_INSTANCE_TYPES> instanceCount;
+
+        std::vector<Pin> structuralStartpoints;
+        std::vector<Pin> structuralEndpoints;
+        std::vector<Net> netsInTopologicalOrder;
+
+        bool dirty;
+        bool initialized;
+
+        // Used for some netlist traversing (e.g. update topological
+        // ordering)...
+        int sign;
+
+        // Observers
+        std::array<std::list<DesignObserver *>, NUM_DESIGN_EVENTS> observers;
+
+        // Constructor
+        DesignData()
+            : initialized(false),
+              dirty(false),
+              anonymousInstanceId(0),
+              anonymousNetId(0),
+              instanceCount({0, 0, 0}),
+              sign(0) {}  // end constructor
+};                        // end class
+
+}  // end namespace

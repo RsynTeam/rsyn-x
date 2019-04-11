@@ -29,19 +29,19 @@ namespace Rsyn {
 // -----------------------------------------------------------------------------
 
 PortGraphicsItem::PortGraphicsItem(Rsyn::Port port) : clsPort(port) {
-	// Note: Port geometries are given relative to the port position.
-	Bounds rect = clsPort.getBounds();
-	Rsyn::PhysicalTransform transform(clsPort.getOrientation());
-	rect = transform.apply(rect);
-	rect.translate(clsPort.getPosition());
-	clsRect = QtUtils::convert(rect);
-} // end method
+        // Note: Port geometries are given relative to the port position.
+        Bounds rect = clsPort.getBounds();
+        Rsyn::PhysicalTransform transform(clsPort.getOrientation());
+        rect = transform.apply(rect);
+        rect.translate(clsPort.getPosition());
+        clsRect = QtUtils::convert(rect);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-void
-PortGraphicsItem::render(GraphicsScene *scene, QPainter *painter, const float lod, const QRectF &exposedRect) {
-	painter->drawRect(clsRect);
-} // end method
+void PortGraphicsItem::render(GraphicsScene *scene, QPainter *painter,
+                              const float lod, const QRectF &exposedRect) {
+        painter->drawRect(clsRect);
+}  // end method
 
-} // end namespace
+}  // end namespace

@@ -12,65 +12,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 // -----------------------------------------------------------------------------
 
-inline
-Port
-SandboxPort::getRelated() const {
-	Rsyn::Instance instance = SandboxInstance::getRelated();
-	return instance? instance.asPort() : nullptr;
-} // end method
+inline Port SandboxPort::getRelated() const {
+        Rsyn::Instance instance = SandboxInstance::getRelated();
+        return instance ? instance.asPort() : nullptr;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-SandboxPin
-SandboxPort::getInnerPin() const {
-	// Ports have just one pin, which is the inner pin...
-	return data->pins[0];
-} // end method
+inline SandboxPin SandboxPort::getInnerPin() const {
+        // Ports have just one pin, which is the inner pin...
+        return data->pins[0];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-SandboxPin
-SandboxPort::getOuterPin() const {
-	return nullptr;
-} // end method
+inline SandboxPin SandboxPort::getOuterPin() const {
+        return nullptr;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-SandboxPin
-SandboxPort::getOtherPin(Rsyn::SandboxPin) const {
-	return nullptr;
-} // end method
+inline SandboxPin SandboxPort::getOtherPin(Rsyn::SandboxPin) const {
+        return nullptr;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-SandboxPin
-SandboxPort::getAttachedPin() const {
-	return data->attachedPin;
-} // end method
+inline SandboxPin SandboxPort::getAttachedPin() const {
+        return data->attachedPin;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-Direction
-SandboxPort::getDirection() const {
-	return Global::getReverseDirection(getInnerPin().getDirection());
-} // end method
+inline Direction SandboxPort::getDirection() const {
+        return Global::getReverseDirection(getInnerPin().getDirection());
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-bool
-SandboxPort::isVirtual() const {
-	return data->attachedPin;
-} // end method
+inline bool SandboxPort::isVirtual() const {
+        return data->attachedPin;
+}  // end method
 
-} // end namespace
+}  // end namespace

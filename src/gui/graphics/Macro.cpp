@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "Macro.h"
 
 #include <QPainter>
@@ -24,56 +24,58 @@
 namespace Rsyn {
 
 MacroGraphicsItem::MacroGraphicsItem(Rsyn::Cell cell) : CellGraphicsItem(cell) {
-	Rsyn::Session session;
-	Rsyn::PhysicalDesign physicalDesign = session.getPhysicalDesign();
+        Rsyn::Session session;
+        Rsyn::PhysicalDesign physicalDesign = session.getPhysicalDesign();
 
-	Rsyn::PhysicalLibraryCell physicalLibraryCell =
-			physicalDesign.getPhysicalLibraryCell(cell);
+        Rsyn::PhysicalLibraryCell physicalLibraryCell =
+            physicalDesign.getPhysicalLibraryCell(cell);
 
-	if (physicalLibraryCell.hasLayerObstacles()) {
-		for (const Bounds &obs : physicalLibraryCell.allLayerObstacles()) {
-			QRect rect = QtUtils::convert(obs);
-			QPainterPath shape;
-			shape.addRect(rect);
-			clsShape += shape;
-		} // end for
-	} else {
-		Bounds bounds;
-		if (cell.getOrientation() == Rsyn::ORIENTATION_E  || 
-			cell.getOrientation() == Rsyn::ORIENTATION_FE ||
-			cell.getOrientation() == Rsyn::ORIENTATION_W  ||
-			cell.getOrientation() == Rsyn::ORIENTATION_FW ) {
-			bounds = Bounds(DBUxy(), DBUxy(cell.getHeight(), cell.getWidth()));
-		} else {
-			bounds = Bounds(DBUxy(), cell.getSize());
-		} // end if
-		
-		QRect rect = QtUtils::convert(bounds);
-		QPainterPath shape;
-		shape.addRect(rect);
-		clsShape += shape;
-	} // end else
-	clsShape = clsShape.simplified();
-	clsShape.translate(cell.getX(), cell.getY());
-} // end constructor
+        if (physicalLibraryCell.hasLayerObstacles()) {
+                for (const Bounds &obs :
+                     physicalLibraryCell.allLayerObstacles()) {
+                        QRect rect = QtUtils::convert(obs);
+                        QPainterPath shape;
+                        shape.addRect(rect);
+                        clsShape += shape;
+                }  // end for
+        } else {
+                Bounds bounds;
+                if (cell.getOrientation() == Rsyn::ORIENTATION_E ||
+                    cell.getOrientation() == Rsyn::ORIENTATION_FE ||
+                    cell.getOrientation() == Rsyn::ORIENTATION_W ||
+                    cell.getOrientation() == Rsyn::ORIENTATION_FW) {
+                        bounds = Bounds(
+                            DBUxy(), DBUxy(cell.getHeight(), cell.getWidth()));
+                } else {
+                        bounds = Bounds(DBUxy(), cell.getSize());
+                }  // end if
 
-// -----------------------------------------------------------------------------
-
-void
-MacroGraphicsItem::render(GraphicsScene *scene, QPainter *painter, const float lod, const QRectF &exposedRect) {
-	painter->drawPath(clsShape);
-
-	// Draw pins.
-	if (lod > 50) {
-		renderPins(painter);
-	} // end if
-
-	// Draw name.
-	if (lod > 100) {
-		renderName(painter, exposedRect);
-	} // end method
-} // end method
+                QRect rect = QtUtils::convert(bounds);
+                QPainterPath shape;
+                shape.addRect(rect);
+                clsShape += shape;
+        }  // end else
+        clsShape = clsShape.simplified();
+        clsShape.translate(cell.getX(), cell.getY());
+}  // end constructor
 
 // -----------------------------------------------------------------------------
 
-} // end namespace
+void MacroGraphicsItem::render(GraphicsScene *scene, QPainter *painter,
+                               const float lod, const QRectF &exposedRect) {
+        painter->drawPath(clsShape);
+
+        // Draw pins.
+        if (lod > 50) {
+                renderPins(painter);
+        }  // end if
+
+        // Draw name.
+        if (lod > 100) {
+                renderName(painter, exposedRect);
+        }  // end method
+}  // end method
+
+// -----------------------------------------------------------------------------
+
+}  // end namespace

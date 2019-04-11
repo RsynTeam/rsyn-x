@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalNet.h
  * Author: jucemar
  *
@@ -31,63 +31,65 @@ namespace Rsyn {
 // -----------------------------------------------------------------------------
 
 inline Rsyn::Net PhysicalNet::getNet() const {
-	return data? data->clsNet : nullptr;
-} // end method
+        return data ? data->clsNet : nullptr;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline std::string PhysicalNet::getName() const {
-	return getNet().getName();
-} // end method
+        return getNet().getName();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalNet::getHPWL() const {
-	return data->clsBounds.computeLength();
-} // end method 
+        return data->clsBounds.computeLength();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalNet::getHPWL(const Dimension dim) {
-	return data->clsBounds.computeLength(dim);
-} // end method 
+        return data->clsBounds.computeLength(dim);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline const Bounds & PhysicalNet::getBounds() const {
-	return data->clsBounds;
-} // end method 
+inline const Bounds &PhysicalNet::getBounds() const {
+        return data->clsBounds;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalNet::getCoordinate(const Boundary bound) const {
-	return data->clsBounds[bound];
-} // end method 
+        return data->clsBounds[bound];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline DBU PhysicalNet::getCoordinate(const Boundary bound, const Dimension dim) const {
-	return data->clsBounds[bound][dim];
-} // end method 
+inline DBU PhysicalNet::getCoordinate(const Boundary bound,
+                                      const Dimension dim) const {
+        return data->clsBounds[bound][dim];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline Rsyn::Pin PhysicalNet::getPinBoundary(const Boundary bound, const Dimension dim) const {
-	return data->clsBoundPins[bound][dim];
-} // end method 
+inline Rsyn::Pin PhysicalNet::getPinBoundary(const Boundary bound,
+                                             const Dimension dim) const {
+        return data->clsBoundPins[bound][dim];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline const PhysicalRouting &PhysicalNet::getRouting() const {
-	return data->clsRouting;
-} // end method
+        return data->clsRouting;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline bool PhysicalNet::isRouted() const {
-	return !data->clsRouting.isEmpty();
-} // end method
+        return !data->clsRouting.isEmpty();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace 
+}  // end namespace

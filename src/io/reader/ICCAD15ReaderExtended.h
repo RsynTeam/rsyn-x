@@ -12,21 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   ICCAD15Reader.h
  * Author: jucemar
  *
  * Created on 20 de Fevereiro de 2017, 18:59
  */
-
-
 
 #ifndef ICCAD15_READER_EXTENDED_H
 #define ICCAD15_READER_EXTENDED_H
@@ -47,20 +45,17 @@ namespace ICCAD15 {
 ////////////////////////////////////////////////////////////////////////////////
 
 class ICCAD15ReaderExtended : public Rsyn::ICCAD15Reader {
-protected:
-		
-public:
-	ICCAD15ReaderExtended() {}
-	ICCAD15ReaderExtended(const ICCAD15ReaderExtended& orig) {}
-	virtual ~ICCAD15ReaderExtended() {}
-	virtual bool load(const Rsyn::Json &params) override;
+       protected:
+       public:
+        ICCAD15ReaderExtended() {}
+        ICCAD15ReaderExtended(const ICCAD15ReaderExtended& orig) {}
+        virtual ~ICCAD15ReaderExtended() {}
+        virtual bool load(const Rsyn::Json& params) override;
 
-protected:
+       protected:
+        void openBenchmarkFromICCAD15();
+        void openBenchmarkFromICCAD15ForGlobalPlacementOnly();
+};  // end class
 
-	void openBenchmarkFromICCAD15();
-	void openBenchmarkFromICCAD15ForGlobalPlacementOnly();
-}; // end class 
-
-} // end namespace 
+}  // end namespace
 #endif /* RSYN_ICCAD15READER_EXTENDED_H */
-

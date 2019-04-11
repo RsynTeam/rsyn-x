@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_SERVICE_H
 #define RSYN_SERVICE_H
 
@@ -22,20 +22,14 @@ namespace Rsyn {
 
 class Session;
 
-
-enum ServiceRequestType {
-	SERVICE_OPTIONAL,
-	SERVICE_MANDATORY
-}; // end enum
+enum ServiceRequestType { SERVICE_OPTIONAL, SERVICE_MANDATORY };  // end enum
 
 class Service {
-public:
-	virtual void start(const Rsyn::Json &params) = 0;
-	virtual void stop() = 0;
-}; // end class
+       public:
+        virtual void start(const Rsyn::Json &params) = 0;
+        virtual void stop() = 0;
+};  // end class
 
-} // end namespace
-
+}  // end namespace
 
 #endif
-

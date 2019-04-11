@@ -12,50 +12,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_TRISTATE_FLAG_H
 #define RSYN_TRISTATE_FLAG_H
 
 namespace Rsyn {
 
 class TristateFlag {
-private:
-	bool specified : 1;
-	bool flag : 1;
+       private:
+        bool specified : 1;
+        bool flag : 1;
 
-public:
+       public:
+        TristateFlag() : specified(false), flag(false) {}
+        TristateFlag(const bool value) : specified(true), flag(value) {}
 
-	TristateFlag() : specified(false), flag(false) {}
-	TristateFlag(const bool value) : specified(true), flag(value) {}
+        bool get() const { return flag; }  // end method
 
-	bool get() const {
-		return flag;
-	} // end method
+        void set(const bool value) {
+                specified = true;
+                flag = value;
+        }  // end method
 
-	void set(const bool value) {
-		specified = true;
-		flag = value;
-	} // end method
+        void clear() {
+                specified = false;
+                flag = false;
+        }  // end method
 
-	void clear() {
-		specified = false;
-		flag = false;
-	} // end method
+        bool isSpecified() const { return specified; }  // end method
 
-	bool isSpecified() const {
-		return specified;
-	} // end method
+        bool isNotSpecified() const { return !specified; }  // end method
 
-	bool isNotSpecified() const {
-		return !specified;
-	} // end method
+        operator bool() const { return get(); }  // end method
+};                                               // end class
 
-	operator bool() const { 
-		return get();
-	} // end method
-}; // end class
+}  // end namespace
 
-} // end namespace
-
-#endif 
-
+#endif

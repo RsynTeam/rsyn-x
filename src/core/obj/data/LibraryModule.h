@@ -12,15 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 struct LibraryModuleData : ObjectData {
-	Design design;
-	
-	LibraryModuleData() :
-		design(nullptr) {
-	} // end constructor
-}; // end struct
+        Design design;
 
-} // end namespace
+        LibraryModuleData() : design(nullptr) {}  // end constructor
+};                                                // end struct
+
+}  // end namespace

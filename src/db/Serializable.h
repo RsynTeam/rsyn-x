@@ -20,11 +20,10 @@
 
 namespace Rsyn {
 class Serializable {
-public:
-	virtual void read(Rsyn::SerializationStream &stream) = 0;
-	virtual void write(Rsyn::SerializationStream &stream) = 0;
-}; // end class
+       public:
+        virtual void read(Rsyn::SerializationStream &stream) = 0;
+        virtual void write(Rsyn::SerializationStream &stream) = 0;
+};  // end class
 }
 
 #endif /* SERIALIZABLE_H */
-

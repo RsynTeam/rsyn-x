@@ -31,10 +31,10 @@
    version 2.2 of Bison.  */
 
 #ifndef YY_SYNTAX_PARSER_SYNTAX_PARSER_H_INCLUDED
-# define YY_SYNTAX_PARSER_SYNTAX_PARSER_H_INCLUDED
+#define YY_SYNTAX_PARSER_SYNTAX_PARSER_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+#define YYDEBUG 0
 #endif
 #if YYDEBUG
 extern int syntax_parser_debug;
@@ -42,37 +42,36 @@ extern int syntax_parser_debug;
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-  enum yytokentype
-  {
-    COMMA = 258,
-    SEMI = 259,
-    LPAR = 260,
-    RPAR = 261,
-    LCURLY = 262,
-    RCURLY = 263,
-    COLON = 264,
-    LBRACK = 265,
-    RBRACK = 266,
-    KW_FLOAT = 267,
-    KW_STRING = 268,
-    KW_ENUM = 269,
-    KW_UNK_ARGS = 270,
-    KW_INTEGER = 271,
-    KW_VIRTATTR = 272,
-    KW_SHORT = 273,
-    KW_OR = 274,
-    KW_AND = 275,
-    KW_BOOLEAN = 276,
-    COLONEQ = 277,
-    KW_LIST = 278,
-    GREATERTHAN = 279,
-    LESSTHAN = 280,
-    DOTS = 281,
-    NUM = 282,
-    STRING = 283,
-    IDENT = 284
-  };
+#define YYTOKENTYPE
+enum yytokentype {
+        COMMA = 258,
+        SEMI = 259,
+        LPAR = 260,
+        RPAR = 261,
+        LCURLY = 262,
+        RCURLY = 263,
+        COLON = 264,
+        LBRACK = 265,
+        RBRACK = 266,
+        KW_FLOAT = 267,
+        KW_STRING = 268,
+        KW_ENUM = 269,
+        KW_UNK_ARGS = 270,
+        KW_INTEGER = 271,
+        KW_VIRTATTR = 272,
+        KW_SHORT = 273,
+        KW_OR = 274,
+        KW_AND = 275,
+        KW_BOOLEAN = 276,
+        COLONEQ = 277,
+        KW_LIST = 278,
+        GREATERTHAN = 279,
+        LESSTHAN = 280,
+        DOTS = 281,
+        NUM = 282,
+        STRING = 283,
+        IDENT = 284
+};
 #endif
 /* Tokens.  */
 #define COMMA 258
@@ -104,35 +103,33 @@ extern int syntax_parser_debug;
 #define IDENT 284
 
 /* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+#if !defined YYSTYPE && !defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE YYSTYPE;
-union YYSTYPE
-{
+union YYSTYPE {
 #line 53 "syntax_parser.y" /* yacc.c:1909  */
 
-	char *str;
-	double num;
-	void *voidptr;
-	libsynt_attr_type attrtype;
-	libsynt_float_constraint *float_constr;
-	libsynt_int_constraint *int_constr;
-	libsynt_string_enum *str_enum;
-	libsynt_argument *arg;
-	libsynt_attribute_info *attr;
-	libsynt_name_constraints nameconstr;
-	libsynt_group_info *group;
-	libsynt_head *head;
-	libsynt_technology *tech;
+        char *str;
+        double num;
+        void *voidptr;
+        libsynt_attr_type attrtype;
+        libsynt_float_constraint *float_constr;
+        libsynt_int_constraint *int_constr;
+        libsynt_string_enum *str_enum;
+        libsynt_argument *arg;
+        libsynt_attribute_info *attr;
+        libsynt_name_constraints nameconstr;
+        libsynt_group_info *group;
+        libsynt_head *head;
+        libsynt_technology *tech;
 
 #line 128 "syntax_parser.h" /* yacc.c:1909  */
 };
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
+#define YYSTYPE_IS_TRIVIAL 1
+#define YYSTYPE_IS_DECLARED 1
 #endif
-
 
 extern YYSTYPE syntax_parser_lval;
 
-int syntax_parser_parse (void);
+int syntax_parser_parse(void);
 
 #endif /* !YY_SYNTAX_PARSER_SYNTAX_PARSER_H_INCLUDED  */

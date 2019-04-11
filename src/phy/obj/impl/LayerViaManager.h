@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/* 
+/*
  * File:   LayerViaManager.h
  * Author: jucemar
  *
@@ -21,55 +21,52 @@
  */
 namespace Rsyn {
 
-inline const std::vector<Rsyn::PhysicalVia> & LayerViaManager::allVias(Rsyn::PhysicalLayer layer) const {
-	return data->clsVias[layer];
-} // end method 
+inline const std::vector<Rsyn::PhysicalVia>& LayerViaManager::allVias(
+    Rsyn::PhysicalLayer layer) const {
+        return data->clsVias[layer];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<Rsyn::PhysicalVia> & LayerViaManager::allBottomVias(Rsyn::PhysicalLayer layer) const {
-	return data->clsBottomVias[layer];
-} // end method 
+inline const std::vector<Rsyn::PhysicalVia>& LayerViaManager::allBottomVias(
+    Rsyn::PhysicalLayer layer) const {
+        return data->clsBottomVias[layer];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<Rsyn::PhysicalVia> & LayerViaManager::allTopVias(Rsyn::PhysicalLayer layer) const {
-	return data->clsTopVias[layer];
-} // end method 
+inline const std::vector<Rsyn::PhysicalVia>& LayerViaManager::allTopVias(
+    Rsyn::PhysicalLayer layer) const {
+        return data->clsTopVias[layer];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline bool LayerViaManager::hasVias(Rsyn::PhysicalLayer layer) const {
-	if(layer == nullptr)
-		return false;
-	if(layer.getType() != Rsyn::PhysicalLayerType::ROUTING)
-		return false;
-	const std::vector<Rsyn::PhysicalVia> & vias  = data->clsVias[layer];
-	return vias.size() > 0;
-} // end method 
+        if (layer == nullptr) return false;
+        if (layer.getType() != Rsyn::PhysicalLayerType::ROUTING) return false;
+        const std::vector<Rsyn::PhysicalVia>& vias = data->clsVias[layer];
+        return vias.size() > 0;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline bool LayerViaManager::hasBottomVias(Rsyn::PhysicalLayer layer) const {
-	if(layer == nullptr)
-		return false;
-	if(layer.getType() != Rsyn::PhysicalLayerType::ROUTING)
-		return false;
-	const std::vector<Rsyn::PhysicalVia> & vias  = data->clsBottomVias[layer];
-	return vias.size() > 0;
-} // end method 
+        if (layer == nullptr) return false;
+        if (layer.getType() != Rsyn::PhysicalLayerType::ROUTING) return false;
+        const std::vector<Rsyn::PhysicalVia>& vias = data->clsBottomVias[layer];
+        return vias.size() > 0;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline bool LayerViaManager::hasTopVias(Rsyn::PhysicalLayer layer) const {
-	if(layer == nullptr)
-		return false;
-	if(layer.getType() != Rsyn::PhysicalLayerType::ROUTING)
-		return false;
-	const std::vector<Rsyn::PhysicalVia> & vias  = data->clsTopVias[layer];
-	return vias.size() > 0;
-} // end method 
+        if (layer == nullptr) return false;
+        if (layer.getType() != Rsyn::PhysicalLayerType::ROUTING) return false;
+        const std::vector<Rsyn::PhysicalVia>& vias = data->clsTopVias[layer];
+        return vias.size() > 0;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace 
+}  // end namespace

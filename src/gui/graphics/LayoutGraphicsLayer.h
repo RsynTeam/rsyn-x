@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_LAYOUT_GRAPHIC_SLAYER_H
 #define RSYN_LAYOUT_GRAPHIC_SLAYER_H
 
@@ -23,16 +23,17 @@ namespace Rsyn {
 class LayoutGraphicsScene;
 
 class LayoutGraphicsLayer : public GraphicsLayer {
-public:
+       public:
+        virtual void render(QPainter *painter, const float lod,
+                            const QRectF &exposedRect) override {
+                GraphicsLayer::render(painter, lod, exposedRect);
+        }  // end method
 
-	virtual void render(QPainter *painter, const float lod, const QRectF &exposedRect) override {
-		GraphicsLayer::render(painter, lod, exposedRect);
-	} // end method
+        virtual bool init(
+            LayoutGraphicsScene *scene,
+            std::vector<GraphicsLayerDescriptor> &visibilityItems) = 0;
+};  // end class
 
-	virtual bool init(LayoutGraphicsScene *scene, std::vector<GraphicsLayerDescriptor> &visibilityItems) = 0;
-}; // end class
-
-} // end method
+}  // end method
 
 #endif
-

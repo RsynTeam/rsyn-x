@@ -12,35 +12,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 //! @brief A proxy class representing a library module
 //! @note  This is not used yet.
 class LibraryModule : public Proxy<LibraryModuleData> {
-	
-RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
+        RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 
-friend class RawPointer;
-friend class Design;
+        friend class RawPointer;
+        friend class Design;
 
-private:
-	LibraryModule(LibraryModuleData * data) : Proxy(data) {}
+       private:
+        LibraryModule(LibraryModuleData* data) : Proxy(data) {}
 
-public:
+       public:
+        //! @brief Default constructor.
+        LibraryModule() {}
 
-	//! @brief Default constructor.
-	LibraryModule() {}
+        //! @brief Assignment constructor to allow null values.
+        LibraryModule(std::nullptr_t) {}
 
-	//! @brief Assignment constructor to allow null values.
-	LibraryModule(std::nullptr_t) {}	
+        //! @brief Returns the design in which this library module was created.
+        Design getDesign();
 
-	//! @brief Returns the design in which this library module was created.
-	Design getDesign();
+        //! @brief Returns the design in which this library module was created.
+        const Design getDesign() const;
 
-	//! @brief Returns the design in which this library module was created.
-	const Design getDesign() const;	
-	
-}; // end class
-	
-} // end namespace
+};  // end class
+
+}  // end namespace

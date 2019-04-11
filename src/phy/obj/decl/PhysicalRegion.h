@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalRegion.h
  * Author: jucemar
  *
@@ -32,37 +32,37 @@
 namespace Rsyn {
 
 class PhysicalRegion : public Proxy<PhysicalRegionData> {
-	friend class PhysicalDesign;
-	friend class PhysicalDesignData;
-	RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
-protected:
-	//! @brief Constructs a Rsyn::PhysicalRegion object with a pointer to Rsyn::PhysicalRegionData.
+        friend class PhysicalDesign;
+        friend class PhysicalDesignData;
+        RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 
-	PhysicalRegion(PhysicalRegionData * data) : Proxy(data) {
-	}
-public:
-	//! @brief Constructs a Rsyn::PhysicalRegion object with a null pointer to Rsyn::PhysicalRegionData.
+       protected:
+        //! @brief Constructs a Rsyn::PhysicalRegion object with a pointer to
+        //! Rsyn::PhysicalRegionData.
 
-	PhysicalRegion() : Proxy(nullptr) {
-	}
-	//! @brief Constructs a Rsyn::PhysicalRegion object with a null pointer to Rsyn::PhysicalRegionData.
+        PhysicalRegion(PhysicalRegionData* data) : Proxy(data) {}
 
-	PhysicalRegion(std::nullptr_t) : Proxy(nullptr) {
-	}
+       public:
+        //! @brief Constructs a Rsyn::PhysicalRegion object with a null pointer
+        //! to Rsyn::PhysicalRegionData.
 
-	//! @brief Returns region's name
-	const std::string & getName() const;
-	//! @brief Returns region's type that may be FENCE or GUIDE.
-	RegionType getType() const;
-	//! @brief Returns the constant reference to the boundaries vector.
-	const std::vector<Bounds> & allBounds() const;
-	//! @brief Returns total number of boundaries. 
-	std::size_t getNumBounds() const;
+        PhysicalRegion() : Proxy(nullptr) {}
+        //! @brief Constructs a Rsyn::PhysicalRegion object with a null pointer
+        //! to Rsyn::PhysicalRegionData.
 
-}; // end class 
+        PhysicalRegion(std::nullptr_t) : Proxy(nullptr) {}
 
-} // end namespace 
+        //! @brief Returns region's name
+        const std::string& getName() const;
+        //! @brief Returns region's type that may be FENCE or GUIDE.
+        RegionType getType() const;
+        //! @brief Returns the constant reference to the boundaries vector.
+        const std::vector<Bounds>& allBounds() const;
+        //! @brief Returns total number of boundaries.
+        std::size_t getNumBounds() const;
 
+};  // end class
+
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALREGION_H */
-

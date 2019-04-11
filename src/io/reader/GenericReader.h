@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_GENERIC_READER_H
 #define RSYN_GENERIC_READER_H
 
@@ -22,48 +22,47 @@
 namespace Rsyn {
 
 class GenericReader : public Reader {
-	Session session;	
-	
-	std::vector<std::string> lefFiles;
-	std::vector<std::string> defFiles;
-	std::string verilogFile;
-	std::string sdcFile;
-	std::string libertyFileEarly;
-	std::string libertyFileLate;
-	
-	Number localWireCapacitancePerMicron;
-	Number localWireResistancePerMicron;
-	DBU maxWireSegmentInMicron;
-	
-	bool enableTiming = false;
-	bool enableNetlistFromVerilog = false;
-	bool enableRSTT = false;
-	bool sameEarlyLateLibFiles = false;
-	
-public:
-	GenericReader() = default;
-	
-	virtual bool load(const Rsyn::Json& params) override;
+        Session session;
 
-private:
-	LefDscp lefDescriptor;
-	DefDscp defDescriptor;
-	Legacy::Design verilogDescriptor;
-	ISPD13::LIBInfo libInfoEarly;
-	ISPD13::LIBInfo libInfoLate;
-	ISPD13::SDCInfo sdcInfo;
-	
-	void parsingFlow();
-	void parseLEFFiles();
-	void parseDEFFiles();
-	void parseVerilogFile();
-	void parseLibertyFile();
-	void parseSDCFile();
-	void populateDesign();
-	void initializeAuxiliarInfrastructure();
-}; // end class
+        std::vector<std::string> lefFiles;
+        std::vector<std::string> defFiles;
+        std::string verilogFile;
+        std::string sdcFile;
+        std::string libertyFileEarly;
+        std::string libertyFileLate;
 
-} // end namespace 
+        Number localWireCapacitancePerMicron;
+        Number localWireResistancePerMicron;
+        DBU maxWireSegmentInMicron;
+
+        bool enableTiming = false;
+        bool enableNetlistFromVerilog = false;
+        bool enableRSTT = false;
+        bool sameEarlyLateLibFiles = false;
+
+       public:
+        GenericReader() = default;
+
+        virtual bool load(const Rsyn::Json& params) override;
+
+       private:
+        LefDscp lefDescriptor;
+        DefDscp defDescriptor;
+        Legacy::Design verilogDescriptor;
+        ISPD13::LIBInfo libInfoEarly;
+        ISPD13::LIBInfo libInfoLate;
+        ISPD13::SDCInfo sdcInfo;
+
+        void parsingFlow();
+        void parseLEFFiles();
+        void parseDEFFiles();
+        void parseVerilogFile();
+        void parseLibertyFile();
+        void parseSDCFile();
+        void populateDesign();
+        void initializeAuxiliarInfrastructure();
+};  // end class
+
+}  // end namespace
 
 #endif /* GENERICREADER_H */
-

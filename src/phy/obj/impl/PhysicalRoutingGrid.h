@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/* 
+/*
  * File:   PhysicalRoutingGrid.h
  * Author: jucemar
  *
@@ -23,211 +23,223 @@
 namespace Rsyn {
 
 inline Rsyn::PhysicalLayer PhysicalRoutingGrid::getLayer() const {
-	return data->clsLayer;
-} // end method 
+        return data->clsLayer;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<Rsyn::PhysicalTracks> & PhysicalRoutingGrid::allTracks() const {
-	return data->clsTracks;
-} // end method 
+inline const std::vector<Rsyn::PhysicalTracks>& PhysicalRoutingGrid::allTracks()
+    const {
+        return data->clsTracks;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline const Bounds & PhysicalRoutingGrid::getBounds() const {
-	return data->clsBounds;
-} // end method 
+inline const Bounds& PhysicalRoutingGrid::getBounds() const {
+        return data->clsBounds;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalRoutingGrid::getPosition() const {
-	return data->clsBounds[LOWER];
-} // end method 
+        return data->clsBounds[LOWER];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalRoutingGrid::getPosition(const Dimension dim) const {
-	return data->clsBounds[LOWER][dim];
-} // end method 
+        return data->clsBounds[LOWER][dim];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalRoutingGrid::getSpacing() const {
-	return data->clsSpacing;
-} // end method 
+        return data->clsSpacing;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalRoutingGrid::getSpacing(const Dimension dim) const {
-	return data->clsSpacing[dim];
-} // end method 
+        return data->clsSpacing[dim];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline int PhysicalRoutingGrid::getNumTracks(const Dimension dim) const {
-	return data->clsNumTracks[dim];
-} // end method 
+        return data->clsNumTracks[dim];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline int PhysicalRoutingGrid::getNumRows() const {
-	return data->clsNumTracks[Y];
-} // end method 
+        return data->clsNumTracks[Y];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline int PhysicalRoutingGrid::getNumCols() const {
-	return data->clsNumTracks[X];
-} // end method 
+        return data->clsNumTracks[X];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline int PhysicalRoutingGrid::getNumTracks() const {
-	return data->clsNumTracks[X] + data->clsNumTracks[Y];
-} // end method 
+        return data->clsNumTracks[X] + data->clsNumTracks[Y];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline int PhysicalRoutingGrid::getRow(const DBU posY, const RoundingStrategy roudingStrategy, const bool clamp) const {
-	const DBU pos = posY - getPosition(Y);
-	const int index = FloatingPoint::round(pos / float(getSpacing(Y)), roudingStrategy);
-	return clamp? std::max(0, std::min(index, getNumRows() - 1)) : index;
-} // end method
+inline int PhysicalRoutingGrid::getRow(const DBU posY,
+                                       const RoundingStrategy roudingStrategy,
+                                       const bool clamp) const {
+        const DBU pos = posY - getPosition(Y);
+        const int index =
+            FloatingPoint::round(pos / float(getSpacing(Y)), roudingStrategy);
+        return clamp ? std::max(0, std::min(index, getNumRows() - 1)) : index;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline int PhysicalRoutingGrid::getCol(const DBU posX, const RoundingStrategy roudingStrategy, const bool clamp) const {
-	const DBU pos = posX - getPosition(X);
-	const int index = FloatingPoint::round(pos / float(getSpacing(X)), roudingStrategy);
-	return clamp? std::max(0, std::min(index, getNumCols() - 1)) : index;
-} // end method 
+inline int PhysicalRoutingGrid::getCol(const DBU posX,
+                                       const RoundingStrategy roudingStrategy,
+                                       const bool clamp) const {
+        const DBU pos = posX - getPosition(X);
+        const int index =
+            FloatingPoint::round(pos / float(getSpacing(X)), roudingStrategy);
+        return clamp ? std::max(0, std::min(index, getNumCols() - 1)) : index;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline DBUxy PhysicalRoutingGrid::getPosition(const int col, const int row) const {
-	const DBU x = getColPosition(col);
-	const DBU y = getRowPosition(row);
-	return DBUxy(x, y);
-} // end method
+inline DBUxy PhysicalRoutingGrid::getPosition(const int col,
+                                              const int row) const {
+        const DBU x = getColPosition(col);
+        const DBU y = getRowPosition(row);
+        return DBUxy(x, y);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline DBUxy PhysicalRoutingGrid::getSnappedPosition(const DBUxy pos, const RoundingStrategy roudingStrategy, const bool clamp) const {
-	const int col = getCol(pos.x, roudingStrategy, clamp);
-	const int row = getRow(pos.y, roudingStrategy, clamp);
-	return getPosition(col, row);
-} // end method
+inline DBUxy PhysicalRoutingGrid::getSnappedPosition(
+    const DBUxy pos, const RoundingStrategy roudingStrategy,
+    const bool clamp) const {
+        const int col = getCol(pos.x, roudingStrategy, clamp);
+        const int row = getRow(pos.y, roudingStrategy, clamp);
+        return getPosition(col, row);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalRoutingGrid::getRowPosition(const int row) const {
-	return getPosition(Y) + (getSpacing(Y) * row);
-} // end method 
+        return getPosition(Y) + (getSpacing(Y) * row);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalRoutingGrid::getRowMaxPosition() const {
-	return getRowPosition(getNumRows());
-} // end method 
+        return getRowPosition(getNumRows());
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalRoutingGrid::getColPosition(const int col) const {
-	return getPosition(X) + (getSpacing(X) * col);
-} // end method 
+        return getPosition(X) + (getSpacing(X) * col);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalRoutingGrid::getColMaxPosition() const {
-	return getColPosition(getNumCols());
-} // end method 
+        return getColPosition(getNumCols());
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalRoutingGrid::getTrackMaxPosition() const {
-	DBUxy pos;
-	pos[X] = getColMaxPosition();
-	pos[Y] = getRowMaxPosition();
-	return pos;
-} // end method 
+        DBUxy pos;
+        pos[X] = getColMaxPosition();
+        pos[Y] = getRowMaxPosition();
+        return pos;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalRoutingGrid::getTrackMaxPosition(const Dimension dim) const {
-	DBU pos = std::numeric_limits<DBU>::max();
-	if (dim == X)
-		pos = getColMaxPosition();
-	if (dim == Y)
-		pos = getRowMaxPosition();
-	return pos;
-} // end method 
+        DBU pos = std::numeric_limits<DBU>::max();
+        if (dim == X) pos = getColMaxPosition();
+        if (dim == Y) pos = getRowMaxPosition();
+        return pos;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline Rsyn::PhysicalRoutingGrid PhysicalRoutingGrid::getBottomRoutingGrid() const {
-	return data->clsBottomRoutingGrid;
-} // end method 
+inline Rsyn::PhysicalRoutingGrid PhysicalRoutingGrid::getBottomRoutingGrid()
+    const {
+        return data->clsBottomRoutingGrid;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline Rsyn::PhysicalRoutingGrid PhysicalRoutingGrid::getTopRoutingGrid() const {
-	return data->clsTopRoutingGrid;
-} // end method 
+inline Rsyn::PhysicalRoutingGrid PhysicalRoutingGrid::getTopRoutingGrid()
+    const {
+        return data->clsTopRoutingGrid;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline bool PhysicalRoutingGrid::hasBottomRoutingGrid() const {
-	return data->clsBottomRoutingGrid != nullptr;
-} // end method 
+        return data->clsBottomRoutingGrid != nullptr;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline bool PhysicalRoutingGrid::hasTopRoutingGrid() const {
-	return data->clsTopRoutingGrid != nullptr;
-} // end method 
+        return data->clsTopRoutingGrid != nullptr;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalRoutingGrid::getGridMinPosition() const {
-	return data->clsBounds[LOWER];
-} // end method
+        return data->clsBounds[LOWER];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalRoutingGrid::getGridMaxPosition() const {
-	return data->clsBounds[UPPER];
-} // end method
+        return data->clsBounds[UPPER];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline DBUxy PhysicalRoutingGrid::getTrackMinPosition(const PhysicalLayerDirection dir, const int index) const {
-	DBU x = 0;
-	DBU y = 0;
-	if (dir == Rsyn::VERTICAL) {
-		x = getColPosition(index);
-		y = getGridMinPosition().y;
-	} else {
-		x = getGridMinPosition().x;
-		y = getRowPosition(index);
-	} // end else
-	return DBUxy(x, y);
-} // end method
+inline DBUxy PhysicalRoutingGrid::getTrackMinPosition(
+    const PhysicalLayerDirection dir, const int index) const {
+        DBU x = 0;
+        DBU y = 0;
+        if (dir == Rsyn::VERTICAL) {
+                x = getColPosition(index);
+                y = getGridMinPosition().y;
+        } else {
+                x = getGridMinPosition().x;
+                y = getRowPosition(index);
+        }  // end else
+        return DBUxy(x, y);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline DBUxy PhysicalRoutingGrid::getTrackMaxPosition(const PhysicalLayerDirection dir, const int index) const {
-	DBU x = 0;
-	DBU y = 0;
-	if (dir == Rsyn::VERTICAL) {
-		x = getColPosition(index);
-		y = getGridMaxPosition().y;
-	} else {
-		x = getGridMaxPosition().x;
-		y = getRowPosition(index);
-	} // end else
-	return DBUxy(x, y);
-} // end method
+inline DBUxy PhysicalRoutingGrid::getTrackMaxPosition(
+    const PhysicalLayerDirection dir, const int index) const {
+        DBU x = 0;
+        DBU y = 0;
+        if (dir == Rsyn::VERTICAL) {
+                x = getColPosition(index);
+                y = getGridMaxPosition().y;
+        } else {
+                x = getGridMaxPosition().x;
+                y = getRowPosition(index);
+        }  // end else
+        return DBUxy(x, y);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace 
+}  // end namespace

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <exception>
 
 #include "session/Session.h"
@@ -28,17 +28,14 @@ namespace Rsyn {
 
 // -----------------------------------------------------------------------------
 
-PropertyDialog::PropertyDialog(QWidget *parent) :
-	QDialog(parent)
-{
-	setupUi(this);
-} // end constructor
+PropertyDialog::PropertyDialog(QWidget *parent) : QDialog(parent) {
+        setupUi(this);
+}  // end constructor
 
 // -----------------------------------------------------------------------------
 
-void
-PropertyDialog::setProperties(const QtUtils::QTreeDescriptor &properties) {
-	QtUtils::populateQTreeWidget(properties, treeWidget);
-} // end method
+void PropertyDialog::setProperties(const QtUtils::QTreeDescriptor &properties) {
+        QtUtils::populateQTreeWidget(properties, treeWidget);
+}  // end method
 
-} // end namespae
+}  // end namespae

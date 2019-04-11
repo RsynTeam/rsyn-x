@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef Script_READER_H
 #define Script_READER_H
 
@@ -32,43 +32,41 @@ class ScriptScanner;
 class ScriptParser;
 
 class ScriptReader {
-friend class ScriptParser;
-	
-public:
-	ScriptReader() :
-		parser(nullptr),
-		scanner(nullptr) {}
+        friend class ScriptParser;
 
-	virtual ~ScriptReader();
+       public:
+        ScriptReader() : parser(nullptr), scanner(nullptr) {}
 
-	void parseFromFile(const std::string &filename);
-	void parseFromString(const std::string &str);
-	void parseFromStream(std::istream &stream, const std::string &path = "");
+        virtual ~ScriptReader();
 
-	const std::vector<ParsedCommand> &allCommands();
-	
-private:
+        void parseFromFile(const std::string &filename);
+        void parseFromString(const std::string &str);
+        void parseFromStream(std::istream &stream,
+                             const std::string &path = "");
 
-	std::vector<ParsedCommand> clsCommands;
-	std::string clsCurrentPath;
+        const std::vector<ParsedCommand> &allCommands();
 
-	////////////////////////////////////////////////////////////////////////////
-	// Flex (Lex) / Bison (Yacc)
-	////////////////////////////////////////////////////////////////////////////	
-	
-	ScriptParser *parser;
-	ScriptScanner *scanner;
+       private:
+        std::vector<ParsedCommand> clsCommands;
+        std::string clsCurrentPath;
 
-	////////////////////////////////////////////////////////////////////////////
-	// ScriptParsing callbacks.
-	////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////
+        // Flex (Lex) / Bison (Yacc)
+        ////////////////////////////////////////////////////////////////////////////
 
-	void readCommandName(const std::string &value);
-	void readPositionalParam(const ParsedParamValue &value);
-	void readNamedParam(const std::string &name, const ParsedParamValue &value);
+        ScriptParser *parser;
+        ScriptScanner *scanner;
 
-}; // end class
+        ////////////////////////////////////////////////////////////////////////////
+        // ScriptParsing callbacks.
+        ////////////////////////////////////////////////////////////////////////////
 
-} // end namespace
+        void readCommandName(const std::string &value);
+        void readPositionalParam(const ParsedParamValue &value);
+        void readNamedParam(const std::string &name,
+                            const ParsedParamValue &value);
+
+};  // end class
+
+}  // end namespace
 #endif
-

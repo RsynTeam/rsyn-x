@@ -23,13 +23,12 @@
 /* For updates, support, or to become part of the LEF/DEF Community,          */
 /* check www.openeda.org for details.                                         */
 /*                                                                            */
-/*  $Author: icftcm $                                                                  */
-/*  $Revision: #1 $                                                                */
-/*  $Date: 2014/02/10 $                                                                    */
+/*  $Author: icftcm $ */
+/*  $Revision: #1 $ */
+/*  $Date: 2014/02/10 $ */
 /*  $State:  $                                                                */
 /* ************************************************************************** */
 /* ************************************************************************** */
-
 
 #ifndef CDEFIPINPROP_H
 #define CDEFIPINPROP_H
@@ -37,18 +36,18 @@
 #include <stdio.h>
 #include "defiTypedefs.h"
 
-EXTERN int defiPinProp_isPin (const defiPinProp* obj);
-EXTERN const char* defiPinProp_instName (const defiPinProp* obj);
-EXTERN const char* defiPinProp_pinName (const defiPinProp* obj);
+EXTERN int defiPinProp_isPin(const defiPinProp* obj);
+EXTERN const char* defiPinProp_instName(const defiPinProp* obj);
+EXTERN const char* defiPinProp_pinName(const defiPinProp* obj);
 
-EXTERN int defiPinProp_numProps (const defiPinProp* obj);
-EXTERN const char* defiPinProp_propName (const defiPinProp* obj, int  index);
-EXTERN const char* defiPinProp_propValue (const defiPinProp* obj, int  index);
-EXTERN double defiPinProp_propNumber (const defiPinProp* obj, int  index);
-EXTERN const char defiPinProp_propType (const defiPinProp* obj, int  index);
-EXTERN int defiPinProp_propIsNumber (const defiPinProp* obj, int  index);
-EXTERN int defiPinProp_propIsString (const defiPinProp* obj, int  index);
+EXTERN int defiPinProp_numProps(const defiPinProp* obj);
+EXTERN const char* defiPinProp_propName(const defiPinProp* obj, int index);
+EXTERN const char* defiPinProp_propValue(const defiPinProp* obj, int index);
+EXTERN double defiPinProp_propNumber(const defiPinProp* obj, int index);
+EXTERN const char defiPinProp_propType(const defiPinProp* obj, int index);
+EXTERN int defiPinProp_propIsNumber(const defiPinProp* obj, int index);
+EXTERN int defiPinProp_propIsString(const defiPinProp* obj, int index);
 
-EXTERN void defiPinProp_print (const defiPinProp* obj, FILE*  f);
+EXTERN void defiPinProp_print(const defiPinProp* obj, FILE* f);
 
 #endif

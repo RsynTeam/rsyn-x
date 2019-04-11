@@ -12,20 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_TIMING_LIBRARY_ARC_H
 #define RSYN_TIMING_LIBRARY_ARC_H
 
 #include "TimingTypes.h"
 
-
 namespace Rsyn {
-	
+
 struct TimingLibraryArc {
-	TimingSense sense;
-	TimingLibraryArc() : sense(TIMING_SENSE_INVALID) {}
-}; // end arc
-	
-} // end namespace
+        TimingSense sense;
+        TimingLibraryArc() : sense(TIMING_SENSE_INVALID) {}
+};  // end arc
+
+}  // end namespace
 
 #endif

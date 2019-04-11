@@ -12,40 +12,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_ISPD2018_READER_H
 #define RSYN_ISPD2018_READER_H
 
 #include "session/Session.h"
 
-namespace Rsyn  {
-	
-class RoutingGuide;
-	
-class ISPD2018Reader : public Reader {
-public:
-	ISPD2018Reader() = default;
-	virtual bool load(const Rsyn::Json& params) override;
-	
-private:
-	Session session;
-	
-	std::string lefFile;
-	std::string defFile;
-	std::string guideFile;
-	LefDscp lefDescriptor;
-	DefDscp defDescriptor;
-	RoutingGuide *routingGuide;
-	
-	void parsingFlow();
-	void parseLEFFile();
-	void parseDEFFile();
-	void parseGuideFile();
-	void populateDesign();
-	void initializeAuxiliarInfrastructure();
-};
+namespace Rsyn {
 
+class RoutingGuide;
+
+class ISPD2018Reader : public Reader {
+       public:
+        ISPD2018Reader() = default;
+        virtual bool load(const Rsyn::Json& params) override;
+
+       private:
+        Session session;
+
+        std::string lefFile;
+        std::string defFile;
+        std::string guideFile;
+        LefDscp lefDescriptor;
+        DefDscp defDescriptor;
+        RoutingGuide* routingGuide;
+
+        void parsingFlow();
+        void parseLEFFile();
+        void parseDEFFile();
+        void parseGuideFile();
+        void populateDesign();
+        void initializeAuxiliarInfrastructure();
+};
 }
 
 #endif /* ISPD2018READER_H */
-

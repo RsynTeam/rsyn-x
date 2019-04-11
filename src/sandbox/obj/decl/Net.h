@@ -12,61 +12,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 class SandboxNet : public Proxy<SandboxNetData> {
-	
-RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
+        RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 
-friend class Sandbox;
-friend class SandboxPin;
-friend class SandboxArc;
+        friend class Sandbox;
+        friend class SandboxPin;
+        friend class SandboxArc;
 
-private:
-	SandboxNet(SandboxNetData * data) : Proxy(data) {}
-	
-public:
-	
-	SandboxNet() {}
-	SandboxNet(std::nullptr_t) {}
-	
-	Sandbox getSandbox();
-	const Sandbox getSandbox() const;
+       private:
+        SandboxNet(SandboxNetData *data) : Proxy(data) {}
 
-	Design getDesign();
-	const Design getDesign() const;
+       public:
+        SandboxNet() {}
+        SandboxNet(std::nullptr_t) {}
 
-	Net getRelated() const;
+        Sandbox getSandbox();
+        const Sandbox getSandbox() const;
 
-	const std::string &getName() const;
-		
-	int getNumPins() const;
-	int getNumSinks() const;
-	int getNumDrivers() const;
+        Design getDesign();
+        const Design getDesign() const;
 
-	SandboxPin getDriver() const;
-	
-	TopologicalIndex getTopologicalIndex() const;
-	
-	bool hasMultipleDrivers() const;
-	bool hasSingleDriver() const;
-	bool hasDriver() const;
-	bool hasSink() const;
+        Net getRelated() const;
 
-	// Indicates whether or not this net is a virtual one (i.e. connects a
-	// virtual port to its attached pin).
-	bool isVirtual() const;
+        const std::string &getName() const;
 
-	Range<CollectionOfSandboxPins>
-	allPins() const;
+        int getNumPins() const;
+        int getNumSinks() const;
+        int getNumDrivers() const;
 
-	Range<CollectionOfSandboxPinsFilteredByDirection>
-	allPins(const Direction direction) const;
+        SandboxPin getDriver() const;
 
-	Range<CollectionOfSandboxArcs>
-	allArcs() const;
-	
-}; // end class
-	
-} // end namespace
+        TopologicalIndex getTopologicalIndex() const;
+
+        bool hasMultipleDrivers() const;
+        bool hasSingleDriver() const;
+        bool hasDriver() const;
+        bool hasSink() const;
+
+        // Indicates whether or not this net is a virtual one (i.e. connects a
+        // virtual port to its attached pin).
+        bool isVirtual() const;
+
+        Range<CollectionOfSandboxPins> allPins() const;
+
+        Range<CollectionOfSandboxPinsFilteredByDirection> allPins(
+            const Direction direction) const;
+
+        Range<CollectionOfSandboxArcs> allArcs() const;
+
+};  // end class
+
+}  // end namespace

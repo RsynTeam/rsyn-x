@@ -23,13 +23,12 @@
 /* For updates, support, or to become part of the LEF/DEF Community,          */
 /* check www.openeda.org for details.                                         */
 /*                                                                            */
-/*  $Author: icftcm $                                                                  */
-/*  $Revision: #1 $                                                                */
-/*  $Date: 2014/02/10 $                                                                    */
+/*  $Author: icftcm $ */
+/*  $Revision: #1 $ */
+/*  $Date: 2014/02/10 $ */
 /*  $State:  $                                                                */
 /* ************************************************************************** */
 /* ************************************************************************** */
-
 
 #ifndef CDEFIGROUP_H
 #define CDEFIGROUP_H
@@ -39,27 +38,28 @@
 
 /* Struct holds the data for one property.                                    */
 
-EXTERN const char* defiGroup_name (const defiGroup* obj);
-EXTERN const char* defiGroup_regionName (const defiGroup* obj);
-EXTERN int defiGroup_hasRegionBox (const defiGroup* obj);
-EXTERN int defiGroup_hasRegionName (const defiGroup* obj);
-EXTERN int defiGroup_hasMaxX (const defiGroup* obj);
-EXTERN int defiGroup_hasMaxY (const defiGroup* obj);
-EXTERN int defiGroup_hasPerim (const defiGroup* obj);
-EXTERN void defiGroup_regionRects (const defiGroup* obj, int*  size, int**  xl, int** yl, int**  xh, int**  yh);
-EXTERN int defiGroup_maxX (const defiGroup* obj);
-EXTERN int defiGroup_maxY (const defiGroup* obj);
-EXTERN int defiGroup_perim (const defiGroup* obj);
+EXTERN const char* defiGroup_name(const defiGroup* obj);
+EXTERN const char* defiGroup_regionName(const defiGroup* obj);
+EXTERN int defiGroup_hasRegionBox(const defiGroup* obj);
+EXTERN int defiGroup_hasRegionName(const defiGroup* obj);
+EXTERN int defiGroup_hasMaxX(const defiGroup* obj);
+EXTERN int defiGroup_hasMaxY(const defiGroup* obj);
+EXTERN int defiGroup_hasPerim(const defiGroup* obj);
+EXTERN void defiGroup_regionRects(const defiGroup* obj, int* size, int** xl,
+                                  int** yl, int** xh, int** yh);
+EXTERN int defiGroup_maxX(const defiGroup* obj);
+EXTERN int defiGroup_maxY(const defiGroup* obj);
+EXTERN int defiGroup_perim(const defiGroup* obj);
 
-EXTERN int defiGroup_numProps (const defiGroup* obj);
-EXTERN const char* defiGroup_propName (const defiGroup* obj, int  index);
-EXTERN const char* defiGroup_propValue (const defiGroup* obj, int  index);
-EXTERN double defiGroup_propNumber (const defiGroup* obj, int  index);
-EXTERN const char defiGroup_propType (const defiGroup* obj, int  index);
-EXTERN int defiGroup_propIsNumber (const defiGroup* obj, int  index);
-EXTERN int defiGroup_propIsString (const defiGroup* obj, int  index);
+EXTERN int defiGroup_numProps(const defiGroup* obj);
+EXTERN const char* defiGroup_propName(const defiGroup* obj, int index);
+EXTERN const char* defiGroup_propValue(const defiGroup* obj, int index);
+EXTERN double defiGroup_propNumber(const defiGroup* obj, int index);
+EXTERN const char defiGroup_propType(const defiGroup* obj, int index);
+EXTERN int defiGroup_propIsNumber(const defiGroup* obj, int index);
+EXTERN int defiGroup_propIsString(const defiGroup* obj, int index);
 
-  /* debug print                                                              */
-EXTERN void defiGroup_print (const defiGroup* obj, FILE*  f);
+/* debug print                                                              */
+EXTERN void defiGroup_print(const defiGroup* obj, FILE* f);
 
 #endif

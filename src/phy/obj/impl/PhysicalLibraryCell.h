@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -22,130 +22,134 @@
 namespace Rsyn {
 
 inline DBUxy PhysicalLibraryCell::getSize() const {
-	return data->clsSize;
-} // end method 
+        return data->clsSize;
+}  // end method
 
 //-----------------------------------------------------------------------------
 
 inline DBU PhysicalLibraryCell::getWidth() const {
-	return data->clsSize[X];
-} // end  method 
+        return data->clsSize[X];
+}  // end  method
 
 //-----------------------------------------------------------------------------
 
 inline DBU PhysicalLibraryCell::getHeight() const {
-	return data->clsSize[Y];
-} // end  method 
+        return data->clsSize[Y];
+}  // end  method
 
 //-----------------------------------------------------------------------------
 
 inline DBU PhysicalLibraryCell::getLength(const Dimension dim) const {
-	return data->clsSize[dim];
-} // end  method 
+        return data->clsSize[dim];
+}  // end  method
 
 // -----------------------------------------------------------------------------
 
 inline Bounds PhysicalLibraryCell::getBounds() const {
-	return Bounds(0, 0, getWidth(), getHeight());
-} // end method
+        return Bounds(0, 0, getWidth(), getHeight());
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline bool PhysicalLibraryCell::isMacroBlock() const {
-	return data->clsMacroClass == MACRO_BLOCK;
-} // end  method 
+        return data->clsMacroClass == MACRO_BLOCK;
+}  // end  method
 
 // -----------------------------------------------------------------------------
 
 inline bool PhysicalLibraryCell::hasLayerObstacles() const {
-	return data->clsLayerBoundIndex > -1;
-} // end method 
+        return data->clsLayerBoundIndex > -1;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline bool PhysicalLibraryCell::hasObstacles() const {
-	return !data->clsObs.empty();
-} // end method 
+        return !data->clsObs.empty();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<Bounds> & PhysicalLibraryCell::allLayerObstacles() const {
-	return data->clsObs[data->clsLayerBoundIndex].allBounds();
-} // end method 
+inline const std::vector<Bounds> &PhysicalLibraryCell::allLayerObstacles()
+    const {
+        return data->clsObs[data->clsLayerBoundIndex].allBounds();
+}  // end method
 
 //-----------------------------------------------------------------------------
 
 inline PhysicalMacroClass PhysicalLibraryCell::getClass() const {
-	return data->clsMacroClass;
-} // end  method 
+        return data->clsMacroClass;
+}  // end  method
 
 //-----------------------------------------------------------------------------
 
 inline PhysicalSite PhysicalLibraryCell::getSite() const {
-	return data->clsMacroSite;
-} // end  method 
+        return data->clsMacroSite;
+}  // end  method
 
 //-----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalSymmetry PhysicalLibraryCell::getSymmetry() const {
-	return data->clsSymmetry;
-} // end method 
+        return data->clsSymmetry;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline 	bool PhysicalLibraryCell::hasTopLayerObstacle() const{
-	return data->clsTopLayerObs != nullptr;
-} // end  method 
+inline bool PhysicalLibraryCell::hasTopLayerObstacle() const {
+        return data->clsTopLayerObs != nullptr;
+}  // end  method
 
 //-----------------------------------------------------------------------------
-inline 	Rsyn::PhysicalObstacle PhysicalLibraryCell::getTopLayerObstracle() const {
-	return data->clsTopLayerObs;
-} // end  method 
+inline Rsyn::PhysicalObstacle PhysicalLibraryCell::getTopLayerObstracle()
+    const {
+        return data->clsTopLayerObs;
+}  // end  method
 
 //-----------------------------------------------------------------------------
-		
-inline const std::vector<PhysicalObstacle> & PhysicalLibraryCell::allObstacles() const {
-	return data->clsObs;
-} // end  method 
+
+inline const std::vector<PhysicalObstacle> &PhysicalLibraryCell::allObstacles()
+    const {
+        return data->clsObs;
+}  // end  method
 
 //-----------------------------------------------------------------------------
 
 inline std::size_t PhysicalLibraryCell::getNumObstacles() const {
-	return data->clsObs.size();
-} // end  method 
+        return data->clsObs.size();
+}  // end  method
 
 //-----------------------------------------------------------------------------
 
-inline std::size_t PhysicalLibraryCell::getNumPhysicalCellLayerBoundaries() const {
-	if (data->clsLayerBoundIndex < 0)
-		return 0;
-	return data->clsObs[data->clsLayerBoundIndex].getNumObs();
-} // end  method 
+inline std::size_t PhysicalLibraryCell::getNumPhysicalCellLayerBoundaries()
+    const {
+        if (data->clsLayerBoundIndex < 0) return 0;
+        return data->clsObs[data->clsLayerBoundIndex].getNumObs();
+}  // end  method
 
 //-----------------------------------------------------------------------------
 
 inline PhysicalObstacle PhysicalLibraryCell::getLayerObstacles() const {
-	return data->clsObs[data->clsLayerBoundIndex];
-} // end  method 
+        return data->clsObs[data->clsLayerBoundIndex];
+}  // end  method
 
 // -----------------------------------------------------------------------------
 
-inline PhysicalTransform PhysicalLibraryCell::getTransform(const Rsyn::PhysicalOrientation &orientation) const {
-	return PhysicalTransform(getBounds(), orientation);
-} // end method
+inline PhysicalTransform PhysicalLibraryCell::getTransform(
+    const Rsyn::PhysicalOrientation &orientation) const {
+        return PhysicalTransform(getBounds(), orientation);
+}  // end method
 
 //-----------------------------------------------------------------------------
 
 inline bool PhysicalLibraryCell::hasPolygonBoundaries() const {
-	return data->clsPolygonBounds.getNumPoints() > 0;
-} // end method 
+        return data->clsPolygonBounds.getNumPoints() > 0;
+}  // end method
 
 //-----------------------------------------------------------------------------
 
-inline const Polygon & PhysicalLibraryCell::getPolygonBoundaries() const {
-	return data->clsPolygonBounds;
-} // end method 
+inline const Polygon &PhysicalLibraryCell::getPolygonBoundaries() const {
+        return data->clsPolygonBounds;
+}  // end method
 
 //-----------------------------------------------------------------------------
 
-} // end  namespace 
+}  // end  namespace

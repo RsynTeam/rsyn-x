@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_QT_PIN_MGR_H
 #define RSYN_QT_PIN_MGR_H
 
@@ -24,46 +24,46 @@
 namespace Rsyn {
 
 class QtPinMgr {
-public:
+       public:
+        static void create();
+        static QtPinMgr *get() { return instance; }
 
-	static void create();
-	static QtPinMgr *get() {return instance;}
+        const QPainterPath &getShape(Rsyn::Pin pin) const {
+                Rsyn::LibraryPin lpin = pin.getLibraryPin();
+                if (lpin) {
+                        Rsyn::PhysicalCell physicalCell =
+                            physicalDesign.getPhysicalCell(pin);
+                        return getShape(lpin, physicalCell.getOrientation());
+                } else {
+                        return EMPTY_SHAPE;
+                }  // end else
+        }          // end method
 
-	const QPainterPath &
-	getShape(Rsyn::Pin pin) const {
-		Rsyn::LibraryPin lpin = pin.getLibraryPin();
-		if (lpin) {
-			Rsyn::PhysicalCell physicalCell = physicalDesign.getPhysicalCell(pin);
-			return getShape(lpin, physicalCell.getOrientation());
-		} else {
-			return EMPTY_SHAPE;
-		} // end else
-	} // end method
+        const QPainterPath &getShape(
+            Rsyn::LibraryPin lpin,
+            const Rsyn::PhysicalOrientation &orientation) const {
+                return pins[lpin].shapes[orientation];
+        }  // end method
 
-	const QPainterPath &
-	getShape(Rsyn::LibraryPin lpin, const Rsyn::PhysicalOrientation &orientation) const {
-		return pins[lpin].shapes[orientation];
-	} // end method
+       private:
+        struct QtLibraryPin {
+                QPainterPath shapes[Rsyn::NUM_PHY_ORIENTATION];
+        };
 
-private:
+        QtPinMgr();
+        QtPinMgr(const QtPinMgr &mgr);
 
-	struct QtLibraryPin {
-		QPainterPath shapes[Rsyn::NUM_PHY_ORIENTATION];
-	};
+        static QPainterPath createShape(
+            Rsyn::LibraryPin lpin,
+            const Rsyn::PhysicalOrientation &orientation);
 
-	QtPinMgr();
-	QtPinMgr(const QtPinMgr &mgr);
+        Rsyn::PhysicalDesign physicalDesign;
+        Rsyn::Attribute<Rsyn::LibraryPin, QtLibraryPin> pins;
 
-	static QPainterPath
-	createShape(Rsyn::LibraryPin lpin, const Rsyn::PhysicalOrientation &orientation);
+        static QtPinMgr *instance;
+        const QPainterPath EMPTY_SHAPE;
+};  // end class
 
-	Rsyn::PhysicalDesign physicalDesign;
-	Rsyn::Attribute<Rsyn::LibraryPin, QtLibraryPin> pins;
-
-	static QtPinMgr *instance;
-	const QPainterPath EMPTY_SHAPE;
-}; // end class
-
-} // end namespace
+}  // end namespace
 
 #endif

@@ -25,74 +25,79 @@ namespace Rsyn {
 // -----------------------------------------------------------------------------
 
 class HistogramOptions {
-public:
+       public:
+        int getNumBins() const { return _numBins; }
+        double getLowerBound() const { return _lowerBound; }
+        double getUpperBound() const { return _upperBound; }
+        bool getClamp() const { return _clamp; }
+        int getMaxHistogramWidth() const { return _maxHistogramWidth; }
+        int getMaxPrintableSamplesPerBin() const {
+                return _maxPrintableSamplesPerBin;
+        }
 
-	int getNumBins() const {return _numBins;}
-	double getLowerBound() const {return _lowerBound;}
-	double getUpperBound() const {return _upperBound;}
-	bool getClamp() const {return _clamp;}
-	int getMaxHistogramWidth() const {return _maxHistogramWidth;}
-	int getMaxPrintableSamplesPerBin() const {return _maxPrintableSamplesPerBin;}
+        void setNumBins(const int numBins) { _numBins = numBins; }
+        void setLowerBound(const double value) { _lowerBound = value; }
+        void setUpperBound(const double value) { _upperBound = value; }
+        void setClamp(const bool value) { _clamp = value; }
+        void setMaxHistogramWidth(const int value) {
+                _maxHistogramWidth = value;
+        }
+        void setMaxPrintableSamplesPerBin(const int value) {
+                _maxPrintableSamplesPerBin = value;
+        }
 
-	void setNumBins(const int numBins) {_numBins = numBins;}
-	void setLowerBound(const double value) {_lowerBound = value;}
-	void setUpperBound(const double value) {_upperBound = value;}
-	void setClamp(const bool value) {_clamp = value;}
-	void setMaxHistogramWidth(const int value) {_maxHistogramWidth = value;}
-	void setMaxPrintableSamplesPerBin(const int value) {_maxPrintableSamplesPerBin = value;}
+       private:
+        //! @brief The number of bins to slot the samples in.
+        int _numBins = 20;
 
-private:
+        //! @brief
+        double _lowerBound = -std::numeric_limits<double>::infinity();
 
-	//! @brief The number of bins to slot the samples in.
-	int _numBins = 20;
+        //! @brief
+        double _upperBound = +std::numeric_limits<double>::infinity();
 
-	//! @brief
-	double _lowerBound = -std::numeric_limits<double>::infinity();
+        //! @brief
+        bool _clamp = true;
 
-	//! @brief
-	double _upperBound = +std::numeric_limits<double>::infinity();
+        //! @brief Maximum histogram width.
+        int _maxHistogramWidth = 50;
 
-	//! @brief
-	bool _clamp = true;
+        //! @brief The reference maximum number of sample per bin. If zero, use
+        //! the
+        //! the actual maximum value throughout all bins. Setting a number
+        //! different
+        //! than zero is useful when comparing two histogram.
+        int _maxPrintableSamplesPerBin = 0;
 
-	//! @brief Maximum histogram width.
-	int _maxHistogramWidth = 50;
-
-	//! @brief The reference maximum number of sample per bin. If zero, use the
-	//! the actual maximum value throughout all bins. Setting a number different
-	//! than zero is useful when comparing two histogram.
-	int _maxPrintableSamplesPerBin = 0;
-	
-}; // end class
+};  // end class
 
 // -----------------------------------------------------------------------------
 
 class Histogram {
-public:
+       public:
+        Histogram();
 
-	Histogram();
+        //! @brief Clears all the data stored by this histogram.
+        void clear();
 
-	//! @brief Clears all the data stored by this histogram.
-	void clear();
+        //! @brief Adds a sample to the histogram.
+        void addSample(const double value);
 
-	//! @brief Adds a sample to the histogram.
-	void addSample(const double value);
+        //! @brief Generate bins.
+        void binning(const HistogramOptions &options, std::vector<int> &bins,
+                     double &start, double &step) const;
 
-	//! @brief Generate bins.
-	void binning(const HistogramOptions &options, std::vector<int> &bins, double &start, double &step) const;
+        //! @brief Prints this histogram.
+        void print(const HistogramOptions &options, const std::string &title,
+                   std::ostream &out = std::cout) const;
 
-	//! @brief Prints this histogram.
-	void print(const HistogramOptions &options, const std::string &title, std::ostream &out = std::cout) const;
+       private:
+        std::vector<double> _samples;
 
-private:
-
-	std::vector<double> _samples;
-
-}; // end class
+};  // end class
 
 // -----------------------------------------------------------------------------
 
-} // end namespace
+}  // end namespace
 
-#endif 
-
+#endif

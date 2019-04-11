@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalLayerData.h
  * Author: jucemar
  *
@@ -29,28 +29,25 @@
 #ifndef PHYSICALDESIGN_PHYSICALLAYERDATA_H
 #define PHYSICALDESIGN_PHYSICALLAYERDATA_H
 
-
 namespace Rsyn {
 
 class PhysicalLayerData : public PhysicalObject {
-public:
-	DBU clsWidth = 0;
-	DBU clsMinWidth = 0;
-	DBU clsArea = 0;
-	int clsIndex = -1;
-	int clsRelativeIndex = -1;
-	DBUxy clsPitch;
-	Rsyn::PhysicalLayerType clsType = INVALID_PHY_LAYER_TYPE;
-	Rsyn::PhysicalLayerDirection clsDirection = UNKNOWN_PREFERRED_DIRECTION;
-	std::string clsName = Rsyn::getPhysicalInvalidName();
-	Rsyn::PhysicalLayerData * clsLower = nullptr;
-	Rsyn::PhysicalLayerData * clsUpper = nullptr;
-	std::vector<Rsyn::PhysicalSpacingRule> clsSpacing;
-	PhysicalLayerData() = default;
-}; // end class 
+       public:
+        DBU clsWidth = 0;
+        DBU clsMinWidth = 0;
+        DBU clsArea = 0;
+        int clsIndex = -1;
+        int clsRelativeIndex = -1;
+        DBUxy clsPitch;
+        Rsyn::PhysicalLayerType clsType = INVALID_PHY_LAYER_TYPE;
+        Rsyn::PhysicalLayerDirection clsDirection = UNKNOWN_PREFERRED_DIRECTION;
+        std::string clsName = Rsyn::getPhysicalInvalidName();
+        Rsyn::PhysicalLayerData* clsLower = nullptr;
+        Rsyn::PhysicalLayerData* clsUpper = nullptr;
+        std::vector<Rsyn::PhysicalSpacingRule> clsSpacing;
+        PhysicalLayerData() = default;
+};  // end class
 
-} // end namespace 
-
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALLAYERDATA_H */
-

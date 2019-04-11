@@ -12,45 +12,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "Shell.h"
 
 namespace Rsyn {
 
-void Shell::runScript(const std::string &startupScript, const bool interactive) {
-	if (startupScript.empty() && !interactive) {
-		std::cout << "Exiting. Nothing to be done... \n";
-		std::cout << " >> Try run with -gui, -interactive or -script <path_to_rsyn_script> flags. <<\n";
-		return;
-	} // end if
+void Shell::runScript(const std::string &startupScript,
+                      const bool interactive) {
+        if (startupScript.empty() && !interactive) {
+                std::cout << "Exiting. Nothing to be done... \n";
+                std::cout << " >> Try run with -gui, -interactive or -script "
+                             "<path_to_rsyn_script> flags. <<\n";
+                return;
+        }  // end if
 
-	if (!startupScript.empty()) {
-		clsSession.evaluateFile(startupScript);
-	} // end if
+        if (!startupScript.empty()) {
+                clsSession.evaluateFile(startupScript);
+        }  // end if
 
-	if (interactive) {
-		while (true) {
-			std::string cmd;
-			std::cout << "> ";
-			std::getline(std::cin, cmd);
-			clsSession.evaluateString(cmd);
-		} // end while
-	} // end while
-} // end method
+        if (interactive) {
+                while (true) {
+                        std::string cmd;
+                        std::cout << "> ";
+                        std::getline(std::cin, cmd);
+                        clsSession.evaluateString(cmd);
+                }  // end while
+        }          // end while
+}  // end method
 
 // ----------------------------------------------------------------------------
 
 void Shell::runCommand(const std::string cmd, const bool interactive) {
-	clsSession.evaluateString(cmd);
-	
-	if (interactive) {
-		while (true) {
-			std::string cmd;
-			std::cout << "> ";
-			std::getline(std::cin, cmd);
-			clsSession.evaluateString(cmd);
-		} // end while
-	} // end while
-} // end method
+        clsSession.evaluateString(cmd);
 
-} // end namespace
+        if (interactive) {
+                while (true) {
+                        std::string cmd;
+                        std::cout << "> ";
+                        std::getline(std::cin, cmd);
+                        clsSession.evaluateString(cmd);
+                }  // end while
+        }          // end while
+}  // end method
+
+}  // end namespace

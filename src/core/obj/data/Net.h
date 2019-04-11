@@ -12,52 +12,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 struct NetTagData {
-	TristateFlag ideal;
-	NetTypeTag type;
+        TristateFlag ideal;
+        NetTypeTag type;
 
-	NetTagData() :
-		type(NET_TYPE_TAG_NOT_SPECIFIED) {
-	} // end constructor
-}; // end struct
+        NetTagData() : type(NET_TYPE_TAG_NOT_SPECIFIED) {}  // end constructor
+};                                                          // end struct
 
 // -----------------------------------------------------------------------------
 
 struct NetData : ObjectData {
-	// Index in parent module.
-	Index mid;
+        // Index in parent module.
+        Index mid;
 
-	// User tags.
-	NetTagData tag;
-	
-	// Using a vector for fast traverse, but slow insertion and removal.
-	std::vector<Pin> pins;
-	
-	// Driver. If multiple-drivers, store one of them without any assumptions.
-	Pin driver;
-	
-	// Parent
-	Module parent;
-	
-	std::array<int, NUM_SIGNAL_DIRECTIONS> numPinsOfType;
-	
-	// Helper used for netlist traversals.
-	int sign;
-	
-	// Mateus @ 20190204: Adding net use;
-	Use netUse;
-	
-	NetData() : 
-		mid(-1),
-		sign(-1),
-		driver(nullptr), 
-		numPinsOfType({0, 0, 0, 0}),
-		parent(nullptr),
-		netUse(UNKNOWN_USE) {
-	} // end constructor	
-}; // end struct
+        // User tags.
+        NetTagData tag;
 
-} // end namespace
+        // Using a vector for fast traverse, but slow insertion and removal.
+        std::vector<Pin> pins;
+
+        // Driver. If multiple-drivers, store one of them without any
+        // assumptions.
+        Pin driver;
+
+        // Parent
+        Module parent;
+
+        std::array<int, NUM_SIGNAL_DIRECTIONS> numPinsOfType;
+
+        // Helper used for netlist traversals.
+        int sign;
+
+        // Mateus @ 20190204: Adding net use;
+        Use netUse;
+
+        NetData()
+            : mid(-1),
+              sign(-1),
+              driver(nullptr),
+              numPinsOfType({0, 0, 0, 0}),
+              parent(nullptr),
+              netUse(UNKNOWN_USE) {}  // end constructor
+};                                    // end struct
+
+}  // end namespace

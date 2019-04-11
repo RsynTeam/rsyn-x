@@ -12,61 +12,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 struct InstanceTagData {
-	TristateFlag fixed;
-	TristateFlag block;
-}; // end struct
+        TristateFlag fixed;
+        TristateFlag block;
+};  // end struct
 
 // -----------------------------------------------------------------------------
 
 struct InstanceData : ObjectData {
-	InstanceType type;
-		
-	std::vector<Pin> pins;
-	std::vector<Arc> arcs;
-	
-	// Design (Cached)
-	// @todo Remove.
-	Design design;
-	
-	// The module where this instance is instantiated. If only null for the top
-	// module.
-	Module parent;
-	
-	// Local index inside it's parent module.
-	Index mid;
+        InstanceType type;
 
-	// Extra data for different types of instances.
-	union {
-		void * extra;
-		
-		ModuleData * moduleData;
-		PinData * outerPin;
-		LibraryCellData * lcell;
-	}; // end union
+        std::vector<Pin> pins;
+        std::vector<Arc> arcs;
 
-	// User tag
-	InstanceTagData tag;
+        // Design (Cached)
+        // @todo Remove.
+        Design design;
 
-	// Physical information.
-	Bounds clsBounds;
-	PhysicalOrientation clsOrientation;
-	DBUxy clsPortPos; // only for port to define position. (@todo remove, use bounds instead).
+        // The module where this instance is instantiated. If only null for the
+        // top
+        // module.
+        Module parent;
 
-	// Constructor
-	InstanceData() : 
-		design(nullptr),
-		type(UNKNOWN_INSTANCE_TYPE),
-		parent(nullptr),
-		extra(nullptr),
-		mid(-1),
-		clsBounds(0, 0, 0, 0),
-		clsOrientation(ORIENTATION_N), // @todo set to R0 by default
-		clsPortPos(0, 0) {
-	} // end constructor
-}; // end struct
+        // Local index inside it's parent module.
+        Index mid;
 
-} // end namespace
+        // Extra data for different types of instances.
+        union {
+                void* extra;
+
+                ModuleData* moduleData;
+                PinData* outerPin;
+                LibraryCellData* lcell;
+        };  // end union
+
+        // User tag
+        InstanceTagData tag;
+
+        // Physical information.
+        Bounds clsBounds;
+        PhysicalOrientation clsOrientation;
+        DBUxy clsPortPos;  // only for port to define position. (@todo remove,
+                           // use bounds instead).
+
+        // Constructor
+        InstanceData()
+            : design(nullptr),
+              type(UNKNOWN_INSTANCE_TYPE),
+              parent(nullptr),
+              extra(nullptr),
+              mid(-1),
+              clsBounds(0, 0, 0, 0),
+              clsOrientation(ORIENTATION_N),  // @todo set to R0 by default
+              clsPortPos(0, 0) {}             // end constructor
+};                                            // end struct
+
+}  // end namespace

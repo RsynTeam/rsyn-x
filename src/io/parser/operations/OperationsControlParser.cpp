@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * OperationsControlParser.cpp
  *
@@ -24,63 +24,64 @@
 
 #include <iomanip>
 
-OperationsControlParser::OperationsControlParser() {
-}
+OperationsControlParser::OperationsControlParser() {}
 
 // =============================================================================
 // Operations
 // =============================================================================
 
-void OperationsControlParser::parseOperations(const string& opsFile, ISPD13::OpsInfo &opsInfo){
+void OperationsControlParser::parseOperations(const string& opsFile,
+                                              ISPD13::OpsInfo& opsInfo) {
+        ISPD13::OperationsParser tp(opsFile);
 
-	ISPD13::OperationsParser tp ( opsFile );
+        cout << "\tOperations file: " << opsFile << "\n";
+        bool valid, early, rise;
+        string gate = "", pin = "", net = "", file = "", cell = "";
+        int paths;
+        ISPD13::CommandTypeEnum cmdType;
+        ISPD13::QueryTypeEnum queryType;
 
-	cout<<"\tOperations file: "<<opsFile<<"\n";
-	bool valid, early, rise;
-	string gate = "", pin = "", net = "", file = "", cell = "";
-	int paths;
-	ISPD13::CommandTypeEnum cmdType;
-	ISPD13::QueryTypeEnum queryType;
+        do {
+                valid = tp.read_ops_tau15(cmdType, queryType, pin, net, file,
+                                          gate, cell, early, rise, paths);
 
-	do {
-		valid = tp.read_ops_tau15(cmdType, queryType, pin, net, file, gate, cell, early, rise, paths);
+                if (!valid) break;
 
-		if(!valid)
-			break;
+                ISPD13::OrderInfo newOp;
 
-		ISPD13::OrderInfo newOp;
+                if (cmdType != ISPD13::UNKNOWN) {
+                        newOp.index = opsInfo.cmds.size();
+                        newOp.type = ISPD13::CMD;
+                        ISPD13::CommandStruct cs(pin, net, file, gate, cell,
+                                                 cmdType);
+                        opsInfo.cmds.push_back(cs);
+                        opsInfo.order.push_back(newOp);
 
-		if(cmdType != ISPD13::UNKNOWN){
+                } else if (queryType != ISPD13::NOT_VALID) {
+                        newOp.index = opsInfo.queries.size();
+                        newOp.type = ISPD13::QUERY;
+                        ISPD13::QueryStruct qs(pin, early, rise, paths,
+                                               queryType);
+                        opsInfo.queries.push_back(qs);
+                        opsInfo.order.push_back(newOp);
 
-			newOp.index = opsInfo.cmds.size();
-			newOp.type = ISPD13::CMD;
-			ISPD13::CommandStruct cs (pin, net, file, gate, cell, cmdType);
-			opsInfo.cmds.push_back(cs);
-			opsInfo.order.push_back(newOp);
+                } else {
+                        cerr << "[WARNING] Ignoring unknown operation from "
+                                ".ops file.\n";
+                }
 
-		} else if ( queryType != ISPD13::NOT_VALID ) {
+        } while (valid);
 
-			newOp.index = opsInfo.queries.size();
-			newOp.type = ISPD13::QUERY;
-			ISPD13::QueryStruct qs (pin, early, rise, paths, queryType);
-			opsInfo.queries.push_back(qs);
-			opsInfo.order.push_back(newOp);
-
-		} else {
-			cerr << "[WARNING] Ignoring unknown operation from .ops file.\n";
-		}
-
-	} while(valid);
-
-	cout << "\tRead operations: " << setw(10) << opsInfo.cmds.size() + opsInfo.queries.size() << endl;
-	cout << "\t\tcommands.........: " << setw(10) << opsInfo.cmds.size() << endl;
-	cout << "\t\ttiming queries...: " << setw(10) << opsInfo.queries.size() << endl;
+        cout << "\tRead operations: " << setw(10)
+             << opsInfo.cmds.size() + opsInfo.queries.size() << endl;
+        cout << "\t\tcommands.........: " << setw(10) << opsInfo.cmds.size()
+             << endl;
+        cout << "\t\ttiming queries...: " << setw(10) << opsInfo.queries.size()
+             << endl;
 }
 
 // -----------------------------------------------------------------------------
 
-
 OperationsControlParser::~OperationsControlParser() {
-	// TODO Auto-generated destructor stub
+        // TODO Auto-generated destructor stub
 }
-

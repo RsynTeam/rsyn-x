@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef BALANCING_OPTO_H
 #define BALANCING_OPTO_H
 
@@ -30,37 +30,35 @@ namespace ICCAD15 {
 class Infrastructure;
 
 class Balancing : public Rsyn::Process {
-private:
-	Rsyn::Session session;
-	Infrastructure * infra;
-	Rsyn::Design design;
-	Rsyn::Module module;
-	Rsyn::PhysicalDesign phDesign;
-	Rsyn::Timer *timer;
-	Rsyn::RoutingEstimator * routingEstimator;
-	const Rsyn::LibraryCharacterizer * libc;
-	
-	bool doBufferBalancing(Rsyn::Cell buffer, 
-						   const LegalizationMethod legalizationMethod, 
-						   const CostFunction costFunction);
-	
-	bool doCellBalancing(Rsyn::Cell cell, 
-						 const LegalizationMethod legalizationMethod, 
-						 const CostFunction costFunction);
-	
-	bool doCellBalancingSteiner(Rsyn::Cell cell, 
-								const LegalizationMethod legalizationMethod,
-								const CostFunction costFunction);	
-	
-	void runBufferFix(); 
-	void runCellFix();
-	void runCellFixSteiner();	
-	
-public:
-	
-	virtual bool run(const Rsyn::Json &params);
-	
-}; // end class
+       private:
+        Rsyn::Session session;
+        Infrastructure *infra;
+        Rsyn::Design design;
+        Rsyn::Module module;
+        Rsyn::PhysicalDesign phDesign;
+        Rsyn::Timer *timer;
+        Rsyn::RoutingEstimator *routingEstimator;
+        const Rsyn::LibraryCharacterizer *libc;
 
+        bool doBufferBalancing(Rsyn::Cell buffer,
+                               const LegalizationMethod legalizationMethod,
+                               const CostFunction costFunction);
+
+        bool doCellBalancing(Rsyn::Cell cell,
+                             const LegalizationMethod legalizationMethod,
+                             const CostFunction costFunction);
+
+        bool doCellBalancingSteiner(Rsyn::Cell cell,
+                                    const LegalizationMethod legalizationMethod,
+                                    const CostFunction costFunction);
+
+        void runBufferFix();
+        void runCellFix();
+        void runCellFixSteiner();
+
+       public:
+        virtual bool run(const Rsyn::Json &params);
+
+};  // end class
 }
 #endif

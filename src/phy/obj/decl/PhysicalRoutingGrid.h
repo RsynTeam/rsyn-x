@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/* 
+/*
  * File:   PhysicalRoutingGrid.h
  * Author: jucemar
  *
@@ -26,59 +26,69 @@
 namespace Rsyn {
 
 class PhysicalRoutingGrid : public Proxy<PhysicalRoutingGridData> {
-	friend class PhysicalDesign;
-	friend class PhysicalDesignData;
-	RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
-protected:
-	//! @brief Constructs a Rsyn::PhysicalRoutingGrid object with a pointer to Rsyn::PhysicalRoutingGridData.
+        friend class PhysicalDesign;
+        friend class PhysicalDesignData;
+        RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 
-	PhysicalRoutingGrid(PhysicalRoutingGridData * data) : Proxy(data) {
-	}
-public:
-	//! @brief Constructs a Rsyn::PhysicalRoutingGrid object with a null pointer to Rsyn::PhysicalRoutingGridData.
+       protected:
+        //! @brief Constructs a Rsyn::PhysicalRoutingGrid object with a pointer
+        //! to Rsyn::PhysicalRoutingGridData.
 
-	PhysicalRoutingGrid() : Proxy(nullptr) {
-	}
-	//! @brief Constructs a Rsyn::PhysicalRoutingGrid object with a null pointer to Rsyn::PhysicalRoutingGridData.
+        PhysicalRoutingGrid(PhysicalRoutingGridData* data) : Proxy(data) {}
 
-	PhysicalRoutingGrid(std::nullptr_t) : Proxy(nullptr) {
-	}
-	
-	Rsyn::PhysicalLayer getLayer() const;
-	const std::vector<Rsyn::PhysicalTracks> & allTracks() const;
-	
-	const Bounds & getBounds() const;
-	DBUxy getPosition() const;
-	DBU getPosition(const Dimension dim) const;
-	DBUxy getSpacing() const;
-	DBU getSpacing(const Dimension dim) const;
-	int getNumTracks(const Dimension dim) const;
-	int getNumRows() const;
-	int getNumCols() const;
-	int getNumTracks() const;
-	int getRow(const DBU posY, const RoundingStrategy roudingStrategy = ROUND_NEAREST, const bool clamp = false) const;
-	int getCol(const DBU posX, const RoundingStrategy roudingStrategy = ROUND_NEAREST, const bool clamp = false) const;
-	DBUxy getPosition(const int col, const int row) const;
-	DBUxy getSnappedPosition(const DBUxy pos, const RoundingStrategy roudingStrategy = ROUND_NEAREST, const bool clamp = false) const;
-	DBU getRowPosition(const int row) const;
-	DBU getRowMaxPosition() const;
-	DBU getColPosition(const int col) const;
-	DBU getColMaxPosition() const;
-	DBUxy getTrackMaxPosition() const;
-	DBU getTrackMaxPosition(const Dimension dim) const;
-	Rsyn::PhysicalRoutingGrid getBottomRoutingGrid() const;
-	Rsyn::PhysicalRoutingGrid getTopRoutingGrid() const;
-	bool hasBottomRoutingGrid() const;
-	bool hasTopRoutingGrid() const;
+       public:
+        //! @brief Constructs a Rsyn::PhysicalRoutingGrid object with a null
+        //! pointer to Rsyn::PhysicalRoutingGridData.
 
-	DBUxy getGridMinPosition() const;
-	DBUxy getGridMaxPosition() const;
-	DBUxy getTrackMinPosition(const PhysicalLayerDirection dir, const int index) const;
-	DBUxy getTrackMaxPosition(const PhysicalLayerDirection dir, const int index) const;
-	
-}; // end class 
+        PhysicalRoutingGrid() : Proxy(nullptr) {}
+        //! @brief Constructs a Rsyn::PhysicalRoutingGrid object with a null
+        //! pointer to Rsyn::PhysicalRoutingGridData.
 
-} // end namespace 
+        PhysicalRoutingGrid(std::nullptr_t) : Proxy(nullptr) {}
+
+        Rsyn::PhysicalLayer getLayer() const;
+        const std::vector<Rsyn::PhysicalTracks>& allTracks() const;
+
+        const Bounds& getBounds() const;
+        DBUxy getPosition() const;
+        DBU getPosition(const Dimension dim) const;
+        DBUxy getSpacing() const;
+        DBU getSpacing(const Dimension dim) const;
+        int getNumTracks(const Dimension dim) const;
+        int getNumRows() const;
+        int getNumCols() const;
+        int getNumTracks() const;
+        int getRow(const DBU posY,
+                   const RoundingStrategy roudingStrategy = ROUND_NEAREST,
+                   const bool clamp = false) const;
+        int getCol(const DBU posX,
+                   const RoundingStrategy roudingStrategy = ROUND_NEAREST,
+                   const bool clamp = false) const;
+        DBUxy getPosition(const int col, const int row) const;
+        DBUxy getSnappedPosition(
+            const DBUxy pos,
+            const RoundingStrategy roudingStrategy = ROUND_NEAREST,
+            const bool clamp = false) const;
+        DBU getRowPosition(const int row) const;
+        DBU getRowMaxPosition() const;
+        DBU getColPosition(const int col) const;
+        DBU getColMaxPosition() const;
+        DBUxy getTrackMaxPosition() const;
+        DBU getTrackMaxPosition(const Dimension dim) const;
+        Rsyn::PhysicalRoutingGrid getBottomRoutingGrid() const;
+        Rsyn::PhysicalRoutingGrid getTopRoutingGrid() const;
+        bool hasBottomRoutingGrid() const;
+        bool hasTopRoutingGrid() const;
+
+        DBUxy getGridMinPosition() const;
+        DBUxy getGridMaxPosition() const;
+        DBUxy getTrackMinPosition(const PhysicalLayerDirection dir,
+                                  const int index) const;
+        DBUxy getTrackMaxPosition(const PhysicalLayerDirection dir,
+                                  const int index) const;
+
+};  // end class
+
+}  // end namespace
 
 #endif /* PHYSICALROUTINGGRID_H */
-

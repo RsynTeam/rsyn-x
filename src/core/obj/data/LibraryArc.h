@@ -12,24 +12,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 struct LibraryArcData : ObjectData {
-	Design design;
-	int index; // TODO: index may be confusing as objects have a field called id 
-	
-	LibraryCell lcell;
-	LibraryPin from;
-	LibraryPin to;
+        Design design;
+        int index;  // TODO: index may be confusing as objects have a field
+                    // called id
 
-	LibraryArcData() : 
-		design(nullptr),
-		index(-1), 
-		lcell(nullptr),
-		from(nullptr), 
-		to(nullptr) {
-	} // end class
-}; // end struct
+        LibraryCell lcell;
+        LibraryPin from;
+        LibraryPin to;
 
-} // end namespace
+        LibraryArcData()
+            : design(nullptr),
+              index(-1),
+              lcell(nullptr),
+              from(nullptr),
+              to(nullptr) {}  // end class
+};                            // end struct
+
+}  // end namespace

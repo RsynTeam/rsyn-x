@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   RsttRoutingEstimatorModel.h
  * Author: eder
  *
@@ -45,27 +45,31 @@
 
 namespace Rsyn {
 
-    class RsttRoutingEstimatorModel : public RoutingEstimationModel, public Service {
-    protected:
-        Rsyn::Attribute<Rsyn::Net, Rsyn::RoutingTopologyDescriptor<int>> clsNetsTopologys;
+class RsttRoutingEstimatorModel : public RoutingEstimationModel,
+                                  public Service {
+       protected:
+        Rsyn::Attribute<Rsyn::Net, Rsyn::RoutingTopologyDescriptor<int>>
+            clsNetsTopologys;
 
-    public:
+       public:
         typedef boost::geometry::model::d2::point_xy<DBU> Point;
         typedef boost::geometry::model::segment<Point> Segment;
 
         void start(const Rsyn::Json &params);
 
-        void stop() {
-        }
+        void stop() {}
         RsttRoutingEstimatorModel();
         void generateRsttTopologyForAllNets();
-        void updateRoutingEstimation(Net net, RoutingTopologyDescriptor<int>& topology, DBU &wirelength) override;
-        DBU generateSteinerTree(Net net, RoutingTopologyDescriptor<int> &topology);
+        void updateRoutingEstimation(Net net,
+                                     RoutingTopologyDescriptor<int> &topology,
+                                     DBU &wirelength) override;
+        DBU generateSteinerTree(Net net,
+                                RoutingTopologyDescriptor<int> &topology);
         double distance();
         DBU returnNetWirelength(Net net);
         const Rsyn::RoutingTopologyDescriptor<int> &getTree(Net net) const;
 
-    private:
+       private:
         const bool X = 0;
         const bool Y = 1;
         const int VERTICAL = 1;
@@ -79,54 +83,70 @@ namespace Rsyn {
 
         // Design.
         Design design;
-        Module module; // top module
+        Module module;  // top module
         PhysicalDesign clsPhysicalDesign;
 
         // Services
-        Scenario * clsScenario = nullptr;
+        Scenario *clsScenario = nullptr;
 
         void reportWirelengthNets();
 
         void reportNumNets();
 
-        Point returnMidPoint(std::vector<Point> P, bool XorY); // ---check--- //
+        Point returnMidPoint(std::vector<Point> P,
+                             bool XorY);  // ---check--- //
 
-        Point returnMinPoint(std::vector<Point> const &P); // ---check--- //
+        Point returnMinPoint(std::vector<Point> const &P);  // ---check--- //
 
-        Point returnMaxPoint(std::vector<Point> const &P); // ---check--- //
+        Point returnMaxPoint(std::vector<Point> const &P);  // ---check--- //
 
-        void orderPoints(std::vector<Point> &myvector, bool AscOrDesc, bool XorY); // ---check--- //
+        void orderPoints(std::vector<Point> &myvector, bool AscOrDesc,
+                         bool XorY);  // ---check--- //
 
-        std::vector<Point> returnUpperOrLower(std::vector<Point> const &P, int Ymid, bool UorL); // ---check--- //
+        std::vector<Point> returnUpperOrLower(std::vector<Point> const &P,
+                                              int Ymid,
+                                              bool UorL);  // ---check--- //
 
-        std::vector<Point> returnLeftOrRight(std::vector<Point> const &P, int Xmid, bool LorR); // ---check--- //
+        std::vector<Point> returnLeftOrRight(std::vector<Point> const &P,
+                                             int Xmid,
+                                             bool LorR);  // ---check--- //
 
-        void connectPinV(Point Pin, std::vector<Segment> &trunk, std::vector<Segment> &stems, std::vector<Segment> &SegIni, int firstCon, bool UorL);
+        void connectPinV(Point Pin, std::vector<Segment> &trunk,
+                         std::vector<Segment> &stems,
+                         std::vector<Segment> &SegIni, int firstCon, bool UorL);
 
-        void connectPinH(Point Pin, std::vector<Segment> &trunk, std::vector<Segment> &stems, std::vector<Segment> &SegIni, int firstCon, bool LorR);
+        void connectPinH(Point Pin, std::vector<Segment> &trunk,
+                         std::vector<Segment> &stems,
+                         std::vector<Segment> &SegIni, int firstCon, bool LorR);
 
         DBU returnWireLength(std::vector<Segment> const &stems);
 
-        std::vector<Segment> returnHorizontalSteinerTree(std::vector<Point> Pins, std::vector<Segment> &Trunk);
+        std::vector<Segment> returnHorizontalSteinerTree(
+            std::vector<Point> Pins, std::vector<Segment> &Trunk);
 
-        std::vector<Segment> returnVerticalSteinerTree(std::vector<Point> Pins, std::vector<Segment> &Trunk);
+        std::vector<Segment> returnVerticalSteinerTree(
+            std::vector<Point> Pins, std::vector<Segment> &Trunk);
 
         void orderSegments(std::vector<Segment> &stems, bool XorY);
 
-        void correctTrunk(std::vector<Segment> &trunk, std::vector<Segment> &stems, std::vector<Point> &Pins, Point med, bool HorV);
+        void correctTrunk(std::vector<Segment> &trunk,
+                          std::vector<Segment> &stems, std::vector<Point> &Pins,
+                          Point med, bool HorV);
 
         void createNetsFile();
 
         int findPoint(std::vector<Point> const &points, Point const &point);
 
-        int findSegment(const std::vector<Segment> &segments, const Segment &segment);
-        
+        int findSegment(const std::vector<Segment> &segments,
+                        const Segment &segment);
+
         void removeLoopSegments(std::vector<Segment> &tree);
 
-        void createTopology(std::vector<Segment> const &tree, std::vector<Point> const &Pins, std::vector<Pin> const &RsynPins, RoutingTopologyDescriptor<int>& topology);
-    };
-
+        void createTopology(std::vector<Segment> const &tree,
+                            std::vector<Point> const &Pins,
+                            std::vector<Pin> const &RsynPins,
+                            RoutingTopologyDescriptor<int> &topology);
+};
 }
 
 #endif /* RSTTROUTINGESTIMATORMODEL_H */
-

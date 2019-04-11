@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_JSON_H
 #define RSYN_JSON_H
 
@@ -20,7 +20,6 @@
 
 namespace Rsyn {
 typedef nlohmann::json Json;
-} // end namespace
+}  // end namespace
 
 #endif /* JSON_H */
-

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_PROCESS_H
 #define RSYN_PROCESS_H
 
@@ -22,14 +22,11 @@ namespace Rsyn {
 
 class Session;
 
-
 class Process {
-public:
-	virtual bool run(const Rsyn::Json &params) = 0;
-}; // end class
+       public:
+        virtual bool run(const Rsyn::Json &params) = 0;
+};  // end class
 
-} // end namespace
-
+}  // end namespace
 
 #endif
-

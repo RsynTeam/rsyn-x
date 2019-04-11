@@ -23,13 +23,10 @@
 
 namespace Rsyn {
 class Database {
-public:
-
-	void read(const std::string &key, Serializable &data);
-	void write(const std::string &key, const Serializable &data);
-
+       public:
+        void read(const std::string &key, Serializable &data);
+        void write(const std::string &key, const Serializable &data);
 };
-} // end namespace
+}  // end namespace
 
-#endif 
-
+#endif

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <iostream>
 
 #include <QPainter>
@@ -32,91 +32,82 @@ namespace Rsyn {
 // -----------------------------------------------------------------------------
 
 GraphicsLayer::GraphicsLayer() {
-	clsLookup = new GraphicsItemGridLookup();
-} // end method
+        clsLookup = new GraphicsItemGridLookup();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 GraphicsLayer::~GraphicsLayer() {
-	for (GraphicsItem *item : clsLookup->allItems()) {
-		delete item;
-	} // end for
-} // end method
+        for (GraphicsItem *item : clsLookup->allItems()) {
+                delete item;
+        }  // end for
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-void
-GraphicsLayer::render(
-		QPainter *painter,
-		const float lod,
-		const QRectF &exposedRect
-) {
-	if (!getScene()->getVisibility(clsVisibilityKey))
-		return;
+void GraphicsLayer::render(QPainter *painter, const float lod,
+                           const QRectF &exposedRect) {
+        if (!getScene()->getVisibility(clsVisibilityKey)) return;
 
-	painter->setBrush(clsBrush);
-	painter->setPen(clsPen);
-	
-	const float coverage = clsLookup->getCoverage(exposedRect);
-	if (coverage > 0.8 || clsLookup->isDummy()) {
-		for (GraphicsItem *item : clsLookup->allItems()) {
-			item->render(getScene(), painter, lod, exposedRect);
-		} // end for
-	} else {
-		std::list<GraphicsItem *> items = clsLookup->getItemsAt(exposedRect);
-		for (GraphicsItem *item : items) {
-			item->render(getScene(), painter, lod, exposedRect);
-		} // end for
-	} // end method
-} // end method
+        painter->setBrush(clsBrush);
+        painter->setPen(clsPen);
+
+        const float coverage = clsLookup->getCoverage(exposedRect);
+        if (coverage > 0.8 || clsLookup->isDummy()) {
+                for (GraphicsItem *item : clsLookup->allItems()) {
+                        item->render(getScene(), painter, lod, exposedRect);
+                }  // end for
+        } else {
+                std::list<GraphicsItem *> items =
+                    clsLookup->getItemsAt(exposedRect);
+                for (GraphicsItem *item : items) {
+                        item->render(getScene(), painter, lod, exposedRect);
+                }  // end for
+        }          // end method
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-void
-GraphicsLayer::setScene(GraphicsScene *scene) {
-	clsScene = scene;
-	clsLookup->defineGrid(scene->sceneRect(),
-			scene->sceneRect().width() / 10, scene->sceneRect().height() / 10);
-} // end method
+void GraphicsLayer::setScene(GraphicsScene *scene) {
+        clsScene = scene;
+        clsLookup->defineGrid(scene->sceneRect(),
+                              scene->sceneRect().width() / 10,
+                              scene->sceneRect().height() / 10);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-void
-GraphicsLayer::setZOrder(const float z) {
-	clsZOrder = z;
-	if (clsScene) {
-		clsScene->resortLayers();
-	} // end if
-} // end method
+void GraphicsLayer::setZOrder(const float z) {
+        clsZOrder = z;
+        if (clsScene) {
+                clsScene->resortLayers();
+        }  // end if
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-const GraphicsItemLookup *
-GraphicsLayer::getLookup() const {
-	return clsLookup;
-} // end method
+const GraphicsItemLookup *GraphicsLayer::getLookup() const {
+        return clsLookup;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-void
-GraphicsLayer::addItem(GraphicsItem *item) {
-	clsLookup->addItem(item);
-} // end method
+void GraphicsLayer::addItem(GraphicsItem *item) {
+        clsLookup->addItem(item);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-void
-GraphicsLayer::removeItem(GraphicsItem *item) {
-	clsLookup->removeItem(item);
-} // end method
+void GraphicsLayer::removeItem(GraphicsItem *item) {
+        clsLookup->removeItem(item);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-GraphicsItem *
-GraphicsLayer::getItemAt(const qreal x, const qreal y) const {
-	return clsLookup->getItemAt(QPointF(x, y));
-} // end method
+GraphicsItem *GraphicsLayer::getItemAt(const qreal x, const qreal y) const {
+        return clsLookup->getItemAt(QPointF(x, y));
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace
+}  // end namespace

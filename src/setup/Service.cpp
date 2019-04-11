@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 // HOW-TO
 // To register a step, just include its .h below and add a call to
 // "registerService<T>(name)" where T is the service class name and name how
@@ -39,21 +39,24 @@
 // Registration
 namespace Rsyn {
 void Session::registerServices() {
-	registerService<Rsyn::PhysicalService>("rsyn.physical");
-	registerService<Rsyn::Scenario>("rsyn.scenario");
-	registerService<Rsyn::Timer>("rsyn.timer");
-	registerService<Rsyn::DefaultTimingModel>("rsyn.defaultTimingModel");
-	registerService<Rsyn::LibraryCharacterizer>("rsyn.libraryCharacterizer");
-	registerService<Rsyn::RoutingEstimator>("rsyn.routingEstimator");
-	registerService<Rsyn::DefaultRoutingEstimationModel>("rsyn.defaultRoutingEstimationModel");
-	registerService<Rsyn::DefaultRoutingExtractionModel>("rsyn.defaultRoutingExtractionModel");
-	registerService<Rsyn::RsttRoutingEstimatorModel>("rsyn.RSTTroutingEstimationModel");
-	registerService<Rsyn::DensityGrid>("rsyn.densityGrid");
-	registerService<Rsyn::Report>("rsyn.report");
-	registerService<Rsyn::Writer>("rsyn.writer");
-	registerService<Rsyn::Graphics>("rsyn.graphics");
-	registerService<Rsyn::RoutingGuide>("rsyn.routingGuide");
-	registerService<Rsyn::WriterDEF>("rsyn.writerDEF");
-} // end method
-} // end namespace
-
+        registerService<Rsyn::PhysicalService>("rsyn.physical");
+        registerService<Rsyn::Scenario>("rsyn.scenario");
+        registerService<Rsyn::Timer>("rsyn.timer");
+        registerService<Rsyn::DefaultTimingModel>("rsyn.defaultTimingModel");
+        registerService<Rsyn::LibraryCharacterizer>(
+            "rsyn.libraryCharacterizer");
+        registerService<Rsyn::RoutingEstimator>("rsyn.routingEstimator");
+        registerService<Rsyn::DefaultRoutingEstimationModel>(
+            "rsyn.defaultRoutingEstimationModel");
+        registerService<Rsyn::DefaultRoutingExtractionModel>(
+            "rsyn.defaultRoutingExtractionModel");
+        registerService<Rsyn::RsttRoutingEstimatorModel>(
+            "rsyn.RSTTroutingEstimationModel");
+        registerService<Rsyn::DensityGrid>("rsyn.densityGrid");
+        registerService<Rsyn::Report>("rsyn.report");
+        registerService<Rsyn::Writer>("rsyn.writer");
+        registerService<Rsyn::Graphics>("rsyn.graphics");
+        registerService<Rsyn::RoutingGuide>("rsyn.routingGuide");
+        registerService<Rsyn::WriterDEF>("rsyn.writerDEF");
+}  // end method
+}  // end namespace

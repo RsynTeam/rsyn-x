@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalSpacingData.h
  * Author: jucemar
  *
@@ -32,15 +32,13 @@
 namespace Rsyn {
 
 class PhysicalSpacingData : public PhysicalObject {
-public:
-	PhysicalLayer clsLayer1;
-	PhysicalLayer clsLayer2;
-	DBU clsDistance = 0;
-	PhysicalSpacingData() = default;
-}; // end class 
+       public:
+        PhysicalLayer clsLayer1;
+        PhysicalLayer clsLayer2;
+        DBU clsDistance = 0;
+        PhysicalSpacingData() = default;
+};  // end class
 
-} // end namespace 
-
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALSPACINGDATA_H */
-

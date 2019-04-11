@@ -12,31 +12,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_SESSION_OBSERVER_H
 #define RSYN_SESSION_OBSERVER_H
 
 namespace Rsyn {
 
 class SessionObserver {
-public:
+       public:
+        // Note: The observer will not be registered to receive notifications
+        // for
+        // methods that it does not overwrite. Therefore, no runtime overhead
+        // for
+        // handling undesired notifications.
 
-	// Note: The observer will not be registered to receive notifications for
-	// methods that it does not overwrite. Therefore, no runtime overhead for
-	// handling undesired notifications.
+        virtual void onDesignLoaded() {}
 
-	virtual void
-	onDesignLoaded() {}
+        virtual void onServiceStarted(const std::string &serviceName) {}
 
-	virtual void
-	onServiceStarted(const std::string &serviceName) {}
+        virtual ~SessionObserver();
 
-	virtual
-	~SessionObserver();
+};  // end class
 
-}; // end class
-
-} // end namespace
+}  // end namespace
 
 #endif
-

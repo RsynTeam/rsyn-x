@@ -30,7 +30,6 @@
 /* ************************************************************************** */
 /* ************************************************************************** */
 
-
 #ifndef CDEFWWRITERCALLS_H
 #define CDEFWWRITERCALLS_H
 
@@ -45,15 +44,15 @@
  * a colon-delimited list of directories in which to find
  * include files.
  */
-EXTERN int defwWrite (FILE * file, const char * fileName, defiUserData  userData);
+EXTERN int defwWrite(FILE* file, const char* fileName, defiUserData userData);
 
 /*
  * Set all of the callbacks that have not yet been set to a function
  * that will add up how many times a given def data type was ignored
  * (ie no callback was done).  The statistics can later be printed out.
  */
-EXTERN void defwSetRegisterUnusedCallbacks ();
-EXTERN void defwPrintUnusedCallbacks (FILE*  log);
+EXTERN void defwSetRegisterUnusedCallbacks();
+EXTERN void defwPrintUnusedCallbacks(FILE* log);
 
 /*
  * Set/get the client-provided user data.  defi doesn't look at
@@ -63,50 +62,50 @@ EXTERN void defwPrintUnusedCallbacks (FILE*  log);
  * next callback.  The defi writer and writer maintain separate
  * user data pointers.
  */
-EXTERN void defwSetUserData (defiUserData  p0);
-EXTERN defiUserData defwGetUserData ();
+EXTERN void defwSetUserData(defiUserData p0);
+EXTERN defiUserData defwGetUserData();
 
 /*
  * An enum describing all of the types of writer callbacks.
  */
 typedef enum {
-  defwUnspecifiedCbkType = 0,
-  defwVersionCbkType = 1,
-  defwCaseSensitiveCbkType = 2,
-  defwBusBitCbkType = 3,
-  defwDividerCbkType = 4,
-  defwDesignCbkType = 5,
-  defwTechCbkType = 6,
-  defwArrayCbkType = 7,
-  defwFloorPlanCbkType = 8,
-  defwUnitsCbkType = 9,
-  defwHistoryCbkType = 10,
-  defwPropDefCbkType = 11,
-  defwDieAreaCbkType = 12,
-  defwRowCbkType = 13,
-  defwTrackCbkType = 14,
-  defwGcellGridCbkType = 15,
-  defwDefaultCapCbkType = 16,
-  defwCanplaceCbkType = 17,
-  defwCannotOccupyCbkType = 18,
-  defwViaCbkType = 19,
-  defwRegionCbkType = 20,
-  defwComponentCbkType = 21,
-  defwPinCbkType = 22,
-  defwPinPropCbkType = 23,
-  defwSNetCbkType = 24,
-  defwNetCbkType = 25,
-  defwIOTimingCbkType = 26,
-  defwScanchainCbkType = 27,
-  defwConstraintCbkType = 28,
-  defwAssertionCbkType = 29,
-  defwGroupCbkType = 30,
-  defwBlockageCbkType = 31,
-  defwExtCbkType = 32,
-  defwDesignEndCbkType = 33
+        defwUnspecifiedCbkType = 0,
+        defwVersionCbkType = 1,
+        defwCaseSensitiveCbkType = 2,
+        defwBusBitCbkType = 3,
+        defwDividerCbkType = 4,
+        defwDesignCbkType = 5,
+        defwTechCbkType = 6,
+        defwArrayCbkType = 7,
+        defwFloorPlanCbkType = 8,
+        defwUnitsCbkType = 9,
+        defwHistoryCbkType = 10,
+        defwPropDefCbkType = 11,
+        defwDieAreaCbkType = 12,
+        defwRowCbkType = 13,
+        defwTrackCbkType = 14,
+        defwGcellGridCbkType = 15,
+        defwDefaultCapCbkType = 16,
+        defwCanplaceCbkType = 17,
+        defwCannotOccupyCbkType = 18,
+        defwViaCbkType = 19,
+        defwRegionCbkType = 20,
+        defwComponentCbkType = 21,
+        defwPinCbkType = 22,
+        defwPinPropCbkType = 23,
+        defwSNetCbkType = 24,
+        defwNetCbkType = 25,
+        defwIOTimingCbkType = 26,
+        defwScanchainCbkType = 27,
+        defwConstraintCbkType = 28,
+        defwAssertionCbkType = 29,
+        defwGroupCbkType = 30,
+        defwBlockageCbkType = 31,
+        defwExtCbkType = 32,
+        defwDesignEndCbkType = 33
 
-  /* NEW CALLBACKS - each callback has its own type.  For each callback
-   * that you add, you must add an item to this enum. */
+        /* NEW CALLBACKS - each callback has its own type.  For each callback
+         * that you add, you must add an item to this enum. */
 
 } defwCallbackType_e;
 
@@ -144,43 +143,43 @@ typedef enum {
  */
 
 /* A declaration of the signature of all callbacks that return nothing. */
-typedef int (*defwVoidCbkFnType) ( defwCallbackType_e, defiUserData );
+typedef int (*defwVoidCbkFnType)(defwCallbackType_e, defiUserData);
 
 /* Functions to call to register a callback function.
  */
-EXTERN void defwSetArrayCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetAssertionCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetBlockageCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetBusBitCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetCannotOccupyCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetCanplaceCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetCaseSensitiveCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetComponentCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetConstraintCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetDefaultCapCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetDesignCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetDesignEndCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetDieAreaCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetDividerCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetExtCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetFloorPlanCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetGcellGridCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetGroupCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetHistoryCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetIOTimingCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetNetCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetPinCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetPinPropCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetPropDefCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetRegionCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetRowCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetSNetCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetScanchainCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetTechnologyCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetTrackCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetUnitsCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetVersionCbk (defwVoidCbkFnType p0);
-EXTERN void defwSetViaCbk (defwVoidCbkFnType p0);
+EXTERN void defwSetArrayCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetAssertionCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetBlockageCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetBusBitCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetCannotOccupyCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetCanplaceCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetCaseSensitiveCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetComponentCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetConstraintCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetDefaultCapCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetDesignCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetDesignEndCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetDieAreaCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetDividerCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetExtCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetFloorPlanCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetGcellGridCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetGroupCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetHistoryCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetIOTimingCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetNetCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetPinCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetPinPropCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetPropDefCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetRegionCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetRowCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetSNetCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetScanchainCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetTechnologyCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetTrackCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetUnitsCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetVersionCbk(defwVoidCbkFnType p0);
+EXTERN void defwSetViaCbk(defwVoidCbkFnType p0);
 
 /* NEW CALLBACK - each callback must have a function to allow the user
  * to set it.  Add the function here. */
@@ -190,14 +189,14 @@ EXTERN void defwSetViaCbk (defwVoidCbkFnType p0);
  * function.  This is especially useful if you want to check to see
  * if you forgot anything.
  */
-EXTERN void defwSetUnusedCallbacks (defwVoidCbkFnType  func);
+EXTERN void defwSetUnusedCallbacks(defwVoidCbkFnType func);
 
 /* Routine to set the message logging routine for errors */
-typedef void (*DEFI_LOG_FUNCTION) (const char*);
-EXTERN void defwSetLogFunction (DEFI_LOG_FUNCTION  p0);
+typedef void (*DEFI_LOG_FUNCTION)(const char*);
+EXTERN void defwSetLogFunction(DEFI_LOG_FUNCTION p0);
 
 /* Routine to set the message logging routine for warnings */
 typedef void (*DEFI_WARNING_LOG_FUNCTION)(const char*);
-EXTERN void defwSetWarningLogFunction (DEFI_WARNING_LOG_FUNCTION  p0);
+EXTERN void defwSetWarningLogFunction(DEFI_WARNING_LOG_FUNCTION p0);
 
 #endif

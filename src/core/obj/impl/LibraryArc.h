@@ -12,85 +12,61 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
-inline
-Design 
-LibraryArc::getDesign() {
-	return data->design;
-} // end method
+inline Design LibraryArc::getDesign() { return data->design; }  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-const Design 
-LibraryArc::getDesign() const {
-	return data->design;
-} // end method
+inline const Design LibraryArc::getDesign() const {
+        return data->design;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-std::string
-LibraryArc::getName() const {
-	return getFromName() + "->" + getToName();		
-} // end method
+inline std::string LibraryArc::getName() const {
+        return getFromName() + "->" + getToName();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-std::string
-LibraryArc::getFullName() const {
-	return getLibraryCell().getName() + ":" + getName();
-} // end method
+inline std::string LibraryArc::getFullName() const {
+        return getLibraryCell().getName() + ":" + getName();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-std::string
-LibraryArc::getFromName() const {
-	return getFromLibraryPin().getName();
-} // end method
+inline std::string LibraryArc::getFromName() const {
+        return getFromLibraryPin().getName();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-std::string
-LibraryArc::getToName() const {
-	return getToLibraryPin().getName();
-} // end method
+inline std::string LibraryArc::getToName() const {
+        return getToLibraryPin().getName();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-LibraryCell
-LibraryArc::getLibraryCell() const {
-	return data->lcell;
-} // end method
+inline LibraryCell LibraryArc::getLibraryCell() const {
+        return data->lcell;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-LibraryPin
-LibraryArc::getFromLibraryPin() const {
-	return data->from;
-} // end method
+inline LibraryPin LibraryArc::getFromLibraryPin() const {
+        return data->from;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-LibraryPin
-LibraryArc::getToLibraryPin() const {
-	return data->to;
-} // end method
+inline LibraryPin LibraryArc::getToLibraryPin() const {
+        return data->to;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-int
-LibraryArc::getIndex() const {
-	return data->index;
-} // end method
+inline int LibraryArc::getIndex() const { return data->index; }  // end method
 
-} // end namespace
+}  // end namespace

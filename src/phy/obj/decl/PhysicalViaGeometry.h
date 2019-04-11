@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/* 
+/*
  * File:   PhysicalViaGeometry.h
  * Author: jucemar
  *
@@ -26,29 +26,30 @@
 namespace Rsyn {
 
 class PhysicalViaGeometry : public Proxy<ViaGeometryData> {
-	friend class PhysicalDesign;
-	RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
-protected:
-	//! @brief Constructs a Rsyn::PhysicalViaGeometry object with a pointer to Rsyn::ViaGeometryData.
+        friend class PhysicalDesign;
+        RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 
-	PhysicalViaGeometry(ViaGeometryData * data) : Proxy(data) {
-	}
-public:
-	//! @brief Constructs a Rsyn::PhysicalViaGeometry object with a null pointer to Rsyn::ViaGeometryData.
+       protected:
+        //! @brief Constructs a Rsyn::PhysicalViaGeometry object with a pointer
+        //! to Rsyn::ViaGeometryData.
 
-	PhysicalViaGeometry() : Proxy(nullptr) {
-	}
-	//! @brief Constructs a Rsyn::PhysicalViaGeometry object with a null pointer to Rsyn::ViaGeometryData.
+        PhysicalViaGeometry(ViaGeometryData* data) : Proxy(data) {}
 
-	PhysicalViaGeometry(std::nullptr_t) : Proxy(nullptr) {
-	}
-	
-	const Bounds & getBounds() const;
-	int getMaskNumber() const;
-	
-}; // end class
+       public:
+        //! @brief Constructs a Rsyn::PhysicalViaGeometry object with a null
+        //! pointer to Rsyn::ViaGeometryData.
 
-} // end namespace
+        PhysicalViaGeometry() : Proxy(nullptr) {}
+        //! @brief Constructs a Rsyn::PhysicalViaGeometry object with a null
+        //! pointer to Rsyn::ViaGeometryData.
+
+        PhysicalViaGeometry(std::nullptr_t) : Proxy(nullptr) {}
+
+        const Bounds& getBounds() const;
+        int getMaskNumber() const;
+
+};  // end class
+
+}  // end namespace
 
 #endif /* RSYN_DATABASE_PHYSICALVIAGEOMETRY_H */
-

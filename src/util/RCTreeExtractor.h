@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   SPEFRoutingEstimationModel.h
  * Author: Henrique
  *
@@ -38,42 +38,38 @@
 #include "io/parser/parser_helper.h"
 
 namespace Rsyn {
-    
+
 class RCTreeExtractor {
-    
-private:
-    
-    Rsyn::Scenario * clsScenario;
-    ISPD13::SPEFInfo *spefInfo;
-    
-    std::unordered_map<std::string, int> clsNodeMap;
-    std::unordered_map<std::string, Rsyn::Pin> clsPinMap;
-    
-    Rsyn::UnitPrefix unitPrefixForResistance;
-    Rsyn::UnitPrefix unitPrefixForCapacitance;
-    
-    std::string getPinNameInSPEFFormat(Rsyn::Pin pin);
-    void mapSPEFPinNameToRsynPin(Rsyn::Net net);
-    int getNodeIndex(const std::string &nodeName);
-    void addDefaultCapacitance(int node, RCTreeDescriptor &dscp, 
-                               bool useDefaultCapacitance);
-    void setLoadCapacitances(Rsyn::RCTree &tree);
-    
-public:
-    
-    enum SPEFNetModel {
-        LUMPED_CAPACITANCE_NET_MODEL = 0,
-        RC_TREE_NET_MODEL = 1
-    };
-    
-    RCTreeExtractor() = default;
-    RCTreeExtractor(ISPD13::SPEFInfo *info);
-    ~RCTreeExtractor() = default;
-    void extractRCTreeFromSPEF(SPEFNetModel netModel, Rsyn::Net net, Rsyn::RCTree &tree);
-    
-    
+       private:
+        Rsyn::Scenario *clsScenario;
+        ISPD13::SPEFInfo *spefInfo;
+
+        std::unordered_map<std::string, int> clsNodeMap;
+        std::unordered_map<std::string, Rsyn::Pin> clsPinMap;
+
+        Rsyn::UnitPrefix unitPrefixForResistance;
+        Rsyn::UnitPrefix unitPrefixForCapacitance;
+
+        std::string getPinNameInSPEFFormat(Rsyn::Pin pin);
+        void mapSPEFPinNameToRsynPin(Rsyn::Net net);
+        int getNodeIndex(const std::string &nodeName);
+        void addDefaultCapacitance(int node, RCTreeDescriptor &dscp,
+                                   bool useDefaultCapacitance);
+        void setLoadCapacitances(Rsyn::RCTree &tree);
+
+       public:
+        enum SPEFNetModel {
+                LUMPED_CAPACITANCE_NET_MODEL = 0,
+                RC_TREE_NET_MODEL = 1
+        };
+
+        RCTreeExtractor() = default;
+        RCTreeExtractor(ISPD13::SPEFInfo *info);
+        ~RCTreeExtractor() = default;
+        void extractRCTreeFromSPEF(SPEFNetModel netModel, Rsyn::Net net,
+                                   Rsyn::RCTree &tree);
 };
-    
-} // end namespace 
+
+}  // end namespace
 
 #endif

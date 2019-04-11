@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-/* 
+
+/*
  * File:   RoutingGuide.cpp
  * Author: jucemar
  *
@@ -26,45 +26,49 @@
 namespace Rsyn {
 
 void RoutingGuide::start(const Rsyn::Json &params) {
-	if(clsInitialized)
-		return;
-	clsDesign = clsSession.getDesign();
-	clsModule = clsSession.getTopModule();
-	clsPhDesign = clsSession.getPhysicalDesign();
+        if (clsInitialized) return;
+        clsDesign = clsSession.getDesign();
+        clsModule = clsSession.getTopModule();
+        clsPhDesign = clsSession.getPhysicalDesign();
 
-	clsGuides = clsDesign.createAttribute();
+        clsGuides = clsDesign.createAttribute();
 
-	clsInitialized = true;
-} // end method
-
-// -----------------------------------------------------------------------------
-
-void RoutingGuide::stop() {
-} // end method
+        clsInitialized = true;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-void RoutingGuide::loadGuides(const GuideDscp & dscp) {
-	for (const GuideNetDscp & netDscp : dscp.clsNetGuides) {
-		Rsyn::Net net = clsDesign.findNetByName(netDscp.clsNetName);
-		if (net) {
+void RoutingGuide::stop() {}  // end method
+
+// -----------------------------------------------------------------------------
+
+void RoutingGuide::loadGuides(const GuideDscp &dscp) {
+        for (const GuideNetDscp &netDscp : dscp.clsNetGuides) {
+                Rsyn::Net net = clsDesign.findNetByName(netDscp.clsNetName);
+                if (net) {
                         int id = 0;
-			NetGuide & netGuide = clsGuides[net];
-			std::vector<LayerGuide> & layerGuides= netGuide.clsLayerGuides;
-			layerGuides.reserve(netDscp.clsLayerDscps.size());
-			for (const GuideLayerDscp & layerDscp : netDscp.clsLayerDscps) {
-				layerGuides.push_back(LayerGuide());
-				LayerGuide & layerGuide = layerGuides.back();
+                        NetGuide &netGuide = clsGuides[net];
+                        std::vector<LayerGuide> &layerGuides =
+                            netGuide.clsLayerGuides;
+                        layerGuides.reserve(netDscp.clsLayerDscps.size());
+                        for (const GuideLayerDscp &layerDscp :
+                             netDscp.clsLayerDscps) {
+                                layerGuides.push_back(LayerGuide());
+                                LayerGuide &layerGuide = layerGuides.back();
                                 layerGuide.clsId = id++;
-				layerGuide.clsBounds = layerDscp.clsLayerGuide;
-				layerGuide.clsPhLayer = clsPhDesign.getPhysicalLayerByName(layerDscp.clsLayer);
-			} // end for
-		} else {
-			std::cout << "WARNING: Net '" << netDscp.clsNetName << "' does not exist and the routing guide is being ignored.\n";
-		} // end else
-	} // end for 
-} // end method
+                                layerGuide.clsBounds = layerDscp.clsLayerGuide;
+                                layerGuide.clsPhLayer =
+                                    clsPhDesign.getPhysicalLayerByName(
+                                        layerDscp.clsLayer);
+                        }  // end for
+                } else {
+                        std::cout << "WARNING: Net '" << netDscp.clsNetName
+                                  << "' does not exist and the routing guide "
+                                     "is being ignored.\n";
+                }  // end else
+        }          // end for
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace 
+}  // end namespace

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/* 
+/*
  * File:   PhysicalViaRuleBase.h
  * Author: jucemar
  *
@@ -26,48 +26,51 @@
 namespace Rsyn {
 
 class PhysicalViaRuleBase : public Proxy<ViaRuleData> {
-	friend class PhysicalDesign;
-	friend class PhysicalVia;
-	RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
-protected:
-	//! @brief Constructs a Rsyn::PhysicalViaRule object with a pointer to Rsyn::ViaRuleData.
+        friend class PhysicalDesign;
+        friend class PhysicalVia;
+        RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 
-	PhysicalViaRuleBase(ViaRuleData * data) : Proxy(data) {
-	}
-public:
-	//! @brief Constructs a Rsyn::PhysicalViaRule object with a null pointer to Rsyn::ViaRuleData.
+       protected:
+        //! @brief Constructs a Rsyn::PhysicalViaRule object with a pointer to
+        //! Rsyn::ViaRuleData.
 
-	PhysicalViaRuleBase() : Proxy(nullptr) {
-	}
-	//! @brief Constructs a Rsyn::PhysicalViaRule object with a null pointer to Rsyn::ViaRuleData.
+        PhysicalViaRuleBase(ViaRuleData* data) : Proxy(data) {}
 
-	PhysicalViaRuleBase(std::nullptr_t) : Proxy(nullptr) {
-	}
-	
-	//! @brief Returns the via rule base index 
-	int getIndex() const;
-	
-	//! @brief Returns the via rule base as via rule generate
-	PhysicalViaRule asViaRule() const;
-	//! @brief Returns the via rule base as via rule generate
-	PhysicalViaRuleGenerate asViaRuleGenerate() const;
-	
-	//! @brief Returns if via rule base is only via rule
-	bool isViaRule() const;
-	//! @brief Returns if the via rule is generate
-	bool isViaRuleGenerate() const;
-	
-	//! @brief Returns the via rule name
-	const std::string & getName() const;
-	
-	//! @brief Returns the min and max range of the top or bottom routing layer directions in the via rule has been defined.
-	bool hasWidth(const Rsyn::ViaLevel level) const;
-	//! @brief Returns the min and max range of the top or bottom routing layer directions in the via rule.
-	DBU getWidth(const Rsyn::ViaLevel level, const Rsyn::ViaRange range) const;
-}; // end class
+       public:
+        //! @brief Constructs a Rsyn::PhysicalViaRule object with a null pointer
+        //! to Rsyn::ViaRuleData.
 
-} // end namespace
+        PhysicalViaRuleBase() : Proxy(nullptr) {}
+        //! @brief Constructs a Rsyn::PhysicalViaRule object with a null pointer
+        //! to Rsyn::ViaRuleData.
 
+        PhysicalViaRuleBase(std::nullptr_t) : Proxy(nullptr) {}
+
+        //! @brief Returns the via rule base index
+        int getIndex() const;
+
+        //! @brief Returns the via rule base as via rule generate
+        PhysicalViaRule asViaRule() const;
+        //! @brief Returns the via rule base as via rule generate
+        PhysicalViaRuleGenerate asViaRuleGenerate() const;
+
+        //! @brief Returns if via rule base is only via rule
+        bool isViaRule() const;
+        //! @brief Returns if the via rule is generate
+        bool isViaRuleGenerate() const;
+
+        //! @brief Returns the via rule name
+        const std::string& getName() const;
+
+        //! @brief Returns the min and max range of the top or bottom routing
+        //! layer directions in the via rule has been defined.
+        bool hasWidth(const Rsyn::ViaLevel level) const;
+        //! @brief Returns the min and max range of the top or bottom routing
+        //! layer directions in the via rule.
+        DBU getWidth(const Rsyn::ViaLevel level,
+                     const Rsyn::ViaRange range) const;
+};  // end class
+
+}  // end namespace
 
 #endif /* RSYN_DATABASE_PHYSICALVIARULEBASE_H */
-

@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalPinData.h
  * Author: jucemar
  *
@@ -32,17 +32,17 @@
 namespace Rsyn {
 
 class PhysicalPinData {
-public:
-	DBUxy clsDisplacement;
-	//! @details A pin may have several ports. However, each port is weakly connected to other. 
-	//! It is assumed that they have high resistance among them. 
-	std::vector<PhysicalPinGeometry> clsPhysicalPinGeometries;
-	PhysicalPinDirection clsDirection = PIN_INVALID_DIRECTION;
-	Bounds clsLayerBound; // The pin bounds is defined by one of the layers
-	PhysicalPinData() = default;
-}; // end class 
+       public:
+        DBUxy clsDisplacement;
+        //! @details A pin may have several ports. However, each port is weakly
+        //! connected to other.
+        //! It is assumed that they have high resistance among them.
+        std::vector<PhysicalPinGeometry> clsPhysicalPinGeometries;
+        PhysicalPinDirection clsDirection = PIN_INVALID_DIRECTION;
+        Bounds clsLayerBound;  // The pin bounds is defined by one of the layers
+        PhysicalPinData() = default;
+};  // end class
 
-} // end namespace 
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALPINDATA_H */
-

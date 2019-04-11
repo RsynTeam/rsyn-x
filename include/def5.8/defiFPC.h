@@ -23,13 +23,12 @@
 /* For updates, support, or to become part of the LEF/DEF Community,          */
 /* check www.openeda.org for details.                                         */
 /*                                                                            */
-/*  $Author: icftcm $                                                                  */
-/*  $Revision: #1 $                                                                */
-/*  $Date: 2014/02/10 $                                                                    */
+/*  $Author: icftcm $ */
+/*  $Revision: #1 $ */
+/*  $Date: 2014/02/10 $ */
 /*  $State:  $                                                                */
 /* ************************************************************************** */
 /* ************************************************************************** */
-
 
 #ifndef CDEFIFPC_H
 #define CDEFIFPC_H
@@ -37,27 +36,28 @@
 #include <stdio.h>
 #include "defiTypedefs.h"
 
-EXTERN const char* defiFPC_name (const defiFPC* obj);
-EXTERN int defiFPC_isVertical (const defiFPC* obj);
-EXTERN int defiFPC_isHorizontal (const defiFPC* obj);
-EXTERN int defiFPC_hasAlign (const defiFPC* obj);
-EXTERN int defiFPC_hasMax (const defiFPC* obj);
-EXTERN int defiFPC_hasMin (const defiFPC* obj);
-EXTERN int defiFPC_hasEqual (const defiFPC* obj);
-EXTERN double defiFPC_alignMax (const defiFPC* obj);
-EXTERN double defiFPC_alignMin (const defiFPC* obj);
-EXTERN double defiFPC_equal (const defiFPC* obj);
+EXTERN const char* defiFPC_name(const defiFPC* obj);
+EXTERN int defiFPC_isVertical(const defiFPC* obj);
+EXTERN int defiFPC_isHorizontal(const defiFPC* obj);
+EXTERN int defiFPC_hasAlign(const defiFPC* obj);
+EXTERN int defiFPC_hasMax(const defiFPC* obj);
+EXTERN int defiFPC_hasMin(const defiFPC* obj);
+EXTERN int defiFPC_hasEqual(const defiFPC* obj);
+EXTERN double defiFPC_alignMax(const defiFPC* obj);
+EXTERN double defiFPC_alignMin(const defiFPC* obj);
+EXTERN double defiFPC_equal(const defiFPC* obj);
 
-EXTERN int defiFPC_numParts (const defiFPC* obj);
+EXTERN int defiFPC_numParts(const defiFPC* obj);
 
-  /* Return the constraint number "index" where index is                      */
-  /*    from 0 to numParts()                                                  */
-  /* The returned corner is 'B' for bottom left  'T' for topright             */
-  /* The returned typ is 'R' for rows   'C' for comps                         */
-  /* The returned char* points to name of the item.                           */
-EXTERN void defiFPC_getPart (const defiFPC* obj, int  index, int*  corner, int*  typ, char**  name);
+/* Return the constraint number "index" where index is                      */
+/*    from 0 to numParts()                                                  */
+/* The returned corner is 'B' for bottom left  'T' for topright             */
+/* The returned typ is 'R' for rows   'C' for comps                         */
+/* The returned char* points to name of the item.                           */
+EXTERN void defiFPC_getPart(const defiFPC* obj, int index, int* corner,
+                            int* typ, char** name);
 
-  /* debug print                                                              */
-EXTERN void defiFPC_print (const defiFPC* obj, FILE*  f);
+/* debug print                                                              */
+EXTERN void defiFPC_print(const defiFPC* obj, FILE* f);
 
 #endif

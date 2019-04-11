@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-/* 
+
+/*
  * File:   RoutingGuide.h
  * Author: jucemar
  *
@@ -31,30 +31,28 @@
 namespace Rsyn {
 
 class RoutingGuide : public Rsyn::Service {
-protected:
-	Rsyn::Session clsSession;
-	Rsyn::Design clsDesign;
-	Rsyn::Module clsModule;
-	Rsyn::PhysicalDesign clsPhDesign;
-	Rsyn::Attribute<Rsyn::Net, Rsyn::NetGuide> clsGuides;
-	bool clsInitialized  = false;
-public:
-	RoutingGuide() = default;
-	void start(const Rsyn::Json &params);
-	void stop();
-	
-	void loadGuides(const GuideDscp & dscp);
-	
-	const NetGuide & getGuide(Rsyn::Net net) const {
-		return clsGuides[net];
-	}
-        
+       protected:
+        Rsyn::Session clsSession;
+        Rsyn::Design clsDesign;
+        Rsyn::Module clsModule;
+        Rsyn::PhysicalDesign clsPhDesign;
+        Rsyn::Attribute<Rsyn::Net, Rsyn::NetGuide> clsGuides;
+        bool clsInitialized = false;
+
+       public:
+        RoutingGuide() = default;
+        void start(const Rsyn::Json &params);
+        void stop();
+
+        void loadGuides(const GuideDscp &dscp);
+
+        const NetGuide &getGuide(Rsyn::Net net) const { return clsGuides[net]; }
+
         void updateGuide(Rsyn::Net net, Rsyn::NetGuide guide) {
-            clsGuides[net] = guide;
+                clsGuides[net] = guide;
         }
-}; // end class 
+};  // end class
 
-} // end namespace 
-
+}  // end namespace
 
 #endif /* ISPD18_ROUTINGGUIDE */

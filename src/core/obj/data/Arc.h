@@ -12,31 +12,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
-		
+
 struct ArcData : ObjectData {
-	ArcType type : 3;
-	Pin from;
-	Pin to;
-	
-	union {
-		// Place holder for initialization...
-		void * extra;
-		
-		// Meaningful only when this is arc belongs to a cell.
-		LibraryArcData * libraryArcData;
-		
-		// Meaningful only when this is arc belongs to a net.
-		NetData * netData;
-	}; // end union
+        ArcType type : 3;
+        Pin from;
+        Pin to;
 
-	ArcData() : 
-		type(UNKNOWN_ARC_TYPE),
-		extra(nullptr),
-		from(nullptr), 
-		to(nullptr) {
-	} // end constructor
-}; // end struct
+        union {
+                // Place holder for initialization...
+                void* extra;
 
-} // end namespace
+                // Meaningful only when this is arc belongs to a cell.
+                LibraryArcData* libraryArcData;
+
+                // Meaningful only when this is arc belongs to a net.
+                NetData* netData;
+        };  // end union
+
+        ArcData()
+            : type(UNKNOWN_ARC_TYPE),
+              extra(nullptr),
+              from(nullptr),
+              to(nullptr) {}  // end constructor
+};                            // end struct
+
+}  // end namespace

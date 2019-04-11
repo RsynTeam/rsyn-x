@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef SIMPLIFIED_VERILOG_READER_H
 #define SIMPLIFIED_VERILOG_READER_H
 
@@ -31,82 +31,80 @@
 namespace Parsing {
 
 enum IdentifierListType {
-	IDENTIFIER_LIST_NONE,
-	IDENTIFIER_LIST_INPUT_PORT,
-	IDENTIFIER_LIST_OUTPUT_PORTS,
-	IDENTIFIER_LIST_NETS
-}; // end enum
+        IDENTIFIER_LIST_NONE,
+        IDENTIFIER_LIST_INPUT_PORT,
+        IDENTIFIER_LIST_OUTPUT_PORTS,
+        IDENTIFIER_LIST_NETS
+};  // end enum
 
-enum ErrorCode {
-	ERROR_UNNAMED_PORT_MAPPING_NOT_SUPPORTED
-}; // end enum
+enum ErrorCode { ERROR_UNNAMED_PORT_MAPPING_NOT_SUPPORTED };  // end enum
 
 class SimplifiedVerilogReader {
-	friend class SimplifiedVerilogParser;
-	
-public:
-	SimplifiedVerilogReader(Legacy::Design &verilogDescriptor) :
-		clsVerilogDescriptor(verilogDescriptor),
-		parser(nullptr),
-		scanner(nullptr) {}
+        friend class SimplifiedVerilogParser;
 
-	virtual ~SimplifiedVerilogReader();
+       public:
+        SimplifiedVerilogReader(Legacy::Design &verilogDescriptor)
+            : clsVerilogDescriptor(verilogDescriptor),
+              parser(nullptr),
+              scanner(nullptr) {}
 
-	void parseFromFile(const std::string &filename);
-	void parseFromString(const std::string &str);
-	void parseFromStream(std::istream &stream);
+        virtual ~SimplifiedVerilogReader();
 
-private:
-	
-	Legacy::Design &clsVerilogDescriptor;
-	std::unordered_map<std::string, int> netmap;
-	std::unordered_set<std::string> ports;
+        void parseFromFile(const std::string &filename);
+        void parseFromString(const std::string &str);
+        void parseFromStream(std::istream &stream);
 
-	int createNet(const std::string &name, bool &alreadyExisted) {
-		int index;
-		
-		auto it = netmap.find(name);
-		if (it == netmap.end()) {
-			index = netmap.size();
-			clsVerilogDescriptor.nets.resize(index + 1);
-			clsVerilogDescriptor.nets[index].name = name;
-			netmap[name] = index;
-			alreadyExisted = false;
-		} else {
-			index = it->second;
-			alreadyExisted = true;
-		} // end else		
-		
-		return index;
-	} // end if
+       private:
+        Legacy::Design &clsVerilogDescriptor;
+        std::unordered_map<std::string, int> netmap;
+        std::unordered_set<std::string> ports;
 
-	////////////////////////////////////////////////////////////////////////////
-	// Flex (Lex) / Bison (Yacc)
-	////////////////////////////////////////////////////////////////////////////	
-	
-	Parsing::SimplifiedVerilogParser *parser;
-	Parsing::SimplifiedVerilogScanner *scanner;
+        int createNet(const std::string &name, bool &alreadyExisted) {
+                int index;
 
-    virtual void setBusRange(int &, int &) {}
+                auto it = netmap.find(name);
+                if (it == netmap.end()) {
+                        index = netmap.size();
+                        clsVerilogDescriptor.nets.resize(index + 1);
+                        clsVerilogDescriptor.nets[index].name = name;
+                        netmap[name] = index;
+                        alreadyExisted = false;
+                } else {
+                        index = it->second;
+                        alreadyExisted = true;
+                }  // end else
 
-	////////////////////////////////////////////////////////////////////////////
-	// Parsing state and callbacks.
-	////////////////////////////////////////////////////////////////////////////
-	IdentifierListType currentIdentifierListType;
+                return index;
+        }  // end if
 
-	void setCurrentIdentifierListType(const IdentifierListType type);
+        ////////////////////////////////////////////////////////////////////////////
+        // Flex (Lex) / Bison (Yacc)
+        ////////////////////////////////////////////////////////////////////////////
 
-	void readModuleName(const std::string &name);
-	void readIdentifier(const std::string &name);
-	void readInstance(const std::string &type, const std::string &name);
-	void readConnection(const std::string &portName, const std::string &netName);
+        Parsing::SimplifiedVerilogParser *parser;
+        Parsing::SimplifiedVerilogScanner *scanner;
 
-	void error(const ErrorCode code);
-	
-	// Note: Workaround to add primary output/input as connections to nets.	
-	void workaround();
+        virtual void setBusRange(int &, int &) {}
 
-}; // end class
+        ////////////////////////////////////////////////////////////////////////////
+        // Parsing state and callbacks.
+        ////////////////////////////////////////////////////////////////////////////
+        IdentifierListType currentIdentifierListType;
 
-} // end namespace
+        void setCurrentIdentifierListType(const IdentifierListType type);
+
+        void readModuleName(const std::string &name);
+        void readIdentifier(const std::string &name);
+        void readInstance(const std::string &type, const std::string &name);
+        void readConnection(const std::string &portName,
+                            const std::string &netName);
+
+        void error(const ErrorCode code);
+
+        // Note: Workaround to add primary output/input as connections to nets.
+        void workaround();
+
+};  // end class
+
+}  // end namespace
 #endif

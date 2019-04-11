@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalGroupData.h
  * Author: jucemar
  *
@@ -29,19 +29,16 @@
 #ifndef PHYSICALDESIGN_PHYSICALGROUPDATA_H
 #define PHYSICALDESIGN_PHYSICALGROUPDATA_H
 
-
 namespace Rsyn {
 
 class PhysicalGroupData : public PhysicalObject {
-public:
+       public:
+        std::string clsName = Rsyn::getPhysicalInvalidName();
+        std::vector<std::string> clsPatterns;  // e.g. "name/*"
+        Rsyn::PhysicalRegion clsRegion;
+        PhysicalGroupData() = default;
+};  // end class
 
-	std::string clsName = Rsyn::getPhysicalInvalidName();
-	std::vector<std::string> clsPatterns; // e.g. "name/*"
-	Rsyn::PhysicalRegion clsRegion;
-	PhysicalGroupData() = default;
-}; // end class  
-
-} // end namespace 
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALGROUPDATA_H */
-

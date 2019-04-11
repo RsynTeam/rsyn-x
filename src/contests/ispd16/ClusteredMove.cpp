@@ -130,7 +130,7 @@ void ClusteredMove::clusterNeighborCriticalNets(Rsyn::Pin criticalPin,
                         //			double currSlack = -
                         // timer->getPinWorstNegativeSlack( pin, Rsyn::LATE );
                         //			if( std::abs( currSlack -
-                        //initSlack
+                        // initSlack
                         //) / std::max( currSlack, initSlack ) > 1 )
                         //				continue;
                         //

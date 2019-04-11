@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_FLOORPLAN_GRAPHICS_LAYER_H
 #define RSYN_FLOORPLAN_GRAPHICS_LAYER_H
 
@@ -25,28 +25,28 @@ namespace Rsyn {
 class LayoutGraphicsScene;
 
 class FloorplanLayoutGraphicsLayer : public LayoutGraphicsLayer {
-private:
-	QRect clsCoreBounds;
-public:
+       private:
+        QRect clsCoreBounds;
 
-    FloorplanLayoutGraphicsLayer();
-	~FloorplanLayoutGraphicsLayer();
+       public:
+        FloorplanLayoutGraphicsLayer();
+        ~FloorplanLayoutGraphicsLayer();
 
-	virtual bool init(LayoutGraphicsScene *scene, std::vector<GraphicsLayerDescriptor> &visibilityItems) override;
+        virtual bool init(
+            LayoutGraphicsScene *scene,
+            std::vector<GraphicsLayerDescriptor> &visibilityItems) override;
 
-	virtual void render(QPainter *painter, const float lod, const QRectF &exposedRect) override;
+        virtual void render(QPainter *painter, const float lod,
+                            const QRectF &exposedRect) override;
 
-private:
+       private:
+        void renderCoreBounds(QPainter *painter);
+        void renderPhysicalRows(QPainter *painter);
+        void renderPhysicalSites(QPainter *painter);
+        void renderLayoutRegions(QPainter *painter);
 
-	void renderCoreBounds(QPainter * painter);
-	void renderPhysicalRows(QPainter * painter);
-	void renderPhysicalSites(QPainter * painter);
-	void renderLayoutRegions(QPainter * painter);
-	
-	
+};  // end class
 
-}; // end class
-
-} // end namespace
+}  // end namespace
 
 #endif

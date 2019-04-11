@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalSpacingRule.h
  * Author: jucemar
  *
@@ -31,21 +31,20 @@ namespace Rsyn {
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalSpacingRule::getSpacing() const {
-	return data->clsSpacing;
-} // end method 
+        return data->clsSpacing;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalSpacingRule::getEndOfLine() const {
-	return data->clsEOL;
-} // end method 
+        return data->clsEOL;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalSpacingRule::getEndOfLineWithin() const {
-	return data->clsEOLWithin;
-} // end method 
+        return data->clsEOLWithin;
+}  // end method
 
 // -----------------------------------------------------------------------------
-} // end namespace 
-
+}  // end namespace

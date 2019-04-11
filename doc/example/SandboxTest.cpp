@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <thread>
 
 #include "sandbox/Sandbox.h"
@@ -22,73 +22,76 @@
 namespace Testing {
 
 bool SandboxTest::run(const Rsyn::Json &params) {
-	this->session = session;
-	this->design = session.getDesign();
-	this->module = design.getTopModule();
+        this->session = session;
+        this->design = session.getDesign();
+        this->module = design.getTopModule();
 
-	test();
+        test();
 
-	return true;
-} // end method
+        return true;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 void SandboxTest::test() {
-	Rsyn::LibraryCell lcell = design.findLibraryCellByName("NAND2_X1");
+        Rsyn::LibraryCell lcell = design.findLibraryCellByName("NAND2_X1");
 
-	Rsyn::Sandbox sandbox;
-	sandbox.create(design.getTopModule());
+        Rsyn::Sandbox sandbox;
+        sandbox.create(design.getTopModule());
 
-	Rsyn::SandboxAttribute<Rsyn::SandboxInstance, int> attr =
-			sandbox.createAttribute(123);
-	
-	Rsyn::SandboxPort ip1 = sandbox.createPort(Rsyn::IN);
-	Rsyn::SandboxPort ip2 = sandbox.createPort(Rsyn::IN);
-	Rsyn::SandboxPort op1 = sandbox.createPort(Rsyn::OUT);
+        Rsyn::SandboxAttribute<Rsyn::SandboxInstance, int> attr =
+            sandbox.createAttribute(123);
 
-	Rsyn::SandboxCell cell = sandbox.createCell(lcell);
+        Rsyn::SandboxPort ip1 = sandbox.createPort(Rsyn::IN);
+        Rsyn::SandboxPort ip2 = sandbox.createPort(Rsyn::IN);
+        Rsyn::SandboxPort op1 = sandbox.createPort(Rsyn::OUT);
 
-	Rsyn::SandboxPin IN1 =  ip1.getInnerPin();
-	Rsyn::SandboxPin IN2 = ip2.getInnerPin();
-	Rsyn::SandboxPin OUT = op1.getInnerPin();
-	Rsyn::SandboxPin A = cell.getPinByName("a");
-	Rsyn::SandboxPin B = cell.getPinByName("b");
-	Rsyn::SandboxPin O = cell.getPinByName("o");
+        Rsyn::SandboxCell cell = sandbox.createCell(lcell);
 
-	Rsyn::SandboxNet n1 = sandbox.createNet("n1");
-	Rsyn::SandboxNet n2 = sandbox.createNet("n2");
-	Rsyn::SandboxNet n3 = sandbox.createNet("n3");
+        Rsyn::SandboxPin IN1 = ip1.getInnerPin();
+        Rsyn::SandboxPin IN2 = ip2.getInnerPin();
+        Rsyn::SandboxPin OUT = op1.getInnerPin();
+        Rsyn::SandboxPin A = cell.getPinByName("a");
+        Rsyn::SandboxPin B = cell.getPinByName("b");
+        Rsyn::SandboxPin O = cell.getPinByName("o");
 
-	IN1.connect(n1);
-	A.connect(n1);
+        Rsyn::SandboxNet n1 = sandbox.createNet("n1");
+        Rsyn::SandboxNet n2 = sandbox.createNet("n2");
+        Rsyn::SandboxNet n3 = sandbox.createNet("n3");
 
-	IN2.connect(n2);
-	B.connect(n2);
+        IN1.connect(n1);
+        A.connect(n1);
 
-	OUT.connect(n3);
-	O.connect(n3);
+        IN2.connect(n2);
+        B.connect(n2);
 
-	std:cout << "Sandobox...\n";
+        OUT.connect(n3);
+        O.connect(n3);
 
-	for (Rsyn::SandboxPort port : sandbox.allPorts()) {
-		std::cout << "Port: " << port.getName() << "\n";
-	} // end for
+std:
+        cout << "Sandobox...\n";
 
-	for (Rsyn::SandboxInstance instance : sandbox.allInstances()) {
-		std::cout << "Instance: " << instance.getName() << " " << attr[instance] << "\n";
-	} // end for
+        for (Rsyn::SandboxPort port : sandbox.allPorts()) {
+                std::cout << "Port: " << port.getName() << "\n";
+        }  // end for
 
-	for (Rsyn::SandboxNet net : sandbox.allNets()) {
-		std::cout << "Net: " << net.getName() << "\n";
-	} // end for
+        for (Rsyn::SandboxInstance instance : sandbox.allInstances()) {
+                std::cout << "Instance: " << instance.getName() << " "
+                          << attr[instance] << "\n";
+        }  // end for
 
-	Rsyn::SandboxTimer timer;
-	timer.init(session, sandbox);
-	timer.setOutputRequiredTime(op1, Rsyn::LATE, Rsyn::EdgeArray<Number>(0, 0));
-	timer.updateTimingFull();
-	
-	std::cout << "WNS: " << timer.getWns(Rsyn::LATE) << "\n";
-	std::cout << "TNS: " << timer.getTns(Rsyn::LATE) << "\n";
-} // end method
+        for (Rsyn::SandboxNet net : sandbox.allNets()) {
+                std::cout << "Net: " << net.getName() << "\n";
+        }  // end for
 
-} // end namescape
+        Rsyn::SandboxTimer timer;
+        timer.init(session, sandbox);
+        timer.setOutputRequiredTime(op1, Rsyn::LATE,
+                                    Rsyn::EdgeArray<Number>(0, 0));
+        timer.updateTimingFull();
+
+        std::cout << "WNS: " << timer.getWns(Rsyn::LATE) << "\n";
+        std::cout << "TNS: " << timer.getTns(Rsyn::LATE) << "\n";
+}  // end method
+
+}  // end namescape

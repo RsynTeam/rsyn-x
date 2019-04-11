@@ -12,33 +12,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef MEMORY_USAGE_H
-#define	MEMORY_USAGE_H
+#define MEMORY_USAGE_H
 
 #ifdef __linux__
 #include <sys/time.h>
 #include <sys/resource.h>
 
 class MemoryUsage {
-public:	
-	// Retrieve memory usage in MB.
-	static int getMemoryUsage() {
-		struct rusage usage; 
-		int ret; 
-		ret = getrusage(RUSAGE_SELF, &usage);
-		return usage.ru_maxrss / 1000;		
-	} // end method
-}; // end class
+       public:
+        // Retrieve memory usage in MB.
+        static int getMemoryUsage() {
+                struct rusage usage;
+                int ret;
+                ret = getrusage(RUSAGE_SELF, &usage);
+                return usage.ru_maxrss / 1000;
+        }  // end method
+};         // end class
 
 #else
 
 class MemoryUsage {
-public:
-	static int getMemoryUsage() { return 0; }
-}; // end class
+       public:
+        static int getMemoryUsage() { return 0; }
+};  // end class
 
 #endif
 
 #endif
-

@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalSpecialWireData.h
  * Author: jucemar
  *
@@ -32,14 +32,13 @@
 namespace Rsyn {
 
 class PhysicalSpecialWireData : public PhysicalObject {
-public:
-	Rsyn::PhysicalLayer clsPhysicalLayer;
-	DBU clsWireWidth;
-	std::vector<PhysicalRoutingPoint> clsRoutingPoints;
-	PhysicalSpecialWireData() = default;
-}; // end class 
+       public:
+        Rsyn::PhysicalLayer clsPhysicalLayer;
+        DBU clsWireWidth;
+        std::vector<PhysicalRoutingPoint> clsRoutingPoints;
+        PhysicalSpecialWireData() = default;
+};  // end class
 
-} // end namespace 
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALSPECIALWIREDATA_H */
-

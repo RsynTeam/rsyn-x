@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RANDOM_PLACEMENT_EXAMPLE_OPTO_H
 #define RANDOM_PLACEMENT_EXAMPLE_OPTO_H
 
@@ -28,20 +28,18 @@
 namespace ICCAD15 {
 
 class RandomPlacementExample : public Rsyn::Process {
-private:
-	Rsyn::Session session;
-	Rsyn::Timer *timer;
-	Rsyn::Design design;
-	Rsyn::Module module;
-	Rsyn::PhysicalDesign phDesign;
+       private:
+        Rsyn::Session session;
+        Rsyn::Timer *timer;
+        Rsyn::Design design;
+        Rsyn::Module module;
+        Rsyn::PhysicalDesign phDesign;
 
-	void runRandomPlacement();
-	
-public:
-	
-	virtual bool run(const Rsyn::Json &params);
-	
-}; // end class
+        void runRandomPlacement();
 
+       public:
+        virtual bool run(const Rsyn::Json &params);
+
+};  // end class
 }
 #endif

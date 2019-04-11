@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalSpacing.h
  * Author: jucemar
  *
@@ -32,26 +32,30 @@
 namespace Rsyn {
 
 class PhysicalSpacing : public Proxy<PhysicalSpacingData> {
-	friend class PhysicalDesign;
-	friend class PhysicalDesignData;
-	RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
-protected:
-	//! @brief Constructs a Rsyn::PhysicalSpacing object with a pointer to Rsyn::PhysicalSpacingData.
-	PhysicalSpacing(PhysicalSpacingData * data) : Proxy(data) {}
-public:
-	//! @brief Constructs a Rsyn::PhysicalSpacing object with a null pointer to Rsyn::PhysicalSpacingData.
-	PhysicalSpacing() : Proxy(nullptr) {}
-	//! @brief Constructs a Rsyn::PhysicalSpacing object with a null pointer to Rsyn::PhysicalSpacingData.
-	PhysicalSpacing(std::nullptr_t) : Proxy(nullptr) {}
-	//! @brief Returns the first Rsyn::PhysicalLayer object.
-	Rsyn::PhysicalLayer getLayer1() const;
-	//! @brief Returns the second Rsyn::PhysicalLayer object.
-	Rsyn::PhysicalLayer getLayer2() const;
-	//! @brief Returns the distance in DBU 
-	DBU getDistance() const;
-}; // end class 
+        friend class PhysicalDesign;
+        friend class PhysicalDesignData;
+        RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 
-} // end namespace 
+       protected:
+        //! @brief Constructs a Rsyn::PhysicalSpacing object with a pointer to
+        //! Rsyn::PhysicalSpacingData.
+        PhysicalSpacing(PhysicalSpacingData* data) : Proxy(data) {}
+
+       public:
+        //! @brief Constructs a Rsyn::PhysicalSpacing object with a null pointer
+        //! to Rsyn::PhysicalSpacingData.
+        PhysicalSpacing() : Proxy(nullptr) {}
+        //! @brief Constructs a Rsyn::PhysicalSpacing object with a null pointer
+        //! to Rsyn::PhysicalSpacingData.
+        PhysicalSpacing(std::nullptr_t) : Proxy(nullptr) {}
+        //! @brief Returns the first Rsyn::PhysicalLayer object.
+        Rsyn::PhysicalLayer getLayer1() const;
+        //! @brief Returns the second Rsyn::PhysicalLayer object.
+        Rsyn::PhysicalLayer getLayer2() const;
+        //! @brief Returns the distance in DBU
+        DBU getDistance() const;
+};  // end class
+
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALSPACING_H */
-

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_WIRE_GRAPHICS_ITEM_H
 #define RSYN_WIRE_GRAPHICS_ITEM_H
 
@@ -26,28 +26,32 @@
 namespace Rsyn {
 
 class WireGraphicsItem : public NetGraphicsItem {
-public:
-	WireGraphicsItem(Rsyn::Net net, const Rsyn::PhysicalRoutingWire &wire);
+       public:
+        WireGraphicsItem(Rsyn::Net net, const Rsyn::PhysicalRoutingWire &wire);
 
-	virtual Rsyn::PhysicalLayer getPhysicalLayer() const override {return clsPhysicalLayer;}
+        virtual Rsyn::PhysicalLayer getPhysicalLayer() const override {
+                return clsPhysicalLayer;
+        }
 
-	virtual void render(GraphicsScene *scene, QPainter *painter, const float lod, const QRectF &exposedRect) override;
+        virtual void render(GraphicsScene *scene, QPainter *painter,
+                            const float lod,
+                            const QRectF &exposedRect) override;
 
-	virtual QRect getBoundingRect() const override {
-		return clsPolygon.boundingRect().toRect();
-	} // end method
+        virtual QRect getBoundingRect() const override {
+                return clsPolygon.boundingRect().toRect();
+        }  // end method
 
-	virtual QPainterPath getOutline() const {
-		QPainterPath outline;
-		outline.addPolygon(clsPolygon);
-		return outline;
-	} // end method
-    
-private:
-	Rsyn::PhysicalLayer clsPhysicalLayer;
-	QPolygonF clsPolygon;
-}; // end class
+        virtual QPainterPath getOutline() const {
+                QPainterPath outline;
+                outline.addPolygon(clsPolygon);
+                return outline;
+        }  // end method
 
-} // end namespace
+       private:
+        Rsyn::PhysicalLayer clsPhysicalLayer;
+        QPolygonF clsPolygon;
+};  // end class
+
+}  // end namespace
 
 #endif

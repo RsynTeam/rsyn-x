@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "StandardCell.h"
 #include "gui/graphics/LayoutGraphicsScene.h"
 #include "gui/QtUtils.h"
@@ -23,35 +23,41 @@
 
 namespace Rsyn {
 
-void
-StandardCellGraphicsItem::render(GraphicsScene *scene, QPainter *painter, const float lod, const QRectF &exposedRect) {
-	Rsyn::Cell cell = getCell();
+void StandardCellGraphicsItem::render(GraphicsScene *scene, QPainter *painter,
+                                      const float lod,
+                                      const QRectF &exposedRect) {
+        Rsyn::Cell cell = getCell();
 
-	LayoutGraphicsScene *layoutScene = (LayoutGraphicsScene *) scene;
-	if (layoutScene->isColoringEnabled()) {
-		painter->setPen(QtUtils::convert(layoutScene->getColor((Instance)getCell())));
-		painter->fillRect(cell.getX(), cell.getY(), cell.getWidth(), cell.getHeight(),
-				QtUtils::convert(layoutScene->getColor((Instance)getCell())));
-	} // end if
+        LayoutGraphicsScene *layoutScene = (LayoutGraphicsScene *)scene;
+        if (layoutScene->isColoringEnabled()) {
+                painter->setPen(QtUtils::convert(
+                    layoutScene->getColor((Instance)getCell())));
+                painter->fillRect(
+                    cell.getX(), cell.getY(), cell.getWidth(), cell.getHeight(),
+                    QtUtils::convert(
+                        layoutScene->getColor((Instance)getCell())));
+        }  // end if
 
-	if (cell.getOrientation() == Rsyn::ORIENTATION_E  || 
-			cell.getOrientation() == Rsyn::ORIENTATION_FE ||
-			cell.getOrientation() == Rsyn::ORIENTATION_W  ||
-			cell.getOrientation() == Rsyn::ORIENTATION_FW ) {
-		painter->drawRect(cell.getX(), cell.getY(), cell.getHeight(), cell.getWidth());
-	} else {
-		painter->drawRect(cell.getX(), cell.getY(), cell.getWidth(), cell.getHeight());
-	}
+        if (cell.getOrientation() == Rsyn::ORIENTATION_E ||
+            cell.getOrientation() == Rsyn::ORIENTATION_FE ||
+            cell.getOrientation() == Rsyn::ORIENTATION_W ||
+            cell.getOrientation() == Rsyn::ORIENTATION_FW) {
+                painter->drawRect(cell.getX(), cell.getY(), cell.getHeight(),
+                                  cell.getWidth());
+        } else {
+                painter->drawRect(cell.getX(), cell.getY(), cell.getWidth(),
+                                  cell.getHeight());
+        }
 
-	// Draw pins.
-	if (lod > 50) {
-		renderPins(painter);
-	} // end if
-	
-	// Draw name.
-	if (lod > 100) {
-		renderName(painter, exposedRect);
-	} // end method
-} // end method
+        // Draw pins.
+        if (lod > 50) {
+                renderPins(painter);
+        }  // end if
 
-} // end namespace
+        // Draw name.
+        if (lod > 100) {
+                renderName(painter, exposedRect);
+        }  // end method
+}  // end method
+
+}  // end namespace

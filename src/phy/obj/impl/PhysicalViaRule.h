@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/* 
+/*
  * File:   PhysicalViaRule.h
  * Author: jucemar
  *
@@ -23,28 +23,28 @@
 namespace Rsyn {
 
 inline int PhysicalViaRule::getRelativeIndex() const {
-	return data->clsRelativeIndex;
-} // end method 
+        return data->clsRelativeIndex;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline Rsyn::PhysicalLayer PhysicalViaRule::getLayer(const Rsyn::ViaLevel level) const {
-	return Rsyn::PhysicalLayer(data->clsLayers[level]);
-} // end method 
+inline Rsyn::PhysicalLayer PhysicalViaRule::getLayer(
+    const Rsyn::ViaLevel level) const {
+        return Rsyn::PhysicalLayer(data->clsLayers[level]);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline Rsyn::PhysicalLayerDirection PhysicalViaRule::getLayerDirection(const Rsyn::ViaLevel level) const {
-	return data->clsLayerDirection[level];
-} // end method 
+inline Rsyn::PhysicalLayerDirection PhysicalViaRule::getLayerDirection(
+    const Rsyn::ViaLevel level) const {
+        return data->clsLayerDirection[level];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<Rsyn::PhysicalVia> & PhysicalViaRule::allVias() const {
-	return data->clsVias;
-} // end method 
+inline const std::vector<Rsyn::PhysicalVia>& PhysicalViaRule::allVias() const {
+        return data->clsVias;
+}  // end method
 
 // -----------------------------------------------------------------------------
-
 }
-

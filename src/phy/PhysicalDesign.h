@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_PHYSICAL_DESIGN_H
 #define RSYN_PHYSICAL_DESIGN_H
 
@@ -44,9 +44,11 @@
 
 namespace Rsyn {
 
-// std::numeric_limts<PhysicalIndex>::max() reserved to invalid initialization object.
+// std::numeric_limts<PhysicalIndex>::max() reserved to invalid initialization
+// object.
 typedef std::uint32_t PhysicalIndex;
-static PhysicalIndex INVALID_PHYSICAL_INDEX = std::numeric_limits<PhysicalIndex>::max();
+static PhysicalIndex INVALID_PHYSICAL_INDEX =
+    std::numeric_limits<PhysicalIndex>::max();
 
 class PhysicalObject;
 
@@ -112,13 +114,13 @@ class LayerViaManager;
 class PhysicalDesign;
 
 class PhysicalAttributeInitializer;
-template<typename DefaultPhysicalValueType>
+template <typename DefaultPhysicalValueType>
 class PhysicalAttributeInitializerWithDefaultValue;
 
 class PhysicalDesignObserver;
 class PhysicalRouting;
 
-} // end namespace 
+}  // end namespace
 
 // Object's Declarations (Proxies)
 #include "phy/obj/decl/PhysicalRoutingPoint.h"
@@ -226,4 +228,3 @@ class PhysicalRouting;
 #include "phy/obj/impl/PhysicalDesign.h"
 
 #endif /* PHYSICALDESIGN_PHYSICALDESIGN__H */
-

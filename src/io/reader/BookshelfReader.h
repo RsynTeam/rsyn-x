@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   BookshelfReader.h
  * Author: jucemar
  *
@@ -35,22 +35,22 @@
 namespace Rsyn {
 
 class BookshelfReader : public Reader {
-protected:
-	Rsyn::Session session;
-	Rsyn::Design clsDesign;
-	Rsyn::Module clsModule;
+       protected:
+        Rsyn::Session session;
+        Rsyn::Design clsDesign;
+        Rsyn::Module clsModule;
 
-	std::string optionBenchmark;
-	std::string path;
-	double optionTargetUtilization;
-public:
-	BookshelfReader() {}
-	BookshelfReader(const BookshelfReader& orig) {}
-	virtual ~BookshelfReader() {}
-	virtual bool load(const Rsyn::Json &params) override;
-}; // end class 
+        std::string optionBenchmark;
+        std::string path;
+        double optionTargetUtilization;
 
-} // end namespace 
+       public:
+        BookshelfReader() {}
+        BookshelfReader(const BookshelfReader& orig) {}
+        virtual ~BookshelfReader() {}
+        virtual bool load(const Rsyn::Json& params) override;
+};  // end class
+
+}  // end namespace
 
 #endif /* RSYN_BOOKSHELFREADER_H */
-

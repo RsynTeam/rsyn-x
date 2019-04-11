@@ -12,34 +12,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef DEFCONTROLPARSER_H
-#define	DEFCONTROLPARSER_H
+#define DEFCONTROLPARSER_H
 
 #include <string>
-	using std::string;
+using std::string;
 #include <iostream>
-	using std::cout;
+using std::cout;
 #include <vector>
-	using std::vector;
+using std::vector;
 
 #include "io/legacy/PlacerInternals.h"
 
 //! DEF files must be parsed after LEF files
-	
+
 #include "phy/util/DefDescriptors.h"
 
 class DEFControlParser {
-public:
-	DEFControlParser();
-	void parseDEF(const std::string &filename, DefDscp &defDscp) ;
-	void writeDEF(const std::string &filename, const std::string designName, const std::vector<DefComponentDscp> &components);
-	void writeFullDEF(const std::string &filename, const DefDscp & defDscp);
-	virtual ~DEFControlParser();
-	
-	static std::string unescape(const std::string &str);
-	
-}; // end class
+       public:
+        DEFControlParser();
+        void parseDEF(const std::string &filename, DefDscp &defDscp);
+        void writeDEF(const std::string &filename, const std::string designName,
+                      const std::vector<DefComponentDscp> &components);
+        void writeFullDEF(const std::string &filename, const DefDscp &defDscp);
+        virtual ~DEFControlParser();
 
-#endif	/* DEFCONTROLPARSER_H */
+        static std::string unescape(const std::string &str);
 
+};  // end class
+
+#endif /* DEFCONTROLPARSER_H */

@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalSiteData.h
  * Author: jucemar
  *
@@ -32,15 +32,15 @@
 namespace Rsyn {
 
 class PhysicalSiteData : public PhysicalObject {
-public:
-	Rsyn::PhysicalSiteClass clsSiteClass = INVALID_SITECLASS;
-	DBUxy clsSize;
-	std::string clsSiteName = Rsyn::getPhysicalInvalidName();
-	Rsyn::PhysicalSymmetry clsSymmetry = Rsyn::PhysicalSymmetry::SYMMETRY_INVALID;
-	PhysicalSiteData() = default;
-}; // end namespace 
+       public:
+        Rsyn::PhysicalSiteClass clsSiteClass = INVALID_SITECLASS;
+        DBUxy clsSize;
+        std::string clsSiteName = Rsyn::getPhysicalInvalidName();
+        Rsyn::PhysicalSymmetry clsSymmetry =
+            Rsyn::PhysicalSymmetry::SYMMETRY_INVALID;
+        PhysicalSiteData() = default;
+};  // end namespace
 
-} // end namespace  
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALSITEDATA_H */
-

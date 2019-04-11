@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalPort.h
  * Author: jucemar
  *
@@ -30,23 +30,21 @@ namespace Rsyn {
 // -----------------------------------------------------------------------------
 
 inline PhysicalLayer PhysicalPort::getLayer() const {
-	return data->clsPortLayer;
-} // end method 
+        return data->clsPortLayer;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline bool PhysicalPort::hasLayer() const {
-	return data->clsPortLayer != nullptr;
-} // end method 
+        return data->clsPortLayer != nullptr;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline PhysicalOrientation PhysicalPort::getOrientation() const {
-	return getInstance().getOrientation();
-} // end method 
+        return getInstance().getOrientation();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace 
-
-
+}  // end namespace

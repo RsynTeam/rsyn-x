@@ -12,45 +12,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
-inline
-const std::string &
-Cell::getLibraryCellName() const {
-	return data->lcell->name;
-} // end method
+inline const std::string &Cell::getLibraryCellName() const {
+        return data->lcell->name;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-LibraryCell
-Cell::getLibraryCell() const {
-	return data->lcell;
-} // end method
+inline LibraryCell Cell::getLibraryCell() const {
+        return data->lcell;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-Pin
-Cell::getPinByLibraryPin(const LibraryPin lpin) const {
-	return data->pins[lpin.data->index];
-} // end method
-	
-// -----------------------------------------------------------------------------
-
-inline
-void 
-Cell::remap(LibraryCell libraryCell) {
-	getDesign().remap(*this, libraryCell);
-} // end method
+inline Pin Cell::getPinByLibraryPin(const LibraryPin lpin) const {
+        return data->pins[lpin.data->index];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-void 
-Cell::remap(const std::string &libraryCellName) {
-	getDesign().remap(*this, libraryCellName);
-} // end method
+inline void Cell::remap(LibraryCell libraryCell) {
+        getDesign().remap(*this, libraryCell);
+}  // end method
 
-} // end namespace
+// -----------------------------------------------------------------------------
+
+inline void Cell::remap(const std::string &libraryCellName) {
+        getDesign().remap(*this, libraryCellName);
+}  // end method
+
+}  // end namespace

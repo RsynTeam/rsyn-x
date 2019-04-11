@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_ROUTING_TOPOLOGY_H
 #define RSYN_ROUTING_TOPOLOGY_H
 
@@ -36,169 +36,161 @@ using std::queue;
 namespace Rsyn {
 
 class RoutingTopologyLoopException : Exception {
-public:
-
-	RoutingTopologyLoopException() : Exception("RoutingTopology: Loop detected.") {
-	}
+       public:
+        RoutingTopologyLoopException()
+            : Exception("RoutingTopology: Loop detected.") {}
 };
 
 class RoutingTopologyOtherNodeNotFound : Exception {
-public:
-
-	RoutingTopologyOtherNodeNotFound() : Exception("RoutingTopology: Other node not found") {
-	}
+       public:
+        RoutingTopologyOtherNodeNotFound()
+            : Exception("RoutingTopology: Other node not found") {}
 };
 
 class RoutingTopologyNodeNotFoundException : Exception {
-public:
-
-	RoutingTopologyNodeNotFoundException() : Exception("RoutingTopology: Node not found in routing topology") {
-	}
+       public:
+        RoutingTopologyNodeNotFoundException()
+            : Exception("RoutingTopology: Node not found in routing topology") {
+        }
 };
 
-template<class NameType>
+template <class NameType>
 class RoutingTopologyDescriptor {
-public:
+       public:
+        struct Node {
+                Node() { propIndex = -1; }  // end constructor
 
-	struct Node {
-		Node() {
-			propIndex = -1;
-		} // end constructor
+                int propIndex;
+                NameType propName;
+                std::vector<int> propSegments;
+                DBUxy propPosition;
+                Rsyn::Pin propPin;
+        };  // end struct
 
-		int propIndex;
-		NameType propName;
-		std::vector<int> propSegments;
-		DBUxy propPosition;
-		Rsyn::Pin propPin;
-	}; // end struct
+        struct Segment {
+                Segment() {
+                        propNode0 = -1;
+                        propNode1 = -1;
+                        propRoutingLayer = -1;
+                }  // end constructor
 
-	struct Segment {
-		Segment() {
-			propNode0 = -1;
-			propNode1 = -1;
-			propRoutingLayer = -1;
-		} // end constructor
+                int propNode0;
+                int propNode1;
+                int propRoutingLayer;
 
-		int propNode0;
-		int propNode1;
-		int propRoutingLayer;
+                int getOtherNode(const int n) const {
+                        if (n == propNode0)
+                                return propNode1;
+                        else if (n == propNode1)
+                                return propNode0;
+                        else
+                                throw RoutingTopologyOtherNodeNotFound();
+                }  // end method
 
-		int getOtherNode(const int n) const {
-			if (n == propNode0)
-				return propNode1;
-			else if (n == propNode1)
-				return propNode0;
-			else throw RoutingTopologyOtherNodeNotFound();
-		} // end method
+        };  // end struct
 
-	}; // end struct
+       private:
+        std::map<NameType, int> clsNodeMap;
 
-private:
-	std::map<NameType, int> clsNodeMap;
+        std::vector<Node> clsNodes;
+        std::vector<Segment> clsSegments;
 
-	std::vector<Node> clsNodes;
-	std::vector<Segment> clsSegments;
+       public:
+        RoutingTopologyDescriptor() { clear(); }  // end constructor
 
-public:
+        void clear() {
+                clsNodeMap.clear();
+                clsNodes.clear();
+                clsSegments.clear();
+        }  // end method
 
-	RoutingTopologyDescriptor() {
-		clear();
-	} // end constructor
+        int createNode(const NameType &name, const DBUxy pos = DBUxy(0, 0),
+                       Rsyn::Pin attachedPin = nullptr) {
+                typename std::map<NameType, int>::iterator it =
+                    clsNodeMap.find(name);
+                if (it != clsNodeMap.end()) {
+                        return it->second;
+                } else {
+                        const int index = clsNodes.size();
+                        clsNodes.resize(clsNodes.size() + 1);
+                        clsNodes.back().propIndex = index;
+                        clsNodes.back().propName = name;
+                        clsNodes.back().propPosition = pos;
+                        clsNodes.back().propPin = attachedPin;
+                        clsNodeMap[name] = index;
+                        return index;
+                }  // end if
+        }          // end method
 
-	void clear() {
-		clsNodeMap.clear();
-		clsNodes.clear();
-		clsSegments.clear();
-	} // end method
+        void addSegment(const NameType &sourceNode,
+                        const NameType &targetNode) {
+                const int index = clsSegments.size();
+                clsSegments.resize(clsSegments.size() + 1);
 
-	int createNode(const NameType &name, const DBUxy pos = DBUxy(0, 0), Rsyn::Pin attachedPin = nullptr) {
-		typename std::map<NameType, int>::iterator it = clsNodeMap.find(name);
-		if (it != clsNodeMap.end()) {
-			return it->second;
-		} else {
-			const int index = clsNodes.size();
-			clsNodes.resize(clsNodes.size() + 1);
-			clsNodes.back().propIndex = index;
-			clsNodes.back().propName = name;
-			clsNodes.back().propPosition = pos;
-			clsNodes.back().propPin = attachedPin;
-			clsNodeMap[name] = index;
-			return index;
-		} // end if
-	} // end method
+                Segment &r = clsSegments.back();
+                r.propNode0 = createNode(sourceNode);
+                r.propNode1 = createNode(targetNode);
 
-	void addSegment(const NameType &sourceNode, const NameType &targetNode) {
-		const int index = clsSegments.size();
-		clsSegments.resize(clsSegments.size() + 1);
+                clsNodes[r.propNode0].propSegments.push_back(index);
+                clsNodes[r.propNode1].propSegments.push_back(index);
+        }  // end method
 
-		Segment &r = clsSegments.back();
-		r.propNode0 = createNode(sourceNode);
-		r.propNode1 = createNode(targetNode);
+        int getNumNodes() const { return clsNodes.size(); }
 
-		clsNodes[r.propNode0].propSegments.push_back(index);
-		clsNodes[r.propNode1].propSegments.push_back(index);
-	} // end method
+        int getNumSegments() const { return clsSegments.size(); }
 
-	int getNumNodes() const {
-		return clsNodes.size();
-	}
+        const Node &getNode(const int index) const { return clsNodes[index]; }
 
-	int getNumSegments() const {
-		return clsSegments.size();
-	}
+        const Segment &getSegment(const int index) const {
+                return clsSegments[index];
+        }
 
-	const Node &getNode(const int index) const {
-		return clsNodes[index];
-	}
+        int findNode(const NameType &name) const {
+                typename map<NameType, int>::const_iterator it =
+                    clsNodeMap.find(name);
+                return (it != clsNodeMap.end() ? it->second : -1);
+        }  // end method
 
-	const Segment &getSegment(const int index) const {
-		return clsSegments[index];
-	}
+        int findNodeOrException(const NameType &name) {
+                typename std::map<NameType, int>::const_iterator it =
+                    clsNodeMap.find(name);
 
-	int findNode(const NameType &name) const {
-		typename map<NameType, int>::const_iterator it = clsNodeMap.find(name);
-		return ( it != clsNodeMap.end() ? it->second : -1);
-	} // end method
+                if (it == clsNodeMap.end())
+                        throw RoutingTopologyNodeNotFoundException();
+                return it->second;
+        }  // end method
 
-	int findNodeOrException(const NameType &name) {
-		typename std::map<NameType, int>::const_iterator it = clsNodeMap.find(name);
+        DBUxy getNodePosition(const NameType nodeName) const {
+                return clsNodes[findNodeOrException(nodeName)].propPosition;
+        }  // end method
 
-		if (it == clsNodeMap.end())
-			throw RoutingTopologyNodeNotFoundException();
-		return it->second;
-	} // end method	
+        Rsyn::Pin getAttachedPin(const NameType nodeName) const {
+                return clsNodes[findNodeOrException(nodeName)].propPin;
+        }  // end method
 
-	DBUxy getNodePosition(const NameType nodeName) const {
-		return clsNodes[findNodeOrException(nodeName)].propPosition;
-	} // end method
+        void setNodePosition(const NameType nodeName, const DBUxy pos) {
+                clsNodes[findNodeOrException(nodeName)].propPosition = pos;
+        }  // end method
 
-	Rsyn::Pin getAttachedPin(const NameType nodeName) const {
-		return clsNodes[findNodeOrException(nodeName)].propPin;
-	} // end method
+        void setNodePosition(const NameType nodeName, const DBU x,
+                             const DBU y) {
+                clsNodes[findNodeOrException(nodeName)].propPosition =
+                    DBUxy(x, y);
+        }  // end method
 
-	void setNodePosition(const NameType nodeName, const DBUxy pos) {
-		clsNodes[findNodeOrException(nodeName)].propPosition = pos;
-	} // end method
+        void setAttachedPin(const NameType nodeName, Rsyn::Pin pin) {
+                clsNodes[findNodeOrException(nodeName)].propPin = pin;
+        }  // end method
 
-	void setNodePosition(const NameType nodeName, const DBU x, const DBU y) {
-		clsNodes[findNodeOrException(nodeName)].propPosition = DBUxy(x, y);
-	} // end method
+        const std::vector<Node> &allNodes() const {
+                return clsNodes;
+        }  // end method
 
-	void setAttachedPin(const NameType nodeName, Rsyn::Pin pin) {
-		clsNodes[findNodeOrException(nodeName)].propPin = pin;
-	} // end method
+        const std::vector<Segment> &allSegments() const {
+                return clsSegments;
+        }  // end method
+};         // end class
 
-	const std::vector<Node> &
-	allNodes() const {
-		return clsNodes;
-	} // end method
-
-	const std::vector<Segment> &
-	allSegments() const {
-		return clsSegments;
-	} // end method
-}; // end class
-
-} // end namespace
+}  // end namespace
 
 #endif

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef LEFCONTROLPARSER_H
 #define LEFCONTROLPARSER_H
 
@@ -23,14 +23,11 @@
 //! LEF file must be parsed first than DEF file
 
 class LEFControlParser {
-public:
+       public:
+        LEFControlParser() {}
 
-	LEFControlParser() {
-	}
-
-	virtual ~LEFControlParser() = default;
-	void parseLEF(const std::string &filename, LefDscp & dscp);
-}; // end class
+        virtual ~LEFControlParser() = default;
+        void parseLEF(const std::string &filename, LefDscp &dscp);
+};  // end class
 
 #endif /* LEFCONTROLPARSER_H */
-

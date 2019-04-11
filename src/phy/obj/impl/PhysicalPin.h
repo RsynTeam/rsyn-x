@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalPin.h
  * Author: jucemar
  *
@@ -29,57 +29,58 @@
 namespace Rsyn {
 
 inline DBUxy PhysicalPin::getDisplacement() const {
-	return data->clsDisplacement;
-} // end method 
+        return data->clsDisplacement;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalPin::getDisplacement(const Dimension dim) {
-	return data->clsDisplacement[dim];
-} // end method 
+        return data->clsDisplacement[dim];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline std::vector<PhysicalPinGeometry> & PhysicalPin::allPinGeometries() {
-	return data->clsPhysicalPinGeometries;
-} // end method 
+inline std::vector<PhysicalPinGeometry>& PhysicalPin::allPinGeometries() {
+        return data->clsPhysicalPinGeometries;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<PhysicalPinGeometry> & PhysicalPin::allPinGeometries() const {
-	return data->clsPhysicalPinGeometries;
-} // end method 
+inline const std::vector<PhysicalPinGeometry>& PhysicalPin::allPinGeometries()
+    const {
+        return data->clsPhysicalPinGeometries;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline std::size_t PhysicalPin::getNumPinGeometries() const {
-	return data->clsPhysicalPinGeometries.size();
-} // end method 
+        return data->clsPhysicalPinGeometries.size();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline bool PhysicalPin::hasPinGeometries() const {
-	return !data->clsPhysicalPinGeometries.empty();
-} // end method 
+        return !data->clsPhysicalPinGeometries.empty();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline bool PhysicalPin::isEmptyPinGeometries() const {
-	return data->clsPhysicalPinGeometries.empty();
-} // end method 
+        return data->clsPhysicalPinGeometries.empty();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline PhysicalPinDirection PhysicalPin::getDirection() const {
-	return data->clsDirection;
-} // end method 
+        return data->clsDirection;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline const Bounds & PhysicalPin::getLayerBounds() const {
-	return data->clsLayerBound;
-} // end method 
+inline const Bounds& PhysicalPin::getLayerBounds() const {
+        return data->clsLayerBound;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace 
+}  // end namespace

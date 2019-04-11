@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalRegion.h
  * Author: jucemar
  *
@@ -29,28 +29,28 @@ namespace Rsyn {
 
 // -----------------------------------------------------------------------------
 
-inline const std::string & PhysicalRegion::getName() const {
-	return data->clsName;
-} // end method 
+inline const std::string& PhysicalRegion::getName() const {
+        return data->clsName;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline RegionType PhysicalRegion::getType() const {
-	return data->clsType;
-} // end method 
+        return data->clsType;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<Bounds> & PhysicalRegion::allBounds() const {
-	return data->clsBounds;
-} // end method 
+inline const std::vector<Bounds>& PhysicalRegion::allBounds() const {
+        return data->clsBounds;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline std::size_t PhysicalRegion::getNumBounds() const {
-	return data->clsBounds.size();
-} // end method 
+        return data->clsBounds.size();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace 
+}  // end namespace

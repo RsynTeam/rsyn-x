@@ -12,54 +12,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
-inline
-Cell
-SandboxCell::getRelated() const {
-	Rsyn::Instance instance = SandboxInstance::getRelated();
-	return instance? instance.asCell() : nullptr;
-} // end method
+inline Cell SandboxCell::getRelated() const {
+        Rsyn::Instance instance = SandboxInstance::getRelated();
+        return instance ? instance.asCell() : nullptr;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-const std::string &
-SandboxCell::getLibraryCellName() const {
-	return data->lcell->name;
-} // end method
+inline const std::string &SandboxCell::getLibraryCellName() const {
+        return data->lcell->name;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-LibraryCell
-SandboxCell::getLibraryCell() const {
-	return data->lcell;
-} // end method
+inline LibraryCell SandboxCell::getLibraryCell() const {
+        return data->lcell;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-SandboxPin
-SandboxCell::getPinByLibraryPin(const LibraryPin lpin) const {
-	return data->pins[lpin.data->index];
-} // end method
+inline SandboxPin SandboxCell::getPinByLibraryPin(const LibraryPin lpin) const {
+        return data->pins[lpin.data->index];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-void
-SandboxCell::remap(LibraryCell libraryCell) {
-	getSandbox().remap(*this, libraryCell);
-} // end method
+inline void SandboxCell::remap(LibraryCell libraryCell) {
+        getSandbox().remap(*this, libraryCell);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-void
-SandboxCell::remap(const std::string &libraryCellName) {
-	getSandbox().remap(*this, libraryCellName);
-} // end method
+inline void SandboxCell::remap(const std::string &libraryCellName) {
+        getSandbox().remap(*this, libraryCellName);
+}  // end method
 
-} // end namespace
+}  // end namespace

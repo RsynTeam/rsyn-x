@@ -12,37 +12,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 struct PinData : ObjectData {
-	// #> bit pack
-	int index : 20;           // index of this pin in the library cell.
-	Direction direction : 3;  // direction of this pin
-	InstanceType type : 3;    // the type of instance that this pin belongs to
-	bool boundary : 1;        // Is this pin a port? Pins belonging to both
-	                          // Rsyn::PORT and Rsyn::MODULE are marked as boundary
-	                          // pins.
-	// <#
-	
-	int sign;
-	
-	Instance instance;
-	Net net;
-	std::vector<Arc> arcs[NUM_TRAVERSE_TYPES];
-	TopologicalIndex order; // topological ordering
+        // #> bit pack
+        int index : 20;           // index of this pin in the library cell.
+        Direction direction : 3;  // direction of this pin
+        InstanceType type : 3;  // the type of instance that this pin belongs to
+        bool boundary : 1;      // Is this pin a port? Pins belonging to both
+        // Rsyn::PORT and Rsyn::MODULE are marked as boundary
+        // pins.
+        // <#
 
-	PinData() : 
-		index(-1),
-		direction(UNKNOWN_DIRECTION),
-		type(UNKNOWN_INSTANCE_TYPE),
-		boundary(false),
-		sign(0),
-		instance(nullptr), 
-		net(nullptr), 
-		
-		order(std::numeric_limits<TopologicalIndex>::quiet_NaN()) {
-	} // end constructor
-}; // end struct
+        int sign;
 
-} // end namespace
+        Instance instance;
+        Net net;
+        std::vector<Arc> arcs[NUM_TRAVERSE_TYPES];
+        TopologicalIndex order;  // topological ordering
+
+        PinData()
+            : index(-1),
+              direction(UNKNOWN_DIRECTION),
+              type(UNKNOWN_INSTANCE_TYPE),
+              boundary(false),
+              sign(0),
+              instance(nullptr),
+              net(nullptr),
+
+              order(std::numeric_limits<TopologicalIndex>::quiet_NaN()) {
+        }  // end constructor
+};         // end struct
+
+}  // end namespace

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_REPORT_H
 #define RSYN_REPORT_H
 
@@ -33,51 +33,53 @@ class LibraryCharacterizer;
 class RoutingEstimator;
 
 class Report : public Service {
-private:
-	
-	// Session
-	Session clsSession;
-	
-	// Circuitry
-	Rsyn::Design clsDesign;
-	Rsyn::Module clsModule;	
-	
-	// Physical Design
-	Rsyn::PhysicalDesign clsPhysicalDesign;
+       private:
+        // Session
+        Session clsSession;
 
-	// Services
-	Timer * clsTimer;
-	const LibraryCharacterizer * clsLibraryCharacterizer;
-	RoutingEstimator * clsRoutingEstimator;	
-		
-	// Auxiliary function for reporting objects.
-	void reportPin_Header();
-	void reportPin_Data(Rsyn::Pin pin, const TimingMode mode);
+        // Circuitry
+        Rsyn::Design clsDesign;
+        Rsyn::Module clsModule;
 
-	void reportArc_Header();
-	void reportArc_Data(Rsyn::Arc arc, const TimingMode mode);
-	
-	void reportPin_TimingInformation(Rsyn::Pin pin, const TimingMode mode);
-	void reportCell_TimingInformation(Rsyn::Cell cell, const TimingMode mode);
-	void reportNet_TimingInformation(Rsyn::Net net, const TimingMode mode);
+        // Physical Design
+        Rsyn::PhysicalDesign clsPhysicalDesign;
 
-public:
+        // Services
+        Timer *clsTimer;
+        const LibraryCharacterizer *clsLibraryCharacterizer;
+        RoutingEstimator *clsRoutingEstimator;
 
-	virtual void start(const Rsyn::Json &params);
-	virtual void stop();	
-	
-	//Design
-	void reportLogicDesign();
-	void reportPhysicalDesign();
-	
-	// Objects
-	void reportPin(Rsyn::Pin pin, const bool late = true, const bool early = false);
-	void reportCell(Rsyn::Cell cell, const bool late = true, const bool early = false);
-	void reportNet(Rsyn::Net net, const bool late = true, const bool early = false);
-	void reportTree(Rsyn::Net net);
-	
-}; // end class
+        // Auxiliary function for reporting objects.
+        void reportPin_Header();
+        void reportPin_Data(Rsyn::Pin pin, const TimingMode mode);
 
-} // end namespace
+        void reportArc_Header();
+        void reportArc_Data(Rsyn::Arc arc, const TimingMode mode);
+
+        void reportPin_TimingInformation(Rsyn::Pin pin, const TimingMode mode);
+        void reportCell_TimingInformation(Rsyn::Cell cell,
+                                          const TimingMode mode);
+        void reportNet_TimingInformation(Rsyn::Net net, const TimingMode mode);
+
+       public:
+        virtual void start(const Rsyn::Json &params);
+        virtual void stop();
+
+        // Design
+        void reportLogicDesign();
+        void reportPhysicalDesign();
+
+        // Objects
+        void reportPin(Rsyn::Pin pin, const bool late = true,
+                       const bool early = false);
+        void reportCell(Rsyn::Cell cell, const bool late = true,
+                        const bool early = false);
+        void reportNet(Rsyn::Net net, const bool late = true,
+                       const bool early = false);
+        void reportTree(Rsyn::Net net);
+
+};  // end class
+
+}  // end namespace
 
 #endif

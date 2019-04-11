@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalGroup.h
  * Author: jucemar
  *
@@ -32,35 +32,36 @@
 namespace Rsyn {
 
 class PhysicalGroup : public Proxy<PhysicalGroupData> {
-	friend class PhysicalDesign;
-	friend class PhysicalDesignData;
-	RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
-protected:
-	//! @brief Constructs a Rsyn::PhysicalGroup object with a pointer to Rsyn::PhysicalGroupData.
+        friend class PhysicalDesign;
+        friend class PhysicalDesignData;
+        RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 
-	PhysicalGroup(PhysicalGroupData * data) : Proxy(data) {
-	}
-public:
-	//! @brief Constructs a Rsyn::PhysicalGroup object with a null pointer to Rsyn::PhysicalGroupData.
+       protected:
+        //! @brief Constructs a Rsyn::PhysicalGroup object with a pointer to
+        //! Rsyn::PhysicalGroupData.
 
-	PhysicalGroup() : Proxy(nullptr) {
-	}
-	//! @brief Constructs a Rsyn::PhysicalGroup object with a null pointer to Rsyn::PhysicalGroupData.
+        PhysicalGroup(PhysicalGroupData* data) : Proxy(data) {}
 
-	PhysicalGroup(std::nullptr_t) : Proxy(nullptr) {
-	}
+       public:
+        //! @brief Constructs a Rsyn::PhysicalGroup object with a null pointer
+        //! to Rsyn::PhysicalGroupData.
 
-	//! @brief Returns region's name
-	const std::string & getName() const;
-	//! @brief Returns the PhysicalRegion object associated to PhysicalGroup.
-	Rsyn::PhysicalRegion getPhysicalRegion() const;
-	//! @brief Returns the constant reference to the Region patters vector.
-	const std::vector<std::string> & allPatterns() const;
+        PhysicalGroup() : Proxy(nullptr) {}
+        //! @brief Constructs a Rsyn::PhysicalGroup object with a null pointer
+        //! to Rsyn::PhysicalGroupData.
 
-}; // end class 
+        PhysicalGroup(std::nullptr_t) : Proxy(nullptr) {}
 
-} // end namespace 
+        //! @brief Returns region's name
+        const std::string& getName() const;
+        //! @brief Returns the PhysicalRegion object associated to
+        //! PhysicalGroup.
+        Rsyn::PhysicalRegion getPhysicalRegion() const;
+        //! @brief Returns the constant reference to the Region patters vector.
+        const std::vector<std::string>& allPatterns() const;
 
+};  // end class
+
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALGROUP_H */
-

@@ -12,75 +12,73 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 class SandboxInstance : public Proxy<SandboxInstanceData> {
+        RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 
-RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
+        friend class Sandbox;
+        friend class SandboxPin;
+        friend class SandboxCell;
+        friend class SandboxPort;
 
-friend class Sandbox;
-friend class SandboxPin;
-friend class SandboxCell;
-friend class SandboxPort;
+       private:
+        SandboxInstance(SandboxInstanceData *data) : Proxy(data) {}
 
-private:	
-	SandboxInstance(SandboxInstanceData * data) : Proxy(data) {}
-	
-public:
-	
-	SandboxInstance() {}
-	SandboxInstance(std::nullptr_t) {}
-		
-	SandboxCell asCell() const;
-	SandboxPort asPort() const;
-	
-	Sandbox getSandbox();
-	const Sandbox getSandbox() const;
+       public:
+        SandboxInstance() {}
+        SandboxInstance(std::nullptr_t) {}
 
-	Design getDesign();
-	const Design getDesign() const;
+        SandboxCell asCell() const;
+        SandboxPort asPort() const;
 
-	Instance getRelated() const;
-	
-	InstanceType getType() const;
-	
-	const std::string &getName() const;
+        Sandbox getSandbox();
+        const Sandbox getSandbox() const;
 
-	int getNumPins() const;
-	int getNumPins(const Direction direction) const;
-	int getNumInputPins() const;
-	int getNumOutputPins() const;
-	int getNumBidirectionalPins() const;
+        Design getDesign();
+        const Design getDesign() const;
 
-	int getNumArcs() const;
-	
-	SandboxPin getPinByIndex(const int index) const;
-	SandboxPin getPinByName(const std::string &name) const;
-	SandboxPin getAnyInputPin();
-	SandboxPin getAnyOutputPin();
-	
-	SandboxArc getArc(const SandboxPin from, const SandboxPin to);
-	SandboxArc getArcByPinNames(const std::string &from, const std::string &to);
-	SandboxArc getAnyArc();
-		
-	TopologicalIndex getTopologicalIndex() const;
-	
-	bool isPort() const;
-	bool isPort(const Direction direction);
-	
-	Range<CollectionOfSandboxPinsFilteredByDirection>
-	allPins(const Direction direction) const;
+        Instance getRelated() const;
 
-	Range<CollectionOfSandboxPins> // TODO: CollectionOfConstantPins
-	allPins() const;
+        InstanceType getType() const;
 
-	Range<CollectionOfSandboxArcs>
-	allArcs() const;
+        const std::string &getName() const;
 
-	bool isSequential() const;
-	bool isTie(const TieType type) const;
-	bool isBuffer(const BufferType type) const;
-}; // end class
-	
-} // end namespace
+        int getNumPins() const;
+        int getNumPins(const Direction direction) const;
+        int getNumInputPins() const;
+        int getNumOutputPins() const;
+        int getNumBidirectionalPins() const;
+
+        int getNumArcs() const;
+
+        SandboxPin getPinByIndex(const int index) const;
+        SandboxPin getPinByName(const std::string &name) const;
+        SandboxPin getAnyInputPin();
+        SandboxPin getAnyOutputPin();
+
+        SandboxArc getArc(const SandboxPin from, const SandboxPin to);
+        SandboxArc getArcByPinNames(const std::string &from,
+                                    const std::string &to);
+        SandboxArc getAnyArc();
+
+        TopologicalIndex getTopologicalIndex() const;
+
+        bool isPort() const;
+        bool isPort(const Direction direction);
+
+        Range<CollectionOfSandboxPinsFilteredByDirection> allPins(
+            const Direction direction) const;
+
+        Range<CollectionOfSandboxPins>  // TODO: CollectionOfConstantPins
+            allPins() const;
+
+        Range<CollectionOfSandboxArcs> allArcs() const;
+
+        bool isSequential() const;
+        bool isTie(const TieType type) const;
+        bool isBuffer(const BufferType type) const;
+};  // end class
+
+}  // end namespace

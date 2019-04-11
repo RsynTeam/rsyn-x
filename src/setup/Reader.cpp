@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -34,13 +34,14 @@
 namespace Rsyn {
 
 void Session::registerReaders() {
-	registerReader<Rsyn::ICCAD15Reader>("rsyn.iccad2015");
-	registerReader<Rsyn::ICCAD17Reader>("rsyn.iccad2017");
-	registerReader<Rsyn::BookshelfReader>("bookshelf");
-	registerReader<Rsyn::ISPD2014Reader>("ispd14");
-	registerReader<Rsyn::SizingISPDReader>("sizingISPD");
-	registerReader<Rsyn::GenericReader>("generic");
-	registerReader<Rsyn::ISPD2018Reader>("ispd18");
-	registerReader<Rsyn::ISPD2018Reader>("ispd19"); // ispd19 files are the same from ispd18 contest
-} // end method
-} // end namespace
+        registerReader<Rsyn::ICCAD15Reader>("rsyn.iccad2015");
+        registerReader<Rsyn::ICCAD17Reader>("rsyn.iccad2017");
+        registerReader<Rsyn::BookshelfReader>("bookshelf");
+        registerReader<Rsyn::ISPD2014Reader>("ispd14");
+        registerReader<Rsyn::SizingISPDReader>("sizingISPD");
+        registerReader<Rsyn::GenericReader>("generic");
+        registerReader<Rsyn::ISPD2018Reader>("ispd18");
+        registerReader<Rsyn::ISPD2018Reader>(
+            "ispd19");  // ispd19 files are the same from ispd18 contest
+}  // end method
+}  // end namespace

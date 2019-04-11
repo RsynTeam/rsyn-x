@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-/* 
+
+/*
  * File:   Reader.h
  * Author: jucemar
  *
@@ -30,14 +30,11 @@ namespace Rsyn {
 
 class Session;
 
-
 class Reader : public PopulateRsyn {
-public:
-	virtual bool load(const Rsyn::Json &params) = 0;
-}; // end class
+       public:
+        virtual bool load(const Rsyn::Json &params) = 0;
+};  // end class
 
-} // end namespace
-
+}  // end namespace
 
 #endif /* RSYN_READER_H */
-

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef ROUTING_EXTRACTOR_H
 #define ROUTING_EXTRACTOR_H
 
@@ -30,24 +30,24 @@
 namespace Rsyn {
 
 class RoutingExtractionModel {
-private:
+       private:
+        Rsyn::Design design;
+        Rsyn::Module module;  // top module
 
-	Rsyn::Design design;
-	Rsyn::Module module; // top module
+        Scenario *clsScenario = nullptr;
 
-	Scenario * clsScenario = nullptr;
+       public:
+        virtual void extract(
+            const Rsyn::RoutingTopologyDescriptor<int> &topology,
+            Rsyn::RCTree &tree) = 0;
+        virtual void updateDownstreamCap(Rsyn::RCTree &tree) = 0;
 
-public:
+        // TODO: Remove these.
+        virtual Number getLocalWireResPerUnitLength() const = 0;
+        virtual Number getLocalWireCapPerUnitLength() const = 0;
 
-	virtual void extract(const Rsyn::RoutingTopologyDescriptor<int> &topology, Rsyn::RCTree &tree) = 0;
-	virtual void updateDownstreamCap(Rsyn::RCTree &tree) = 0;
+};  // end class
 
-	// TODO: Remove these.
-	virtual Number getLocalWireResPerUnitLength() const = 0;
-	virtual Number getLocalWireCapPerUnitLength() const = 0;
-
-}; // end class
-
-} // end namespace
+}  // end namespace
 
 #endif

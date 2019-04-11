@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -22,87 +22,86 @@
 namespace Rsyn {
 
 inline std::string PhysicalLayer::getName() const {
-	return data->clsName;
-} // end method 
+        return data->clsName;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalLayerType PhysicalLayer::getType() const {
-	return data->clsType;
-} // end method 
+        return data->clsType;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalLayerDirection PhysicalLayer::getDirection() const {
-	return data->clsDirection;
-} // end method 
+        return data->clsDirection;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalLayer::getWidth() const {
-	return data->clsWidth;
-} // end method 
+        return data->clsWidth;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalLayer::getMinWidth() const {
-	return data->clsMinWidth;
-} // end method 
+        return data->clsMinWidth;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalLayer::getMinArea() const {
-	return data->clsArea;
-} // end method 
+        return data->clsArea;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalLayer::getPitch(const Dimension dim) const {
-	return data->clsPitch[dim];
-} // end method 
+        return data->clsPitch[dim];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalLayer::getPitch() const {
-	return data->clsPitch;
-} // end method 
+        return data->clsPitch;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline std::size_t PhysicalLayer::getNumSpacingRule() const {
-	return data->clsSpacing.size();
-} // end method 
+        return data->clsSpacing.size();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline const std::vector<Rsyn::PhysicalSpacingRule> & PhysicalLayer::allSpacingRule() const {
-	return data->clsSpacing;
-} // end method 
+inline const std::vector<Rsyn::PhysicalSpacingRule>&
+PhysicalLayer::allSpacingRule() const {
+        return data->clsSpacing;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline int PhysicalLayer::getIndex() const {
-	return data->id;
-} // end method 
+inline int PhysicalLayer::getIndex() const { return data->id; }  // end method
 
 // -----------------------------------------------------------------------------
 
 inline int PhysicalLayer::getRelativeIndex() const {
-	return data->clsRelativeIndex;
-} // end method 
+        return data->clsRelativeIndex;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalLayer PhysicalLayer::getPhysicalLayerLower() const {
-	return Rsyn::PhysicalLayer(data->clsLower);
-} // end method 
+        return Rsyn::PhysicalLayer(data->clsLower);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalLayer PhysicalLayer::getPhysicalLayerUpper() const {
-	return Rsyn::PhysicalLayer(data->clsUpper);
-} // end method 
+        return Rsyn::PhysicalLayer(data->clsUpper);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace 
+}  // end namespace

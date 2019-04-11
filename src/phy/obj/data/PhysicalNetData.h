@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-/* 
+
+/*
  * File:   PhysicalNetData.h
  * Author: jucemar
  *
@@ -26,21 +26,20 @@
 namespace Rsyn {
 
 class PhysicalNetData {
-public:
-	Bounds clsBounds;
-	Rsyn::Net clsNet;
-	Rsyn::Pin clsBoundPins[2][2];
-	PhysicalRouting clsRouting;
+       public:
+        Bounds clsBounds;
+        Rsyn::Net clsNet;
+        Rsyn::Pin clsBoundPins[2][2];
+        PhysicalRouting clsRouting;
 
-	PhysicalNetData() {
-		clsBoundPins[LOWER][X] = nullptr;
-		clsBoundPins[LOWER][Y] = nullptr;
-		clsBoundPins[UPPER][X] = nullptr;
-		clsBoundPins[UPPER][Y] = nullptr;
-	} // end constructor 
-}; // end class
+        PhysicalNetData() {
+                clsBoundPins[LOWER][X] = nullptr;
+                clsBoundPins[LOWER][Y] = nullptr;
+                clsBoundPins[UPPER][X] = nullptr;
+                clsBoundPins[UPPER][Y] = nullptr;
+        }  // end constructor
+};         // end class
 
-} // end class 
+}  // end class
 
 #endif
-

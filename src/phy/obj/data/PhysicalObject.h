@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalObject.h
  * Author: jucemar
  *
@@ -29,20 +29,20 @@
 #ifndef PHYSICALDESIGN_PHYSICALOBJECT_H
 #define PHYSICALDESIGN_PHYSICALOBJECT_H
 
-
 namespace Rsyn {
 
 class PhysicalObject {
-public:
-	//! @brief Unique identifier of the Physical Objects. 
-	//! @details It is used to avoid compare pointer when sorting physical objects. 
-	//! The id variable is protected from users access outside of Physical classes. 
-	PhysicalIndex id = INVALID_PHYSICAL_INDEX;
+       public:
+        //! @brief Unique identifier of the Physical Objects.
+        //! @details It is used to avoid compare pointer when sorting physical
+        //! objects.
+        //! The id variable is protected from users access outside of Physical
+        //! classes.
+        PhysicalIndex id = INVALID_PHYSICAL_INDEX;
 
-	PhysicalObject() = default;
-}; // end class 
+        PhysicalObject() = default;
+};  // end class
 
-} // end namespace 
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALOBJECT_H */
-

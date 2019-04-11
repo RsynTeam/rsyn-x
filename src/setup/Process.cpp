@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 // HOW-TO
 // To register process (e.g. optimization step), just include its .h below and
 // add a call to "registerProcess<T>(name)" where T is the process class name
@@ -25,6 +25,6 @@
 // Registration
 namespace Rsyn {
 void Session::registerProcesses() {
-	registerProcess<Rsyn::DesignPositionReader>("loadDesignPosition");
-} // end method
-} // end namespace
+        registerProcess<Rsyn::DesignPositionReader>("loadDesignPosition");
+}  // end method
+}  // end namespace

@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalRoutingPoint.h
  * Author: jucemar
  *
@@ -31,52 +31,51 @@ namespace Rsyn {
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalRoutingPoint::getPosition() const {
-	return data->clsPos;
-} // end method 
+        return data->clsPos;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalRoutingPoint::getPosition(const Dimension dim) const {
-	return data->clsPos[dim];
-} // end method 
+        return data->clsPos[dim];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalRoutingPoint::getExtension() const {
-	return data->clsExtension;
-} // end method 
+        return data->clsExtension;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline Rsyn::PhysicalVia PhysicalRoutingPoint::getVia() const {
-	return data->clsVia;
-} // end method 
+        return data->clsVia;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline const Bounds & PhysicalRoutingPoint::getRectangle() const {
-	return data->clsRectangle;
-} // end method 
+inline const Bounds& PhysicalRoutingPoint::getRectangle() const {
+        return data->clsRectangle;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline bool PhysicalRoutingPoint::hasExtension() const {
-	return data->clsExtension > -1;
-} // end method 
+        return data->clsExtension > -1;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline bool PhysicalRoutingPoint::hasRectangle() const {
-	return data->clsHasRectangle;
-} // end method 
+        return data->clsHasRectangle;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline bool PhysicalRoutingPoint::hasVia() const {
-	return data->clsVia != nullptr;
-} // end method 
+        return data->clsVia != nullptr;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-} // end namespace 
-
+}  // end namespace

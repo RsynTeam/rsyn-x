@@ -1967,7 +1967,6 @@ extern liberty_hash_bucket hbuck_14277a0;
 extern liberty_hash_bucket hbuck_1423b60;
 extern liberty_hash_bucket hbuck_140b8f0;
 
-
 /* Technology: cmos       */
 
 libsynt_argument arg_16e52f0;

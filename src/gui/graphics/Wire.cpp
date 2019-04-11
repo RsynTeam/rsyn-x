@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "Wire.h"
 
 #include "phy/PhysicalDesign.h"
@@ -28,20 +28,22 @@ namespace Rsyn {
 
 // -----------------------------------------------------------------------------
 
-WireGraphicsItem::WireGraphicsItem(Rsyn::Net net, const Rsyn::PhysicalRoutingWire &wire) : NetGraphicsItem(net) {
-	Rsyn::Polygon polygon;
-	if (wire.convertToPolygon(polygon)) {
-		clsPolygon = QtUtils::convert(polygon);
-	} // end if
+WireGraphicsItem::WireGraphicsItem(Rsyn::Net net,
+                                   const Rsyn::PhysicalRoutingWire &wire)
+    : NetGraphicsItem(net) {
+        Rsyn::Polygon polygon;
+        if (wire.convertToPolygon(polygon)) {
+                clsPolygon = QtUtils::convert(polygon);
+        }  // end if
 
-	clsPhysicalLayer = wire.getLayer();
-} // end method
+        clsPhysicalLayer = wire.getLayer();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-void
-WireGraphicsItem::render(GraphicsScene *scene, QPainter *painter, const float lod, const QRectF &exposedRect) {
-	painter->drawPolygon(clsPolygon);
-} // end method
+void WireGraphicsItem::render(GraphicsScene *scene, QPainter *painter,
+                              const float lod, const QRectF &exposedRect) {
+        painter->drawPolygon(clsPolygon);
+}  // end method
 
-} // end namespace
+}  // end namespace

@@ -29,35 +29,40 @@ class QPainter;
 namespace Rsyn {
 
 class ViaGraphicsItem : public NetGraphicsItem {
-public:
+       public:
+        ViaGraphicsItem(Rsyn::Net net,
+                        const PhysicalRoutingVia physicalRoutingVia);
 
-	ViaGraphicsItem(Rsyn::Net net, const PhysicalRoutingVia physicalRoutingVia);
+        virtual void render(GraphicsScene *scene, QPainter *painter,
+                            const float lod,
+                            const QRectF &exposedRect) override;
 
-	virtual void render(GraphicsScene *scene, QPainter *painter, const float lod, const QRectF &exposedRect) override;
+        virtual QRect getBoundingRect() const override;
 
-	virtual QRect getBoundingRect() const override;
+        Rsyn::PhysicalVia getVia() const {
+                return clsPhysicalRoutingVia.getVia();
+        }  // end method
 
-	Rsyn::PhysicalVia getVia() const {
-		return clsPhysicalRoutingVia.getVia();
-	} // end method
+        virtual Rsyn::PhysicalLayer getPhysicalLayer() const override {
+                return clsPhysicalRoutingVia.getCutLayer();
+        }
 
-	virtual Rsyn::PhysicalLayer getPhysicalLayer() const override {return clsPhysicalRoutingVia.getCutLayer();}
+        void renderBottomLayer(QPainter *painter);
+        void renderCutLayer(QPainter *painter);
+        void renderTopLayer(QPainter *painter);
 
-	void renderBottomLayer(QPainter *painter);
-	void renderCutLayer(QPainter *painter);
-	void renderTopLayer(QPainter *painter);
+       private:
+        void renderLayer(
+            QPainter *painter,
+            const std::vector<Rsyn::PhysicalViaGeometry> &geometries);
 
-private:
+        QRect getBoundingRect(
+            const std::vector<Rsyn::PhysicalViaGeometry> &geometries) const;
 
-	void renderLayer(QPainter *painter, const std::vector<Rsyn::PhysicalViaGeometry> & geometries);
+        PhysicalRoutingVia clsPhysicalRoutingVia;
 
-	QRect getBoundingRect(const std::vector<Rsyn::PhysicalViaGeometry> & geometries) const;
+};  // end class
 
-	PhysicalRoutingVia clsPhysicalRoutingVia;
-
-}; // end class
-
-} // end namespace
+}  // end namespace
 
 #endif /* VIA_H */
-

@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef UTIL_RANGEBASEDLOOP_H
-#define	UTIL_RANGEBASEDLOOP_H
+#define UTIL_RANGEBASEDLOOP_H
 
 ////////////////////////////////////////////////////////////////////////////////
 // Author: Guilherme Flach
@@ -52,13 +52,13 @@
 //        const std::vector<int> &v;
 //        std::size_t index;
 //    public:
-//        NonZeroElementsCollection(const std::vector<int> &v) 
+//        NonZeroElementsCollection(const std::vector<int> &v)
 //            : v(v), index(0) {}
 //
 //        int current() {return v[index];}
 //        void next() {index++;}
 //        bool filter() {return current() == 0;}
-//        bool stop() {return index >= v.size();}        
+//        bool stop() {return index >= v.size();}
 //    }; // end class
 //
 //    // Give it a nice name...
@@ -80,7 +80,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // According to the C++11 standard, the following range-loop statement
-// 
+//
 //        for ( declaration : expression ) statement
 //
 // is equivalent to the the following statament
@@ -98,50 +98,52 @@
 //        }
 //
 // So that, we can override the operator != of an iterator to make it
-// return false whenever the stop condition was reached in the begin 
+// return false whenever the stop condition was reached in the begin
 // iterator in code above.
 //
 // Source: http://en.cppreference.com/w/cpp/language/range-for
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class Collection>
+template <class Collection>
 class Range {
-private:
-	Collection collection;
+       private:
+        Collection collection;
 
-	struct RangeIterator {
-		Collection *collection;
+        struct RangeIterator {
+                Collection *collection;
 
-		RangeIterator() : collection(nullptr) {}
-		RangeIterator(Collection &collection_) : collection(&collection_) {
-			while (!collection->stop() && collection->filter()) { // stop must be first
-				collection->next();
-			} // end while
-		} // end constructor
+                RangeIterator() : collection(nullptr) {}
+                RangeIterator(Collection &collection_)
+                    : collection(&collection_) {
+                        while (!collection->stop() &&
+                               collection->filter()) {  // stop must be first
+                                collection->next();
+                        }  // end while
+                }          // end constructor
 
-		void operator++() { 
-			do {
-				collection->next();
-			} while (!collection->stop() && collection->filter()); // stop must be first
-		} // end method
+                void operator++() {
+                        do {
+                                collection->next();
+                        } while (!collection->stop() &&
+                                 collection->filter());  // stop must be first
+                }                                        // end method
 
-		bool operator!=(const RangeIterator &) {
-			return !collection->stop();
-		} // end method
+                bool operator!=(const RangeIterator &) {
+                        return !collection->stop();
+                }  // end method
 
-		auto operator*() -> decltype(collection->current()) {
-			return collection->current();
-		} // end method	
+                auto operator*() -> decltype(collection->current()) {
+                        return collection->current();
+                }  // end method
 
-	}; // end class
+        };  // end class
 
-public:
+       public:
+        Range(Collection &&collection) : collection(collection) {}
 
-	Range(Collection &&collection) : collection(collection) {}
-
-	RangeIterator begin() { return RangeIterator(collection); }
-	RangeIterator end() { return RangeIterator(); /*dummy, not used */}
-}; // end class	
+        RangeIterator begin() { return RangeIterator(collection); }
+        RangeIterator end() { return RangeIterator(); /*dummy, not used */ }
+};  // end class
 
 ////////////////////////////////////////////////////////////////////////////////
 // Traverse a collection backwards.
@@ -149,13 +151,17 @@ public:
 
 template <typename Collection>
 class BackwardsCollection {
-private:
-    const Collection &collection;
-public:
-    explicit BackwardsCollection(const Collection &t) : collection(t) {}
-    typename Collection::const_reverse_iterator begin() const { return collection.rbegin(); }
-    typename Collection::const_reverse_iterator end()   const { return collection.rend(); }
-}; // end class
+       private:
+        const Collection &collection;
+
+       public:
+        explicit BackwardsCollection(const Collection &t) : collection(t) {}
+        typename Collection::const_reverse_iterator begin() const {
+                return collection.rbegin();
+        }
+        typename Collection::const_reverse_iterator end() const {
+                return collection.rend();
+        }
+};  // end class
 
 #endif
-

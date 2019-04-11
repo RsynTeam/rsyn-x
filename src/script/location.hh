@@ -36,157 +36,113 @@
  */
 
 #ifndef YY_YY_LOCATION_HH_INCLUDED
-# define YY_YY_LOCATION_HH_INCLUDED
+#define YY_YY_LOCATION_HH_INCLUDED
 
-# include "position.hh"
+#include "position.hh"
 
-#line 4 "Script.yy" // location.cc:296
+#line 4 "Script.yy"  // location.cc:296
 namespace ScriptParsing {
-#line 46 "location.hh" // location.cc:296
-  /// Abstract a location.
-  class location
-  {
-  public:
+#line 46 "location.hh"  // location.cc:296
+/// Abstract a location.
+class location {
+       public:
+        /// Construct a location from \a b to \a e.
+        location(const position& b, const position& e) : begin(b), end(e) {}
 
-    /// Construct a location from \a b to \a e.
-    location (const position& b, const position& e)
-      : begin (b)
-      , end (e)
-    {
-    }
+        /// Construct a 0-width location in \a p.
+        explicit location(const position& p = position()) : begin(p), end(p) {}
 
-    /// Construct a 0-width location in \a p.
-    explicit location (const position& p = position ())
-      : begin (p)
-      , end (p)
-    {
-    }
+        /// Construct a 0-width location in \a f, \a l, \a c.
+        explicit location(std::string* f, unsigned int l = 1u,
+                          unsigned int c = 1u)
+            : begin(f, l, c), end(f, l, c) {}
 
-    /// Construct a 0-width location in \a f, \a l, \a c.
-    explicit location (std::string* f,
-                       unsigned int l = 1u,
-                       unsigned int c = 1u)
-      : begin (f, l, c)
-      , end (f, l, c)
-    {
-    }
+        /// Initialization.
+        void initialize(std::string* f = YY_NULLPTR, unsigned int l = 1u,
+                        unsigned int c = 1u) {
+                begin.initialize(f, l, c);
+                end = begin;
+        }
 
+        /** \name Line and Column related manipulators
+         ** \{ */
+       public:
+        /// Reset initial location to final location.
+        void step() { begin = end; }
 
-    /// Initialization.
-    void initialize (std::string* f = YY_NULLPTR,
-                     unsigned int l = 1u,
-                     unsigned int c = 1u)
-    {
-      begin.initialize (f, l, c);
-      end = begin;
-    }
+        /// Extend the current location to the COUNT next columns.
+        void columns(int count = 1) { end += count; }
 
-    /** \name Line and Column related manipulators
-     ** \{ */
-  public:
-    /// Reset initial location to final location.
-    void step ()
-    {
-      begin = end;
-    }
+        /// Extend the current location to the COUNT next lines.
+        void lines(int count = 1) { end.lines(count); }
+        /** \} */
 
-    /// Extend the current location to the COUNT next columns.
-    void columns (int count = 1)
-    {
-      end += count;
-    }
+       public:
+        /// Beginning of the located region.
+        position begin;
+        /// End of the located region.
+        position end;
+};
 
-    /// Extend the current location to the COUNT next lines.
-    void lines (int count = 1)
-    {
-      end.lines (count);
-    }
-    /** \} */
+/// Join two locations, in place.
+inline location& operator+=(location& res, const location& end) {
+        res.end = end.end;
+        return res;
+}
 
+/// Join two locations.
+inline location operator+(location res, const location& end) {
+        return res += end;
+}
 
-  public:
-    /// Beginning of the located region.
-    position begin;
-    /// End of the located region.
-    position end;
-  };
+/// Add \a width columns to the end position, in place.
+inline location& operator+=(location& res, int width) {
+        res.columns(width);
+        return res;
+}
 
-  /// Join two locations, in place.
-  inline location& operator+= (location& res, const location& end)
-  {
-    res.end = end.end;
-    return res;
-  }
+/// Add \a width columns to the end position.
+inline location operator+(location res, int width) { return res += width; }
 
-  /// Join two locations.
-  inline location operator+ (location res, const location& end)
-  {
-    return res += end;
-  }
+/// Subtract \a width columns to the end position, in place.
+inline location& operator-=(location& res, int width) { return res += -width; }
 
-  /// Add \a width columns to the end position, in place.
-  inline location& operator+= (location& res, int width)
-  {
-    res.columns (width);
-    return res;
-  }
+/// Subtract \a width columns to the end position.
+inline location operator-(location res, int width) { return res -= width; }
 
-  /// Add \a width columns to the end position.
-  inline location operator+ (location res, int width)
-  {
-    return res += width;
-  }
+/// Compare two location objects.
+inline bool operator==(const location& loc1, const location& loc2) {
+        return loc1.begin == loc2.begin && loc1.end == loc2.end;
+}
 
-  /// Subtract \a width columns to the end position, in place.
-  inline location& operator-= (location& res, int width)
-  {
-    return res += -width;
-  }
+/// Compare two location objects.
+inline bool operator!=(const location& loc1, const location& loc2) {
+        return !(loc1 == loc2);
+}
 
-  /// Subtract \a width columns to the end position.
-  inline location operator- (location res, int width)
-  {
-    return res -= width;
-  }
+/** \brief Intercept output stream redirection.
+ ** \param ostr the destination output stream
+ ** \param loc a reference to the location to redirect
+ **
+ ** Avoid duplicate information.
+ */
+template <typename YYChar>
+inline std::basic_ostream<YYChar>& operator<<(std::basic_ostream<YYChar>& ostr,
+                                              const location& loc) {
+        unsigned int end_col = 0 < loc.end.column ? loc.end.column - 1 : 0;
+        ostr << loc.begin;
+        if (loc.end.filename &&
+            (!loc.begin.filename || *loc.begin.filename != *loc.end.filename))
+                ostr << '-' << loc.end.filename << ':' << loc.end.line << '.'
+                     << end_col;
+        else if (loc.begin.line < loc.end.line)
+                ostr << '-' << loc.end.line << '.' << end_col;
+        else if (loc.begin.column < end_col)
+                ostr << '-' << end_col;
+        return ostr;
+}
 
-  /// Compare two location objects.
-  inline bool
-  operator== (const location& loc1, const location& loc2)
-  {
-    return loc1.begin == loc2.begin && loc1.end == loc2.end;
-  }
-
-  /// Compare two location objects.
-  inline bool
-  operator!= (const location& loc1, const location& loc2)
-  {
-    return !(loc1 == loc2);
-  }
-
-  /** \brief Intercept output stream redirection.
-   ** \param ostr the destination output stream
-   ** \param loc a reference to the location to redirect
-   **
-   ** Avoid duplicate information.
-   */
-  template <typename YYChar>
-  inline std::basic_ostream<YYChar>&
-  operator<< (std::basic_ostream<YYChar>& ostr, const location& loc)
-  {
-    unsigned int end_col = 0 < loc.end.column ? loc.end.column - 1 : 0;
-    ostr << loc.begin;
-    if (loc.end.filename
-        && (!loc.begin.filename
-            || *loc.begin.filename != *loc.end.filename))
-      ostr << '-' << loc.end.filename << ':' << loc.end.line << '.' << end_col;
-    else if (loc.begin.line < loc.end.line)
-      ostr << '-' << loc.end.line << '.' << end_col;
-    else if (loc.begin.column < end_col)
-      ostr << '-' << end_col;
-    return ostr;
-  }
-
-#line 4 "Script.yy" // location.cc:296
-} // ScriptParsing
-#line 192 "location.hh" // location.cc:296
-#endif // !YY_YY_LOCATION_HH_INCLUDED
+#line 4 "Script.yy"  // location.cc:296
+}  // ScriptParsing
+#line 192 "location.hh"  // location.cc:296
+#endif                   // !YY_YY_LOCATION_HH_INCLUDED

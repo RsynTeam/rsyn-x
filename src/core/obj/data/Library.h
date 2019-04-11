@@ -16,8 +16,7 @@
 namespace Rsyn {
 
 struct LibraryData : ObjectData {
-	DesignData *designData = nullptr;
-}; // end struct
+        DesignData *designData = nullptr;
+};  // end struct
 
-} // end namespace
-
+}  // end namespace

@@ -30,46 +30,43 @@
 
 namespace Rsyn {
 class SerializationStream {
-public:
+       public:
+        template <class T>
+        void read(T &value);
 
-	template<class T>
-	void read(T &value);
+        template <class T>
+        void read(std::vector<T> &value);
 
-	template<class T>
-	void read(std::vector<T> &value);
+        template <class T>
+        void read(std::vector<std::vector<T>> &value);
 
-	template<class T>
-	void read(std::vector<std::vector<T>> &value);
+        void read(Rsyn::Instance &instance);
+        void read(Rsyn::Net &net);
+        void read(Rsyn::Pin &pin);
+        void read(Rsyn::Arc &arc);
+        void read(Rsyn::LibraryCell &lcell);
+        void read(Rsyn::LibraryPin &lpin);
+        void read(Rsyn::LibraryArc &larc);
 
-	void read(Rsyn::Instance &instance);
-	void read(Rsyn::Net &net);
-	void read(Rsyn::Pin &pin);
-	void read(Rsyn::Arc &arc);
-	void read(Rsyn::LibraryCell &lcell);
-	void read(Rsyn::LibraryPin &lpin);
-	void read(Rsyn::LibraryArc &larc);
+        template <class T>
+        void write(const T &value);
 
-	template<class T>
-	void write(const T &value);
+        template <class T>
+        void write(const std::vector<T> &value);
 
-	template<class T>
-	void write(const std::vector<T> &value);
+        template <class T>
+        void write(const std::vector<std::vector<T>> &value);
 
-	template<class T>
-	void write(const std::vector<std::vector<T>> &value);
+        void write(const Rsyn::Instance &instance);
+        void write(const Rsyn::Net &net);
+        void write(const Rsyn::Pin &pin);
+        void write(const Rsyn::Arc &arc);
+        void write(const Rsyn::LibraryCell &lcell);
+        void write(const Rsyn::LibraryPin &lpin);
+        void write(const Rsyn::LibraryArc &larc);
 
-	void write(const Rsyn::Instance &instance);
-	void write(const Rsyn::Net &net);
-	void write(const Rsyn::Pin &pin);
-	void write(const Rsyn::Arc &arc);
-	void write(const Rsyn::LibraryCell &lcell);
-	void write(const Rsyn::LibraryPin &lpin);
-	void write(const Rsyn::LibraryArc &larc);
-
-private:
-
+       private:
 };
 }
 
 #endif /* SERIALIZATIONSTREAM_H */
-

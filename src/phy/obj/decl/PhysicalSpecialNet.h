@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalSpecialNet.h
  * Author: jucemar
  *
@@ -29,29 +29,30 @@
 #ifndef PHYSICALDESIGN_PHYSICALSPECIALNET_H
 #define PHYSICALDESIGN_PHYSICALSPECIALNET_H
 
-namespace Rsyn { 
+namespace Rsyn {
 
 class PhysicalSpecialNet : public Proxy<PhysicalSpecialNetData> {
-	friend class PhysicalDesign;
-	friend class PhysicalDesignData;
-protected:
-	//! @brief Constructs a Rsyn::PhysicalSpecialNet object with a pointer to Rsyn::PhysicalSpecialNetData.
+        friend class PhysicalDesign;
+        friend class PhysicalDesignData;
 
-	PhysicalSpecialNet(PhysicalSpecialNetData * data) : Proxy(data) {
-	}
-public:
-	//! @brief Constructs a Rsyn::PhysicalSpecialNet object with a null pointer to Rsyn::PhysicalSpecialNetData.
+       protected:
+        //! @brief Constructs a Rsyn::PhysicalSpecialNet object with a pointer
+        //! to Rsyn::PhysicalSpecialNetData.
 
-	PhysicalSpecialNet() : Proxy(nullptr) {
-	}
-	//! @brief Constructs a Rsyn::PhysicalSpecialNet object with a null pointer to Rsyn::PhysicalSpecialNetData.
+        PhysicalSpecialNet(PhysicalSpecialNetData* data) : Proxy(data) {}
 
-	PhysicalSpecialNet(std::nullptr_t) : Proxy(nullptr) {
-	}
-	
-}; // end class 
+       public:
+        //! @brief Constructs a Rsyn::PhysicalSpecialNet object with a null
+        //! pointer to Rsyn::PhysicalSpecialNetData.
 
-} // end namespace 
+        PhysicalSpecialNet() : Proxy(nullptr) {}
+        //! @brief Constructs a Rsyn::PhysicalSpecialNet object with a null
+        //! pointer to Rsyn::PhysicalSpecialNetData.
+
+        PhysicalSpecialNet(std::nullptr_t) : Proxy(nullptr) {}
+
+};  // end class
+
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALSPECIALNET_H */
-

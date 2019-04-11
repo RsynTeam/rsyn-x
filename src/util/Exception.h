@@ -12,31 +12,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef EXCEPTION_H
-#define	EXCEPTION_H
+#define EXCEPTION_H
 
 #include <exception>
 #include <string>
 #include <ostream>
 
-class Exception: public std::exception {
-	friend std::ostream &operator<<(std::ostream &out, const Exception &e) { 
-		return out << e.what();
-	} // end method	
-	
-public:
+class Exception : public std::exception {
+        friend std::ostream &operator<<(std::ostream &out, const Exception &e) {
+                return out << e.what();
+        }  // end method
 
-	explicit Exception(const std::string& message) :  clsMsg(message) {}
-	virtual ~Exception() throw (){}
+       public:
+        explicit Exception(const std::string &message) : clsMsg(message) {}
+        virtual ~Exception() throw() {}
 
-	virtual const char* what() const throw (){
-       return clsMsg.c_str();
-    } // end method
-	
-protected:
-    std::string clsMsg;
-}; // end class
+        virtual const char *what() const throw() {
+                return clsMsg.c_str();
+        }  // end method
+
+       protected:
+        std::string clsMsg;
+};  // end class
 
 #endif
-

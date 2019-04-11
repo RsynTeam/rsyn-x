@@ -12,23 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
-inline
-Design 
-LibraryModule::getDesign() {
-	return data->design;
-} // end method
+inline Design LibraryModule::getDesign() { return data->design; }  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-const Design 
-LibraryModule::getDesign() const {
-	return data->design;
-} // end method
+inline const Design LibraryModule::getDesign() const {
+        return data->design;
+}  // end method
 
 // -----------------------------------------------------------------------------
-	
-} // end namespace
+
+}  // end namespace

@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   ISPD2012Reader.h
  * Author: jucemar
  *
@@ -37,21 +37,20 @@
 namespace Rsyn {
 
 class SizingISPDReader : public Reader {
-protected:
-	Rsyn::Session session;
-	Rsyn::Design clsDesign;
-	Rsyn::Library clsLibrary;
-	Rsyn::Module clsModule;
+       protected:
+        Rsyn::Session session;
+        Rsyn::Design clsDesign;
+        Rsyn::Library clsLibrary;
+        Rsyn::Module clsModule;
 
-public:
-	SizingISPDReader() {}
-	SizingISPDReader(const SizingISPDReader& orig) {}
-	virtual ~SizingISPDReader() {}
-	virtual bool load(const Rsyn::Json &params) override;
+       public:
+        SizingISPDReader() {}
+        SizingISPDReader(const SizingISPDReader& orig) {}
+        virtual ~SizingISPDReader() {}
+        virtual bool load(const Rsyn::Json& params) override;
 
-}; // end class 
+};  // end class
 
-} // end namespace 
+}  // end namespace
 
 #endif /* RSYN_ISPD2012READER_H */
-

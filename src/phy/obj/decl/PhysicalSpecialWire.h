@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalSpecialWire.h
  * Author: jucemar
  *
@@ -31,29 +31,30 @@
 
 namespace Rsyn {
 class PhysicalSpecialWire : public Proxy<PhysicalSpecialWireData> {
-	friend class PhysicalDesign;
-	friend class PhysicalDesignData;
-protected:
-	//! @brief Constructs a Rsyn::PhysicalSpecialWire object with a pointer to Rsyn::PhysicalSpecialWireData.
+        friend class PhysicalDesign;
+        friend class PhysicalDesignData;
 
-	PhysicalSpecialWire(PhysicalSpecialWireData * data) : Proxy(data) {
-	}
-public:
-	//! @brief Constructs a Rsyn::PhysicalSpecialWire object with a null pointer to Rsyn::PhysicalSpecialWireData.
+       protected:
+        //! @brief Constructs a Rsyn::PhysicalSpecialWire object with a pointer
+        //! to Rsyn::PhysicalSpecialWireData.
 
-	PhysicalSpecialWire() : Proxy(nullptr) {
-	}
-	//! @brief Constructs a Rsyn::PhysicalSpecialWire object with a null pointer to Rsyn::PhysicalSpecialWireData.
+        PhysicalSpecialWire(PhysicalSpecialWireData* data) : Proxy(data) {}
 
-	PhysicalSpecialWire(std::nullptr_t) : Proxy(nullptr) {
-	}
-	
-	Rsyn::PhysicalLayer getPhysicalLayer();
-	DBU getWireWidth() const;
-	const std::vector<PhysicalRoutingPoint> & allRoutingPoints() const;
-}; // end class 
+       public:
+        //! @brief Constructs a Rsyn::PhysicalSpecialWire object with a null
+        //! pointer to Rsyn::PhysicalSpecialWireData.
 
-} // end namespace 
+        PhysicalSpecialWire() : Proxy(nullptr) {}
+        //! @brief Constructs a Rsyn::PhysicalSpecialWire object with a null
+        //! pointer to Rsyn::PhysicalSpecialWireData.
+
+        PhysicalSpecialWire(std::nullptr_t) : Proxy(nullptr) {}
+
+        Rsyn::PhysicalLayer getPhysicalLayer();
+        DBU getWireWidth() const;
+        const std::vector<PhysicalRoutingPoint>& allRoutingPoints() const;
+};  // end class
+
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALSPECIALWIRE_H */
-

@@ -12,63 +12,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_DESIGN_OBSERVER_H
 #define RSYN_DESIGN_OBSERVER_H
 
 namespace Rsyn {
 
 class DesignObserver {
-friend class Rsyn::Design;
-private:
+        friend class Rsyn::Design;
 
-	Design observedDesign;
+       private:
+        Design observedDesign;
 
-public:
-	
-	// Note: The observer will not be registered to receive notifications for
-	// methods that it does not overwrite. Therefore, no runtime overhead for
-	// handling undesired notifications.
+       public:
+        // Note: The observer will not be registered to receive notifications
+        // for
+        // methods that it does not overwrite. Therefore, no runtime overhead
+        // for
+        // handling undesired notifications.
 
-	virtual void
-	onDesignDestruction() {}
+        virtual void onDesignDestruction() {}
 
-	virtual void
-	onPostInstanceCreate(Rsyn::Instance instance) {}
+        virtual void onPostInstanceCreate(Rsyn::Instance instance) {}
 
-	virtual void
-	onPreInstanceRemove(Rsyn::Instance instance) {}
+        virtual void onPreInstanceRemove(Rsyn::Instance instance) {}
 
-	virtual void
-	onPostNetCreate(Rsyn::Net net) {}
+        virtual void onPostNetCreate(Rsyn::Net net) {}
 
-	virtual void
-	onPreNetRemove(Rsyn::Net net) {}
+        virtual void onPreNetRemove(Rsyn::Net net) {}
 
-	virtual void
-	onPostCellRemap(Rsyn::Cell cell, Rsyn::LibraryCell oldLibraryCell) {}
+        virtual void onPostCellRemap(Rsyn::Cell cell,
+                                     Rsyn::LibraryCell oldLibraryCell) {}
 
-	virtual void
-	onPostPinConnect(Rsyn::Pin pin) {}
+        virtual void onPostPinConnect(Rsyn::Pin pin) {}
 
-	virtual void
-	onPrePinDisconnect(Rsyn::Pin pin) {}
+        virtual void onPrePinDisconnect(Rsyn::Pin pin) {}
 
-	virtual void
-	onPreInstanceMove(Rsyn::Instance) {}
+        virtual void onPreInstanceMove(Rsyn::Instance) {}
 
-	virtual void
-	onPostInstanceMove(Rsyn::Instance) {}
+        virtual void onPostInstanceMove(Rsyn::Instance) {}
 
-	virtual
-	~DesignObserver() {
-		if (observedDesign)
-			observedDesign.unregisterObserver(this);
-	} // end destructor
+        virtual ~DesignObserver() {
+                if (observedDesign) observedDesign.unregisterObserver(this);
+        }  // end destructor
 
-}; // end class
+};  // end class
 
-} // end namespace
+}  // end namespace
 
 #endif
-

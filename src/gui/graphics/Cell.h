@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_CELL_GRAPHICS_ITEM_H
 #define RSYN_CELL_GRAPHICS_ITEM_H
 
@@ -24,39 +24,34 @@
 namespace Rsyn {
 
 //! @brief A graphics item representing a cell.
-class CellGraphicsItem : public GraphicsItem  {
-public:
+class CellGraphicsItem : public GraphicsItem {
+       public:
+        CellGraphicsItem(Rsyn::Cell cell) : clsCell(cell) {}  // end constructor
 
-	CellGraphicsItem(Rsyn::Cell cell) : clsCell(cell) {
-	} // end constructor
+        virtual QRect getBoundingRect() const override {
+                if (clsCell.getOrientation() == Rsyn::ORIENTATION_E ||
+                    clsCell.getOrientation() == Rsyn::ORIENTATION_FE ||
+                    clsCell.getOrientation() == Rsyn::ORIENTATION_W ||
+                    clsCell.getOrientation() == Rsyn::ORIENTATION_FW) {
+                        return QRect(clsCell.getX(), clsCell.getY(),
+                                     clsCell.getHeight(), clsCell.getWidth());
+                } else {
+                        return QRect(clsCell.getX(), clsCell.getY(),
+                                     clsCell.getWidth(), clsCell.getHeight());
+                }
+        }  // end method
 
-	virtual QRect getBoundingRect() const override {
-		if (clsCell.getOrientation() == Rsyn::ORIENTATION_E  || 
-			clsCell.getOrientation() == Rsyn::ORIENTATION_FE ||
-			clsCell.getOrientation() == Rsyn::ORIENTATION_W  ||
-			clsCell.getOrientation() == Rsyn::ORIENTATION_FW ) {
-			return QRect(clsCell.getX(), clsCell.getY(), clsCell.getHeight(), clsCell.getWidth());
-		} else {
-			return QRect(clsCell.getX(), clsCell.getY(), clsCell.getWidth(), clsCell.getHeight());
-		}
-	} // end method
+        Rsyn::Cell getCell() const { return clsCell; }  // end method
 
-	Rsyn::Cell getCell() const {
-		return clsCell;
-	} // end method
+       protected:
+        void renderPins(QPainter* painter) const;
+        void renderName(QPainter* painter, const QRectF& exposedRect) const;
 
-protected:
+       private:
+        //! @brief The cell associated to this graphics item.
+        Rsyn::Cell clsCell;
+};  // end class
 
-	void renderPins(QPainter* painter) const;
-	void renderName(QPainter* painter, const QRectF &exposedRect) const;
-
-private:
-	//! @brief The cell associated to this graphics item.
-	Rsyn::Cell clsCell;
-}; // end class
-
-} // end namespace
-
-
+}  // end namespace
 
 #endif

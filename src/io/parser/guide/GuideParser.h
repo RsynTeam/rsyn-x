@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef ISPD18GUIDEPARSER_H
-#define	ISPD18GUIDEPARSER_H
+#define ISPD18GUIDEPARSER_H
 #include <fstream>
 #include <vector>
 #include "GuideDescriptor.h"
@@ -32,22 +32,19 @@
  */
 
 class GuideParser {
-protected:
-	 std::ifstream clsIS;
-public:
-	GuideParser() = default;
-	void parse(std::string & guidePath, GuideDscp & guideDscp);
-	
-protected:
-	bool readLine(std::vector<std::string>& tokens);
-	bool readNet(std::string & net);
-	bool isStartLayer(std::string & token);
-	bool isEndLayer(std::string & token);
-	bool readLayerGuide(GuideNetDscp & dscp);
-	
+       protected:
+        std::ifstream clsIS;
+
+       public:
+        GuideParser() = default;
+        void parse(std::string& guidePath, GuideDscp& guideDscp);
+
+       protected:
+        bool readLine(std::vector<std::string>& tokens);
+        bool readNet(std::string& net);
+        bool isStartLayer(std::string& token);
+        bool isEndLayer(std::string& token);
+        bool readLayerGuide(GuideNetDscp& dscp);
 };
-
-
-
 
 #endif /* ISPD18GUIDEPARSER_H */

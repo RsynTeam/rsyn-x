@@ -12,150 +12,155 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 class Sandbox : public Proxy<SandboxData> {
-friend class SandboxInstance;
-friend class SandboxNet;
+        friend class SandboxInstance;
+        friend class SandboxNet;
 
-template<typename _Object, typename _ObjectReference, typename _ObjectExtension> friend class SandboxAttributeBase;
-template<typename _Object, typename _ObjectExtension> friend class SandboxAttributeImplementation;
+        template <typename _Object, typename _ObjectReference,
+                  typename _ObjectExtension>
+        friend class SandboxAttributeBase;
+        template <typename _Object, typename _ObjectExtension>
+        friend class SandboxAttributeImplementation;
 
-private:
-	Sandbox(SandboxData * data) : Proxy(data) {}
+       private:
+        Sandbox(SandboxData *data) : Proxy(data) {}
 
-	static const std::string NULL_NAME;
+        static const std::string NULL_NAME;
 
-	std::string generateUniqueInstanceName(const std::string &prefix);
-	std::string generateUniqueNetName(const std::string &prefix);
+        std::string generateUniqueInstanceName(const std::string &prefix);
+        std::string generateUniqueNetName(const std::string &prefix);
 
-	int generateNextSign();
-	int getSign() const;	
+        int generateNextSign();
+        int getSign() const;
 
-	void updateTopologicalIndex(SandboxPin pin);
+        void updateTopologicalIndex(SandboxPin pin);
 
-	////////////////////////////////////////////////////////////////////////////
-	// Unique Identifiers for Rsyn Objects
-	//--------------------------------------------------------------------------
-	// Currently Rsyn uses unique identifiers (indexes) internally to manage
-	// layers.
-	//
-	// Indexes should not be exposed to users as they are merely an internal
-	// way to support layers and this scheme may be changed in the future.
-	//
-	// Layers allow users to associate data to the several Rsyn objects.
-	// Moreover layers are aware to incremental changes in the netlist.
-	////////////////////////////////////////////////////////////////////////////
-private:
+        ////////////////////////////////////////////////////////////////////////////
+        // Unique Identifiers for Rsyn Objects
+        //--------------------------------------------------------------------------
+        // Currently Rsyn uses unique identifiers (indexes) internally to manage
+        // layers.
+        //
+        // Indexes should not be exposed to users as they are merely an internal
+        // way to support layers and this scheme may be changed in the future.
+        //
+        // Layers allow users to associate data to the several Rsyn objects.
+        // Moreover layers are aware to incremental changes in the netlist.
+        ////////////////////////////////////////////////////////////////////////////
+       private:
+        Index getId(SandboxNet net) const;
+        Index getId(SandboxInstance instance) const;
+        Index getId(SandboxPin pin) const;
+        Index getId(SandboxArc arc) const;
 
-	Index getId(SandboxNet net) const;
-	Index getId(SandboxInstance instance) const;
-	Index getId(SandboxPin pin) const;
-	Index getId(SandboxArc arc) const;
+       public:
+        Sandbox() {}
+        Sandbox(std::nullptr_t) {}
 
-public:
+        void create(Rsyn::Module module, const std::string &name = "");
+        void create(Rsyn::Cell seed);
 
-	Sandbox() {}
-	Sandbox(std::nullptr_t) {}
+        Design getDesign();
+        const Design getDesign() const;
+        Module getModule();
+        const Module getModule() const;
 
-	void create(Rsyn::Module module, const std::string &name = "");
-	void create(Rsyn::Cell seed);
+        SandboxInstance createInstance(const Instance instance);
+        SandboxNet createNet(const Net net);
 
-	Design getDesign();
-	const Design getDesign() const;
-	Module getModule();
-	const Module getModule() const;
+        SandboxCell createCell(const std::string &libraryCellName,
+                               const std::string &cellName = "");
+        SandboxCell createCell(const LibraryCell lcell,
+                               const std::string &name = "");
+        SandboxPort createPort(const Direction direction,
+                               const std::string &name = "");
+        SandboxNet createNet(const std::string &name = "");
 
-	SandboxInstance createInstance(const Instance instance);
-	SandboxNet createNet(const Net net);
+        SandboxAttributeInitializer createAttribute();
 
-	SandboxCell createCell(const std::string &libraryCellName, const std::string &cellName = "");
-	SandboxCell createCell(const LibraryCell lcell, const std::string &name = "");
-	SandboxPort createPort(const Direction direction, const std::string &name = "");
-	SandboxNet createNet(const std::string &name = "");
+        template <typename DefaultValueType>
+        SandboxAttributeInitializerWithDefaultValue<DefaultValueType>
+        createAttribute(const DefaultValueType &defaultValue);
 
-	SandboxAttributeInitializer
-	createAttribute();
+        void connectPin(SandboxPin pin, SandboxNet net);
+        void disconnectPin(SandboxPin pin);
 
-	template<typename DefaultValueType>
-	SandboxAttributeInitializerWithDefaultValue<DefaultValueType>
-	createAttribute(const DefaultValueType &defaultValue);
+        void remap(SandboxCell cell, LibraryCell newLibraryCell);
+        void remap(SandboxCell cell, const std::string &newLibraryCellName);
 
-	void connectPin(SandboxPin pin, SandboxNet net);
-	void disconnectPin(SandboxPin pin);
+        const std::string &getName() const;
 
-	void remap(SandboxCell cell, LibraryCell newLibraryCell);
-	void remap(SandboxCell cell, const std::string &newLibraryCellName);
+        SandboxPort getPortByIndex(const int index);
 
-	const std::string &getName() const;
+        int getNumInstances() const;
+        int getNumNets() const;
+        int getNumPins() const;
+        int getNumPorts(const Direction direction) const;
 
-	SandboxPort getPortByIndex(const int index);
+        SandboxInstance findInstanceByName(const std::string &name) const;
+        SandboxCell findCellByName(const std::string &name) const;
+        SandboxPort findPortByName(const std::string &name) const;
 
-	int getNumInstances() const;
-	int getNumNets() const;
-	int getNumPins() const;
-	int getNumPorts(const Direction direction) const;
+        SandboxNet findNetByName(const std::string &name) const;
+        SandboxPin findPinByName(const std::string &cellName,
+                                 const std::string &pinName) const;
+        SandboxPin findPinByName(
+            const std::string &name,
+            const std::string::value_type separator = ':') const;
 
-	SandboxInstance findInstanceByName(const std::string &name) const;
-	SandboxCell findCellByName(const std::string &name) const;
-	SandboxPort findPortByName(const std::string &name) const;
+        Instance getRelated(const SandboxInstance instance) const;
+        Net getRelated(const SandboxNet net) const;
 
-	SandboxNet findNetByName(const std::string &name) const;
-	SandboxPin findPinByName(const std::string &cellName, const std::string &pinName) const;
-	SandboxPin findPinByName(const std::string &name, const std::string::value_type separator = ':') const;
+        SandboxInstance getRelated(const Instance instance) const;
+        SandboxNet getRelated(const Net net) const;
 
-	Instance getRelated(const SandboxInstance instance) const;
-	Net getRelated(const SandboxNet net) const;
+        Range<SandboxListCollection<SandboxInstanceData, SandboxInstance>>
+        allInstances();
 
-	SandboxInstance getRelated(const Instance instance) const;
-	SandboxNet getRelated(const Net net) const;
+        Range<SandboxReferenceListCollection<SandboxPort>> allPorts();
 
-	Range<SandboxListCollection<SandboxInstanceData, SandboxInstance>>
-	allInstances();
+        std::set<SandboxPort> &allPorts(const Rsyn::Direction direction);
 
-	Range<SandboxReferenceListCollection<SandboxPort>>
-	allPorts();
+        Range<SandboxListCollection<SandboxNetData, SandboxNet>> allNets();
 
-	std::set<SandboxPort> &
-	allPorts(const Rsyn::Direction direction);
+        Range<SandboxListCollection<SandboxPinData, SandboxPin>> allPins();
 
-	Range<SandboxListCollection<SandboxNetData, SandboxNet>>
-	allNets();
+        Range<SandboxListCollection<SandboxArcData, SandboxArc>> allArcs();
 
-	Range<SandboxListCollection<SandboxPinData, SandboxPin>>
-	allPins();
+        std::vector<TupleElement<1, TopologicalIndex, SandboxNet>>
+        allNetsInTopologicalOrder();
 
-	Range<SandboxListCollection<SandboxArcData, SandboxArc>>
-	allArcs();
+        std::vector<TupleElement<1, TopologicalIndex, SandboxNet>>
+        allNetsInReverseTopologicalOrder();
 
-	std::vector<TupleElement<1, TopologicalIndex, SandboxNet>>
-	allNetsInTopologicalOrder();
+        std::vector<TupleElement<1, TopologicalIndex, SandboxInstance>>
+        allInstancesInTopologicalOrder();
 
-	std::vector<TupleElement<1, TopologicalIndex, SandboxNet>>
-	allNetsInReverseTopologicalOrder();
+        // Gets a vector with the nets in the fanout cone of a pin. The nets are
+        // sorted in breadth-first order (which is not the same as topological
+        // order). Breadth-first order is typically faster than topological
+        // order.
+        // If not null, the first net is always the net to which the seed pins
+        // is
+        // connected to.
 
-	std::vector<TupleElement<1, TopologicalIndex, SandboxInstance>>
-	allInstancesInTopologicalOrder();
+        std::vector<Rsyn::SandboxNet> getFanoutConeNetsInBreadthFirstOrder(
+            Rsyn::SandboxPin seed);
 
-	// Gets a vector with the nets in the fanout cone of a pin. The nets are
-	// sorted in breadth-first order (which is not the same as topological
-	// order). Breadth-first order is typically faster than topological order.
-	// If not null, the first net is always the net to which the seed pins is
-	// connected to.
+        // Gets a vector with the nets in the fan-in cone of a pin. The nets are
+        // sorted in breadth-first order (which is not the same as topological
+        // order). Breadth-first order is typically faster than topological
+        // order.
+        // If not null, the first net is always the net to which the seed pins
+        // is
+        // connected to.
 
-	std::vector<Rsyn::SandboxNet>
-	getFanoutConeNetsInBreadthFirstOrder(Rsyn::SandboxPin seed);
+        std::vector<Rsyn::SandboxNet> getFaninConeNetsInBreadthFirstOrder(
+            Rsyn::SandboxPin seed);
 
-	// Gets a vector with the nets in the fan-in cone of a pin. The nets are
-	// sorted in breadth-first order (which is not the same as topological
-	// order). Breadth-first order is typically faster than topological order.
-	// If not null, the first net is always the net to which the seed pins is
-	// connected to.
+};  // end class
 
-	std::vector<Rsyn::SandboxNet>
-	getFaninConeNetsInBreadthFirstOrder(Rsyn::SandboxPin seed);
-
-}; // end class
-
-} // end namespace
+}  // end namespace

@@ -12,35 +12,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 class SandboxObjectData;
-	
+
 struct SandboxNetData : SandboxObjectData {
-	// Sandbox
-	Sandbox sandbox;
+        // Sandbox
+        Sandbox sandbox;
 
-	// Design net to which this net relates to.
-	Net related;
+        // Design net to which this net relates to.
+        Net related;
 
-	// Using a vector for fast traverse, but slow insertion and removal.
-	std::vector<SandboxPin> pins;
-	
-	// Driver. If multiple-drivers, store one of them without any assumptions.
-	SandboxPin driver;
+        // Using a vector for fast traverse, but slow insertion and removal.
+        std::vector<SandboxPin> pins;
 
-	// Cache number of pins per direction.
-	std::array<int, NUM_SIGNAL_DIRECTIONS> numPinsOfType;
-	
-	// Ussed in some netlist traversals.
-	int sign;
+        // Driver. If multiple-drivers, store one of them without any
+        // assumptions.
+        SandboxPin driver;
 
-	SandboxNetData() :
-		sign(-1),
-		driver(nullptr), 
-		numPinsOfType({0, 0, 0, 0}) {
-	} // end constructor	
-}; // end struct
+        // Cache number of pins per direction.
+        std::array<int, NUM_SIGNAL_DIRECTIONS> numPinsOfType;
 
-} // end namespace
+        // Ussed in some netlist traversals.
+        int sign;
+
+        SandboxNetData()
+            : sign(-1),
+              driver(nullptr),
+              numPinsOfType({0, 0, 0, 0}) {}  // end constructor
+};                                            // end struct
+
+}  // end namespace

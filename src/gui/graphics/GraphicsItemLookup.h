@@ -24,29 +24,33 @@ namespace Rsyn {
 class GraphicsItem;
 
 class GraphicsItemLookup {
-public:
-	virtual void addItem(GraphicsItem *item) = 0;
-	virtual void removeItem(GraphicsItem *item) = 0;
+       public:
+        virtual void addItem(GraphicsItem *item) = 0;
+        virtual void removeItem(GraphicsItem *item) = 0;
 
-	virtual GraphicsItem * getItemAt(const QPointF &pos) const = 0;
-	virtual std::list<GraphicsItem *> getItemsAt(const QPointF &pos, const int maxNumItems = 0) const = 0;
-	virtual std::list<GraphicsItem *> getItemsAt(const QRectF &region, const int maxNumItems = 0) const = 0;
+        virtual GraphicsItem *getItemAt(const QPointF &pos) const = 0;
+        virtual std::list<GraphicsItem *> getItemsAt(
+            const QPointF &pos, const int maxNumItems = 0) const = 0;
+        virtual std::list<GraphicsItem *> getItemsAt(
+            const QRectF &region, const int maxNumItems = 0) const = 0;
 
-	//! @brief Returns a number in the interval [0, 1] where 1 means that the
-	//! regions covers the entire scene.
-	virtual float getCoverage(const QRectF &region) const = 0;
+        //! @brief Returns a number in the interval [0, 1] where 1 means that
+        //! the
+        //! regions covers the entire scene.
+        virtual float getCoverage(const QRectF &region) const = 0;
 
-	// @todo Kinda weird to force to use an unordered_set here, but for now let's
-	// ignore this.
-	virtual const std::unordered_set<GraphicsItem *> &allItems() const = 0;
+        // @todo Kinda weird to force to use an unordered_set here, but for now
+        // let's
+        // ignore this.
+        virtual const std::unordered_set<GraphicsItem *> &allItems() const = 0;
 
-	//! @brief Indicates that this lookup is a dummy i.e. has no special data
-	//! structure to do the lookup, which may be useful when a layer has few
-	//! elements.
-	virtual bool isDummy() const {return false;}
-}; // end class
+        //! @brief Indicates that this lookup is a dummy i.e. has no special
+        //! data
+        //! structure to do the lookup, which may be useful when a layer has few
+        //! elements.
+        virtual bool isDummy() const { return false; }
+};  // end class
 
-} // end namespace
+}  // end namespace
 
 #endif
-

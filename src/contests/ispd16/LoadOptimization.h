@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef LOAD_OPTO_H
 #define LOAD_OPTO_H
 
@@ -29,23 +29,23 @@ namespace ICCAD15 {
 class Infrastructure;
 
 class LoadOptimization : public Rsyn::Process {
-private:
-	Rsyn::Session session;
-	Infrastructure * infra;
-	Rsyn::Design design;
-	Rsyn::Module module;
-	Rsyn::PhysicalDesign phDesign;
-	Rsyn::Timer *timer;
-	Rsyn::RoutingEstimator *routingEstimator;
-	
-	void runMoveNonCriticalSinksOfCriticalNetsToSteinerPoint(const bool dontMoveFlopsAndLCBs);
-	void runMoveNonCriticalSinksOfCriticalNetsToDriver(const bool dontMoveFlopsAndLCBs);
-	
-public:
-	
-	virtual bool run(const Rsyn::Json &params);
-	
-}; // end class
+       private:
+        Rsyn::Session session;
+        Infrastructure *infra;
+        Rsyn::Design design;
+        Rsyn::Module module;
+        Rsyn::PhysicalDesign phDesign;
+        Rsyn::Timer *timer;
+        Rsyn::RoutingEstimator *routingEstimator;
 
+        void runMoveNonCriticalSinksOfCriticalNetsToSteinerPoint(
+            const bool dontMoveFlopsAndLCBs);
+        void runMoveNonCriticalSinksOfCriticalNetsToDriver(
+            const bool dontMoveFlopsAndLCBs);
+
+       public:
+        virtual bool run(const Rsyn::Json &params);
+
+};  // end class
 }
 #endif

@@ -12,39 +12,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 class SandboxPort : public SandboxInstance {
-	
-RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
-	
-friend class Sandbox;
-friend class SandboxInstance;
+        RSYN_FRIEND_OF_GENERIC_LIST_COLLECTION;
 
-private:	
-	SandboxPort(SandboxInstanceData * data) : SandboxInstance(data) {}
-public:
-	
-	SandboxPort() : SandboxInstance(nullptr) {}
-	SandboxPort(std::nullptr_t) : SandboxInstance(nullptr) {}
+        friend class Sandbox;
+        friend class SandboxInstance;
 
-	Port getRelated() const;
+       private:
+        SandboxPort(SandboxInstanceData* data) : SandboxInstance(data) {}
 
-	SandboxPin getInnerPin() const;
+       public:
+        SandboxPort() : SandboxInstance(nullptr) {}
+        SandboxPort(std::nullptr_t) : SandboxInstance(nullptr) {}
 
-	// NOTE: dummy, but kept as it's need for some template functions
-	SandboxPin getOuterPin() const; 
-	SandboxPin getOtherPin(Rsyn::SandboxPin pin) const;
+        Port getRelated() const;
 
-	// If this is a virtual port (i.e. does not exist in the design), returns
-	// the pin that is driving/driven by this port.
-	SandboxPin getAttachedPin() const;
-	
-	Direction getDirection() const;
+        SandboxPin getInnerPin() const;
 
-	// Returns true if this port is not related to a real port in the design.
-	bool isVirtual() const;
-}; // end class
-	
-} // end namespace
+        // NOTE: dummy, but kept as it's need for some template functions
+        SandboxPin getOuterPin() const;
+        SandboxPin getOtherPin(Rsyn::SandboxPin pin) const;
+
+        // If this is a virtual port (i.e. does not exist in the design),
+        // returns
+        // the pin that is driving/driven by this port.
+        SandboxPin getAttachedPin() const;
+
+        Direction getDirection() const;
+
+        // Returns true if this port is not related to a real port in the
+        // design.
+        bool isVirtual() const;
+};  // end class
+
+}  // end namespace

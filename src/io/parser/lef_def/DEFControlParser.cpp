@@ -38,7 +38,7 @@ extern void freeCB(void* name);
 extern void* mallocCB(size_t size);
 extern void* reallocCB(void* name, size_t size);
 
-#include "ispd13/global.h"
+#include "io/legacy/ispd13/global.h"
 #include "util/Bounds.h"
 #include "util/DoubleRectangle.h"
 
@@ -1487,9 +1487,9 @@ void DEFControlParser::writeFullDEF(const string& filename,
 
                         if (defNet.clsUse != INVALID_DEF_NAME) {
                                 status = defwNetUse(defNet.clsUse.c_str());
+                                status = defwNetPathEnd();
                                 CHECK_STATUS(status);
                         }  // end if
-
                         status = defwNetEndOneNet();
                         CHECK_STATUS(status);
                         // CHECK_STATUS(status);

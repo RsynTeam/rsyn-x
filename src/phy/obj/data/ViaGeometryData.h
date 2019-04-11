@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/* 
+/*
  * File:   ViaGeometryData.h
  * Author: jucemar
  *
@@ -25,12 +25,11 @@
 
 namespace Rsyn {
 class ViaGeometryData : public PhysicalObject {
-public:
-	Bounds clsBounds;
-	int clsMaskNumber = -1;
-	// Polygon
-}; // end class 
+       public:
+        Bounds clsBounds;
+        int clsMaskNumber = -1;
+        // Polygon
+};  // end class
 
-} // end namespace 
+}  // end namespace
 #endif /* RSYN_DATABASE_VIAGEOMETRYDATA_H */
-

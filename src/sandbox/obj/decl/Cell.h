@@ -12,30 +12,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 class SandboxCell : public SandboxInstance {
-friend class Sandbox;
-friend class SandboxInstance;
-private:	
-	SandboxCell(SandboxInstanceData * data) : SandboxInstance(data) {}
-public:
-	
-	SandboxCell() : SandboxInstance(nullptr) {}
-	SandboxCell(std::nullptr_t) : SandboxInstance(nullptr) {}
+        friend class Sandbox;
+        friend class SandboxInstance;
 
-	Cell getRelated() const;
+       private:
+        SandboxCell(SandboxInstanceData *data) : SandboxInstance(data) {}
 
-	const std::string &getLibraryCellName() const;
+       public:
+        SandboxCell() : SandboxInstance(nullptr) {}
+        SandboxCell(std::nullptr_t) : SandboxInstance(nullptr) {}
 
-	LibraryCell getLibraryCell() const;
-	
-	SandboxPin getPinByLibraryPin(LibraryPin lpin) const;
-	
-	void remap(LibraryCell libraryCell);
-	void remap(const std::string &libraryCellName);
-	
-}; // end class
-	
-} // end namespace
+        Cell getRelated() const;
+
+        const std::string &getLibraryCellName() const;
+
+        LibraryCell getLibraryCell() const;
+
+        SandboxPin getPinByLibraryPin(LibraryPin lpin) const;
+
+        void remap(LibraryCell libraryCell);
+        void remap(const std::string &libraryCellName);
+
+};  // end class
+
+}  // end namespace

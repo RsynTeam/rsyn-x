@@ -18,22 +18,21 @@
 
 #include <iostream>
 
-#define rsynAbort(msg) \
-	std::cout << "\n"; \
-	std::cout << "ASSERTION: " << msg << "\n"; \
-	std::cout << __FILE__  << ":" << __LINE__ << "\n"; \
-	std::cout << std::flush; \
-	std::exit(1);
+#define rsynAbort(msg)                                    \
+        std::cout << "\n";                                \
+        std::cout << "ASSERTION: " << msg << "\n";        \
+        std::cout << __FILE__ << ":" << __LINE__ << "\n"; \
+        std::cout << std::flush;                          \
+        std::exit(1);
 
-#define rsynAssert(condition, msg) \
-	if (!(condition)) { \
-		std::cout << "\n"; \
-		std::cout << "ASSERTION: " << #condition << "\n"; \
-		std::cout << __FILE__  << ":" << __LINE__ << "\n"; \
-		std::cout << msg << "\n"; \
-		std::cout << std::flush; \
-		std::exit(1); \
-	} // end if
+#define rsynAssert(condition, msg)                                \
+        if (!(condition)) {                                       \
+                std::cout << "\n";                                \
+                std::cout << "ASSERTION: " << #condition << "\n"; \
+                std::cout << __FILE__ << ":" << __LINE__ << "\n"; \
+                std::cout << msg << "\n";                         \
+                std::cout << std::flush;                          \
+                std::exit(1);                                     \
+        }  // end if
 
 #endif
-

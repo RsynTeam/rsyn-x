@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef ROUTING_ESTIMATOR_MODEL_H
 #define ROUTING_ESTIMATOR_MODEL_H
 
@@ -20,18 +20,18 @@
 
 namespace Rsyn {
 
-template<class NameType> class RoutingTopologyDescriptor;
+template <class NameType>
+class RoutingTopologyDescriptor;
 
 class RoutingEstimationModel {
-private:
+       private:
+       public:
+        virtual void updateRoutingEstimation(
+            Rsyn::Net net, Rsyn::RoutingTopologyDescriptor<int> &topology,
+            DBU &wirelength) = 0;
 
-public:
+};  // end class
 
-	virtual void updateRoutingEstimation(Rsyn::Net net, Rsyn::RoutingTopologyDescriptor<int> &topology, DBU &wirelength) = 0;
-
-}; // end class
-
-} // end namespace
+}  // end namespace
 
 #endif /* ROUTINGESTIMATORMODEL_H */
-

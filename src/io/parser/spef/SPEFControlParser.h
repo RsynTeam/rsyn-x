@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * SPEFControlParser.h
  *
@@ -24,22 +24,20 @@
 #define PARSER_SPEF_SPEFCONTROLPARSER_H_
 
 #include <string>
-	using std::string;
+using std::string;
 #include <iostream>
-	using std::cout;
-	using std::endl;
+using std::cout;
+using std::endl;
 
 #include "io/parser/parser_helper.h"
 #include "io/legacy/PlacerInternals.h"
 #include "ispd13/global.h"
 
-
-
 class SPEFControlParser {
-public:
-	SPEFControlParser();
-	void parseSPEF(const string &filename, ISPD13::SPEFInfo &spefInfos);
-	virtual ~SPEFControlParser();
+       public:
+        SPEFControlParser();
+        void parseSPEF(const string &filename, ISPD13::SPEFInfo &spefInfos);
+        virtual ~SPEFControlParser();
 };
 
 #endif /* PARSER_SPEF_SPEFCONTROLPARSER_H_ */

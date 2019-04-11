@@ -22,22 +22,21 @@ namespace Rsyn {
 //! everything. It should gain importance when we separate more clearly design
 //! and library data.
 class Library : public Proxy<LibraryData> {
-friend class Session;
-public:
-	Library() {}
+        friend class Session;
 
-	//! @brief Returns an iterable collection of all library cells in the
-	//!        design.
-	//! @todo  This should be removed once we concentrate everything library
-	//!        related in Rsyn::Library.
-	Range<ListCollection<LibraryCellData, LibraryCell>>
-	allLibraryCells();
+       public:
+        Library() {}
 
-private:
+        //! @brief Returns an iterable collection of all library cells in the
+        //!        design.
+        //! @todo  This should be removed once we concentrate everything library
+        //!        related in Rsyn::Library.
+        Range<ListCollection<LibraryCellData, LibraryCell>> allLibraryCells();
 
-	Library(LibraryData * data) : Proxy(data) {}
-}; // end class
+       private:
+        Library(LibraryData* data) : Proxy(data) {}
+};  // end class
 
 // -----------------------------------------------------------------------------
 
-} // end method
+}  // end method

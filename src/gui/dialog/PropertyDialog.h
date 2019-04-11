@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_QT_PROPERTY_DIALOG_H
 #define RSYN_QT_PROPERTY_DIALOG_H
 
@@ -25,17 +25,17 @@ namespace Rsyn {
 
 namespace QtUtils {
 class QTreeDescriptor;
-} // end namespace
+}  // end namespace
 
 class PropertyDialog : public QDialog, public Ui::PropertyDialog {
-    Q_OBJECT
-public:
-    PropertyDialog(QWidget *parent = 0);
-	void setProperties(const QtUtils::QTreeDescriptor &properties);
-private:
+        Q_OBJECT
+       public:
+        PropertyDialog(QWidget *parent = 0);
+        void setProperties(const QtUtils::QTreeDescriptor &properties);
 
-}; // end class
+       private:
+};  // end class
 
-} // end namespace
+}  // end namespace
 
 #endif

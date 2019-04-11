@@ -23,13 +23,12 @@
 /* For updates, support, or to become part of the LEF/DEF Community,          */
 /* check www.openeda.org for details.                                         */
 /*                                                                            */
-/*  $Author: icftcm $                                                                  */
-/*  $Revision: #1 $                                                                */
-/*  $Date: 2014/02/10 $                                                                    */
+/*  $Author: icftcm $ */
+/*  $Revision: #1 $ */
+/*  $Date: 2014/02/10 $ */
 /*  $State:  $                                                                */
 /* ************************************************************************** */
 /* ************************************************************************** */
-
 
 #ifndef CDEFITIMINGDISABLE_H
 #define CDEFITIMINGDISABLE_H
@@ -40,21 +39,22 @@
 /* A Timing disable can be a from-to  or a thru or a macro.                   */
 /*   A macro is either a fromto macro or a thru macro.                        */
 
-EXTERN int defiTimingDisable_hasMacroThru (const defiTimingDisable* obj);
-EXTERN int defiTimingDisable_hasMacroFromTo (const defiTimingDisable* obj);
-EXTERN int defiTimingDisable_hasThru (const defiTimingDisable* obj);
-EXTERN int defiTimingDisable_hasFromTo (const defiTimingDisable* obj);
-EXTERN int defiTimingDisable_hasReentrantPathsFlag (const defiTimingDisable* obj);
+EXTERN int defiTimingDisable_hasMacroThru(const defiTimingDisable* obj);
+EXTERN int defiTimingDisable_hasMacroFromTo(const defiTimingDisable* obj);
+EXTERN int defiTimingDisable_hasThru(const defiTimingDisable* obj);
+EXTERN int defiTimingDisable_hasFromTo(const defiTimingDisable* obj);
+EXTERN int defiTimingDisable_hasReentrantPathsFlag(
+    const defiTimingDisable* obj);
 
-EXTERN const char* defiTimingDisable_fromPin (const defiTimingDisable* obj);
-EXTERN const char* defiTimingDisable_toPin (const defiTimingDisable* obj);
-EXTERN const char* defiTimingDisable_fromInst (const defiTimingDisable* obj);
-EXTERN const char* defiTimingDisable_toInst (const defiTimingDisable* obj);
-EXTERN const char* defiTimingDisable_macroName (const defiTimingDisable* obj);
-EXTERN const char* defiTimingDisable_thruPin (const defiTimingDisable* obj);
-EXTERN const char* defiTimingDisable_thruInst (const defiTimingDisable* obj);
+EXTERN const char* defiTimingDisable_fromPin(const defiTimingDisable* obj);
+EXTERN const char* defiTimingDisable_toPin(const defiTimingDisable* obj);
+EXTERN const char* defiTimingDisable_fromInst(const defiTimingDisable* obj);
+EXTERN const char* defiTimingDisable_toInst(const defiTimingDisable* obj);
+EXTERN const char* defiTimingDisable_macroName(const defiTimingDisable* obj);
+EXTERN const char* defiTimingDisable_thruPin(const defiTimingDisable* obj);
+EXTERN const char* defiTimingDisable_thruInst(const defiTimingDisable* obj);
 
-  /* debug print                                                              */
-EXTERN void defiTimingDisable_print (const defiTimingDisable* obj, FILE*  f);
+/* debug print                                                              */
+EXTERN void defiTimingDisable_print(const defiTimingDisable* obj, FILE* f);
 
 #endif

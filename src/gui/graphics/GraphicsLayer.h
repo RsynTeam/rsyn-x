@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_GRAPHICS_LAYER_H
 #define RSYN_GRAPHICS_LAYER_H
 
@@ -28,93 +28,83 @@ class GraphicsItemLookup;
 class GraphicsItemGridLookup;
 
 class GraphicsLayerDescriptor {
-public:
-	GraphicsLayerDescriptor();
+       public:
+        GraphicsLayerDescriptor();
 
-	GraphicsLayerDescriptor(const std::string name, const bool visible = false) :
-		clsName(name), clsVisible(visible) {}
+        GraphicsLayerDescriptor(const std::string name,
+                                const bool visible = false)
+            : clsName(name), clsVisible(visible) {}
 
-	const std::string &getName() const {return clsName;}
-	bool getVisible() const {return clsVisible;}
+        const std::string &getName() const { return clsName; }
+        bool getVisible() const { return clsVisible; }
 
-private:
-	std::string clsName;
-	bool clsVisible = false;
-}; // end class
+       private:
+        std::string clsName;
+        bool clsVisible = false;
+};  // end class
 
 class GraphicsLayer {
-friend class GraphicsScene;
-public:
+        friend class GraphicsScene;
 
-	GraphicsLayer();
-	~GraphicsLayer();
+       public:
+        GraphicsLayer();
+        ~GraphicsLayer();
 
-	virtual void render(QPainter *painter, const float lod, const QRectF &exposedRect);
+        virtual void render(QPainter *painter, const float lod,
+                            const QRectF &exposedRect);
 
-	virtual void setScene(GraphicsScene *scene);
+        virtual void setScene(GraphicsScene *scene);
 
-	GraphicsScene *getScene() const {return clsScene;}
-	const GraphicsItemLookup *getLookup() const;
+        GraphicsScene *getScene() const { return clsScene; }
+        const GraphicsItemLookup *getLookup() const;
 
-	//! @brief Adds an item to this graphics layer. The graphics layer takes
-	//! ownership of the item (i.e. it is responsible to delete it).
-	void addItem(GraphicsItem *item);
+        //! @brief Adds an item to this graphics layer. The graphics layer takes
+        //! ownership of the item (i.e. it is responsible to delete it).
+        void addItem(GraphicsItem *item);
 
-	//! @brief Removes an item from this layer. The item is not deleted and the
-	//! layer loses ownership over it.
-	void removeItem(GraphicsItem *item);
+        //! @brief Removes an item from this layer. The item is not deleted and
+        //! the
+        //! layer loses ownership over it.
+        void removeItem(GraphicsItem *item);
 
-	//! @brief
-	const QBrush &getBrush() const {
-		return clsBrush;
-	} // end method
+        //! @brief
+        const QBrush &getBrush() const { return clsBrush; }  // end method
 
-	//! @brief
-	const QPen &getPen() const {
-		return clsPen;
-	} // end method
+        //! @brief
+        const QPen &getPen() const { return clsPen; }  // end method
 
-	//! @brief
-	void setBrush(const QBrush &brush) {
-		clsBrush = brush;
-	} // end method
+        //! @brief
+        void setBrush(const QBrush &brush) { clsBrush = brush; }  // end method
 
-	//! @brief
-	void setPen(const QPen &pen) {
-		clsPen = pen;
-	} // end method
+        //! @brief
+        void setPen(const QPen &pen) { clsPen = pen; }  // end method
 
-	//! @brief
-	float getZOrder() {
-		return clsZOrder;
-	} // end method
+        //! @brief
+        float getZOrder() { return clsZOrder; }  // end method
 
-	//! @brief
-	void setZOrder(const float z);
+        //! @brief
+        void setZOrder(const float z);
 
-	//! @biref
-	void setVisibilityKey(const std::string &key) {
-		clsVisibilityKey = key;
-	} // end method
+        //! @biref
+        void setVisibilityKey(const std::string &key) {
+                clsVisibilityKey = key;
+        }  // end method
 
-	//! @brief Returns the top most item at position (x, y).
-	GraphicsItem *getItemAt(const qreal x, const qreal y) const;
+        //! @brief Returns the top most item at position (x, y).
+        GraphicsItem *getItemAt(const qreal x, const qreal y) const;
 
-protected:
-	
-	QBrush clsBrush;
-	QPen clsPen;
+       protected:
+        QBrush clsBrush;
+        QPen clsPen;
 
-private:
+       private:
+        GraphicsScene *clsScene = nullptr;
+        GraphicsItemGridLookup *clsLookup = nullptr;
 
-	GraphicsScene *clsScene = nullptr;
-	GraphicsItemGridLookup *clsLookup = nullptr;
+        float clsZOrder = 0;
+        std::string clsVisibilityKey;
+};  // end clas
 
-	float clsZOrder = 0;
-	std::string clsVisibilityKey;
-}; // end clas
-
-} // end namespae
+}  // end namespae
 
 #endif
-

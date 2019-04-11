@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 // TODO create a base class for everyone...
-	
-} // end namespace
+
+}  // end namespace

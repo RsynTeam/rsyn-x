@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   DensityGridBlockage.h
  * Author: jucemar
  *
@@ -29,7 +29,6 @@
 #ifndef GRIDAREABLOCKAGE_H
 #define GRIDAREABLOCKAGE_H
 
-
 #include "core/Rsyn.h"
 #include "util/Bounds.h"
 #include <vector>
@@ -37,20 +36,20 @@
 namespace Rsyn {
 
 class DensityGridBlockage {
-public:
-	std::vector<Bounds> clsBounds;
-	Instance clsInstance;
-public:
-	DensityGridBlockage() { }
-	std::size_t getNumBounds() const { return clsBounds.size(); }
-	bool hasBounds() const { return !clsBounds.empty(); }
-	const std::vector<Bounds> & allBounds() const { return clsBounds; }
-	
-	Instance getInstance() const { return clsInstance; }
-	bool hasInstance() const { return clsInstance != nullptr; }
-}; // end class 
+       public:
+        std::vector<Bounds> clsBounds;
+        Instance clsInstance;
 
-} // end namespace 
+       public:
+        DensityGridBlockage() {}
+        std::size_t getNumBounds() const { return clsBounds.size(); }
+        bool hasBounds() const { return !clsBounds.empty(); }
+        const std::vector<Bounds>& allBounds() const { return clsBounds; }
+
+        Instance getInstance() const { return clsInstance; }
+        bool hasInstance() const { return clsInstance != nullptr; }
+};  // end class
+
+}  // end namespace
 
 #endif /* GRIDAREABLOCKAGE_H */
-

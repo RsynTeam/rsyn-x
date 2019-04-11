@@ -13,17 +13,15 @@
  * limitations under the License.
  */
 
-#include "session/Session.h"
-#include "gui/graphics/LayoutGraphicsScene.h"
+#include <Rsyn/Session>
+#include "gui/window/MainWindow.h"
 
 // Overlays
-#include "gui/overlay/DensityGridOverlay.h"
+#include "gui/overlay/example/ExampleOverlay.h"
 
 // Registration
 namespace Rsyn {
 static Startup registerOverlays([] {
-        LayoutGraphicsScene::registerOverlay<Rsyn::DensityGridOverlay>();
-
         // MainWindow::registerOverlay<RsynExample::ExampleOverlay>();
 });
 }  // end namespace

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * SPEFControlParser.cpp
  *
@@ -22,35 +22,32 @@
 
 #include "SPEFControlParser.h"
 
-SPEFControlParser::SPEFControlParser() {
-}  // end constructor
+SPEFControlParser::SPEFControlParser() {}  // end constructor
 
 // -----------------------------------------------------------------------------
 
-void SPEFControlParser::parseSPEF(const string &filename, ISPD13::SPEFInfo &spefInfos) {
-	ISPD13::SpefParser spefParse(filename);
+void SPEFControlParser::parseSPEF(const string &filename,
+                                  ISPD13::SPEFInfo &spefInfos) {
+        ISPD13::SpefParser spefParse(filename);
 
-	bool valid;
-	do {
-        ISPD13::SpefNet spefNet;
-		valid = spefParse.read_net_data(spefNet);
-		if (!valid)
-			break;
-		//spefInfos.SPEFNets.push_back(spefNet);
-		spefInfos.addNet(spefNet);
+        bool valid;
+        do {
+                ISPD13::SpefNet spefNet;
+                valid = spefParse.read_net_data(spefNet);
+                if (!valid) break;
+                // spefInfos.SPEFNets.push_back(spefNet);
+                spefInfos.addNet(spefNet);
 
-		spefNet.clear();
+                spefNet.clear();
 
-	} while (valid);
-    cout << "\tRead " << spefInfos.getSize() << " SPEF nets." << "\n";
+        } while (valid);
+        cout << "\tRead " << spefInfos.getSize() << " SPEF nets."
+             << "\n";
 
-} // end method
-
-// -----------------------------------------------------------------------------
-
-SPEFControlParser::~SPEFControlParser() {
-
-} // end destructor
+}  // end method
 
 // -----------------------------------------------------------------------------
 
+SPEFControlParser::~SPEFControlParser() {}  // end destructor
+
+// -----------------------------------------------------------------------------

@@ -12,44 +12,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Rsyn {
 
 // -----------------------------------------------------------------------------
 
-inline
-Pin 
-Port::getInnerPin() const {
-	// Ports have just one pin, which is the inner pin...
-	return data->pins[0];
-} // end method
+inline Pin Port::getInnerPin() const {
+        // Ports have just one pin, which is the inner pin...
+        return data->pins[0];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-Pin 
-Port::getOuterPin() const {
-	return Pin(data->outerPin);
-} // end method
+inline Pin Port::getOuterPin() const {
+        return Pin(data->outerPin);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-Pin 
-Port::getOtherPin(Pin pin) const {
-	Rsyn::Pin inner = getInnerPin();
-	Rsyn::Pin outer = getOuterPin();
-	if (inner == pin) return outer;
-	if (outer == pin) return inner;
-	return nullptr;
-} // end method
+inline Pin Port::getOtherPin(Pin pin) const {
+        Rsyn::Pin inner = getInnerPin();
+        Rsyn::Pin outer = getOuterPin();
+        if (inner == pin) return outer;
+        if (outer == pin) return inner;
+        return nullptr;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline
-Direction
-Port::getDirection() const {
-	return Global::getReverseDirection(getInnerPin().getDirection());
-} // end method
-	
-} // end namespace
+inline Direction Port::getDirection() const {
+        return Global::getReverseDirection(getInnerPin().getDirection());
+}  // end method
+
+}  // end namespace

@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PhysicalModule.h
  * Author: jucemar
  *
@@ -32,18 +32,22 @@
 namespace Rsyn {
 
 class PhysicalModule : public PhysicalInstance {
-	friend class PhysicalDesign;
-protected:
-	//! @brief Constructs a Rsyn::PhysicalModule object with a pointer to Rsyn::PhysicalInstanceData.
-	PhysicalModule(PhysicalInstanceData * data) : PhysicalInstance(data) {}
-public:
-	//! @brief Constructs a Rsyn::PhysicalModule object with a null pointer to Rsyn::PhysicalInstanceData.
-	PhysicalModule() : PhysicalInstance(nullptr) {}
-	//! @brief Constructs a Rsyn::PhysicalModule object with a null pointer to Rsyn::PhysicalInstanceData.
-	PhysicalModule(std::nullptr_t) : PhysicalInstance(nullptr) {}
-}; // end class
+        friend class PhysicalDesign;
 
-} // end namespace 
+       protected:
+        //! @brief Constructs a Rsyn::PhysicalModule object with a pointer to
+        //! Rsyn::PhysicalInstanceData.
+        PhysicalModule(PhysicalInstanceData* data) : PhysicalInstance(data) {}
+
+       public:
+        //! @brief Constructs a Rsyn::PhysicalModule object with a null pointer
+        //! to Rsyn::PhysicalInstanceData.
+        PhysicalModule() : PhysicalInstance(nullptr) {}
+        //! @brief Constructs a Rsyn::PhysicalModule object with a null pointer
+        //! to Rsyn::PhysicalInstanceData.
+        PhysicalModule(std::nullptr_t) : PhysicalInstance(nullptr) {}
+};  // end class
+
+}  // end namespace
 
 #endif /* PHYSICALDESIGN_PHYSICALMODULE_H */
-

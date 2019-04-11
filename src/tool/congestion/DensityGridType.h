@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/* 
+/*
  * File:   DensityGridType.h
  * Author: jucemar
  *
@@ -24,23 +24,26 @@
 #define DENSITYGRIDTYPE_H
 
 enum AreaType : std::int8_t {
-	INVALID_AREA_TYPE = -1,
-	FIXED_AREA = 0, /* Area summation of the FIXED cells that have intersection to the bin */
-	MOVABLE_AREA = 1, /* Area summation of the MOVABLE cells that have intersection to the bin */
-	PLACEABLE_AREA = 2, /* Area summation of the ROWS that have intersection to the bin */
-	NUM_AREAS = 3
-}; // end enum 
+        INVALID_AREA_TYPE = -1,
+        FIXED_AREA = 0,   /* Area summation of the FIXED cells that have
+                             intersection to the bin */
+        MOVABLE_AREA = 1, /* Area summation of the MOVABLE cells that have
+                             intersection to the bin */
+        PLACEABLE_AREA =
+            2, /* Area summation of the ROWS that have intersection to the bin
+                  */
+        NUM_AREAS = 3
+};  // end enum
 
 enum PinType : std::int8_t {
-	INVALID_PIN_TYPE = -1,
-	FIXED_PIN = 0, /* Pins from a FIXED cell that are inside of the bin */
-	MOVABLE_PIN = 1, /* Pins from a MOVABLE cell that are inside of the bin */
-	BLOCK_PIN = 2, /* Pins from a BLOCK cell that are inside of the bin */
-	CONNECTED_PIN = 3, /* Pins from a cell CONNECTED to a net that are inside of the bin */
-	NUM_PINS = 4
-}; // end enum 
-
-
+        INVALID_PIN_TYPE = -1,
+        FIXED_PIN = 0, /* Pins from a FIXED cell that are inside of the bin */
+        MOVABLE_PIN =
+            1,         /* Pins from a MOVABLE cell that are inside of the bin */
+        BLOCK_PIN = 2, /* Pins from a BLOCK cell that are inside of the bin */
+        CONNECTED_PIN = 3, /* Pins from a cell CONNECTED to a net that are
+                              inside of the bin */
+        NUM_PINS = 4
+};  // end enum
 
 #endif /* DENSITYGRIDTYPE_H */
-

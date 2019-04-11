@@ -31,10 +31,10 @@
    version 2.2 of Bison.  */
 
 #ifndef YY_LIBERTY_PARSER_LIBERTY_PARSER_H_INCLUDED
-# define YY_LIBERTY_PARSER_LIBERTY_PARSER_H_INCLUDED
+#define YY_LIBERTY_PARSER_LIBERTY_PARSER_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+#define YYDEBUG 0
 #endif
 #if YYDEBUG
 extern int liberty_parser_debug;
@@ -42,30 +42,29 @@ extern int liberty_parser_debug;
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-  enum yytokentype
-  {
-    COMMA = 258,
-    SEMI = 259,
-    LPAR = 260,
-    RPAR = 261,
-    LCURLY = 262,
-    RCURLY = 263,
-    COLON = 264,
-    KW_DEFINE = 265,
-    KW_DEFINE_GROUP = 266,
-    KW_TRUE = 267,
-    KW_FALSE = 268,
-    PLUS = 269,
-    MINUS = 270,
-    MULT = 271,
-    DIV = 272,
-    EQ = 273,
-    UNARY = 274,
-    NUM = 275,
-    STRING = 276,
-    IDENT = 277
-  };
+#define YYTOKENTYPE
+enum yytokentype {
+        COMMA = 258,
+        SEMI = 259,
+        LPAR = 260,
+        RPAR = 261,
+        LCURLY = 262,
+        RCURLY = 263,
+        COLON = 264,
+        KW_DEFINE = 265,
+        KW_DEFINE_GROUP = 266,
+        KW_TRUE = 267,
+        KW_FALSE = 268,
+        PLUS = 269,
+        MINUS = 270,
+        MULT = 271,
+        DIV = 272,
+        EQ = 273,
+        UNARY = 274,
+        NUM = 275,
+        STRING = 276,
+        IDENT = 277
+};
 #endif
 /* Tokens.  */
 #define COMMA 258
@@ -90,31 +89,28 @@ extern int liberty_parser_debug;
 #define IDENT 277
 
 /* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+#if !defined YYSTYPE && !defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE YYSTYPE;
-union YYSTYPE
-{
+union YYSTYPE {
 #line 71 "liberty_parser.y" /* yacc.c:1909  */
 
-      char *str;
-      xnumber num;
-      liberty_group *group;
-      liberty_attribute *attr;
-      liberty_attribute_value *val;
-      liberty_define *def;
-      liberty_head *head;
-      si2drExprT *expr;
-   
+        char *str;
+        xnumber num;
+        liberty_group *group;
+        liberty_attribute *attr;
+        liberty_attribute_value *val;
+        liberty_define *def;
+        liberty_head *head;
+        si2drExprT *expr;
 
 #line 110 "liberty_parser.h" /* yacc.c:1909  */
 };
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
+#define YYSTYPE_IS_TRIVIAL 1
+#define YYSTYPE_IS_DECLARED 1
 #endif
-
 
 extern YYSTYPE liberty_parser_lval;
 
-int liberty_parser_parse (void);
+int liberty_parser_parse(void);
 
 #endif /* !YY_LIBERTY_PARSER_LIBERTY_PARSER_H_INCLUDED  */

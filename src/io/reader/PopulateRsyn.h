@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PopulateRsyn.h
  * Author: jucemar
  *
@@ -38,37 +38,30 @@
 namespace Rsyn {
 
 class PopulateRsyn {
-public:
+       public:
+        PopulateRsyn() = default;
+        PopulateRsyn(const PopulateRsyn &orig) = default;
+        virtual ~PopulateRsyn() = default;
 
-	PopulateRsyn() = default;
-	PopulateRsyn(const PopulateRsyn& orig) = default;
-	virtual ~PopulateRsyn() = default;
-protected:
-	virtual void populateRsynLibraryFromLiberty(
-		const ISPD13::LIBInfo &lib,
-		Rsyn::Design rsynDesign);
+       protected:
+        virtual void populateRsynLibraryFromLiberty(const ISPD13::LIBInfo &lib,
+                                                    Rsyn::Design rsynDesign);
 
-	virtual void populateRsynLibraryFromLef(
-		const LefDscp &lefDscp,
-		Rsyn::Design rsynDesign);
+        virtual void populateRsynLibraryFromLef(const LefDscp &lefDscp,
+                                                Rsyn::Design rsynDesign);
 
-	virtual void populateRsynNetlistFromVerilog(
-		const Legacy::Design &verilogDesign,
-		Rsyn::Design rsynDesign);
+        virtual void populateRsynNetlistFromVerilog(
+            const Legacy::Design &verilogDesign, Rsyn::Design rsynDesign);
 
-	virtual void populateRsyn(
-		const LefDscp &lefDscp,
-		const DefDscp &defDscp,
-		const Legacy::Design &verilogDesign,
-		Rsyn::Design rsynDesign);
+        virtual void populateRsyn(const LefDscp &lefDscp,
+                                  const DefDscp &defDscp,
+                                  const Legacy::Design &verilogDesign,
+                                  Rsyn::Design rsynDesign);
 
-	virtual void populateRsyn(
-		const LefDscp &lefDscp,
-		const DefDscp &defDscp,
-		Rsyn::Design rsynDesign);
-
+        virtual void populateRsyn(const LefDscp &lefDscp,
+                                  const DefDscp &defDscp,
+                                  Rsyn::Design rsynDesign);
 };
 
-} // end namespace 
+}  // end namespace
 #endif /* RSYN_POPULATERSYN_H */
-

@@ -12,15 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "Session.h"
 #include "SessionObserver.h"
 
 namespace Rsyn {
 
 SessionObserver::~SessionObserver() {
-	Rsyn::Session session;
-	session.unregisterObserver(this);
-} // end destructor
+        Rsyn::Session session;
+        session.unregisterObserver(this);
+}  // end destructor
 
-} // end namaspace
+}  // end namaspace

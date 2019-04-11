@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef FASTPLACE_EXT_OPTO_H
 #define FASTPLACE_EXT_OPTO_H
 
@@ -21,27 +21,25 @@
 namespace Rsyn {
 class Timer;
 class Writer;
-} // end namespace
+}  // end namespace
 
 namespace ICCAD15 {
 
 class FastPlace : public Rsyn::Process {
-private:
-	Rsyn::Session session;
-	Rsyn::Design design;
-	Rsyn::Module module;
-	
-	Rsyn::Timer *timer;
-	Rsyn::Writer* writer;
-	
-	std::string createTemporaryDirectory();
-	bool exec(const std::string &cmd, std::ostream &out = std::cout);
-	
-public:
-	
-	virtual bool run(const Rsyn::Json &params);
-	
-}; // end class
+       private:
+        Rsyn::Session session;
+        Rsyn::Design design;
+        Rsyn::Module module;
 
+        Rsyn::Timer *timer;
+        Rsyn::Writer *writer;
+
+        std::string createTemporaryDirectory();
+        bool exec(const std::string &cmd, std::ostream &out = std::cout);
+
+       public:
+        virtual bool run(const Rsyn::Json &params);
+
+};  // end class
 }
 #endif

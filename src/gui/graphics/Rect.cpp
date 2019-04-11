@@ -27,16 +27,18 @@ namespace Rsyn {
 
 // -----------------------------------------------------------------------------
 
-RectGraphicsItem::RectGraphicsItem(Rsyn::Net net, const Rsyn::PhysicalRoutingRect &rect) : NetGraphicsItem(net) {
-	clsRect = QtUtils::convert(rect.getRect());
-	clsPhysicalLayer = rect.getLayer();
-} // end method
+RectGraphicsItem::RectGraphicsItem(Rsyn::Net net,
+                                   const Rsyn::PhysicalRoutingRect &rect)
+    : NetGraphicsItem(net) {
+        clsRect = QtUtils::convert(rect.getRect());
+        clsPhysicalLayer = rect.getLayer();
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-void
-RectGraphicsItem::render(GraphicsScene *scene, QPainter *painter, const float lod, const QRectF &exposedRect) {
-	painter->drawRect(clsRect);
-} // end method
+void RectGraphicsItem::render(GraphicsScene *scene, QPainter *painter,
+                              const float lod, const QRectF &exposedRect) {
+        painter->drawRect(clsRect);
+}  // end method
 
-} // end namespace
+}  // end namespace

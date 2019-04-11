@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_STANDARD_CELL_GRAPHICS_ITEM_H
 #define RSYN_STANDARD_CELL_GRAPHICS_ITEM_H
 
@@ -23,17 +23,18 @@
 namespace Rsyn {
 
 //! @brief A graphics item representing a standard cell.
-class StandardCellGraphicsItem : public CellGraphicsItem  {
-public:
+class StandardCellGraphicsItem : public CellGraphicsItem {
+       public:
+        StandardCellGraphicsItem(Rsyn::Cell cell)
+            : CellGraphicsItem(cell) {}  // end constructor
 
-	StandardCellGraphicsItem(Rsyn::Cell cell) : CellGraphicsItem(cell) {
-	} // end constructor
+        virtual void render(GraphicsScene *scene, QPainter *painter,
+                            const float lod,
+                            const QRectF &exposedRect) override;
 
-	virtual void render(GraphicsScene *scene, QPainter *painter, const float lod, const QRectF &exposedRect) override;
+       private:
+};  // end class
 
-private:
-}; // end class
-
-} // end namespace
+}  // end namespace
 
 #endif

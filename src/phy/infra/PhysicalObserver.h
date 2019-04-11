@@ -12,39 +12,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_PHYSICAL_OBSERVER_H
 #define RSYN_PHYSICAL_OBSERVER_H
 
 namespace Rsyn {
 
 class PhysicalDesignObserver {
-friend class Rsyn::PhysicalDesign;
-private:
-	PhysicalDesign clsPhDesign;
+        friend class Rsyn::PhysicalDesign;
 
-public:
-	
-	// Note: The observer will not be registered to receive notifications for
-	// methods that it does not overwrite. Therefore, no runtime overhead for
-	// handling undesired notifications.
+       private:
+        PhysicalDesign clsPhDesign;
 
-	virtual void
-	onPhysicalDesignDestruction() {}
+       public:
+        // Note: The observer will not be registered to receive notifications
+        // for
+        // methods that it does not overwrite. Therefore, no runtime overhead
+        // for
+        // handling undesired notifications.
 
-	virtual void
-	onPostNetRoutingChange(Rsyn::PhysicalNet physicalNet) {}
-	
-	virtual
-	~PhysicalDesignObserver() {
-		if (clsPhDesign)
-			clsPhDesign.unregisterObserver(this);
-	} // end destructor
+        virtual void onPhysicalDesignDestruction() {}
 
-}; // end class
+        virtual void onPostNetRoutingChange(Rsyn::PhysicalNet physicalNet) {}
 
-} // end namespace
+        virtual ~PhysicalDesignObserver() {
+                if (clsPhDesign) clsPhDesign.unregisterObserver(this);
+        }  // end destructor
 
+};  // end class
+
+}  // end namespace
 
 #endif /* RSYN_PHYSICALOBSERVER_H */
-

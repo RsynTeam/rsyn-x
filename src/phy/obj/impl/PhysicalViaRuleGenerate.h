@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/* 
+/*
  * File:   PhysicalViaGenerate.h
  * Author: jucemar
  *
@@ -23,58 +23,60 @@
 namespace Rsyn {
 
 inline int PhysicalViaRuleGenerate::getRelativeIndex() const {
-	return data->clsRelativeIndex;
-} // end method 
+        return data->clsRelativeIndex;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline bool PhysicalViaRuleGenerate::isDefault() const {
-	return data->clsIsDefault;
-} // end method 
+        return data->clsIsDefault;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline Rsyn::PhysicalLayer PhysicalViaRuleGenerate::getLayer(const Rsyn::PhysicalViaLayerType layer) const {
-	return Rsyn::PhysicalLayer(data->clsLayers[layer]);
-} // end method 
+inline Rsyn::PhysicalLayer PhysicalViaRuleGenerate::getLayer(
+    const Rsyn::PhysicalViaLayerType layer) const {
+        return Rsyn::PhysicalLayer(data->clsLayers[layer]);
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline DBU PhysicalViaRuleGenerate::getEnclosure1(const Rsyn::ViaLevel level) const {
-	return data->clsEnclosure1[level];
-} // end method 
+inline DBU PhysicalViaRuleGenerate::getEnclosure1(
+    const Rsyn::ViaLevel level) const {
+        return data->clsEnclosure1[level];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-inline DBU PhysicalViaRuleGenerate::getEnclosure2(const Rsyn::ViaLevel level) const {
-	return data->clsEnclosure2[level];
-} // end method 
+inline DBU PhysicalViaRuleGenerate::getEnclosure2(
+    const Rsyn::ViaLevel level) const {
+        return data->clsEnclosure2[level];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline Bounds PhysicalViaRuleGenerate::getCutBounds() const {
-	return data->clsCutBounds;
-} // end method 
+        return data->clsCutBounds;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline DBU PhysicalViaRuleGenerate::getCutSpacing(const Dimension dim) const {
-	return data->clsCutSpacing[dim];
-} // end method 
+        return data->clsCutSpacing[dim];
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline bool PhysicalViaRuleGenerate::hasCutResistance() const {
-	return data->clsHasCutResistance;
-} // end method 
+        return data->clsHasCutResistance;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
 inline float PhysicalViaRuleGenerate::getCutResistance() const {
-	return data->clsCutResistance;
-} // end method 
+        return data->clsCutResistance;
+}  // end method
 
 // -----------------------------------------------------------------------------
 
-
-} // end namespace 
+}  // end namespace

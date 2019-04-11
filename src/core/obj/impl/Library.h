@@ -15,10 +15,9 @@
 
 namespace Rsyn {
 
-inline
-Range<ListCollection<LibraryCellData, LibraryCell>>
+inline Range<ListCollection<LibraryCellData, LibraryCell>>
 Library::allLibraryCells() {
-	return Rsyn::Design(data->designData).allLibraryCells(false);
-} // end method
+        return Rsyn::Design(data->designData).allLibraryCells(false);
+}  // end method
 
-} // end namespace
+}  // end namespace

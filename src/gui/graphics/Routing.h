@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_ROUTING_GRAPHICS_LAYER_H
 #define RSYN_ROUTING_GRAPHICS_LAYER_H
 
@@ -30,50 +30,52 @@ class LayoutGraphicsScene;
 class RoutingGuide;
 
 class RoutingLayoutGraphicsLayer : public LayoutGraphicsLayer {
-public:
+       public:
+        RoutingLayoutGraphicsLayer(Rsyn::PhysicalLayer physicalLayer);
+        ~RoutingLayoutGraphicsLayer();
 
-    RoutingLayoutGraphicsLayer(Rsyn::PhysicalLayer physicalLayer);
-	~RoutingLayoutGraphicsLayer();
+        virtual bool init(
+            LayoutGraphicsScene *scene,
+            std::vector<GraphicsLayerDescriptor> &visibilityItems) override;
 
-	virtual bool init(LayoutGraphicsScene *scene, std::vector<GraphicsLayerDescriptor> &visibilityItems) override;
+        virtual void render(QPainter *painter, const float lod,
+                            const QRectF &exposedRect) override;
 
-	virtual void render(QPainter *painter, const float lod, const QRectF &exposedRect) override;
+        void setTopLayerBrush(const QBrush &brush) {
+                clsTopLayerBrush = brush;
+        }  // end method
 
-	void setTopLayerBrush(const QBrush &brush) {
-		clsTopLayerBrush = brush;
-	} // end method
+        void setTopLayerPen(const QPen &pen) {
+                clsTopLayerPen = pen;
+        }  // end method
 
-	void setTopLayerPen(const QPen &pen) {
-		clsTopLayerPen = pen;
-	} // end method
+        void setBottomLayerBrush(const QBrush &brush) {
+                clsBottomLayerBrush = brush;
+        }  // end method
 
-	void setBottomLayerBrush(const QBrush &brush) {
-		clsBottomLayerBrush = brush;
-	} // end method
+        void setBottomLayerPen(const QPen &pen) {
+                clsBottomLayerPen = pen;
+        }  // end method
 
-	void setBottomLayerPen(const QPen &pen) {
-		clsBottomLayerPen = pen;
-	} // end method
+       private:
+        void renderRoutingGuides(QPainter *painter, const float lod);
+        void renderTracks(QPainter *painter, const float lod,
+                          const QRectF &exposedRect);
 
-private:
+        Rsyn::PhysicalDesign clsPhysicalDesign;
+        Rsyn::PhysicalLayer clsPhysicalLayer;
+        Rsyn::PhysicalRoutingGrid clsPhysicalRoutingGrid;
 
-	void renderRoutingGuides(QPainter *painter, const float lod);
-	void renderTracks(QPainter *painter, const float lod, const QRectF &exposedRect);
+        Rsyn::RoutingGuide *clsRoutingGuide = nullptr;
 
-	Rsyn::PhysicalDesign clsPhysicalDesign;
-	Rsyn::PhysicalLayer clsPhysicalLayer;
-	Rsyn::PhysicalRoutingGrid clsPhysicalRoutingGrid;
+        QBrush clsTopLayerBrush;
+        QPen clsTopLayerPen;
 
-	Rsyn::RoutingGuide *clsRoutingGuide = nullptr;
+        QBrush clsBottomLayerBrush;
+        QPen clsBottomLayerPen;
 
-	QBrush clsTopLayerBrush;
-	QPen clsTopLayerPen;
+};  // end class
 
-	QBrush clsBottomLayerBrush;
-	QPen clsBottomLayerPen;
-
-}; // end class
-
-} // end namespace
+}  // end namespace
 
 #endif

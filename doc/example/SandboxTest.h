@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef SANDBOX_TEST_H
 #define SANDBOX_TEST_H
 
@@ -24,18 +24,17 @@
 namespace Testing {
 
 class SandboxTest : public Rsyn::Process {
-private:
-	Rsyn::Session session;
-	Rsyn::Design design;
-	Rsyn::Module module;
+       private:
+        Rsyn::Session session;
+        Rsyn::Design design;
+        Rsyn::Module module;
 
-	void test();
+        void test();
 
-public:
+       public:
+        virtual bool run(const Rsyn::Json &params);
+};  // end class
 
-	virtual bool run(const Rsyn::Json &params);
-}; // end class
-
-} // end namespace
+}  // end namespace
 
 #endif

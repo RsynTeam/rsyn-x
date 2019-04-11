@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef RSYN_ISPD2014READER_H
 #define RSYN_ISPD2014READER_H
 
@@ -22,20 +22,19 @@
 namespace Rsyn {
 
 class ISPD2014Reader : public Reader {
-protected:
-	Rsyn::Session session;
-	Rsyn::Design clsDesign;
-	Rsyn::Module clsModule;
+       protected:
+        Rsyn::Session session;
+        Rsyn::Design clsDesign;
+        Rsyn::Module clsModule;
 
-public:
-	ISPD2014Reader() {}
-	ISPD2014Reader(const ISPD2014Reader& orig) {}
-	virtual ~ISPD2014Reader() {}
-	virtual bool load(const Rsyn::Json &params) override;
+       public:
+        ISPD2014Reader() {}
+        ISPD2014Reader(const ISPD2014Reader& orig) {}
+        virtual ~ISPD2014Reader() {}
+        virtual bool load(const Rsyn::Json& params) override;
 
-}; // end class 
+};  // end class
 
-} // end namespace 
+}  // end namespace
 
 #endif /* RSYN_ISPD2014READER_H */
-

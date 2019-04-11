@@ -12,17 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   newClass.cpp
  * Author: jucemar
- * 
+ *
  * Created on 20 de Fevereiro de 2017, 19:09
  */
 
@@ -38,143 +38,146 @@
 
 #include "util/Stepwatch.h"
 
-
 namespace Rsyn {
 
-bool SizingISPDReader::load(const Rsyn::Json & config) {
-	std::string path = config.value("path", "");
-	std::string optionBenchmark = config.value("name", "");
-	std::string optionLibrary = config.value("library", "");
+bool SizingISPDReader::load(const Rsyn::Json &config) {
+        std::string path = config.value("path", "");
+        std::string optionBenchmark = config.value("name", "");
+        std::string optionLibrary = config.value("library", "");
         std::string optionNetModel = config.value("netModel", "");
-        
+
         RCTreeExtractor::SPEFNetModel netModel;
-        
+
         if (optionNetModel == "LumpedCapacitanceNetModel")
-            netModel = RCTreeExtractor::LUMPED_CAPACITANCE_NET_MODEL;
+                netModel = RCTreeExtractor::LUMPED_CAPACITANCE_NET_MODEL;
         else if (optionNetModel == "RCTreeNetModel")
-            netModel = RCTreeExtractor::RC_TREE_NET_MODEL;
+                netModel = RCTreeExtractor::RC_TREE_NET_MODEL;
         else {
-            std::cout << "\nWarning: Invalid net model specified. Assuming lumped capacitance net model.\n";
-            netModel = RCTreeExtractor::LUMPED_CAPACITANCE_NET_MODEL;
+                std::cout << "\nWarning: Invalid net model specified. Assuming "
+                             "lumped capacitance net model.\n";
+                netModel = RCTreeExtractor::LUMPED_CAPACITANCE_NET_MODEL;
         }
-        
-	const char separator = boost::filesystem::path::preferred_separator;
-	
-	std::cout << "Path: " << path << "\n";
-	std::cout << "Benchmark: " << optionBenchmark << "\n";
-	std::cout << "Library: " << optionLibrary << "\n";
 
-	Legacy::Design verilogDesignDescriptor;
-	ISPD13::LIBInfo libInfo;
-	ISPD13::SPEFInfo spefInfo;
-	ISPD13::SDCInfo sdcInfo;
-	
-	const std::string fileNameVerilog = path + separator +
-			optionBenchmark + ".v";
-	const std::string fileNameSdc = path + separator +
-			optionBenchmark + ".sdc";
-	const std::string fileNameSpef = path + separator +
-			optionBenchmark + ".spef";
-	const std::string fileNameLiberty = path + separator +
-			optionLibrary;
+        const char separator = boost::filesystem::path::preferred_separator;
 
-	clsDesign = session.getDesign();
-	clsLibrary = session.getLibrary();
-	{ // Liberty
-		Stepwatch watchParsingLiberty("Parsing Liberty");
-		LibertyControlParser libParser;
-		libParser.parseLiberty(fileNameLiberty, libInfo);
-		watchParsingLiberty.finish();
-		Reader::populateRsynLibraryFromLiberty(libInfo, clsDesign);
-	} // end block
+        std::cout << "Path: " << path << "\n";
+        std::cout << "Benchmark: " << optionBenchmark << "\n";
+        std::cout << "Library: " << optionLibrary << "\n";
 
-	{ // Verilog
-		Stepwatch watchParsingVerilog("Parsing Verilog");
-		Parsing::SimplifiedVerilogReader parser(verilogDesignDescriptor);
-		parser.parseFromFile(fileNameVerilog);
-		watchParsingVerilog.finish();
-		Reader::populateRsynNetlistFromVerilog(verilogDesignDescriptor, clsDesign);
-	} // end block
+        Legacy::Design verilogDesignDescriptor;
+        ISPD13::LIBInfo libInfo;
+        ISPD13::SPEFInfo spefInfo;
+        ISPD13::SDCInfo sdcInfo;
 
-	{ // SDC
-		Stepwatch watchParsingSdc("Parsing SDC");
-		SDCControlParser sdcParser;
-		sdcParser.parseSDC_iccad15(fileNameSdc, sdcInfo);
-		watchParsingSdc.finish();
-	 } // end block
+        const std::string fileNameVerilog =
+            path + separator + optionBenchmark + ".v";
+        const std::string fileNameSdc =
+            path + separator + optionBenchmark + ".sdc";
+        const std::string fileNameSpef =
+            path + separator + optionBenchmark + ".spef";
+        const std::string fileNameLiberty = path + separator + optionLibrary;
 
-	{ // SPEF
-		Stepwatch watchParsingSptef("Parsing SPEF");
-		SPEFControlParser spefParser;
-		spefParser.parseSPEF(fileNameSpef, spefInfo);
-		watchParsingSptef.finish();
-	} // end block
+        clsDesign = session.getDesign();
+        clsLibrary = session.getLibrary();
+        {  // Liberty
+                Stepwatch watchParsingLiberty("Parsing Liberty");
+                LibertyControlParser libParser;
+                libParser.parseLiberty(fileNameLiberty, libInfo);
+                watchParsingLiberty.finish();
+                Reader::populateRsynLibraryFromLiberty(libInfo, clsDesign);
+        }  // end block
 
-	// Services
-	session.startService("rsyn.scenario", {});
-	session.startService("rsyn.routingEstimator", {});
-	session.startService("rsyn.timer", {});
-	session.startService("rsyn.defaultTimingModel", {});
+        {  // Verilog
+                Stepwatch watchParsingVerilog("Parsing Verilog");
+                Parsing::SimplifiedVerilogReader parser(
+                    verilogDesignDescriptor);
+                parser.parseFromFile(fileNameVerilog);
+                watchParsingVerilog.finish();
+                Reader::populateRsynNetlistFromVerilog(verilogDesignDescriptor,
+                                                       clsDesign);
+        }  // end block
 
-	Timer *timer = session.getService("rsyn.timer");
-	RoutingEstimator *routingEstimator = session.getService("rsyn.routingEstimator");
-	DefaultTimingModel* timingModel = session.getService("rsyn.defaultTimingModel");
-	Scenario *scenario = session.getService("rsyn.scenario");
+        {  // SDC
+                Stepwatch watchParsingSdc("Parsing SDC");
+                SDCControlParser sdcParser;
+                sdcParser.parseSDC_iccad15(fileNameSdc, sdcInfo);
+                watchParsingSdc.finish();
+        }  // end block
 
-	{ // Scenario
-		Stepwatch watchScenario("Initializing scenario manager");
-		scenario->init(clsDesign, clsLibrary, libInfo, libInfo, sdcInfo);
-		watchScenario.finish();
-	} // end block
+        {  // SPEF
+                Stepwatch watchParsingSptef("Parsing SPEF");
+                SPEFControlParser spefParser;
+                spefParser.parseSPEF(fileNameSpef, spefInfo);
+                watchParsingSptef.finish();
+        }  // end block
 
-	{ // Routing Estimator
-		Stepwatch updateSteiner("Initializing routing estimator");
-		routingEstimator->setRoutingEstimationModel(nullptr); // not necessary, just for clarity
-		routingEstimator->setRoutingExtractionModel(nullptr); // not necessary, just for clarity
-		routingEstimator->updateRoutingFull();
-		updateSteiner.finish();
-	} // end block
+        // Services
+        session.startService("rsyn.scenario", {});
+        session.startService("rsyn.routingEstimator", {});
+        session.startService("rsyn.timer", {});
+        session.startService("rsyn.defaultTimingModel", {});
 
-	{ // Timer Initialization
-		Stepwatch watchInit("Initializing timer");
-		timer->init(
-				clsDesign,
-				session,
-				scenario,
-				libInfo,
-				libInfo);
-		timer->setTimingModel(timingModel);
-		timer->setInputDriverDelayMode(Timer::INPUT_DRIVER_DELAY_MODE_PRIME_TIME);
-		watchInit.finish();
-	} // end block
+        Timer *timer = session.getService("rsyn.timer");
+        RoutingEstimator *routingEstimator =
+            session.getService("rsyn.routingEstimator");
+        DefaultTimingModel *timingModel =
+            session.getService("rsyn.defaultTimingModel");
+        Scenario *scenario = session.getService("rsyn.scenario");
 
-	{ // Setup user-specified interconnection
-            
-            Stepwatch watchRCTreeInit("Building RC Tree");
-            
+        {  // Scenario
+                Stepwatch watchScenario("Initializing scenario manager");
+                scenario->init(clsDesign, clsLibrary, libInfo, libInfo,
+                               sdcInfo);
+                watchScenario.finish();
+        }  // end block
+
+        {  // Routing Estimator
+                Stepwatch updateSteiner("Initializing routing estimator");
+                routingEstimator->setRoutingEstimationModel(
+                    nullptr);  // not necessary, just for clarity
+                routingEstimator->setRoutingExtractionModel(
+                    nullptr);  // not necessary, just for clarity
+                routingEstimator->updateRoutingFull();
+                updateSteiner.finish();
+        }  // end block
+
+        {  // Timer Initialization
+                Stepwatch watchInit("Initializing timer");
+                timer->init(clsDesign, session, scenario, libInfo, libInfo);
+                timer->setTimingModel(timingModel);
+                timer->setInputDriverDelayMode(
+                    Timer::INPUT_DRIVER_DELAY_MODE_PRIME_TIME);
+                watchInit.finish();
+        }  // end block
+
+        {  // Setup user-specified interconnection
+
+                Stepwatch watchRCTreeInit("Building RC Tree");
+
                 RCTreeExtractor rcTreeExtractor(&spefInfo);
-            
-		Rsyn::Design design = session.getDesign();
-		const int numSpefNets = spefInfo.getSize();
-		for (int i = 0; i < numSpefNets; i++) {
-			const ISPD13::SpefNet &info = spefInfo.getNet(i);
-			Rsyn::Net net = design.findNetByName(info.netName);
+
+                Rsyn::Design design = session.getDesign();
+                const int numSpefNets = spefInfo.getSize();
+                for (int i = 0; i < numSpefNets; i++) {
+                        const ISPD13::SpefNet &info = spefInfo.getNet(i);
+                        Rsyn::Net net = design.findNetByName(info.netName);
                         RCTree &tree = routingEstimator->getRCTree(net);
-                        rcTreeExtractor.extractRCTreeFromSPEF(netModel, net, tree);
-		} // end for
-                
-            watchRCTreeInit.finish();    
-                
-	} // end block
+                        rcTreeExtractor.extractRCTreeFromSPEF(netModel, net,
+                                                              tree);
+                }  // end for
 
-	session.startService("rsyn.graphics", {});
+                watchRCTreeInit.finish();
 
-	timer->updateTimingFull();
-	timer->dumpTiming("dump-rsyn.txt");
-	std::cout << "WNS: " << timer->getWns(LATE) << "\n";
-	std::cout << "TNS: " << timer->getTns(LATE) << "\n";
+        }  // end block
 
-	return true;
-} // end method
+        session.startService("rsyn.graphics", {});
 
-} // end namespace 
+        timer->updateTimingFull();
+        timer->dumpTiming("dump-rsyn.txt");
+        std::cout << "WNS: " << timer->getWns(LATE) << "\n";
+        std::cout << "TNS: " << timer->getTns(LATE) << "\n";
+
+        return true;
+}  // end method
+
+}  // end namespace

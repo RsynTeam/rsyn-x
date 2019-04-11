@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef ISPD18GUIDEDESCRIPTOR_H
 #define ISPD18GUIDEDESCRIPTOR_H
 
@@ -22,28 +22,28 @@
 static const std::string INVALID_LAYER_GUIDE = "*<INVALID_LAYER_GUIDE_NAME>*";
 
 class GuideLayerDscp {
-public:
-	Bounds clsLayerGuide;
-	std::string clsLayer = INVALID_LAYER_GUIDE;
-	GuideLayerDscp() = default;
-}; // end class 
+       public:
+        Bounds clsLayerGuide;
+        std::string clsLayer = INVALID_LAYER_GUIDE;
+        GuideLayerDscp() = default;
+};  // end class
 
 // -----------------------------------------------------------------------------
 
 class GuideNetDscp {
-public:
-	std::string clsNetName = INVALID_LAYER_GUIDE;
-	std::deque<GuideLayerDscp> clsLayerDscps;
-	GuideNetDscp() = default;
-}; // end class 
+       public:
+        std::string clsNetName = INVALID_LAYER_GUIDE;
+        std::deque<GuideLayerDscp> clsLayerDscps;
+        GuideNetDscp() = default;
+};  // end class
 
 // -----------------------------------------------------------------------------
 
 class GuideDscp {
-public:
-	std::deque<GuideNetDscp> clsNetGuides;
-	GuideDscp() = default;
-}; // end class 
+       public:
+        std::deque<GuideNetDscp> clsNetGuides;
+        GuideDscp() = default;
+};  // end class
 
 // -----------------------------------------------------------------------------
 
