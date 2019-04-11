@@ -612,9 +612,6 @@ inline Rsyn::PhysicalOrientation PhysicalDesign::checkOrientation(Rsyn::Physical
 // -----------------------------------------------------------------------------
 
 inline DBUxy PhysicalDesign::checkPosition(const DBU x, const DBU y) {
-    std::cout << "----Checking position for snapping\n";
-    std::cout << "----Position before snapping: " << x << ", " << y << "\n";
-    
         DBUxy newPosition(x, y);
         Rsyn::PhysicalDie die = getPhysicalDie();
         Bounds dieBounds = die.getBounds();
@@ -627,18 +624,22 @@ inline DBUxy PhysicalDesign::checkPosition(const DBU x, const DBU y) {
         int distToLowerY = std::abs(lowerYBound - y);
         int distToUpperX = std::abs(upperXBound - x);
         int distToUpperY = std::abs(upperYBound - y);
+
+        int minX = std::min(distToLowerX, distToUpperX);
+        int minY = std::min(distToLowerY, distToUpperY);
+
+        int minDist = std::min(minX, minY);
   
-        if ((3*distToLowerX) <= (distToLowerY + distToUpperX + distToUpperY)) {
+        if (minDist == distToLowerX) {
             newPosition = DBUxy(lowerXBound, y);
-        } else if ((3*distToLowerY) <= (distToLowerX + distToUpperX + distToUpperY)) {
+        } else if (minDist == distToLowerY) {
             newPosition = DBUxy(x, lowerYBound);
-        } else if ((3*distToUpperX) <= (distToLowerX + distToLowerY + distToUpperY)) {
+        } else if (minDist == distToUpperX) {
             newPosition = DBUxy(upperXBound, y);
-        } else if ((3*distToUpperY) <= (distToLowerX + distToLowerY + distToUpperX)) {
+        } else if (minDist == distToUpperY) {
             newPosition = DBUxy(x, upperYBound);
         } // end if-else
-        
-        std::cout << "New position after snapping: " << newPosition << "\n\n ------------------- \n\n";
+
         return newPosition;
 } // end method
 
