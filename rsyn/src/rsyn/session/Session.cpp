@@ -371,17 +371,9 @@ void Session::registerDefaultCommands() {
 			const bool disableSnapping = command.getParam("disableSnapping");
 				
 			orient = (Rsyn::PhysicalOrientation) orientation;
-				
-			std::cout << "Port name: " << portName << "\n";
-			std::cout << "New x: " << x << "\n";
-			std::cout << "New y: " << y << "\n";
-			std::cout << "Orientation: " << orientation << "\n";
-			std::cout << "Orient: " << (int)orient << "\n";
-			std::cout << "Disable snapping: " << disableSnapping << "\n";
 					
 			Rsyn::PhysicalPort phPort;
 			if (physicalDesign.getPhysicalPortByName(portName, phPort)) {
-				std::cout << "Port name after get: " << phPort.getName() << "\n";
 				physicalDesign.placePort(phPort, x, y, orient, disableSnapping);
 			} else {
 				std::cout << "Port not found!\n";
