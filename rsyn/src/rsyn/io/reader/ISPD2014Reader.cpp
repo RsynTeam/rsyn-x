@@ -84,7 +84,7 @@ bool ISPD2014Reader::load(const Rsyn::Json & config) {
 	Stepwatch watchPopulateLayers("Initializing Physical Layer");
 	
 	Rsyn::Json phDesignJason;
-	phDesignJason["clsEnableMergeRectangles"] = true;
+	phDesignJason["clsEnableMergeRectangles"] = false;
 	phDesignJason["clsEnableNetPinBoundaries"] = true;
 	phDesignJason["clsEnableRowSegments"] = true;
 	session.startService("rsyn.physical", phDesignJason);	
