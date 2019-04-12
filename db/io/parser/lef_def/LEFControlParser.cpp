@@ -29,12 +29,12 @@
 
 #include "util/DoubleRectangle.h"
 #include "util/Double2.h"
-// LEF headers
 
-#include "lef/lefrReader.hpp"
-#include "lef/lefwWriter.hpp"
-#include "lef/lefiDebug.hpp"
-#include "lef/lefiUtil.hpp"
+// LEF headers
+#include "lefrReader.hpp"
+#include "lefwWriter.hpp"
+#include "lefiDebug.hpp"
+#include "lefiUtil.hpp"
 
 #define BOOST_POLYGON_NO_DEPS
 #include <boost/polygon/polygon.hpp>

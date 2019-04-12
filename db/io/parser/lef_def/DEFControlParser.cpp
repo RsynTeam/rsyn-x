@@ -26,19 +26,19 @@
 #include <stdlib.h>
 
 // DEF headers
-#include "def5.8/defiComponent.hpp"
-#include "def5.8/defiNet.hpp"
-#include "def5.8/defiRowTrack.hpp"
+#include "defiComponent.hpp"
+#include "defiNet.hpp"
+#include "defiRowTrack.hpp"
 
-#include "def5.8/defwWriter.hpp"
+#include "defwWriter.hpp"
 
-#include "def5.8/defrReader.hpp"
+#include "defrReader.hpp"
 
 extern void freeCB(void* name);
 extern void* mallocCB(size_t size);
 extern void* reallocCB(void* name, size_t size);
 
-#include "io/legacy/ispd13/global.h"
+#include "ispd13/global.h"
 #include "util/Bounds.h"
 #include "util/DoubleRectangle.h"
 

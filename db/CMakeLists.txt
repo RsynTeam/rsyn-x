@@ -3,19 +3,17 @@ PROJECT(db)
 
 SET(CMAKE_CXX_STANDARD 11)
 
-FILE(GLOB_RECURSE SRC_FILES *.c *.cpp ../include/)
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fpermissive")
+
+FILE(GLOB_RECURSE SRC_FILES *.c *.cpp)
 
 ADD_LIBRARY(db STATIC ${SRC_FILES})
 
-LIST(REMOVE_ITEM SRC_FILES ../include/munkres/matrix.cpp ../include/munkres/matrix.h)
-
-# target_link_libraries(db lef)
-# target_link_libraries(db def)
-
-
-find_package(Boost COMPONENTS system filesystem program_options REQUIRED)
-TARGET_INCLUDE_DIRECTORIES(db PUBLIC ${Boost_INCLUDE_DIR})
 TARGET_INCLUDE_DIRECTORIES(db PUBLIC ../src)
 TARGET_INCLUDE_DIRECTORIES(db PUBLIC ../src/contests)
-TARGET_INCLUDE_DIRECTORIES(db PUBLIC ../include)
 TARGET_INCLUDE_DIRECTORIES(db PUBLIC ./)
+TARGET_INCLUDE_DIRECTORIES(db PUBLIC ./3rdparty/)
+TARGET_INCLUDE_DIRECTORIES(db PUBLIC ./3rdparty/def/include/)
+TARGET_INCLUDE_DIRECTORIES(db PUBLIC ./3rdparty/lef/)
+TARGET_INCLUDE_DIRECTORIES(db PUBLIC ./3rdparty/lef/clef)
+TARGET_INCLUDE_DIRECTORIES(db PUBLIC ./3rdparty/lef/lef)

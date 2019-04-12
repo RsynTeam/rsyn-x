@@ -6,65 +6,65 @@
 #########
 
 # Specify the minimum version for CMake
-cmake_minimum_required(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 # Message
-message(STATUS "Rsyn")
-message(STATUS ${CMAKE_CURRENT_SOURCE_DIR})
+MESSAGE(STATUS "Rsyn")
+MESSAGE(STATUS ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Find includes in the build directories
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
+SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Turn on automatic invocation of the MOC
-set(CMAKE_AUTOMOC ON)
+SET(CMAKE_AUTOMOC ON)
 
 # Project's name
-project(rsyn)
+PROJECT(rsyn)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-        set(WINDOWS TRUE)
+        SET(WINDOWS TRUE)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-        set(LINUX TRUE)
+        SET(LINUX TRUE)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-        set(MACOSX TRUE)
+        SET(MACOSX TRUE)
 endif()
 
-# Set the output folder where your program will be created
-set(CMAKE_BINARY_DIR bin)
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+# SET the output folder where your program will be created
+SET(CMAKE_BINARY_DIR bin)
+SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
-set(CMAKE_CXX_STANDARD 11)
+SET(CMAKE_CXX_STANDARD 11)
 
-set(PATH_RSYN ${CMAKE_CURRENT_SOURCE_DIR}/src)
+SET(PATH_RSYN ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-set(PATH_QT ${CMAKE_CURRENT_SOURCE_DIR}/src/gui)
+SET(PATH_QT ${CMAKE_CURRENT_SOURCE_DIR}/src/gui)
 
 ###################
 # Warnings/Errors #
 ###################
 
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Werror=return-type")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Werror=return-type")
 
 ######################
 # Check Dependencies #
 ######################
 
-find_package(Boost COMPONENTS system filesystem program_options REQUIRED)
-find_package(PNG REQUIRED)
+FIND_PACKAGE(Boost COMPONENTS system filesystem program_options REQUIRED)
+FIND_PACKAGE(PNG REQUIRED)
 
 # OpenMP (work around)
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fopenmp")
+SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fopenmp")
 
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5PrintSupport REQUIRED)
-find_package(Qt5OpenGL REQUIRED)
+FIND_PACKAGE(Qt5Widgets REQUIRED)
+FIND_PACKAGE(Qt5PrintSupport REQUIRED)
+FIND_PACKAGE(Qt5OpenGL REQUIRED)
 
 ###############
 # Source Code #
 ###############
 
-file(GLOB_RECURSE SRC_FILES
+FILE(GLOB_RECURSE SRC_FILES
         ${PATH_RSYN}/*.cpp
         ${PATH_RSYN}/*.cc
         ${PATH_RSYN}/*.c)
@@ -73,10 +73,10 @@ file(GLOB_RECURSE SRC_FILES
 # Qt Pre-Processing #
 #####################
 
-file(GLOB_RECURSE UI_FILES
+FILE(GLOB_RECURSE UI_FILES
         ${PATH_QT}/ui/*.ui)
 
-file(GLOB_RECURSE QRC_FILES
+FILE(GLOB_RECURSE QRC_FILES
         ${PATH_QT}/resource/*.qrc)
 
 # Generate code from ui files
@@ -86,9 +86,9 @@ qt5_wrap_ui(UI_HEADERS ${UI_FILES})
 qt5_add_resources(QRCS ${QRC_FILES})
 
 # Tell CMake to create the executable
-list(APPEND SRC_FILES ${UI_HEADERS})
-list(APPEND SRC_FILES ${QRCS})
-list(APPEND SRC_FILES ${GUI_FILES})
+LIST(APPEND SRC_FILES ${UI_HEADERS})
+LIST(APPEND SRC_FILES ${QRCS})
+LIST(APPEND SRC_FILES ${GUI_FILES})
 
 #message(STATUS ${SRC_FILES})
 
@@ -97,55 +97,56 @@ list(APPEND SRC_FILES ${GUI_FILES})
 #################
 
 if(LINUX)
-        link_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/linux)
+        LINK_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/lib/linux)
 endif()
 
 if(MACOSX)
-        link_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/macosx)
+        LINK_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/lib/macosx)
 endif()
 
 ###########
 # Targets #
 ###########
 
-add_executable(rsyn ${SRC_FILES})
+ADD_EXECUTABLE(rsyn ${SRC_FILES})
 
 #######################
 # Include Directories #
 #######################
 
-target_include_directories(rsyn PUBLIC "./3rdparty")
-target_include_directories(rsyn PUBLIC "./db")
-target_include_directories(rsyn PUBLIC "./include")
-target_include_directories(rsyn PUBLIC "./include/export")
-target_include_directories(rsyn PUBLIC "./src")
-target_include_directories(rsyn PUBLIC "./src/contests")
+TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC "./3rdparty")
+TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC "./db")
+TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC "./db/3rdparty")
+TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC "./include")
+TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC "./include/export")
+TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC "./src")
+TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC "./src/contests")
 
 ##################
 # Compiler Flags #
 ##################
 
-target_compile_options(rsyn PUBLIC "-O3")
-target_compile_options(rsyn PUBLIC "-Wno-unused-result -Wno-format -Wno-return-type -Wno-unused-local-typedefs")
+TARGET_COMPILE_OPTIONS(rsyn PUBLIC "-O3")
+TARGET_COMPILE_OPTIONS(rsyn PUBLIC "-Wno-unused-result -Wno-format -Wno-return-type -Wno-unused-local-typedefs")
 
 #################
 # Linker Flags  #
 #################
 
-target_link_libraries(rsyn lef)
-target_link_libraries(rsyn def)
-target_link_libraries(rsyn db)
-target_link_libraries(rsyn flute)
+TARGET_LINK_LIBRARIES(rsyn lef)
+TARGET_LINK_LIBRARIES(rsyn def)
+TARGET_LINK_LIBRARIES(rsyn db)
+TARGET_LINK_LIBRARIES(rsyn flute)
 
 # Boost
-target_include_directories(rsyn PUBLIC ${Boost_INCLUDE_DIR})
-target_link_libraries(rsyn ${Boost_LIBRARIES})
+TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC ${Boost_INCLUDE_DIR})
+TARGET_LINK_LIBRARIES(rsyn ${Boost_LIBRARIES})
 
 # PNG
-target_include_directories(rsyn PUBLIC ${PNG_INCLUDE_DIR})
-target_link_libraries(rsyn ${PNG_LIBRARY})
+TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC ${PNG_INCLUDE_DIR})
+TARGET_LINK_LIBRARIES(rsyn ${PNG_LIBRARY})
 
 # Qt5 Widgets for linking
-target_link_libraries(rsyn Qt5::Widgets)
-target_link_libraries(rsyn Qt5::PrintSupport)
-target_link_libraries(rsyn Qt5::OpenGL)
+TARGET_LINK_LIBRARIES(rsyn Qt5::Widgets)
+TARGET_LINK_LIBRARIES(rsyn Qt5::PrintSupport)
+TARGET_LINK_LIBRARIES(rsyn Qt5::OpenGL)

@@ -21,7 +21,7 @@
 #include <regex>
 #include <exception>
 
-#include "script/ScriptReader.h"
+#include "ScriptReader.h"
 #include "util/Json.h"
 
 namespace Rsyn {
