@@ -19,6 +19,17 @@
 
 #include "SimplifiedVerilogReader.h"
 
+
+/* The c++ scanner is a mess. The FlexLexer.h header file relies on the
+ * following macro. This is required in order to pass the c++-multiple-scanners
+ * test in the regression suite. We get reports that it breaks inheritance.
+ * We will address this in a future release of flex, or omit the C++ scanner
+ * altogether.
+ */
+#ifndef yyFlexLexer
+#define yyFlexLexer yyScriptFlexLexer
+#endif
+
 namespace Parsing {
 
 SimplifiedVerilogReader::~SimplifiedVerilogReader() {
