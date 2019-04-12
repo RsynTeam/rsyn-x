@@ -37,7 +37,6 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(CMAKE_CXX_STANDARD 11)
 
 set(PATH_RSYN ${CMAKE_CURRENT_SOURCE_DIR}/src)
-# set(PATH_X ${CMAKE_CURRENT_SOURCE_DIR}/x)
 
 set(PATH_QT ${CMAKE_CURRENT_SOURCE_DIR}/src/gui)
 
@@ -50,16 +49,9 @@ set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Werror=return-type")
 ######################
 # Check Dependencies #
 ######################
+
 find_package(Boost COMPONENTS system filesystem program_options REQUIRED)
 find_package(PNG REQUIRED)
-
-# OpenMP (not working)
-#find_package(OpenMP)
-#if(OPENMP_FOUND)
-#  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-#  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-#  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-#endif()
 
 # OpenMP (work around)
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fopenmp")
@@ -68,11 +60,10 @@ find_package(Qt5Widgets REQUIRED)
 find_package(Qt5PrintSupport REQUIRED)
 find_package(Qt5OpenGL REQUIRED)
 
-#find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
-
 ###############
 # Source Code #
 ###############
+
 file(GLOB_RECURSE SRC_FILES
         ${PATH_RSYN}/*.cpp
         ${PATH_RSYN}/*.cc
@@ -104,7 +95,6 @@ list(APPEND SRC_FILES ${GUI_FILES})
 #################
 # Library Paths #
 #################
-# Need to come before target is created.
 
 if(LINUX)
         link_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/linux)
@@ -124,11 +114,12 @@ add_executable(rsyn ${SRC_FILES})
 # Include Directories #
 #######################
 
-target_include_directories(rsyn PUBLIC "./include")
 target_include_directories(rsyn PUBLIC "./3rdparty")
-target_include_directories(rsyn PUBLIC "./src/contests")
+target_include_directories(rsyn PUBLIC "./db")
+target_include_directories(rsyn PUBLIC "./include")
 target_include_directories(rsyn PUBLIC "./include/export")
 target_include_directories(rsyn PUBLIC "./src")
+target_include_directories(rsyn PUBLIC "./src/contests")
 
 ##################
 # Compiler Flags #
@@ -143,7 +134,7 @@ target_compile_options(rsyn PUBLIC "-Wno-unused-result -Wno-format -Wno-return-t
 
 target_link_libraries(rsyn lef)
 target_link_libraries(rsyn def)
-target_link_libraries(rsyn liberty)
+target_link_libraries(rsyn db)
 target_link_libraries(rsyn flute)
 
 # Boost
