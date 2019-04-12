@@ -28,13 +28,13 @@
 #include <iostream>
 
 #include "util/DoubleRectangle.h"
-#include "util/double2.h"
+#include "util/Double2.h"
 // LEF headers
 
-#include "lef5.8/lefrReader.hpp"
-#include "lef5.8/lefwWriter.hpp"
-#include "lef5.8/lefiDebug.hpp"
-#include "lef5.8/lefiUtil.hpp"
+#include "lef/lefrReader.hpp"
+#include "lef/lefwWriter.hpp"
+#include "lef/lefiDebug.hpp"
+#include "lef/lefiUtil.hpp"
 
 #define BOOST_POLYGON_NO_DEPS
 #include <boost/polygon/polygon.hpp>
