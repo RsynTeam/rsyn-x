@@ -399,7 +399,31 @@ public:
 	void placeCell(Rsyn::Cell cell, const DBUxy pos,
 		Rsyn::PhysicalOrientation orient = ORIENTATION_INVALID,
 		const bool dontNotifyObservers = false);
-	
+        
+        //Place Port 
+        
+        Rsyn::PhysicalOrientation checkOrientation(Rsyn::PhysicalPort physicalPort, 
+                const DBU x, const DBU y);
+        
+        DBUxy checkPosition(const DBU x, const DBU y);
+        
+        bool getPhysicalPortByName(std::string name, Rsyn::PhysicalPort &phPort);
+        
+        void placePort(Rsyn::PhysicalPort physicalPort, const DBU x, const DBU y, 
+                Rsyn::PhysicalOrientation orient = ORIENTATION_INVALID,
+                const bool disableSnapping = false, const bool dontNotifyObservers = false);
+        
+        void placePort(Rsyn::Port port, const DBU x, const DBU y,
+                Rsyn::PhysicalOrientation orient = ORIENTATION_INVALID,
+		const bool disableSnapping = false, const bool dontNotifyObservers = false);
+        
+        void placePort(Rsyn::PhysicalPort physicalPort, const DBUxy pos,
+		Rsyn::PhysicalOrientation orient = ORIENTATION_INVALID,
+		const bool disableSnapping = false, const bool dontNotifyObservers = false);
+        
+        void placePort(Rsyn::Port port, const DBUxy pos,
+		Rsyn::PhysicalOrientation orient = ORIENTATION_INVALID,
+		const bool disableSnapping = false, const bool dontNotifyObservers = false);
 	
 	//! @brief set cell orientation.
 	//! @warning Caution when using dontNotifyObservers.

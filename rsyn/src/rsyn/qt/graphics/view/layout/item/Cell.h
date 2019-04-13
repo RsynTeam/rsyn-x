@@ -31,7 +31,14 @@ public:
 	} // end constructor
 
 	virtual QRect getBoundingRect() const override {
-		return QRect(clsCell.getX(), clsCell.getY(), clsCell.getWidth(), clsCell.getHeight());
+		if (clsCell.getOrientation() == Rsyn::ORIENTATION_E  || 
+			clsCell.getOrientation() == Rsyn::ORIENTATION_FE ||
+			clsCell.getOrientation() == Rsyn::ORIENTATION_W  ||
+			clsCell.getOrientation() == Rsyn::ORIENTATION_FW ) {
+			return QRect(clsCell.getX(), clsCell.getY(), clsCell.getHeight(), clsCell.getWidth());
+		} else {
+			return QRect(clsCell.getX(), clsCell.getY(), clsCell.getWidth(), clsCell.getHeight());
+		}
 	} // end method
 
 	Rsyn::Cell getCell() const {

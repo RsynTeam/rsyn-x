@@ -291,6 +291,10 @@ int defNet(defrCallbackType_e c, defiNet* net, defiUserData ud) {
 	defDscp.clsNets.push_back(DefNetDscp());
 	DefNetDscp & netDscp = defDscp.clsNets.back();
 	netDscp.clsName = net->name();
+	const char* use = net->use();
+	if (use) {
+		netDscp.clsUse = use;
+	} // end if
 	netDscp.clsConnections.resize(net->numConnections());
 	for (int i = 0; i < net->numConnections(); i++) {
 		DefNetConnection &connection = netDscp.clsConnections[i];
@@ -467,7 +471,19 @@ int defSpecialNet(defrCallbackType_e c, defiNet* net, void* ud) {
 	defDscp.clsSpecialNets.push_back(DefSpecialNetDscp());
 	DefSpecialNetDscp & specialNet = defDscp.clsSpecialNets.back();
 	specialNet.clsName = net->name();
+	const char* use = net->use();
+	if (use) {
+		specialNet.clsUse = use;
+	} // end if
 	specialNet.clsWires.resize(net->numWires());
+	DefSpecialNetDscp& netDscp = defDscp.clsSpecialNets.back();
+	netDscp.clsConnections.resize(net->numConnections());
+	for (int i = 0; i < net->numConnections(); i++) {
+		DefNetConnection &connection = netDscp.clsConnections[i];
+		connection.clsPinName = net->pin(i);
+		connection.clsComponentName = DEFControlParser::unescape(net->instance(i));
+	} // end for
+
 	for (int i = 0; i < net->numWires(); i++) {
 		DefWireDscp & specialWire = specialNet.clsWires[i];
 		defiWire * wire = net->wire(i);
@@ -554,6 +570,9 @@ int defSpecialNet(defrCallbackType_e c, defiNet* net, void* ud) {
 						//path->getStyle();
 						std::cout << "TODO DEFIPATH_STYLE at " << __func__ << "\n";
 						break;
+					case DEFIPATH_SHAPE:
+						// Not being read yet
+						break;
 				} // end switch
 				pathId = path->next();
 			} // end while 
@@ -637,7 +656,7 @@ int defVia(defrCallbackType_e c, defiVia * via, defiUserData ud) {
 		// TODO PATTERN
 	} else {
 		viaDscp.clsHasViaRule = false;
-		std::map<std::string, std::deque<DefViaGeometryDscp>> & mapGeos = viaDscp.clsGeometries;
+		std::map<std::string, std::deque < DefViaGeometryDscp>> &mapGeos = viaDscp.clsGeometries;
 		int xl, yl, xh, yh;
 		char * layerName;
 		for (int i = 0; i < via->numLayers(); ++i) {
@@ -651,7 +670,7 @@ int defVia(defrCallbackType_e c, defiVia * via, defiUserData ud) {
 			geoDscp.clsBounds[LOWER][Y] = static_cast<DBU> (yl);
 			geoDscp.clsBounds[UPPER][X] = static_cast<DBU> (xh);
 			geoDscp.clsBounds[UPPER][Y] = static_cast<DBU> (yh);
-			if(via->hasRectMask(i)) {
+			if (via->hasRectMask(i)) {
 				geoDscp.clsHasMask = true;
 				geoDscp.clsMask = via->rectMask(i);
 			} // end if 
@@ -944,6 +963,72 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 	status = defwNewLine();
 	CHECK_STATUS(status);
 
+	status = defwStartVias(defDscp.clsVias.size());
+	CHECK_STATUS(status);
+	for (const DefViaDscp & via : defDscp.clsVias) {
+		status = defwViaName(via.clsName.c_str());
+		CHECK_STATUS(status);
+		if (via.clsHasViaRule) {
+			status = defwViaViarule(
+				via.clsViaRuleName.c_str(),
+				via.clsXCutSize,
+				via.clsYCutSize,
+				via.clsBottomLayer.c_str(),
+				via.clsCutLayer.c_str(),
+				via.clsTopLayer.c_str(),
+				via.clsXCutSpacing,
+				via.clsYCutSpacing,
+				via.clsXBottomEnclosure,
+				via.clsYBottomEnclosure,
+				via.clsXTopEnclosure,
+				via.clsYTopEnclosure
+			);
+			CHECK_STATUS(status);
+			
+			if (via.clsHasRowCol) {
+				status = defwViaViaruleRowCol(via.clsNumCutRows, via.clsNumCutCols);
+				CHECK_STATUS(status);
+			} // end if 
+			if (via.clsHasOrigin) {
+				status = defwViaViaruleOrigin(via.clsXOffsetOrigin, via.clsYOffsetOrigin);
+				CHECK_STATUS(status);
+			} // end if 
+			if (via.clsHasOffset) {
+				status = defwViaViaruleOffset(via.clsXBottomOffset, via.clsYBottomOffset, via.clsXTopOffset, via.clsYTopOffset);
+				CHECK_STATUS(status);
+			} // end if 
+		} else {
+			const std::map<std::string, std::deque<DefViaGeometryDscp>> & mapGeos = via.clsGeometries;
+			for (auto& pair : mapGeos) {
+				const std::string layer = pair.first;
+				const std::deque<DefViaGeometryDscp>& geometries = pair.second;
+				for (size_t i = 0; i < geometries.size(); i++) {
+					const DefViaGeometryDscp & geo = geometries[i];
+					if (geo.clsHasMask) {
+						defwViaRect(
+								layer.c_str(),
+								geo.clsBounds[LOWER][X],
+								geo.clsBounds[LOWER][Y], 
+								geo.clsBounds[UPPER][X],
+								geo.clsBounds[UPPER][Y],
+								geo.clsMask);
+					} else {
+						defwViaRect(
+								layer.c_str(),
+								geo.clsBounds[LOWER][X],
+								geo.clsBounds[LOWER][Y], 
+								geo.clsBounds[UPPER][X],
+								geo.clsBounds[UPPER][Y]);
+					}
+				}
+			}
+		} // end if
+		
+		status = defwOneViaEnd();
+		CHECK_STATUS(status);
+	} // end for
+	status = defwEndVias();
+	CHECK_STATUS(status);
 
 	// Write components
 	int numComponents = defDscp.clsComps.size();
@@ -999,11 +1084,98 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 	status = defwNewLine();
 	CHECK_STATUS(status);
 
+	int numSpecialNets = defDscp.clsSpecialNets.size();
+	if (numSpecialNets > 0) {
+		status = defwStartSpecialNets(numSpecialNets);
+		CHECK_STATUS(status);
+		
+		// write nets
+		for (const DefSpecialNetDscp & defNet : defDscp.clsSpecialNets) {
+			status = defwSpecialNet(defNet.clsName.c_str());
+			CHECK_STATUS(status);
+			
+			// Writing Net connections
+			for (const DefNetConnection & defConn : defNet.clsConnections) {
+				status = defwSpecialNetConnection(defConn.clsComponentName.c_str(), defConn.clsPinName.c_str(), 0);
+				CHECK_STATUS(status);
+			} // end for 
+			if (!defNet.clsWires.empty()) {
+				bool routed = true;
+				status = defwSpecialNetPathStart("ROUTED");
+				CHECK_STATUS(status);
+				for (const DefWireDscp & wire : defNet.clsWires) {
+					for (const DefWireSegmentDscp & segment : wire.clsWireSegments) {
+						if (!routed) {
+							status = defwSpecialNetPathStart("NEW");
+							CHECK_STATUS(status);
+						}
+						routed = false;
+
+						bool hasVia = false;
+						std::string viaName;
+						bool hasRect = false;
+						Bounds rect;
+
+						status = defwSpecialNetPathLayer(segment.clsLayerName.c_str());
+						CHECK_STATUS(status);
+						
+						status = defwSpecialNetPathWidth(segment.clsRoutedWidth);
+						CHECK_STATUS(status);
+						for (const DefRoutingPointDscp & pt : segment.clsRoutingPoints) {
+							double posX = pt.clsPos[X];
+							double posY = pt.clsPos[Y];
+							if (pt.clsHasExtension) {
+								double ext = pt.clsExtension;
+								status = defwSpecialNetPathPointWithWireExt(1, &posX, &posY, &ext);
+								CHECK_STATUS(status);
+							} else {
+								status = defwSpecialNetPathPoint(1, &posX, &posY);
+								CHECK_STATUS(status);
+							} // end if-else
+							if (pt.clsHasVia) {
+								hasVia = true;
+								viaName = pt.clsViaName;
+							}
+							if (pt.clsHasRectangle) {
+								hasRect = true;
+								rect = pt.clsRect;
+							}
+						} // end for 
+
+						if (hasVia) {
+							status = defwSpecialNetPathVia(viaName.c_str());
+							CHECK_STATUS(status);
+						}
+						if (hasRect) {
+							status = defwSpecialNetRect(segment.clsLayerName.c_str(), rect[LOWER][X], rect[LOWER][Y], rect[UPPER][X], rect[UPPER][Y]);
+							CHECK_STATUS(status);
+						}
+					} // end for 
+
+				} // end for 
+				status = defwSpecialNetPathEnd();
+				CHECK_STATUS(status);
+			} // end if 
+			
+			if (defNet.clsUse != INVALID_DEF_NAME) {
+				status = defwSpecialNetUse(defNet.clsUse.c_str());
+				CHECK_STATUS(status);
+			} // end if
+			
+			status = defwSpecialNetEndOneNet();
+			CHECK_STATUS(status);
+			//CHECK_STATUS(status);
+		} // end for 
+
+		status = defwEndSpecialNets();
+		CHECK_STATUS(status);
+	} // end if 
+	
 	int numNets = defDscp.clsNets.size();
 	if (numNets > 0) {
 		status = defwStartNets(numNets);
 		CHECK_STATUS(status);
-
+	
 
 		// write nets
 		for (const DefNetDscp & defNet : defDscp.clsNets) {
@@ -1064,7 +1236,13 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 						}
 					} // end for 
 
-				} // end for 
+				} // end for
+				status = defwNetPathEnd();
+				CHECK_STATUS(status);
+			} // end if 
+			
+			if (defNet.clsUse != INVALID_DEF_NAME) {
+				status = defwNetUse(defNet.clsUse.c_str());
 				status = defwNetPathEnd();
 				CHECK_STATUS(status);
 			} // end if 
@@ -1102,5 +1280,14 @@ std::string DEFControlParser::unescape(const std::string &str) {
 
 	return result;
 } // end method
+
+// -----------------------------------------------------------------------------
+
+int defVia(defrCallbackType_e c, int num, void* ud) {
+	std::cout << "Entered here!\n";
+	DefDscp & defDscp = getDesignFromUserData(ud);
+	defDscp.clsVias.reserve(num);
+	return 0;
+}// end method
 
 // -----------------------------------------------------------------------------

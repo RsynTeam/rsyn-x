@@ -322,6 +322,64 @@ void Session::registerDefaultCommands() {
 			} // end if-else 
 		});
 	} // end block
+	
+	{ // placePort
+		ScriptParsing::CommandDescriptor dscp;
+		dscp.setName("placePort");
+		dscp.setDescription("Places a port in a user specified position");
+
+		dscp.addPositionalParam( "name",
+			ScriptParsing::PARAM_TYPE_STRING,
+			ScriptParsing::PARAM_SPEC_MANDATORY,
+			"Port name."
+		);
+		
+		dscp.addPositionalParam( "x",
+			ScriptParsing::PARAM_TYPE_INTEGER,
+			ScriptParsing::PARAM_SPEC_MANDATORY,
+			"Position x of the point of interest."
+		);
+
+		dscp.addPositionalParam( "y",
+			ScriptParsing::PARAM_TYPE_INTEGER,
+			ScriptParsing::PARAM_SPEC_MANDATORY,
+			"Position y of the point of interest."
+		);
+		
+		dscp.addPositionalParam( "orientation",
+			ScriptParsing::PARAM_TYPE_INTEGER,
+			ScriptParsing::PARAM_SPEC_OPTIONAL,
+			"Port orientation. 0 - N | 1 - S | 2 - W | 3 - E.",
+			"-1"
+		);
+		
+		dscp.addPositionalParam( "disableSnapping",
+			ScriptParsing::PARAM_TYPE_BOOLEAN,
+			ScriptParsing::PARAM_SPEC_OPTIONAL,
+			"Position y of the point of interest.",
+			"false"
+		);
+		
+		registerCommand(dscp, [&](const ScriptParsing::Command &command) {
+			Rsyn::PhysicalDesign physicalDesign = getPhysicalDesign();
+			Rsyn::PhysicalOrientation orient;
+
+			const std::string portName = command.getParam("name");
+			const DBU x = (int) command.getParam("x");
+			const DBU y = (int) command.getParam("y");
+			const int orientation = command.getParam("orientation");
+			const bool disableSnapping = command.getParam("disableSnapping");
+				
+			orient = (Rsyn::PhysicalOrientation) orientation;
+					
+			Rsyn::PhysicalPort phPort;
+			if (physicalDesign.getPhysicalPortByName(portName, phPort)) {
+				physicalDesign.placePort(phPort, x, y, orient, disableSnapping);
+			} else {
+				std::cout << "Port not found!\n";
+			}
+		});
+	} // end block
 } // end method
 
 // -----------------------------------------------------------------------------

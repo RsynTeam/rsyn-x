@@ -205,6 +205,7 @@ int lefMacroCB(lefrCallbackType_e c, lefiMacro* macro, lefiUserData ud) {
 
 // -----------------------------------------------------------------------------
 int numWarningsInoutPins = 0;
+int numWarningsTristatePins = 0;
 
 int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
 	typedef boost::polygon::polygon_90_with_holes_data<double> Polygon90;
@@ -217,7 +218,7 @@ int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
 	LefMacroDscp & lefMacro = dscp.clsLefMacroDscps.back();
 	lefMacro.clsPins.resize(lefMacro.clsPins.size() + 1);
 	LefPinDscp & lefPin = lefMacro.clsPins.back();
-
+	
 	lefPin.clsPinName = pin->name();
 	lefPin.clsPinDirection = pin->direction();
 	lefPin.clsPinUse = pin->use();
@@ -232,7 +233,29 @@ int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
 		numWarningsInoutPins++;
 	} // end if 
 	// END WORKORUND to support inout data pin
+	
+	// Mateus @ 190108 -- WORKORUND to support tristate pin
+	if (lefPin.clsPinDirection.compare("OUTPUT TRISTATE") == 0) {
+		lefPin.clsPinDirection = "OUTPUT";
+		if (numWarningsTristatePins < 10)
+			std::cout << "WARNING: Ignoring TRISTATE OUTPUT statement in pin "
+			<< lefPin.clsPinName << ". Pin direction is replaced to " << lefPin.clsPinDirection
+			<< " [LEF CONTROL PARSER]\n";
+		numWarningsTristatePins++;
+	} // end if 
+	// END WORKORUND to support tristate data pin
 
+	// Mateus @ 190108 -- WORKORUND to support tristate pin
+	if (lefPin.clsPinDirection.compare("OUTPUT TRISTATE") == 0) {
+		lefPin.clsPinDirection = "OUTPUT";
+		if (numWarningsTristatePins < 10)
+			std::cout << "WARNING: Ignoring TRISTATE OUTPUT statement in pin "
+			<< lefPin.clsPinName << ". Pin direction is replaced to " << lefPin.clsPinDirection
+			<< " [LEF CONTROL PARSER]\n";
+		numWarningsTristatePins++;
+	} // end if 
+	// END WORKORUND to support tristate data pin
+	
 	lefPin.clsHasPort = pin->numPorts() > 0;
 
 	if (lefPin.clsHasPort)
@@ -350,6 +373,7 @@ int lefUnits(lefrCallbackType_e c, lefiUnits* units, lefiUserData ud) {
 // -----------------------------------------------------------------------------
 
 int lefObstructionCB(lefrCallbackType_e c, lefiObstruction* obs, lefiUserData ud) {
+	//std::cout << "Reading lef obstacles\n";
 	LefDscp & dscp = getLibraryFromUserData(ud);
 	LefMacroDscp & lefMacro = dscp.clsLefMacroDscps.back();
 
@@ -370,6 +394,10 @@ int lefObstructionCB(lefrCallbackType_e c, lefiObstruction* obs, lefiUserData ud
 			lefObs.clsBounds.push_back(libRect);
 		} // end if-else 
 	} // end for 
+	
+//	if (lefMacro.clsMacroName == "bufx2" || lefMacro.clsMacroName == "BUFX2") {
+//		std::cout << "#Obstacles" << lefMacro.clsObs.size() << "\n";
+//	}
 	return 0;
 } // end method 
 

@@ -75,6 +75,7 @@ public:
 	virtual ~WriterDEF() = default;
 	virtual void start(const Rsyn::Json &params) override;
 	virtual void stop() override;
+
 	
 	void writeDEF();
 	
@@ -374,6 +375,7 @@ protected:
 	
 	// enable contest mode
 	void enableICCAD15();
+	void enableISPD18();
 
 	
 	// load Def Descriptor
