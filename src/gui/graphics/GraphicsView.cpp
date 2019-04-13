@@ -16,11 +16,11 @@
 #include "GraphicsScene.h"
 #include "GraphicsView.h"
 
-#include "gui/graphics/StandardCell.h"
-#include "gui/graphics/Wire.h"
+#include "gui/objects/StandardCell.h"
+#include "gui/objects/Wire.h"
 
 #include "gui/QtUtils.h"
-#include "gui/graphics/PinMgr.h"
+#include "gui/objects/PinMgr.h"
 
 #include "session/Session.h"
 #include "phy/PhysicalDesign.h"

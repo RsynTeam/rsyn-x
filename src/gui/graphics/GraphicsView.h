@@ -23,7 +23,7 @@
 #include "phy/PhysicalDesign.h"
 #include "util/Stipple.h"
 
-#include "gui/graphics/GraphicsStipple.h"
+#include "GraphicsStipple.h"
 
 class QStatusBar;
 

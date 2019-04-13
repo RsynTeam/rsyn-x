@@ -16,7 +16,7 @@
 #ifndef RSYN_LAYOUT_GRAPHICS_VIEW_H
 #define RSYN_LAYOUT_GRAPHICS_VIEW_H
 
-#include "gui/graphics/GraphicsView.h"
+#include "GraphicsView.h"
 
 namespace Rsyn {
 

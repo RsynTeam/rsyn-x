@@ -16,7 +16,7 @@
 #ifndef RSYN_LAYOUT_GRAPHIC_SLAYER_H
 #define RSYN_LAYOUT_GRAPHIC_SLAYER_H
 
-#include "gui/graphics/GraphicsLayer.h"
+#include "GraphicsLayer.h"
 
 namespace Rsyn {
 

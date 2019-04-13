@@ -18,10 +18,10 @@
 
 #include <vector>
 
-#include "gui/graphics/GraphicsScene.h"
+#include "GraphicsScene.h"
 
-#include "gui/graphics/LayoutGraphicsView.h"
-#include "gui/graphics/LayoutGraphicsLayer.h"
+#include "LayoutGraphicsView.h"
+#include "LayoutGraphicsLayer.h"
 
 #include "phy/PhysicalDesign.h"
 #include "phy/infra/PhysicalObserver.h"

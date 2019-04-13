@@ -19,17 +19,18 @@
 #include "session/Session.h"
 #include "ispd18/RoutingGuide.h"
 
-#include "gui/graphics/Routing.h"
+#include "gui/objects/Routing.h"
 
-#include "gui/graphics/StandardCell.h"
-#include "gui/graphics/Macro.h"
-#include "gui/graphics/Port.h"
-#include "gui/graphics/Wire.h"
-#include "gui/graphics/Via.h"
-#include "gui/graphics/Rect.h"
-#include "gui/graphics/PinMgr.h"
+#include "gui/objects/StandardCell.h"
+#include "gui/objects/Macro.h"
+#include "gui/objects/Port.h"
+#include "gui/objects/Wire.h"
+#include "gui/objects/Via.h"
+#include "gui/objects/Rect.h"
+#include "gui/objects/PinMgr.h"
+#include "gui/objects/Floorplan.h"
+
 #include "gui/QtUtils.h"
-#include "Floorplan.h"
 
 #include <QPen>
 #include <QBrush>

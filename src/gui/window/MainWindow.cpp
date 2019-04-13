@@ -44,7 +44,7 @@
 #include "gui/graphics/LayoutGraphicsScene.h"
 
 #include "gui/QtUtils.h"
-#include "gui/graphics/PinMgr.h"
+#include "gui/objects/PinMgr.h"
 #include "gui/graphics/LayoutGraphicsScene.h"
 #include "gui/graphics/LayoutGraphicsView.h"
 

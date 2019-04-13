@@ -22,8 +22,8 @@
 #include "gui/graphics/LayoutGraphicsScene.h"
 
 #include "Instance.h"
-#include "gui/graphics/StandardCell.h"
-#include "gui/graphics/Macro.h"
+#include "StandardCell.h"
+#include "Macro.h"
 
 #include <limits>
 #include <QtWidgets>

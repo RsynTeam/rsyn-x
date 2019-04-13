@@ -24,10 +24,10 @@
 #include "gui/graphics/GraphicsItemLookup.h"
 
 #include "Instance.h"
-#include "gui/graphics/StandardCell.h"
-#include "gui/graphics/Macro.h"
+#include "StandardCell.h"
+#include "Macro.h"
 #include "gui/QtUtils.h"
-#include "gui/graphics/Via.h"
+#include "Via.h"
 #include "gui/graphics/LayoutGraphicsScene.h"
 #include "ispd18/Guide.h"
 

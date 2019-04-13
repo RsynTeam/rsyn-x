@@ -16,7 +16,7 @@
 #include "Cell.h"
 
 #include "gui/QtUtils.h"
-#include "gui/graphics/PinMgr.h"
+#include "PinMgr.h"
 
 #include <QPainter>
 
