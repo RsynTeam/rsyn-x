@@ -128,7 +128,7 @@ public:
 	//! @note  This is a user-defined flag. If the flag was not set, an exception
 	//!        is raised.
 	NetTypeTag getNetTypeTag() const;
-        
+
 	//! @Author Mateus
 	//! @brief Returns the usage of the net
 	Use getUse() const;

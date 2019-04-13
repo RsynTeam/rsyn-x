@@ -235,6 +235,7 @@ public:
 	DBUxy getSize() const;
 
 	//! @brief Returns the size of this instance.
+	//! @todo Rename to getSize().
 	DBU getSize(const Dimension dimension) const;
 
 	//! @brief Returns the area of this instance.
@@ -244,15 +245,18 @@ public:
 	DBUxy getPosition() const;
 
 	//! @brief Returns the lower-left position of this instance.
+	//! that is defined as its position.
 	DBU getPosition(const Dimension dim) const;
 
 	//! @brief Returns the lower-left/upper-right position of this instance.
+	//! @todo remove
 	DBUxy getCoordinate(const Boundary bound) const;
 
 	//! @brief Returns the lower-left/upper-right position of this instance.
+	//! @todo remove
 	DBU getCoordinate(const Boundary bound, const Dimension dim) const;
 
-	//! @brief Returns the center of this instance.
+	//! @brief Returns the central point of the PhysicalInstance boundaries.
 	DBUxy getCenter() const;
 
 	//! @brief Returns the center position in a given dimension.

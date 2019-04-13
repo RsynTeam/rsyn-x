@@ -875,6 +875,24 @@ public:
 				criticalInputTransition, criticalOutputTransition);
 	} // end method
 
+	//! @brief   Returns the percentage of the worst path delay passing through
+	//!          this cell due to this cell.
+	//! @details For instance, if the worst path delay is 100 and the cell delay
+	//!          is 25, returns 0.25 (i.e. 25% of the path delay is due to
+	//!          the cell).
+	Number getCellWorstPercentageDelay(const Rsyn::Instance cell, const TimingMode mode) const {
+		const std::tuple<Rsyn::Arc, TimingTransition, TimingTransition> t = 
+				getCellCriticalArc(cell, mode);
+		
+		Rsyn::Arc arc = std::get<0>(t);
+		if (arc) {
+			const TimingTransition oedge = std::get<2>(t);
+			return getArcWorstPercentageDelay(arc, mode, oedge);
+		} else {
+			return 0;
+		} // end else
+	} // end method
+
 	//! @brief Returns the worst negative slack at the cell's output pins.
 	//! @note  If the worst slack is positive, returns zero.
 	Number getCellWorstNegativeSlack(const Rsyn::Instance cell, const TimingMode mode) const {
@@ -983,9 +1001,10 @@ public:
 	//! @details For instance, if the worst path delay is 100 and the cell delay
 	//!          is 25, returns 0.25 (i.e. 25% of the path delay is due to
 	//!          the cell).
-	Number getArcWorstPathDelayPercentage(Rsyn::Arc arc, const TimingMode mode, const TimingTransition oedge) const {
+	Number getArcWorstPercentageDelay(Rsyn::Arc arc, const TimingMode mode, const TimingTransition oedge) const {
+		Rsyn::Pin to = arc.getToPin();
 		const Number arcDelay = getArcDelay(arc, mode, oedge);
-		const Number pathDelay = getArcWorstPathDelay(arc, mode, oedge);
+		const Number pathDelay = getPinWorstPathDelay(to, mode, oedge);
 		return pathDelay != 0? arcDelay / pathDelay : 0;
 	} // end method	
 

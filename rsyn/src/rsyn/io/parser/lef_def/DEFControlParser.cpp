@@ -982,9 +982,9 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 				via.clsYBottomEnclosure,
 				via.clsXTopEnclosure,
 				via.clsYTopEnclosure
-				);
+			);
 			CHECK_STATUS(status);
-
+			
 			if (via.clsHasRowCol) {
 				status = defwViaViaruleRowCol(via.clsNumCutRows, via.clsNumCutCols);
 				CHECK_STATUS(status);
@@ -998,7 +998,7 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 				CHECK_STATUS(status);
 			} // end if 
 		} else {
-			const std::map<std::string, std::deque < DefViaGeometryDscp>> &mapGeos = via.clsGeometries;
+			const std::map<std::string, std::deque<DefViaGeometryDscp>> & mapGeos = via.clsGeometries;
 			for (auto& pair : mapGeos) {
 				const std::string layer = pair.first;
 				const std::deque<DefViaGeometryDscp>& geometries = pair.second;
@@ -1006,24 +1006,24 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 					const DefViaGeometryDscp & geo = geometries[i];
 					if (geo.clsHasMask) {
 						defwViaRect(
-							layer.c_str(),
-							geo.clsBounds[LOWER][X],
-							geo.clsBounds[LOWER][Y],
-							geo.clsBounds[UPPER][X],
-							geo.clsBounds[UPPER][Y],
-							geo.clsMask);
+								layer.c_str(),
+								geo.clsBounds[LOWER][X],
+								geo.clsBounds[LOWER][Y], 
+								geo.clsBounds[UPPER][X],
+								geo.clsBounds[UPPER][Y],
+								geo.clsMask);
 					} else {
 						defwViaRect(
-							layer.c_str(),
-							geo.clsBounds[LOWER][X],
-							geo.clsBounds[LOWER][Y],
-							geo.clsBounds[UPPER][X],
-							geo.clsBounds[UPPER][Y]);
+								layer.c_str(),
+								geo.clsBounds[LOWER][X],
+								geo.clsBounds[LOWER][Y], 
+								geo.clsBounds[UPPER][X],
+								geo.clsBounds[UPPER][Y]);
 					}
 				}
 			}
 		} // end if
-
+		
 		status = defwOneViaEnd();
 		CHECK_STATUS(status);
 	} // end for
@@ -1088,12 +1088,12 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 	if (numSpecialNets > 0) {
 		status = defwStartSpecialNets(numSpecialNets);
 		CHECK_STATUS(status);
-
+		
 		// write nets
 		for (const DefSpecialNetDscp & defNet : defDscp.clsSpecialNets) {
 			status = defwSpecialNet(defNet.clsName.c_str());
 			CHECK_STATUS(status);
-
+			
 			// Writing Net connections
 			for (const DefNetConnection & defConn : defNet.clsConnections) {
 				status = defwSpecialNetConnection(defConn.clsComponentName.c_str(), defConn.clsPinName.c_str(), 0);
@@ -1118,7 +1118,7 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 
 						status = defwSpecialNetPathLayer(segment.clsLayerName.c_str());
 						CHECK_STATUS(status);
-
+						
 						status = defwSpecialNetPathWidth(segment.clsRoutedWidth);
 						CHECK_STATUS(status);
 						for (const DefRoutingPointDscp & pt : segment.clsRoutingPoints) {
@@ -1156,12 +1156,12 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 				status = defwSpecialNetPathEnd();
 				CHECK_STATUS(status);
 			} // end if 
-
+			
 			if (defNet.clsUse != INVALID_DEF_NAME) {
 				status = defwSpecialNetUse(defNet.clsUse.c_str());
 				CHECK_STATUS(status);
 			} // end if
-
+			
 			status = defwSpecialNetEndOneNet();
 			CHECK_STATUS(status);
 			//CHECK_STATUS(status);
@@ -1170,12 +1170,12 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 		status = defwEndSpecialNets();
 		CHECK_STATUS(status);
 	} // end if 
-
+	
 	int numNets = defDscp.clsNets.size();
 	if (numNets > 0) {
 		status = defwStartNets(numNets);
 		CHECK_STATUS(status);
-
+	
 
 		// write nets
 		for (const DefNetDscp & defNet : defDscp.clsNets) {
@@ -1236,16 +1236,16 @@ void DEFControlParser::writeFullDEF(const string &filename, const DefDscp &defDs
 						}
 					} // end for 
 
-				} // end for 
+				} // end for
 				status = defwNetPathEnd();
 				CHECK_STATUS(status);
 			} // end if 
-
+			
 			if (defNet.clsUse != INVALID_DEF_NAME) {
 				status = defwNetUse(defNet.clsUse.c_str());
+				status = defwNetPathEnd();
 				CHECK_STATUS(status);
-			} // end if
-
+			} // end if 
 			status = defwNetEndOneNet();
 			CHECK_STATUS(status);
 			//CHECK_STATUS(status);

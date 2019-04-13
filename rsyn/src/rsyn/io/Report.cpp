@@ -30,11 +30,11 @@ namespace Rsyn {
 
 void Report::start(const Rsyn::Json &params) {
 	Rsyn::Session session;
-
-	if (session.isServiceRunning("rsyn.timer")) {
-		clsTimer = session.getService("rsyn.timer");
-	} // end if 
-
+	
+	clsTimer = session.getService("rsyn.timer");
+	clsLibraryCharacterizer = session.getService("rsyn.libraryCharacterizer");
+	clsRoutingEstimator = session.getService("rsyn.routingEstimator");
+	
 	if (session.isServiceRunning("rsyn.libraryCharacterizer")) {
 		clsLibraryCharacterizer = session.getService("rsyn.libraryCharacterizer");
 	} // end if 

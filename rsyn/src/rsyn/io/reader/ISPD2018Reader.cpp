@@ -99,7 +99,7 @@ void ISPD2018Reader::populateDesign() {
 	Reader::populateRsyn(lefDescriptor, defDescriptor, design);
 
 	Rsyn::Json physicalDesignConfiguration;
-	physicalDesignConfiguration["clsEnableMergeRectangles"] = true;
+	physicalDesignConfiguration["clsEnableMergeRectangles"] = false;
 	physicalDesignConfiguration["clsEnableNetPinBoundaries"] = true;
 	physicalDesignConfiguration["clsEnableRowSegments"] = true;
 	session.startService("rsyn.physical", physicalDesignConfiguration);

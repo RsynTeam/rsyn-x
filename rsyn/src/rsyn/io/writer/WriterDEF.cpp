@@ -171,7 +171,6 @@ void WriterDEF::writeDEF() {
 
 	std::string path = clsPath.empty() ? "./" : clsPath;
 	path += isFilenameSet() ? getFilename() : clsDesign.getName();
-	path += ".def";
 	defParser.writeFullDEF(path, def);
 } // end method 
 
@@ -205,6 +204,7 @@ void WriterDEF::writeISPD19() {
 // -----------------------------------------------------------------------------
 
 void WriterDEF::enableAll() {
+
 	setVersion(true);
 	setDeviderChar(true);
 	setBusBitChar(true);
@@ -239,6 +239,7 @@ void WriterDEF::enableAll() {
 // -----------------------------------------------------------------------------
 
 void WriterDEF::disableAll() {
+
 	setVersion(false);
 	setDeviderChar(false);
 	setBusBitChar(false);
@@ -296,6 +297,12 @@ void WriterDEF::enableICCAD15() {
 	setRows(true);
 	setComponents(true);
 	setPins(true);
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+void WriterDEF::enableISPD18() {
+
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -392,19 +399,84 @@ void WriterDEF::loadDEFGCellGrid(DefDscp & def) {
 
 // -----------------------------------------------------------------------------
 
-void WriterDEF::loadDEFVias(DefDscp & def) {
-	// TODO 
-	//	std::vector<DefViaDscp> & defVias = def.clsVias;
-	//	defVias.reserve(clsPhDesign.getNumPhysicalVias());
-	//	for (Rsyn::PhysicalVia phVia : clsPhDesign.allPhysicalVias()) {
-	//		if (!phVia.isDesignVia()) {
-	//			continue;
-	//		} // end if 
-	//		defVias.push_back(DefViaDscp());
-	//		DefViaDscp & dscpVia = defVias.back();
-	//		dscpVia.clsName = phVia.getName();
-	//		
-	//	} // end for 
+void WriterDEF::loadDEFVias(DefDscp & def) { 
+		std::vector<DefViaDscp> & defVias = def.clsVias;
+		defVias.reserve(clsPhDesign.getNumPhysicalVias());
+		for (Rsyn::PhysicalVia phVia : clsPhDesign.allPhysicalVias()) {
+			if (!phVia.isViaDesign()) {
+				continue;
+			} // end if 
+			defVias.push_back(DefViaDscp());
+			DefViaDscp & dscpVia = defVias.back();
+			dscpVia.clsName = phVia.getName();
+			if (phVia.isViaRule()) {
+				dscpVia.clsHasViaRule = true;
+				dscpVia.clsViaRuleName = phVia.getViaRule().getName();
+				dscpVia.clsXCutSize = phVia.getCutSize(X);
+				dscpVia.clsYCutSize = phVia.getCutSize(Y);
+				dscpVia.clsBottomLayer = phVia.getBottomLayer().getName();
+				dscpVia.clsCutLayer = phVia.getCutLayer().getName();
+				dscpVia.clsTopLayer = phVia.getTopLayer().getName();
+				dscpVia.clsXCutSpacing = phVia.getSpacing(X);
+				dscpVia.clsYCutSpacing = phVia.getSpacing(Y);
+				dscpVia.clsXBottomEnclosure = phVia.getEnclosure(BOTTOM_VIA_LEVEL, X);
+				dscpVia.clsYBottomEnclosure = phVia.getEnclosure(BOTTOM_VIA_LEVEL, Y);
+				dscpVia.clsXTopEnclosure = phVia.getEnclosure(TOP_VIA_LEVEL, X);
+				dscpVia.clsYTopEnclosure = phVia.getEnclosure(TOP_VIA_LEVEL, Y);
+				if (phVia.hasRowCol()) {
+					dscpVia.clsHasRowCol = true;
+					dscpVia.clsNumCutCols = phVia.getNumCols();
+					dscpVia.clsNumCutRows = phVia.getNumRows();
+				} // end if 
+				if (phVia.hasOrigin()) {
+					dscpVia.clsHasOrigin = true;
+					dscpVia.clsXOffsetOrigin = phVia.getOrigin(X);
+					dscpVia.clsYOffsetOrigin = phVia.getOrigin(Y);
+				} // end if 
+				if (phVia.hasoffset()) {
+					dscpVia.clsHasOffset = true;
+					dscpVia.clsXBottomOffset = phVia.getOffset(BOTTOM_VIA_LEVEL, X);
+					dscpVia.clsYBottomOffset = phVia.getOffset(BOTTOM_VIA_LEVEL, Y);
+					dscpVia.clsXTopOffset = phVia.getOffset(TOP_VIA_LEVEL, X);
+					dscpVia.clsYTopOffset = phVia.getOffset(TOP_VIA_LEVEL, Y);
+				} // end if 
+			} else {
+				std::map<std::string, std::deque<DefViaGeometryDscp>> & mapGeos = dscpVia.clsGeometries;
+				
+				const std::string bottomLayerName = phVia.getBottomLayer().getName();
+				for (Rsyn::PhysicalViaGeometry phGeometry: phVia.allBottomGeometries()) {
+					std::deque<DefViaGeometryDscp> & geos = mapGeos[bottomLayerName];
+					geos.push_back(DefViaGeometryDscp());
+					DefViaGeometryDscp & geoDscp = geos.back();
+					geoDscp.clsBounds = phGeometry.getBounds();
+					geoDscp.clsHasMask = phGeometry.getMaskNumber() != -1;
+					geoDscp.clsMask = phGeometry.getMaskNumber();
+					geoDscp.clsIsRect = true;
+				} // end for
+				
+				const std::string cutLayerName = phVia.getCutLayer().getName();
+				for (Rsyn::PhysicalViaGeometry phGeometry: phVia.allCutGeometries()) {
+					std::deque<DefViaGeometryDscp> & geos = mapGeos[cutLayerName];
+					geos.push_back(DefViaGeometryDscp());
+					DefViaGeometryDscp & geoDscp = geos.back();
+					geoDscp.clsBounds = phGeometry.getBounds();
+					geoDscp.clsHasMask = phGeometry.getMaskNumber() != -1;
+					geoDscp.clsMask = phGeometry.getMaskNumber();
+					geoDscp.clsIsRect = true;
+				} // end for
+				
+				const std::string topLayerName = phVia.getTopLayer().getName();
+				for (Rsyn::PhysicalViaGeometry phGeometry: phVia.allTopGeometries()) {
+					std::deque<DefViaGeometryDscp> & geos = mapGeos[topLayerName];
+					geos.push_back(DefViaGeometryDscp());
+					DefViaGeometryDscp & geoDscp = geos.back();
+					geoDscp.clsBounds = phGeometry.getBounds();
+					geoDscp.clsHasMask = phGeometry.getMaskNumber() != -1;
+					geoDscp.clsMask = phGeometry.getMaskNumber();
+					geoDscp.clsIsRect = true;
+				} // end for
+			} // end if
+		} // end for 
 } // end method 
 
 // -----------------------------------------------------------------------------
@@ -468,7 +540,26 @@ void WriterDEF::loadDEFPins(DefDscp & def) {
 		def.clsPorts.push_back(DefPortDscp());
 		DefPortDscp & defPort = def.clsPorts.back();
 		defPort.clsName = port.getName();
+		// Mateus @ 190316 -- bug fix -- get the actual net name...
 		defPort.clsNetName = port.getName();
+		if (port.getDirection() == Rsyn::IN) {
+			for (Rsyn::Pin pin: port.allPins(Rsyn::OUT)) {
+				Rsyn::Net net = pin.getNet();
+				if (net != nullptr) {
+					defPort.clsNetName = net.getName();
+					break;
+				}
+			}
+		} else if (port.getDirection() == Rsyn::OUT) {
+			for (Rsyn::Pin pin: port.allPins(Rsyn::IN)) {
+				Rsyn::Net net = pin.getNet();
+				if (net != nullptr) {
+					defPort.clsNetName = net.getName();
+					break;
+				}
+			}
+		}
+		// --
 		if (port.getDirection() == Rsyn::IN)
 			defPort.clsDirection = "INPUT";
 		else if (port.getDirection() == Rsyn::OUT)
@@ -510,19 +601,44 @@ void WriterDEF::loadDEFFills(DefDscp & def) {
 // -----------------------------------------------------------------------------
 
 void WriterDEF::loadDEFSpecialNets(DefDscp & def) {
-	// TODO 
-} // end method 
-
-// -----------------------------------------------------------------------------
-
-void WriterDEF::loadDEFNets(DefDscp & def) {
-	int numNets = clsDesign.getNumNets();
-	def.clsNets.reserve(numNets);
 	for (Rsyn::Net net : clsModule.allNets()) {
-
-		def.clsNets.push_back(DefNetDscp());
-		DefNetDscp & defNet = def.clsNets.back();
+		if (net.getUse() != Rsyn::GROUND && net.getUse() != Rsyn::POWER) {
+			continue;
+		} // end if
+			
+		def.clsSpecialNets.push_back(DefSpecialNetDscp());
+		DefSpecialNetDscp& defNet = def.clsSpecialNets.back();
 		defNet.clsName = net.getName();
+		
+		switch (net.getUse()) {
+			case Rsyn::ANALOG:
+				defNet.clsUse = "ANALOG";
+				break;
+			case Rsyn::CLOCK:
+				defNet.clsUse = "CLOCK";
+				break;
+			case Rsyn::GROUND:
+				defNet.clsUse = "GROUND";
+				break;
+			case Rsyn::POWER:
+				defNet.clsUse = "POWER";
+				break;
+			case Rsyn::RESET:
+				defNet.clsUse = "RESET";
+				break;
+			case Rsyn::SCAN:
+				defNet.clsUse = "SCAN";
+				break;
+			case Rsyn::SIGNAL:
+				defNet.clsUse = "SIGNAL";
+				break;
+			case Rsyn::TIEOFF:
+				defNet.clsUse = "TIEOFF";
+				break;
+			default:
+				defNet.clsUse = INVALID_DEF_NAME;
+		} // end switch
+		
 		defNet.clsConnections.reserve(net.getNumPins());
 		for (Rsyn::Pin pin : net.allPins()) {
 			if (!pin.isPort())
@@ -549,9 +665,9 @@ void WriterDEF::loadDEFNets(DefDscp & def) {
 
 		Rsyn::PhysicalNet phNet = clsPhDesign.getPhysicalNet(net);
 		const PhysicalRouting & phRouting = phNet.getRouting();
-		if (!phRouting.isValid())
+		if (!phRouting.isValid()) {
 			continue;
-
+		} // end if
 
 		std::vector<DefWireDscp> & wires = defNet.clsWires;
 		wires.push_back(DefWireDscp());
@@ -562,6 +678,147 @@ void WriterDEF::loadDEFNets(DefDscp & def) {
 			segments.push_back(DefWireSegmentDscp());
 			DefWireSegmentDscp & segment = segments.back();
 			segment.clsLayerName = phWire.getLayer().getName();
+			segment.clsRoutedWidth = phWire.getWidth();
+			std::vector<DefRoutingPointDscp> & points = segment.clsRoutingPoints;
+			points.reserve(phWire.getNumPoints());
+			for (const DBUxy point : phWire.allPoints()) {
+				points.push_back(DefRoutingPointDscp());
+				DefRoutingPointDscp & routing = points.back();
+				routing.clsPos = point;
+			} // end for 
+			if (phWire.hasNonDefaultSourceExtension()) {
+				DefRoutingPointDscp & routing = points.front();
+				DBUxy ext = phWire.getExtendedSourcePosition();
+				ext -= routing.clsPos;
+				routing.clsExtension = ext[X] ? ext[X] : ext[Y];
+				routing.clsHasExtension = true;
+			} // end if 
+
+			if (phWire.hasNonDefaultTargetExtension()) {
+				DefRoutingPointDscp & routing = points.back();
+				DBUxy ext = phWire.getExtendedTargetPosition();
+				ext -= routing.clsPos;
+				routing.clsExtension = ext[X] ? ext[X] : ext[Y];
+				routing.clsHasExtension = true;
+			} // end if 
+		} // end for 
+
+		for (const PhysicalRoutingVia & phVia : phRouting.allVias()) {
+			if (!phVia.isValid())
+				continue;
+
+			std::vector<DefWireSegmentDscp> & segments = wire.clsWireSegments;
+			segments.push_back(DefWireSegmentDscp());
+			DefWireSegmentDscp & segment = segments.back();
+			segment.clsLayerName = phVia.getTopLayer().getName();
+			std::vector<DefRoutingPointDscp> & points = segment.clsRoutingPoints;
+			points.push_back(DefRoutingPointDscp());
+			DefRoutingPointDscp & routing = points.back();
+			routing.clsPos = phVia.getPosition();
+			routing.clsHasVia = true;
+			routing.clsViaName = phVia.getVia().getName();
+		} // end for 
+
+		for (const PhysicalRoutingRect & rect : phRouting.allRects()) {
+			std::vector<DefWireSegmentDscp> & segments = wire.clsWireSegments;
+			segments.push_back(DefWireSegmentDscp());
+			DefWireSegmentDscp & segment = segments.back();
+			segment.clsLayerName = rect.getLayer().getName();
+			segment.clsNew = true;
+			segment.clsRoutingPoints.push_back(DefRoutingPointDscp());
+			DefRoutingPointDscp & point = segment.clsRoutingPoints.back();
+			point.clsHasRectangle = true;
+			const Bounds &bds = rect.getRect();
+			point.clsPos = bds[LOWER];
+			point.clsRect[UPPER] = bds[UPPER] - point.clsPos;
+		} // end for 
+
+	} // end for
+} // end method 
+
+// -----------------------------------------------------------------------------
+
+void WriterDEF::loadDEFNets(DefDscp & def) {
+	int numNets = clsDesign.getNumNets();
+	def.clsNets.reserve(numNets);
+	for (Rsyn::Net net : clsModule.allNets()) {
+		if (net.getUse() == Rsyn::GROUND || net.getUse() == Rsyn::POWER) {
+			continue;
+		} // end if
+		
+		def.clsNets.push_back(DefNetDscp());
+		DefNetDscp & defNet = def.clsNets.back();
+		defNet.clsName = net.getName();
+		
+		switch (net.getUse()) {
+			case Rsyn::ANALOG:
+				defNet.clsUse = "ANALOG";
+				break;
+			case Rsyn::CLOCK:
+				defNet.clsUse = "CLOCK";
+				break;
+			case Rsyn::GROUND:
+				defNet.clsUse = "GROUND";
+				break;
+			case Rsyn::POWER:
+				defNet.clsUse = "POWER";
+				break;
+			case Rsyn::RESET:
+				defNet.clsUse = "RESET";
+				break;
+			case Rsyn::SCAN:
+				defNet.clsUse = "SCAN";
+				break;
+			case Rsyn::SIGNAL:
+				defNet.clsUse = "SIGNAL";
+				break;
+			case Rsyn::TIEOFF:
+				defNet.clsUse = "TIEOFF";
+				break;
+			default:
+				defNet.clsUse = INVALID_DEF_NAME;
+		} // end switch
+		
+		defNet.clsConnections.reserve(net.getNumPins());
+		for (Rsyn::Pin pin : net.allPins()) {
+			if (!pin.isPort())
+				continue;
+			defNet.clsConnections.push_back(DefNetConnection());
+			DefNetConnection & netConnection = defNet.clsConnections.back();
+			netConnection.clsComponentName = "PIN";
+			netConnection.clsPinName = pin.getInstanceName();
+		} // end for 
+		for (Rsyn::Pin pin : net.allPins()) {
+			if (pin.isPort())
+				continue;
+			defNet.clsConnections.push_back(DefNetConnection());
+			DefNetConnection & netConnection = defNet.clsConnections.back();
+			netConnection.clsComponentName = pin.getInstanceName();
+			netConnection.clsPinName = pin.getName();
+		} // end for
+
+
+		if (!isRoutedNetsEnabled()) {
+			continue;
+		} // end if 
+
+
+		Rsyn::PhysicalNet phNet = clsPhDesign.getPhysicalNet(net);
+		const PhysicalRouting & phRouting = phNet.getRouting();
+		if (!phRouting.isValid()) {
+			continue;
+		} // end if
+
+		std::vector<DefWireDscp> & wires = defNet.clsWires;
+		wires.push_back(DefWireDscp());
+		DefWireDscp & wire = wires.back();
+
+		for (const PhysicalRoutingWire & phWire : phRouting.allWires()) {
+			std::vector<DefWireSegmentDscp> & segments = wire.clsWireSegments;
+			segments.push_back(DefWireSegmentDscp());
+			DefWireSegmentDscp & segment = segments.back();
+			segment.clsLayerName = phWire.getLayer().getName();
+			segment.clsRoutedWidth = phWire.getWidth();
 			std::vector<DefRoutingPointDscp> & points = segment.clsRoutingPoints;
 			points.reserve(phWire.getNumPoints());
 			for (const DBUxy point : phWire.allPoints()) {
