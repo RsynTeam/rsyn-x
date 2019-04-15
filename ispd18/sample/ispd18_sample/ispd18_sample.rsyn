@@ -1,5 +1,0 @@
-open "ispd18" {
-	"lefFile" : "ispd18_sample.input.lef",
-	"defFile" : "ispd18_sample.solution.good.def",
-	"guideFile" : "ispd18_sample.input.guide"
-};

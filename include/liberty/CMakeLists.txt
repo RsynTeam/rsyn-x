@@ -1,0 +1,3 @@
+file(GLOB_RECURSE SRC_FILES *.c)
+
+ADD_LIBRARY(liberty STATIC ${SRC_FILES})

@@ -1,0 +1,11 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>png/glyphicons-174-play.png</file>
+	<file>png/glyphicons-237-zoom-in.png</file>
+	<file>png/glyphicons-237-zoom-to-fit.png</file>
+	<file>png/glyphicons-238-zoom-out.png</file>
+	<file>png/glyphicons-52-eye-open.png</file>
+	<file>png/glyphicons-12-camera.png</file>
+	<file>png/glyphicons-170-record.png</file>
+</qresource>
+</RCC>

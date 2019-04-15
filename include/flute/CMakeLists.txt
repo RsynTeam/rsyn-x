@@ -1,0 +1,4 @@
+PROJECT(flute)
+set(CMAKE_CXX_STANDARD 11)
+ADD_LIBRARY(flute STATIC flute.cpp)
+TARGET_INCLUDE_DIRECTORIES(flute PUBLIC ../../src/)
