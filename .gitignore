@@ -1,64 +1,165 @@
-########################################
-# Ignore some knonw OS generated files #
-########################################
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+
+build
+
+*~
+
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
+
+
+# General
 .DS_Store
-.DS_Store?
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
 ._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
 .Spotlight-V100
+.TemporaryItems
 .Trashes
-ehthumbs.db
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+
+# Windows thumbnail cache files
 Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
 
-########
-# Misc #
-########
+# Dump file
+*.stackdump
 
-build/*
+# Folder config file
+[Dd]esktop.ini
 
-x/ide/netbeans/*
-x/ide/netbeans/nbproject/private
-!x/ide/netbeans/nbproject/
-!x/ide/netbeans/Makefile
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
 
-x/build/*
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
 
-x/bin/*
-!x/bin/Makefile
-!x/bin/POWV9.dat
-!x/bin/PORT9.dat
-!x/bin/run.mk
-!x/bin/comp.sh
-!x/bin/ICCAD15.parm
-!x/bin/runall.sh
-!x/bin/runall-short.sh
-!x/bin/runall-long.sh
-!x/bin/report.sh
-!x/bin/report-uplace.sh
-
-x/run/*
-!x/run/POWV9.dat
-!x/run/PORT9.dat
-!x/run/ICCAD15.parm
-
-x/misc/iccad2015_evaluate_solution_0831/evaluate
-x/misc/iccad2015_evaluate_solution_0831/iccad2015_evaluate_solution
-x/misc/iccad2015_evaluate_solution_0831/b19
-x/misc/iccad2015_evaluate_solution_0831/superblue1
-x/misc/iccad2015_evaluate_solution_0831/superblue3
-x/misc/iccad2015_evaluate_solution_0831/superblue4
-x/misc/iccad2015_evaluate_solution_0831/superblue5
-x/misc/iccad2015_evaluate_solution_0831/superblue7
-x/misc/iccad2015_evaluate_solution_0831/superblue10
-x/misc/iccad2015_evaluate_solution_0831/superblue16
-x/misc/iccad2015_evaluate_solution_0831/superblue18
-x/misc/iccad2015_evaluate_solution_0831/*.log
-x/misc/iccad2015_evaluate_solution_0831/*.plt
-x/misc/iccad2015_evaluate_solution_0831/*.spef
-x/misc/iccad2015_evaluate_solution_0831/*.tau2015
-x/misc/iccad2015_evaluate_solution_0831/*.timing
-x/misc/iccad2015_evaluate_solution_0831/*.tr
-x/misc/iccad2015_evaluate_solution_0831/*.o
-x/misc/iccad2015_evaluate_solution_0831/*.swp
-x/misc/iccad2015_evaluate_solution_0831/*.swo
-x/misc/iccad2015_evaluate_solution_0831/*.swn
-x/misc/iccad2015_evaluate_solution_0831/*.diff
+# Windows shortcuts
+*.lnk
