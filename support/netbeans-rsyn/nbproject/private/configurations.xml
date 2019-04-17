@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="100">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="../../src" name="0">
+      <df name="contests">
+        <df name="iccad15">
+          <in>Infrastructure.cpp</in>
+          <in>Infrastructure.h</in>
+          <in>utilICCAD15.h</in>
+        </df>
+        <df name="ispd13">
+          <in>global.h</in>
+        </df>
+        <df name="ispd16">
+          <in>ABU.cpp</in>
+          <in>ABU.h</in>
+          <in>AbuReduction.cpp</in>
+          <in>AbuReduction.h</in>
+          <in>Balancing.cpp</in>
+          <in>Balancing.h</in>
+          <in>ClusteredMove.cpp</in>
+          <in>ClusteredMove.h</in>
+          <in>EarlyOpto.cpp</in>
+          <in>EarlyOpto.h</in>
+          <in>ISPD16Flow.cpp</in>
+          <in>ISPD16Flow.h</in>
+          <in>LoadOptimization.cpp</in>
+          <in>LoadOptimization.h</in>
+        </df>
+        <df name="ispd18">
+          <in>Guide.h</in>
+          <in>RoutingGuide.cpp</in>
+          <in>RoutingGuide.h</in>
+        </df>
+      </df>
+      <df name="core">
+        <df name="dscp">
+          <in>LibraryCell.h</in>
+          <in>LibraryModule.h</in>
+        </df>
+        <df name="infra">
+          <in>Attribute.h</in>
+          <in>Exception.h</in>
+          <in>List.h</in>
+          <in>Observer.h</in>
+          <in>RangeBasedLoop.h</in>
+          <in>RawPointer.h</in>
+        </df>
+        <df name="obj">
+          <df name="data">
+            <in>Arc.h</in>
+            <in>Cell.h</in>
+            <in>Design.h</in>
+            <in>Instance.h</in>
+            <in>Library.h</in>
+            <in>LibraryArc.h</in>
+            <in>LibraryCell.h</in>
+            <in>LibraryModule.h</in>
+            <in>LibraryPin.h</in>
+            <in>Module.h</in>
+            <in>Net.h</in>
+            <in>Object.h</in>
+            <in>Pin.h</in>
+            <in>Port.h</in>
+          </df>
+          <df name="decl">
+            <in>Arc.h</in>
+            <in>Cell.h</in>
+            <in>Design.h</in>
+            <in>Instance.h</in>
+            <in>Library.h</in>
+            <in>LibraryArc.h</in>
+            <in>LibraryCell.h</in>
+            <in>LibraryModule.h</in>
+            <in>LibraryPin.h</in>
+            <in>Module.h</in>
+            <in>Net.h</in>
+            <in>Object.h</in>
+            <in>Pin.h</in>
+            <in>Port.h</in>
+          </df>
+          <df name="impl">
+            <in>Arc.h</in>
+            <in>Cell.h</in>
+            <in>Design.h</in>
+            <in>Instance.h</in>
+            <in>Library.h</in>
+            <in>LibraryArc.h</in>
+            <in>LibraryCell.h</in>
+            <in>LibraryModule.h</in>
+            <in>LibraryPin.h</in>
+            <in>Module.h</in>
+            <in>Net.h</in>
+            <in>Object.h</in>
+            <in>Pin.h</in>
+            <in>Port.h</in>
+          </df>
+        </df>
+        <in>Rsyn.h</in>
+        <in>RsynTypes.h</in>
+      </df>
+      <df name="gui">
+        <df name="dialog">
+          <in>PropertyDialog.cpp</in>
+          <in>PropertyDialog.h</in>
+        </df>
+        <df name="graphics">
+          <in>GraphicsItem.h</in>
+          <in>GraphicsItemGridLookup.cpp</in>
+          <in>GraphicsItemGridLookup.h</in>
+          <in>GraphicsItemLookup.h</in>
+          <in>GraphicsLayer.cpp</in>
+          <in>GraphicsLayer.h</in>
+          <in>GraphicsScene.cpp</in>
+          <in>GraphicsScene.h</in>
+          <in>GraphicsStipple.cpp</in>
+          <in>GraphicsStipple.h</in>
+          <in>GraphicsView.cpp</in>
+          <in>GraphicsView.h</in>
+          <in>LayoutGraphicsLayer.cpp</in>
+          <in>LayoutGraphicsLayer.h</in>
+          <in>LayoutGraphicsScene.cpp</in>
+          <in>LayoutGraphicsScene.h</in>
+          <in>LayoutGraphicsView.cpp</in>
+          <in>LayoutGraphicsView.h</in>
+        </df>
+        <df name="objects">
+          <in>Cell.cpp</in>
+          <in>Cell.h</in>
+          <in>Floorplan.cpp</in>
+          <in>Floorplan.h</in>
+          <in>Instance.cpp</in>
+          <in>Instance.h</in>
+          <in>Macro.cpp</in>
+          <in>Macro.h</in>
+          <in>Net.h</in>
+          <in>PinMgr.cpp</in>
+          <in>PinMgr.h</in>
+          <in>Port.cpp</in>
+          <in>Port.h</in>
+          <in>Rect.cpp</in>
+          <in>Rect.h</in>
+          <in>Routing.cpp</in>
+          <in>Routing.h</in>
+          <in>StandardCell.cpp</in>
+          <in>StandardCell.h</in>
+          <in>Via.cpp</in>
+          <in>Via.h</in>
+          <in>Wire.cpp</in>
+          <in>Wire.h</in>
+        </df>
+        <df name="overlay">
+          <in>DensityGridOverlay.cpp</in>
+          <in>DensityGridOverlay.h</in>
+          <in>ExampleOverlay.cpp</in>
+          <in>ExampleOverlay.h</in>
+          <in>Register.cpp</in>
+        </df>
+        <df name="resource">
+          <df name="png">
+          </df>
+        </df>
+        <df name="ui">
+        </df>
+        <df name="window">
+          <in>MainWindow.cpp</in>
+          <in>MainWindow.h</in>
+        </df>
+        <in>QtUtils.cpp</in>
+        <in>QtUtils.h</in>
+      </df>
+      <df name="phy">
+        <df name="infra">
+          <in>PhysicalAttribute.h</in>
+          <in>PhysicalObserver.h</in>
+        </df>
+        <df name="obj">
+          <df name="data">
+            <in>LayerViaManagerData.h</in>
+            <in>PhysicalDesign.h</in>
+            <in>PhysicalDieData.h</in>
+            <in>PhysicalGCellData.h</in>
+            <in>PhysicalGroupData.h</in>
+            <in>PhysicalInstanceData.h</in>
+            <in>PhysicalLayerData.h</in>
+            <in>PhysicalLibraryCellData.h</in>
+            <in>PhysicalLibraryPinData.h</in>
+            <in>PhysicalNetData.h</in>
+            <in>PhysicalObject.h</in>
+            <in>PhysicalObstacleData.h</in>
+            <in>PhysicalPinData.h</in>
+            <in>PhysicalPinGeometryData.h</in>
+            <in>PhysicalPinLayerData.h</in>
+            <in>PhysicalRegionData.h</in>
+            <in>PhysicalRoutingGridData.h</in>
+            <in>PhysicalRoutingPointData.h</in>
+            <in>PhysicalRowData.h</in>
+            <in>PhysicalSiteData.h</in>
+            <in>PhysicalSpacingData.h</in>
+            <in>PhysicalSpacingRuleData.h</in>
+            <in>PhysicalSpecialNetData.h</in>
+            <in>PhysicalSpecialWireData.h</in>
+            <in>PhysicalTracksData.h</in>
+            <in>PhysicalViaData.h</in>
+            <in>ViaGeometryData.h</in>
+            <in>ViaRuleData.h</in>
+          </df>
+          <df name="decl">
+            <in>LayerViaManager.h</in>
+            <in>PhysicalCell.h</in>
+            <in>PhysicalDesign.h</in>
+            <in>PhysicalDie.h</in>
+            <in>PhysicalGCell.h</in>
+            <in>PhysicalGroup.h</in>
+            <in>PhysicalInstance.h</in>
+            <in>PhysicalLayer.h</in>
+            <in>PhysicalLibraryCell.h</in>
+            <in>PhysicalLibraryPin.h</in>
+            <in>PhysicalModule.h</in>
+            <in>PhysicalNet.h</in>
+            <in>PhysicalObstacle.h</in>
+            <in>PhysicalPin.h</in>
+            <in>PhysicalPinGeometry.h</in>
+            <in>PhysicalPinLayer.h</in>
+            <in>PhysicalPort.h</in>
+            <in>PhysicalRegion.h</in>
+            <in>PhysicalRoutingGrid.h</in>
+            <in>PhysicalRoutingPoint.h</in>
+            <in>PhysicalRow.h</in>
+            <in>PhysicalSite.h</in>
+            <in>PhysicalSpacing.h</in>
+            <in>PhysicalSpacingRule.h</in>
+            <in>PhysicalSpecialNet.h</in>
+            <in>PhysicalSpecialWire.h</in>
+            <in>PhysicalTracks.h</in>
+            <in>PhysicalVia.h</in>
+            <in>PhysicalViaGeometry.h</in>
+            <in>PhysicalViaRule.h</in>
+            <in>PhysicalViaRuleBase.h</in>
+            <in>PhysicalViaRuleGenerate.h</in>
+          </df>
+          <df name="impl">
+            <in>LayerViaManager.h</in>
+            <in>PhysicalCell.h</in>
+            <in>PhysicalDesign.cpp</in>
+            <in>PhysicalDesign.h</in>
+            <in>PhysicalDie.h</in>
+            <in>PhysicalGCell.h</in>
+            <in>PhysicalGroup.h</in>
+            <in>PhysicalInstance.h</in>
+            <in>PhysicalLayer.h</in>
+            <in>PhysicalLibraryCell.h</in>
+            <in>PhysicalLibraryPin.h</in>
+            <in>PhysicalModule.h</in>
+            <in>PhysicalNet.h</in>
+            <in>PhysicalObstacle.h</in>
+            <in>PhysicalPin.h</in>
+            <in>PhysicalPinGeometry.h</in>
+            <in>PhysicalPinLayer.h</in>
+            <in>PhysicalPort.h</in>
+            <in>PhysicalRegion.h</in>
+            <in>PhysicalRoutingGrid.h</in>
+            <in>PhysicalRoutingPoint.h</in>
+            <in>PhysicalRow.h</in>
+            <in>PhysicalSite.h</in>
+            <in>PhysicalSpacing.h</in>
+            <in>PhysicalSpacingRule.h</in>
+            <in>PhysicalSpecialNet.h</in>
+            <in>PhysicalSpecialWire.h</in>
+            <in>PhysicalTracks.h</in>
+            <in>PhysicalVia.h</in>
+            <in>PhysicalViaGeometry.h</in>
+            <in>PhysicalViaRule.h</in>
+            <in>PhysicalViaRuleBase.h</in>
+            <in>PhysicalViaRuleGenerate.h</in>
+          </df>
+        </df>
+        <df name="util">
+          <in>BookshelfDscp.h</in>
+          <in>BookshelfMapper.cpp</in>
+          <in>BookshelfMapper.h</in>
+          <in>DefDescriptors.h</in>
+          <in>LefDescriptors.h</in>
+          <in>PhysicalLayerUtil.cpp</in>
+          <in>PhysicalTransform.cpp</in>
+          <in>PhysicalTransform.h</in>
+          <in>PhysicalTypes.h</in>
+          <in>PhysicalUtil.h</in>
+        </df>
+        <in>PhysicalDesign.h</in>
+        <in>PhysicalRouting.cpp</in>
+        <in>PhysicalRouting.h</in>
+        <in>PhysicalService.cpp</in>
+        <in>PhysicalService.h</in>
+      </df>
+      <df name="sandbox">
+        <df name="infra">
+          <in>Attribute.h</in>
+        </df>
+        <df name="obj">
+          <df name="data">
+            <in>Arc.h</in>
+            <in>Cell.h</in>
+            <in>Instance.h</in>
+            <in>Net.h</in>
+            <in>Object.h</in>
+            <in>Pin.h</in>
+            <in>Port.h</in>
+            <in>Sandbox.h</in>
+          </df>
+          <df name="decl">
+            <in>Arc.h</in>
+            <in>Cell.h</in>
+            <in>Instance.h</in>
+            <in>Net.h</in>
+            <in>Object.h</in>
+            <in>Pin.h</in>
+            <in>Port.h</in>
+            <in>Sandbox.h</in>
+          </df>
+          <df name="impl">
+            <in>Arc.h</in>
+            <in>Cell.h</in>
+            <in>Instance.h</in>
+            <in>Net.h</in>
+            <in>Object.h</in>
+            <in>Pin.h</in>
+            <in>Port.h</in>
+            <in>Sandbox.h</in>
+          </df>
+        </df>
+        <in>Sandbox.h</in>
+      </df>
+      <df name="script">
+        <in>FlexLexerCopy.h</in>
+        <in>Script.tab.cc</in>
+        <in>Script.tab.hh</in>
+        <in>Script.yy.cc</in>
+        <in>ScriptCommand.h</in>
+        <in>ScriptReader.cpp</in>
+        <in>ScriptReader.h</in>
+        <in>ScriptScanner.h</in>
+        <in>location.hh</in>
+        <in>position.hh</in>
+        <in>stack.hh</in>
+      </df>
+      <df name="session">
+        <in>Message.cpp</in>
+        <in>Message.h</in>
+        <in>Process.h</in>
+        <in>Reader.h</in>
+        <in>Service.h</in>
+        <in>Session.cpp</in>
+        <in>Session.h</in>
+        <in>SessionObserver.cpp</in>
+        <in>SessionObserver.h</in>
+      </df>
+      <df name="setup">
+        <in>Message.cpp</in>
+        <in>Process.cpp</in>
+        <in>Reader.cpp</in>
+        <in>Service.cpp</in>
+      </df>
+      <df name="shell">
+        <in>Shell.cpp</in>
+        <in>Shell.h</in>
+      </df>
+      <df name="tool">
+        <df name="congestion">
+          <in>DensityGrid.cpp</in>
+          <in>DensityGrid.h</in>
+          <in>DensityGridBin.h</in>
+          <in>DensityGridBlockage.h</in>
+          <in>DensityGridType.h</in>
+        </df>
+        <df name="fastplace">
+          <in>FastPlace.cpp</in>
+          <in>FastPlace.h</in>
+        </df>
+        <df name="jezz">
+          <in>Jezz.cpp</in>
+          <in>Jezz.h</in>
+        </df>
+        <df name="library">
+          <in>LibraryCharacterizer.cpp</in>
+          <in>LibraryCharacterizer.h</in>
+        </df>
+        <df name="lnalg">
+          <in>lnalg.cpp</in>
+          <in>lnalg.h</in>
+          <in>scrm.cpp</in>
+          <in>scrm.h</in>
+        </df>
+        <df name="qpdp">
+          <in>IncrementalTimingDrivenQP.cpp</in>
+          <in>IncrementalTimingDrivenQP.h</in>
+          <in>QpdpB2B.cpp</in>
+          <in>QpdpbB2B.h</in>
+          <in>RelaxedPinPosition.cpp</in>
+          <in>RelaxedPinPosition.h</in>
+          <in>TDQuadraticFlow.cpp</in>
+          <in>TDQuadraticFlow.h</in>
+        </df>
+        <df name="routing">
+          <in>DefaultRoutingEstimationModel.cpp</in>
+          <in>DefaultRoutingEstimationModel.h</in>
+          <in>DefaultRoutingExtractionModel.cpp</in>
+          <in>DefaultRoutingExtractionModel.h</in>
+          <in>RCTree.h</in>
+          <in>RoutingEstimationModel.h</in>
+          <in>RoutingEstimator.cpp</in>
+          <in>RoutingEstimator.h</in>
+          <in>RoutingExtractionModel.h</in>
+          <in>RoutingTopology.h</in>
+          <in>RsttRoutingEstimatorModel.cpp</in>
+          <in>RsttRoutingEstimatorModel.h</in>
+        </df>
+        <df name="scenario">
+          <in>Scenario.cpp</in>
+          <in>Scenario.h</in>
+        </df>
+        <df name="timing">
+          <in>DefaultTimingModel.cpp</in>
+          <in>DefaultTimingModel.h</in>
+          <in>DefaultTimingModelWithIdealClock.h</in>
+          <in>EdgeArray.h</in>
+          <in>SandboxTimer.cpp</in>
+          <in>SandboxTimer.h</in>
+          <in>Timer.cpp</in>
+          <in>Timer.h</in>
+          <in>TimingArc.h</in>
+          <in>TimingLibraryArc.h</in>
+          <in>TimingLibraryCell.h</in>
+          <in>TimingLibraryPin.h</in>
+          <in>TimingModel.h</in>
+          <in>TimingNet.h</in>
+          <in>TimingPin.h</in>
+          <in>TimingTypes.h</in>
+        </df>
+      </df>
+      <df name="util">
+        <in>Array.h</in>
+        <in>AsciiProgressBar.h</in>
+        <in>BlockageControl.cpp</in>
+        <in>BlockageControl.h</in>
+        <in>Bounds.h</in>
+        <in>Color.h</in>
+        <in>Colorize.h</in>
+        <in>DBU.h</in>
+        <in>Debug.h</in>
+        <in>Dim.h</in>
+        <in>Double2.h</in>
+        <in>DoubleRectangle.h</in>
+        <in>Environment.h</in>
+        <in>Exception.h</in>
+        <in>Float2.h</in>
+        <in>FloatRectangle.h</in>
+        <in>FloatingPoint.h</in>
+        <in>Histogram.cpp</in>
+        <in>Histogram.h</in>
+        <in>Json.h</in>
+        <in>Logger.cpp</in>
+        <in>Logger.h</in>
+        <in>MD5.h</in>
+        <in>MemoryUsage.h</in>
+        <in>NetlistExtractor.cpp</in>
+        <in>NetlistExtractor.h</in>
+        <in>Point.h</in>
+        <in>Polygon.cpp</in>
+        <in>Polygon.h</in>
+        <in>Proxy.h</in>
+        <in>RCTreeExtractor.cpp</in>
+        <in>RCTreeExtractor.h</in>
+        <in>RangeBasedLoop.h</in>
+        <in>Rect.cpp</in>
+        <in>Rect.h</in>
+        <in>Stepwatch.cpp</in>
+        <in>Stepwatch.h</in>
+        <in>Stipple.h</in>
+        <in>Stopwatch.h</in>
+        <in>StreamLogger.cpp</in>
+        <in>StreamLogger.h</in>
+        <in>StreamMirror.h</in>
+        <in>StreamStateSaver.h</in>
+        <in>String.h</in>
+        <in>ThreadPool.h</in>
+        <in>TristateFlag.h</in>
+        <in>UnitTest.h</in>
+        <in>Units.h</in>
+      </df>
+      <in>main.cpp</in>
+    </df>
+  </logicalFolder>
+  <projectmakefile>../../build/Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <platform>2</platform>
+      </toolsSet>
+      <compile>
+        <compiledirpicklist>
+          <compiledirpicklistitem>.</compiledirpicklistitem>
+          <compiledirpicklistitem>${AUTO_FOLDER}</compiledirpicklistitem>
+        </compiledirpicklist>
+        <compiledir>${AUTO_FOLDER}</compiledir>
+        <compilecommandpicklist>
+          <compilecommandpicklistitem>${MAKE} ${ITEM_NAME}.o</compilecommandpicklistitem>
+          <compilecommandpicklistitem>${AUTO_COMPILE}</compilecommandpicklistitem>
+        </compilecommandpicklist>
+        <compilecommand>${AUTO_COMPILE}</compilecommand>
+      </compile>
+      <dbx_gdbdebugger version="1">
+        <gdb_pathmaps>
+        </gdb_pathmaps>
+        <gdb_interceptlist>
+          <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
+        </gdb_interceptlist>
+        <gdb_options>
+          <DebugOptions>
+          </DebugOptions>
+        </gdb_options>
+        <gdb_buildfirst gdb_buildfirst_overriden="false" gdb_buildfirst_old="false"/>
+      </dbx_gdbdebugger>
+      <nativedebugger version="1">
+        <engine>gdb</engine>
+      </nativedebugger>
+      <runprofile version="9">
+        <runcommandpicklist>
+          <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
+        </runcommandpicklist>
+        <runcommand>"${OUTPUT_PATH}"</runcommand>
+        <rundir>../../build</rundir>
+        <buildfirst>false</buildfirst>
+        <terminal-type>0</terminal-type>
+        <remove-instrumentation>0</remove-instrumentation>
+        <environment>
+        </environment>
+      </runprofile>
+    </conf>
+  </confs>
+</configurationDescriptor>

@@ -3,23 +3,18 @@
     <type>org.netbeans.modules.cnd.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>Rsyn-X</name>
-            <c-extensions>c</c-extensions>
+            <name>netbeans-rsyn</name>
+            <c-extensions/>
             <cpp-extensions>cc,cpp</cpp-extensions>
-            <header-extensions>h,hh,hpp</header-extensions>
+            <header-extensions>h,hh</header-extensions>
             <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects/>
             <sourceRootList>
-                <sourceRootElem>../../../rsyn/src/rsyn</sourceRootElem>
-                <sourceRootElem>../../src/x</sourceRootElem>
+                <sourceRootElem>../../src</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
-                    <name>Debug</name>
-                    <type>0</type>
-                </confElem>
-                <confElem>
-                    <name>Release</name>
+                    <name>Default</name>
                     <type>0</type>
                 </confElem>
             </confList>

@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="100">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="build"
+                   displayName="build"
+                   projectFiles="true"
+                   root="../../build">
+      <itemPath>../../build/qrc_images.cpp</itemPath>
+      <itemPath>../../build/rsyn_automoc.cpp</itemPath>
+    </logicalFolder>
+    <df root="../../src" name="0">
+      <df name="contests">
+        <df name="iccad15">
+          <in>Infrastructure.cpp</in>
+        </df>
+        <df name="ispd16">
+          <in>ABU.cpp</in>
+          <in>AbuReduction.cpp</in>
+          <in>Balancing.cpp</in>
+          <in>ClusteredMove.cpp</in>
+          <in>EarlyOpto.cpp</in>
+          <in>ISPD16Flow.cpp</in>
+          <in>LoadOptimization.cpp</in>
+        </df>
+        <df name="ispd18">
+          <in>RoutingGuide.cpp</in>
+        </df>
+      </df>
+      <df name="gui">
+        <df name="dialog">
+          <in>PropertyDialog.cpp</in>
+        </df>
+        <df name="graphics">
+          <in>GraphicsItemGridLookup.cpp</in>
+          <in>GraphicsLayer.cpp</in>
+          <in>GraphicsScene.cpp</in>
+          <in>GraphicsStipple.cpp</in>
+          <in>GraphicsView.cpp</in>
+          <in>LayoutGraphicsLayer.cpp</in>
+          <in>LayoutGraphicsScene.cpp</in>
+          <in>LayoutGraphicsView.cpp</in>
+        </df>
+        <df name="objects">
+          <in>Cell.cpp</in>
+          <in>Floorplan.cpp</in>
+          <in>Instance.cpp</in>
+          <in>Macro.cpp</in>
+          <in>PinMgr.cpp</in>
+          <in>Port.cpp</in>
+          <in>Rect.cpp</in>
+          <in>Routing.cpp</in>
+          <in>StandardCell.cpp</in>
+          <in>Via.cpp</in>
+          <in>Wire.cpp</in>
+        </df>
+        <df name="overlay">
+          <in>DensityGridOverlay.cpp</in>
+          <in>ExampleOverlay.cpp</in>
+          <in>Register.cpp</in>
+        </df>
+        <df name="window">
+          <in>MainWindow.cpp</in>
+        </df>
+        <in>QtUtils.cpp</in>
+      </df>
+      <df name="phy">
+        <df name="obj">
+          <df name="impl">
+            <in>PhysicalDesign.cpp</in>
+          </df>
+        </df>
+        <df name="util">
+          <in>BookshelfMapper.cpp</in>
+          <in>PhysicalLayerUtil.cpp</in>
+          <in>PhysicalTransform.cpp</in>
+        </df>
+        <in>PhysicalRouting.cpp</in>
+        <in>PhysicalService.cpp</in>
+      </df>
+      <df name="script">
+        <in>Script.tab.cc</in>
+        <in>Script.yy.cc</in>
+        <in>ScriptReader.cpp</in>
+      </df>
+      <df name="session">
+        <in>Message.cpp</in>
+        <in>Session.cpp</in>
+        <in>SessionObserver.cpp</in>
+      </df>
+      <df name="setup">
+        <in>Message.cpp</in>
+        <in>Process.cpp</in>
+        <in>Reader.cpp</in>
+        <in>Service.cpp</in>
+      </df>
+      <df name="shell">
+        <in>Shell.cpp</in>
+      </df>
+      <df name="tool">
+        <df name="congestion">
+          <in>DensityGrid.cpp</in>
+        </df>
+        <df name="fastplace">
+          <in>FastPlace.cpp</in>
+        </df>
+        <df name="jezz">
+          <in>Jezz.cpp</in>
+        </df>
+        <df name="library">
+          <in>LibraryCharacterizer.cpp</in>
+        </df>
+        <df name="lnalg">
+          <in>lnalg.cpp</in>
+          <in>scrm.cpp</in>
+        </df>
+        <df name="qpdp">
+          <in>IncrementalTimingDrivenQP.cpp</in>
+          <in>QpdpB2B.cpp</in>
+          <in>RelaxedPinPosition.cpp</in>
+          <in>TDQuadraticFlow.cpp</in>
+        </df>
+        <df name="routing">
+          <in>DefaultRoutingEstimationModel.cpp</in>
+          <in>DefaultRoutingExtractionModel.cpp</in>
+          <in>RoutingEstimator.cpp</in>
+          <in>RsttRoutingEstimatorModel.cpp</in>
+        </df>
+        <df name="scenario">
+          <in>Scenario.cpp</in>
+        </df>
+        <df name="timing">
+          <in>DefaultTimingModel.cpp</in>
+          <in>SandboxTimer.cpp</in>
+          <in>Timer.cpp</in>
+        </df>
+      </df>
+      <df name="util">
+        <in>BlockageControl.cpp</in>
+        <in>Histogram.cpp</in>
+        <in>Logger.cpp</in>
+        <in>NetlistExtractor.cpp</in>
+        <in>Polygon.cpp</in>
+        <in>RCTreeExtractor.cpp</in>
+        <in>Rect.cpp</in>
+        <in>Stepwatch.cpp</in>
+        <in>StreamLogger.cpp</in>
+      </df>
+      <in>main.cpp</in>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>../../CMakeLists.txt</itemPath>
+      <itemPath>../../build/Makefile</itemPath>
+      <itemPath>nbproject/private/launcher.properties</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
+  <sourceRootList>
+    <Elem>../../src</Elem>
+  </sourceRootList>
+  <projectmakefile>../../build/Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <flagsDictionary>
+        <element flagsID="0" commonFlags="-O3 -fPIC"/>
+      </flagsDictionary>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>../../build</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile -j 8</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <executablePath></executablePath>
+          <ccTool>
+            <incDir>
+              <pElem>../../build</pElem>
+              <pElem>../..</pElem>
+              <pElem>../../3rdparty</pElem>
+              <pElem>../../db</pElem>
+              <pElem>../../db/3rdparty</pElem>
+              <pElem>../../include</pElem>
+              <pElem>../../include/export</pElem>
+              <pElem>../../src</pElem>
+              <pElem>../../src/contests</pElem>
+              <pElem>/usr/local/include</pElem>
+              <pElem>/usr/include/qt5</pElem>
+              <pElem>/usr/include/qt5/QtWidgets</pElem>
+              <pElem>/usr/include/qt5/QtGui</pElem>
+              <pElem>/usr/include/qt5/QtCore</pElem>
+              <pElem>/usr/lib64/qt5/mkspecs/linux-g++</pElem>
+              <pElem>/usr/include/qt5/QtPrintSupport</pElem>
+              <pElem>/usr/include/qt5/QtOpenGL</pElem>
+            </incDir>
+            <preprocessorList>
+              <Elem>QT_CORE_LIB</Elem>
+              <Elem>QT_GUI_LIB</Elem>
+              <Elem>QT_OPENGL_LIB</Elem>
+              <Elem>QT_PRINTSUPPORT_LIB</Elem>
+              <Elem>QT_WIDGETS_LIB</Elem>
+            </preprocessorList>
+          </ccTool>
+        </makeTool>
+        <preBuild>
+          <preBuildCommandWorkingDir>../../build</preBuildCommandWorkingDir>
+          <preBuildCommand>${CMAKE} ${CMAKE} -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=${IDE_CC} -DCMAKE_CXX_COMPILER=${IDE_CXX} -DCMAKE_C_FLAGS_DEBUG="-g3 -gdwarf-2" -DCMAKE_CXX_FLAGS_DEBUG="-g3 -gdwarf-2" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../ ..</preBuildCommand>
+        </preBuild>
+      </makefileType>
+      <item path="../../build/qrc_images.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../build/rsyn_automoc.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/contests/iccad15/Infrastructure.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/contests/ispd16/ABU.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/contests/ispd16/AbuReduction.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/contests/ispd16/Balancing.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/contests/ispd16/ClusteredMove.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/contests/ispd16/EarlyOpto.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/contests/ispd16/ISPD16Flow.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/contests/ispd16/LoadOptimization.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/contests/ispd18/RoutingGuide.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/QtUtils.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/dialog/PropertyDialog.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/graphics/GraphicsItemGridLookup.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/graphics/GraphicsLayer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/graphics/GraphicsScene.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/graphics/GraphicsStipple.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/graphics/GraphicsView.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/graphics/LayoutGraphicsLayer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/graphics/LayoutGraphicsScene.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/graphics/LayoutGraphicsView.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/objects/Cell.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/objects/Floorplan.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/objects/Instance.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/objects/Macro.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/objects/PinMgr.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/objects/Port.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/objects/Rect.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/objects/Routing.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/objects/StandardCell.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/objects/Via.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/objects/Wire.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/overlay/DensityGridOverlay.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/overlay/ExampleOverlay.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/overlay/Register.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/gui/window/MainWindow.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/main.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/phy/PhysicalRouting.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/phy/PhysicalService.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/phy/obj/impl/PhysicalDesign.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/phy/util/BookshelfMapper.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/phy/util/PhysicalLayerUtil.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/phy/util/PhysicalTransform.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/script/Script.tab.cc" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/script/Script.yy.cc" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/script/ScriptReader.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/session/Message.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/session/Session.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/session/SessionObserver.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/setup/Message.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/setup/Process.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/setup/Reader.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/setup/Service.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/shell/Shell.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/tool/congestion/DensityGrid.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/tool/fastplace/FastPlace.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/tool/jezz/Jezz.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/tool/library/LibraryCharacterizer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/tool/lnalg/lnalg.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/tool/lnalg/scrm.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/tool/qpdp/IncrementalTimingDrivenQP.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/tool/qpdp/QpdpB2B.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/tool/qpdp/RelaxedPinPosition.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/tool/qpdp/TDQuadraticFlow.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/tool/routing/DefaultRoutingEstimationModel.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/tool/routing/DefaultRoutingExtractionModel.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/tool/routing/RoutingEstimator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/tool/routing/RsttRoutingEstimatorModel.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/tool/scenario/Scenario.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/tool/timing/DefaultTimingModel.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/tool/timing/SandboxTimer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/tool/timing/Timer.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/util/BlockageControl.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/util/Histogram.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/util/Logger.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/util/NetlistExtractor.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/util/Polygon.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/util/RCTreeExtractor.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/util/Rect.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/util/Stepwatch.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../../src/util/StreamLogger.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>
