@@ -88,11 +88,6 @@ void WriterDEF::start(const Rsyn::Json &params) {
                             writeDEF();
                     });  // end command
         }                // end block
-
-        // standard
-        enableAll();
-        setPath("./");
-        setFilename(clsDesign.getName());
 }  // end method
 
 // -----------------------------------------------------------------------------
@@ -177,25 +172,13 @@ void WriterDEF::writeDEF() {
 
 void WriterDEF::writeICCAD15() {
         enableICCAD15();
-        clsFilename = clsDesign.getName() + "-cada085";
+        clsFilename = clsDesign.getName() + "-cad085";
         writeDEF();
 }  // end method
 
 // -----------------------------------------------------------------------------
 
-void WriterDEF::writeISPD18() {
-        enableAll();
-        clsFilename = clsDesign.getName() + "-ispd18";
-        writeDEF();
-}  // end method
-
-// -----------------------------------------------------------------------------
-
-void WriterDEF::writeISPD19() {
-        enableAll();
-        clsFilename = clsDesign.getName() + "-ispd19";
-        writeDEF();
-}  // end method
+void WriterDEF::writeISPD18() {}  // end method
 
 // -----------------------------------------------------------------------------
 
