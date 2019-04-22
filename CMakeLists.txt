@@ -21,6 +21,9 @@ SET(CMAKE_AUTOMOC ON)
 # Project's name
 PROJECT(rsyn)
 
+# Add db as a sub-project
+add_subdirectory(db)
+
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
         SET(WINDOWS TRUE)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
