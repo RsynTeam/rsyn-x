@@ -231,19 +231,8 @@ int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
 			<< lefPin.clsPinName << ". Pin direction is replaced to " << lefPin.clsPinDirection
 			<< " [LEF CONTROL PARSER]\n";
 		numWarningsInoutPins++;
-	} // end if 
+	} // end if
 	// END WORKORUND to support inout data pin
-	
-	// Mateus @ 190108 -- WORKORUND to support tristate pin
-	if (lefPin.clsPinDirection.compare("OUTPUT TRISTATE") == 0) {
-		lefPin.clsPinDirection = "OUTPUT";
-		if (numWarningsTristatePins < 10)
-			std::cout << "WARNING: Ignoring TRISTATE OUTPUT statement in pin "
-			<< lefPin.clsPinName << ". Pin direction is replaced to " << lefPin.clsPinDirection
-			<< " [LEF CONTROL PARSER]\n";
-		numWarningsTristatePins++;
-	} // end if 
-	// END WORKORUND to support tristate data pin
 
 	// Mateus @ 190108 -- WORKORUND to support tristate pin
 	if (lefPin.clsPinDirection.compare("OUTPUT TRISTATE") == 0) {
@@ -253,9 +242,9 @@ int lefPinCB(lefrCallbackType_e c, lefiPin* pin, lefiUserData ud) {
 			<< lefPin.clsPinName << ". Pin direction is replaced to " << lefPin.clsPinDirection
 			<< " [LEF CONTROL PARSER]\n";
 		numWarningsTristatePins++;
-	} // end if 
+	} // end if
 	// END WORKORUND to support tristate data pin
-	
+
 	lefPin.clsHasPort = pin->numPorts() > 0;
 
 	if (lefPin.clsHasPort)
