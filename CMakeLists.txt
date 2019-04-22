@@ -114,11 +114,10 @@ ADD_EXECUTABLE(rsyn ${SRC_FILES})
 # Include Directories #
 #######################
 
-TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC "./3rdparty")
 TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC "./db")
-TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC "./db/3rdparty")
 TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC "./include")
-TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC "./include/export")
+TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC "./include/def")
+TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC "./include/lef")
 TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC "./src")
 TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC "./src/contests")
 
@@ -133,10 +132,9 @@ TARGET_COMPILE_OPTIONS(rsyn PUBLIC "-Wno-unused-result -Wno-format -Wno-return-t
 # Linker Flags  #
 #################
 
-TARGET_LINK_LIBRARIES(rsyn lef)
-TARGET_LINK_LIBRARIES(rsyn def)
+TARGET_LINK_LIBRARIES(rsyn def lef)
+TARGET_LINK_LIBRARIES(rsyn liberty flute)
 TARGET_LINK_LIBRARIES(rsyn db)
-TARGET_LINK_LIBRARIES(rsyn flute)
 
 # Boost
 TARGET_INCLUDE_DIRECTORIES(rsyn PUBLIC ${Boost_INCLUDE_DIR})
