@@ -22,7 +22,7 @@
 /* 
  * File:   GenericReader.cpp
  * Author: mateus
- * 
+ *
  * Created on 14 de Abril de 2017, 12:11
  */
 
@@ -39,7 +39,6 @@
 #include "rsyn/model/routing/DefaultRoutingEstimationModel.h"
 #include "rsyn/model/routing/DefaultRoutingExtractionModel.h"
 #include "rsyn/model/library/LibraryCharacterizer.h"
-#include <Rsyn/PhysicalDesign>
 #include <Rsyn/PhysicalDesign>
 #include "rsyn/util/Stepwatch.h"
 #include "rsyn/model/timing/Timer.h"
