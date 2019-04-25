@@ -10,8 +10,11 @@ buildDocker:
         stage: buildDocker
         before_script:
                 - docker info
+                - make remove -C support
         script:
                 - docker pull rsynteam/rsyn-regression
+        after_script:
+                - make create -C support
 
 compileRsyn:
         stage: compileRsyn
@@ -37,3 +40,4 @@ runISPD19:
         stage: runISPD19
         script:
                 - make runispd19 -C support
+
