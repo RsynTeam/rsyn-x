@@ -8,7 +8,7 @@ endif
 
 CMD = bash
 
-N_TRHEADS = 4
+N_THREADS = 4
 
 CURRENT_DIR= $(shell pwd)
 DIR= $(CURRENT_DIR)/../
@@ -28,12 +28,6 @@ else
 	$(V) docker build -q -t $(IMG_NAME) .
 endif
 
-remove:
-	$(V) docker stop rsyn && docker rm rsyn || true
-
-create:
-	$(V) docker run --name rsyn -it -d -e LOCAL_USER_ID=$(USER_ID) -v $(DIR):/rsyn $(IMG_NAME) "/bin/bash"
-
 docker:
 	$(V) echo "Running Docker image ($(IMG_NAME)) with command: $(CMD)"
 ifeq ($(CMD), bash)
@@ -42,26 +36,10 @@ else
 	$(V) docker run --rm -e LOCAL_USER_ID=$(USER_ID) -v $(DIR):/rsyn $(IMG_NAME) $(CMD)
 endif
 
-execute:
-	docker exec -e LOCAL_USER_ID=$(USER_ID) rsyn $(CMD)
-
 compile:
 	$(V) echo "Compiling Rsyn in  Docker image ($(IMG_NAME))"
-	$(V) make -j$(N_TRHEADS) execute CMD="/rsyn/support/compile-rsyn.sh"
+	$(V) make -j$(N_THREADS) execute CMD="/rsyn/support/compile-rsyn.sh"
 
-runiccad14:
-	$(V) echo "Running ICCAD14 regression tests"
-	$(V) make execute CMD="/rsyn/support/test/run-tests.sh --benchmarks=iccad14"
-
-runiccad15:
-	$(V) echo "Running ICCAD15 regression tests"
-	$(V) make execute CMD="/rsyn/support/test/run-tests.sh --benchmarks=iccad15"
-
-runispd18:
-	$(V) echo "Running ISPD18 regression tests"
-	$(V) make execute CMD="/rsyn/support/test/run-tests.sh --benchmarks=ispd18"
-
-runispd19:
-	$(V) echo "Running ISPD19 regression tests"
-	$(V) make execute CMD="/rsyn/support/test/run-tests.sh --benchmarks=ispd19"
+runall:
+	$(V) make -j$(N_THREADS) docker CMD="/bin/bash -c '/rsyn/support/compile-rsyn.sh && /rsyn/support/test/run-tests.sh'"
 

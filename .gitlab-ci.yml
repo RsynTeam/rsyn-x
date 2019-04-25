@@ -1,43 +1,15 @@
 stages:
         - buildDocker
-        - compileRsyn
-        - runICCAD14
-        - runICCAD15
-        - runISPD18
-        - runISPD19
+        - runRsyn
 
 buildDocker:
         stage: buildDocker
         before_script:
                 - docker info
-                - make remove -C support
         script:
                 - docker pull rsynteam/rsyn-regression
-        after_script:
-                - make create -C support
 
 compileRsyn:
-        stage: compileRsyn
+        stage: runRsyn
         script:
-               - make compile -C support
-
-runICCAD14:
-        stage: runICCAD14
-        script:
-                - make runiccad14 -C support
-
-runICCAD15:
-        stage: runICCAD15
-        script:
-                - make runiccad15 -C support
-
-runISPD18:
-        stage: runISPD18
-        script:
-                - make runispd18 -C support
-
-runISPD19:
-        stage: runISPD19
-        script:
-                - make runispd19 -C support
-
+               - make runall -C support
