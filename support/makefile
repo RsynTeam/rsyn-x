@@ -39,3 +39,20 @@ endif
 compile:
 	$(V) echo "Compiling Rsyn in  Docker image ($(IMG_NAME))"
 	$(V) make -j$(N_TRHEADS) docker CMD="/rsyn/support/compile-rsyn.sh"
+
+runiccad14:
+	$(V) echo "Running ICCAD14 regression tests"
+	$(V) make docker CMD="/rsyn/support/test/run-tests.sh --benchmarks=iccad14"
+
+runiccad15:
+	$(V) echo "Running ICCAD15 regression tests"
+	$(V) make docker CMD="/rsyn/support/test/run-tests.sh --benchmarks=iccad15"
+
+runispd18:
+	$(V) echo "Running ISPD18 regression tests"
+	$(V) make docker CMD="/rsyn/support/test/run-tests.sh --benchmarks=ispd18"
+
+runispd19:
+	$(V) echo "Running ISPD19 regression tests"
+	$(V) make docker CMD="/rsyn/support/test/run-tests.sh --benchmarks=ispd19"
+
