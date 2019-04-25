@@ -29,12 +29,14 @@
 #include "io/reader/ICCAD17Reader.h"
 #include "io/reader/GenericReader.h"
 #include "io/reader/ISPD2018Reader.h"
+#include "io/reader/ICCAD15ReaderExtended.h" 
 
 // Registration
 namespace Rsyn {
 
 void Session::registerReaders() {
-        registerReader<Rsyn::ICCAD15Reader>("rsyn.iccad2015");
+        registerReader<Rsyn::ICCAD15Reader>("rsyn.iccad15");
+        registerReader<ICCAD15::ICCAD15ReaderExtended>("iccad2015");
         registerReader<Rsyn::ICCAD17Reader>("rsyn.iccad2017");
         registerReader<Rsyn::BookshelfReader>("bookshelf");
         registerReader<Rsyn::ISPD2014Reader>("ispd14");

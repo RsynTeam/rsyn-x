@@ -35,6 +35,7 @@
 #include "io/writer/Writer.h"
 #include "io/Graphics.h"
 #include "ispd18/RoutingGuide.h"
+#include "test/regressionsService.h"
 
 // Registration
 namespace Rsyn {
@@ -58,5 +59,6 @@ void Session::registerServices() {
         registerService<Rsyn::Graphics>("rsyn.graphics");
         registerService<Rsyn::RoutingGuide>("rsyn.routingGuide");
         registerService<Rsyn::WriterDEF>("rsyn.writerDEF");
+        registerService<regressionsService>("openroad.regressions");
 }  // end method
 }  // end namespace
