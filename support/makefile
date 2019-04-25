@@ -43,7 +43,7 @@ else
 endif
 
 execute:
-	docker exec -it rsyn $(CMD)
+	docker exec rsyn $(CMD)
 
 compile:
 	$(V) echo "Compiling Rsyn in  Docker image ($(IMG_NAME))"
