@@ -22,7 +22,7 @@
 /* 
  * File:   BookshelfReader.cpp
  * Author: jucemar
- * 
+ *
  * Created on 20 de Fevereiro de 2017, 19:03
  */
 
@@ -34,7 +34,6 @@
 #include "rsyn/phy/util/BookshelfDscp.h"
 #include "rsyn/phy/util/BookshelfMapper.h"
 
-#include <Rsyn/PhysicalDesign>
 #include <Rsyn/PhysicalDesign>
 #include "rsyn/io/Graphics.h"
 
