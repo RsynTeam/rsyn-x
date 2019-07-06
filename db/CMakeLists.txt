@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
 project(db)
 
 set(CMAKE_CXX_STANDARD 11)
@@ -13,5 +13,7 @@ file(GLOB_RECURSE SRC_FILES *.c *.cpp *.cc)
 
 add_LIBRARY(db STATIC ${SRC_FILES})
 
+find_package(Qt5 COMPONENTS Core)
 target_include_directories(db PUBLIC ./)
 target_include_directories(db PUBLIC ../include/)
+target_include_directories(db PUBLIC ${Boost_INCLUDE_DIR})
