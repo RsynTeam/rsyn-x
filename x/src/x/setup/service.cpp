@@ -24,6 +24,7 @@
 #include "x/model/DefaultTimingModelWithIdealClock.h"
 #include "x/infra/iccad15/Infrastructure.h"
 #include "x/jezz/Jezz.h"
+#include "x/nfl/NFLegal.h"
 #include "x/util/BlockageControl.h"
 #include "x/util/NetlistExtractor.h"
 
@@ -33,6 +34,7 @@ static Startup registerServices([]{
 	Rsyn::Session session;
 
 	session.registerService<Jezz>("rsyn.jezz");
+	session.registerService<NFL::NFLegal>("rsyn.nfl");
 	session.registerService<ICCAD15::DefaultTimingModelWithIdealClock>("rsyn.defaultTimingModelWithIdealClock");
 	session.registerService<ICCAD15::Infrastructure>("ufrgs.ispd16.infra");
 	session.registerService<ICCAD15::BlockageControl>("ufrgs.blockageControl");

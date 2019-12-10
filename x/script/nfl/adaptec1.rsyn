@@ -1,0 +1,9 @@
+open "bookshelf" {
+	"config" : "../../adaptec1/adaptec1.aux",
+	"targetUtilization" : 0.6
+};
+
+start "ufrgs.nflegal" {
+	"cellOverlapOpto" : "jezz"
+};
+legalizePlace;
