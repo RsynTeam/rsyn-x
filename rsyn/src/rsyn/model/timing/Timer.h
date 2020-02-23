@@ -1678,32 +1678,18 @@ public:
 	class PathHop {
 	friend class Timer;
 	private:
-		Rsyn::Arc rsynArcFromThisPin;
-		Rsyn::Arc rsynArcToThisPin;
-		Number arrival;
-		Number required;
-		Number delay;
-		Rsyn::Pin pin;
-		Rsyn::Pin previousPin;
-		Rsyn::Pin nextPin;
-		TimingTransition transition;
-		TimingTransition previousTransition;
-		TimingTransition nextTransition;
+		Rsyn::Arc rsynArcFromThisPin{nullptr};
+		Rsyn::Arc rsynArcToThisPin{nullptr};
+		Number arrival{std::numeric_limits<Number>::quiet_NaN()};
+		Number required{std::numeric_limits<Number>::quiet_NaN()};
+		Number delay{std::numeric_limits<Number>::quiet_NaN()};
+		Rsyn::Pin pin{nullptr};
+		Rsyn::Pin previousPin{nullptr};
+		Rsyn::Pin nextPin{nullptr};
+		TimingTransition transition{Rsyn::TIMING_TRANSITION_INVALID};
+		TimingTransition previousTransition{Rsyn::TIMING_TRANSITION_INVALID};
+		TimingTransition nextTransition{Rsyn::TIMING_TRANSITION_INVALID};
 		TimingMode mode; // stored for commodity, used to compute slack
-		
-		PathHop() :
-			arrival(std::numeric_limits<Number>::quiet_NaN()),
-			required(std::numeric_limits<Number>::quiet_NaN()),
-			delay(std::numeric_limits<Number>::quiet_NaN()),
-			pin(nullptr),
-			previousPin(nullptr),
-			nextPin(nullptr),
-			rsynArcFromThisPin(nullptr),
-			rsynArcToThisPin(nullptr),
-			transition(Rsyn::TIMING_TRANSITION_INVALID),
-			previousTransition(Rsyn::TIMING_TRANSITION_INVALID),
-			nextTransition(Rsyn::TIMING_TRANSITION_INVALID)
-		{}
 				
 	public:
 		
@@ -1750,12 +1736,12 @@ private:
 
 	// Helper structure used to generate critical paths.
 	struct Reference {
-		Rsyn::Pin propPin;
-		TimingArc * propArcPointerFromThisPin;
-		Rsyn::Arc propRsynArcFromThisPin;
-		TimingTransition propTransition;
-		Number propRequired;
-		int propParentPartialPath;
+		Rsyn::Pin propPin{nullptr};
+		TimingArc * propArcPointerFromThisPin{nullptr};
+		Rsyn::Arc propRsynArcFromThisPin{nullptr};
+		TimingTransition propTransition{Rsyn::TIMING_TRANSITION_INVALID};
+		Number propRequired{std::numeric_limits<Number>::quiet_NaN()};
+		int propParentPartialPath{-1};
 		TimingTransition propTransitionAtParent;
 		
 		// This is not the actual slack in the current path. This is computed
@@ -1763,18 +1749,10 @@ private:
 		// at this pin) and the worst arrival time.
 		// The actual slack in this path will be computed later during the 
 		// backtracking.
-		Number propSlack; 
+		Number propSlack{std::numeric_limits<Number>::quiet_NaN()};
 		
 		// Constructor.
-		Reference() :
-			propPin(nullptr),
-			propArcPointerFromThisPin(nullptr),
-			propRsynArcFromThisPin(nullptr),
-			propRequired(std::numeric_limits<Number>::quiet_NaN()),
-			propSlack(std::numeric_limits<Number>::quiet_NaN()),
-			propParentPartialPath(-1),
-			propTransition(Rsyn::TIMING_TRANSITION_INVALID)
-		{}
+		Reference() = default;
 		
 		Reference(Rsyn::Pin pin, 
 				TimingArc * arc,
@@ -1788,11 +1766,11 @@ private:
 				propPin(pin),
 				propArcPointerFromThisPin(arc),
 				propRsynArcFromThisPin(rsynArc),
-				propRequired(required),
-				propSlack(slack),
-				propTransition(transition),
-				propParentPartialPath(parent),
-				propTransitionAtParent(transitionAtParent) {}
+        propTransition(transition),
+        propRequired(required),
+        propParentPartialPath(parent),
+        propTransitionAtParent(transitionAtParent),
+        propSlack(slack) {}
 					
 		bool operator>(const Reference &rhs) const {
 			return (propSlack > rhs.propSlack);

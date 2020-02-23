@@ -21,18 +21,16 @@
 namespace Rsyn {
 	
 struct TimingLibraryPin {
-	int index;
+	int index{-1};
 
 	// Indicates if this pin is the clock pin of a register.
-	bool clocked;
+	bool clocked{false};
 	
 	// For non-sequential pins, always = -1
 	// For sequential pins,
 	//     if clocked = true; indicates the index of the data pin;
 	//     if clocked = false; indicates the index of the clock pin;
-	int control;
-	
-	TimingLibraryPin() : index(-1), control(-1), clocked(false) {}
+	int control{-1};
 }; // end class
 
 } // end namespace

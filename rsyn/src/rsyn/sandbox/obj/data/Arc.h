@@ -17,12 +17,12 @@ namespace Rsyn {
 		
 struct SandboxArcData : ObjectData {
 	ArcType type : 2;
-	SandboxPin from;
-	SandboxPin to;
+	SandboxPin from{nullptr};
+	SandboxPin to{nullptr};
 	
 	union {
 		// Place holder for initialization...
-		void * extra;
+		void * extra{nullptr};
 		
 		// Meaningful only when this is arc belongs to a cell.
 		LibraryArcData * libraryArcData;
@@ -31,11 +31,7 @@ struct SandboxArcData : ObjectData {
 		SandboxNetData * netData;
 	}; // end union
 
-	SandboxArcData() :
-		type(UNKNOWN_ARC_TYPE),
-		extra(nullptr),
-		from(nullptr), 
-		to(nullptr) {
+	SandboxArcData() : type(UNKNOWN_ARC_TYPE) {
 	} // end constructor
 }; // end struct
 

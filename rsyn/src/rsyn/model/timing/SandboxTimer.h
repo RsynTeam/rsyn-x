@@ -948,26 +948,16 @@ public:
 	class PathHop {
 	friend class SandboxTimer;
 	private:
-		Rsyn::SandboxArc rsynArcFromThisPin;
-		Rsyn::SandboxArc rsynArcToThisPin;
-		Number arrival;
-		Number required;
-		Number delay;
-		Rsyn::SandboxPin pin;
-		Rsyn::SandboxPin previousPin;
-		Rsyn::SandboxPin nextPin;
+		Rsyn::SandboxArc rsynArcFromThisPin{nullptr};
+		Rsyn::SandboxArc rsynArcToThisPin{nullptr};
+		Number arrival{std::numeric_limits<Number>::quiet_NaN()};
+		Number required{std::numeric_limits<Number>::quiet_NaN()};
+		Number delay{std::numeric_limits<Number>::quiet_NaN()};
+		Rsyn::SandboxPin pin{nullptr};
+		Rsyn::SandboxPin previousPin{nullptr};
+		Rsyn::SandboxPin nextPin{nullptr};
 		TimingTransition transition;
 		TimingMode mode; // stored for commodity, used to compute slack
-
-		PathHop() :
-		arrival(std::numeric_limits<Number>::quiet_NaN()),
-		required(std::numeric_limits<Number>::quiet_NaN()),
-		delay(std::numeric_limits<Number>::quiet_NaN()),
-		pin(nullptr),
-		previousPin(nullptr),
-		nextPin(nullptr),
-		rsynArcFromThisPin(nullptr),
-		rsynArcToThisPin(nullptr){}
 
 	public:
 
@@ -1011,12 +1001,12 @@ private:
 
 	// Helper structure used to generate critical paths.
 	struct Reference {
-		Rsyn::SandboxPin propPin;
-		TimingArc * propArcPointerFromThisPin;
-		Rsyn::SandboxArc propRsynArcFromThisPin;
+		Rsyn::SandboxPin propPin{nullptr};
+		TimingArc * propArcPointerFromThisPin{nullptr};
+		Rsyn::SandboxArc propRsynArcFromThisPin{nullptr};
 		TimingTransition propTransition;
-		Number propRequired;
-		int propParentPartialPath;
+		Number propRequired{std::numeric_limits<Number>::quiet_NaN()};
+		int propParentPartialPath{-1};
 		TimingTransition propTransitionAtParent;
 
 		// This is not the actual slack in the current path. This is computed
@@ -1024,17 +1014,10 @@ private:
 		// at this pin) and the worst arrival time.
 		// The actual slack in this path will be computed later during the
 		// backtracking.
-		Number propSlack;
+		Number propSlack{std::numeric_limits<Number>::quiet_NaN()};
 
 		// Constructor.
-		Reference() :
-			propPin(nullptr),
-			propArcPointerFromThisPin(nullptr),
-			propRsynArcFromThisPin(nullptr),
-			propRequired(std::numeric_limits<Number>::quiet_NaN()),
-			propSlack(std::numeric_limits<Number>::quiet_NaN()),
-			propParentPartialPath(-1)
-		{}
+		Reference() = default;
 
 		Reference(Rsyn::SandboxPin pin,
 				TimingArc * arc,
@@ -1048,11 +1031,11 @@ private:
 				propPin(pin),
 				propArcPointerFromThisPin(arc),
 				propRsynArcFromThisPin(rsynArc),
-				propRequired(required),
-				propSlack(slack),
-				propTransition(transition),
+        propTransition(transition),
+        propRequired(required),
 				propParentPartialPath(parent),
-				propTransitionAtParent(transitionAtParent) {}
+        propTransitionAtParent(transitionAtParent),
+				propSlack(slack) {}
 
 		bool operator>(const Reference &rhs) const {
 			return (propSlack > rhs.propSlack);

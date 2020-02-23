@@ -207,12 +207,10 @@ friend class ParsedCommand;
 friend class Command;
 private:
 	Rsyn::Json clsJson;
-	ParsedParamType clsType;
-	int clsPosition;
-	std::string clsName;	
+	ParsedParamType clsType{PARSED_PARAM_TYPE_NULL};
+	int clsPosition{-1};
+	std::string clsName;
 
-	ParsedParam() : clsPosition(-1), clsType(PARSED_PARAM_TYPE_NULL) {}
-	
 	const Rsyn::Json &
 	getValue() const {
 		return clsJson;

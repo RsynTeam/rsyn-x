@@ -27,14 +27,14 @@ struct SandboxData {
 	std::vector<std::string> instanceNames;
 	std::vector<std::string> netNames;
 
-	int anonymousInstanceId;
-	int anonymousNetId;
+	int anonymousInstanceId{0};
+	int anonymousNetId{0};
 
-	bool dirty;
-	bool initialized;
+	bool dirty{false};
+	bool initialized{false};
 
 	// Used for some netlist traversing (e.g. update topological ordering)...
-	int sign;
+	int sign{0};
 	
 	std::unordered_map<std::string, SandboxInstance> instanceNameMapping;
 	std::unordered_map<std::string, SandboxNet> netMapping;
@@ -43,15 +43,6 @@ struct SandboxData {
 
 	List<SandboxPort, RSYN_SANDBOX_LIST_CHUNCK_SIZE> ports;
 	std::set<SandboxPort> portsByDirection[Rsyn::NUM_SIGNAL_DIRECTIONS];
-
-	SandboxData() :
-		initialized(false),
-		dirty(false),
-		anonymousInstanceId(0),
-		anonymousNetId(0),
-		sign(0) {
-	} // end constructor
-
 }; // end struct
 
 } // end namespace

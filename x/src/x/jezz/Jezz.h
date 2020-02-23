@@ -716,28 +716,21 @@ public:
 public:
 
 	struct WhitespaceDescriptor {
-		JezzNode *node; // whitespace node
-		DBU x; // minimum x of the whitespace
-		DBU y; // minumum y of the whitespace
-		DBU w; // whitespace width
+		JezzNode *node{nullptr}; // whitespace node
+		DBU x{std::numeric_limits<DBU>::quiet_NaN()}; // minimum x of the whitespace
+		DBU y{std::numeric_limits<DBU>::quiet_NaN()}; // minumum y of the whitespace
+		DBU w{std::numeric_limits<DBU>::quiet_NaN()}; // whitespace width
 
 		// Position where the cell should be inserted inside whitespace 
 		// accounting for snapping noise. Note that the whitespace can be much 
 		// larger than the node.
-		DBU x_insertion; // x_insertion >= x
+		DBU x_insertion{std::numeric_limits<DBU>::quiet_NaN()}; // x_insertion >= x
 		
 		// Distance from target position (computed based on the insertion 
 		// position).
-		DBU distance; 
+		DBU distance{std::numeric_limits<DBU>::quiet_NaN()};
 		
-		WhitespaceDescriptor() {
-			node = nullptr;
-			x = std::numeric_limits<DBU>::quiet_NaN();
-			y = std::numeric_limits<DBU>::quiet_NaN();
-			x_insertion = std::numeric_limits<DBU>::quiet_NaN();
-			w = std::numeric_limits<DBU>::quiet_NaN();
-			distance = std::numeric_limits<DBU>::quiet_NaN();
-		} // end constructor
+		WhitespaceDescriptor() = default;
 
 		WhitespaceDescriptor(
 				JezzNode *node,
@@ -746,7 +739,7 @@ public:
 				const DBU x_insertion,
 				const DBU w, 
 				const DBU distance) :
-			node(node), x(x), y(y), x_insertion(x_insertion), w(w), distance(distance) {
+			node(node), x(x), y(y), w(w), x_insertion(x_insertion), distance(distance) {
 		} // end constructor
 
 		bool operator<(const WhitespaceDescriptor &rhs) const {
