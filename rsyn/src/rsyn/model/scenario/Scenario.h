@@ -69,35 +69,31 @@ public:
 	class TimingLibraryPin {
 	friend class Scenario;
 	private:
-		int index;
+		int index{-1};
 
 		// Input capacitance associates to this pin.
-		Number capacitance;
+		Number capacitance{0};
 		
 		//Output max capacitance
-		Number maxCapacitance;
+		Number maxCapacitance{0};
 		
 		//Input max transition
-		Number maxTransition;
+		Number maxTransition{0};
 
 		// Indicates if this pin is the clock pin of a register.
-		bool clocked;
+		bool clocked{false};
 
 		// For non-sequential pins, always = -1
 		// For sequential pins,
 		//     if clocked = true; indicates the index of the data pin;
 		//     if clocked = false; indicates the index of the clock pin;
-		int control;
+		int control{-1};
 
 		// Look-up tables.
 		ISPD13::LibParserLUT setup[NUM_EDGE_TYPES];
 		ISPD13::LibParserLUT hold[NUM_EDGE_TYPES];	
 
 	public:
-		
-		TimingLibraryPin() : index(-1), control(-1), clocked(false), capacitance(0),
-		maxCapacitance(0), maxTransition(0) {}
-
 		const ISPD13::LibParserLUT &getSetupLut(const EdgeType &edge) const { return setup[edge]; }
 		const ISPD13::LibParserLUT &getHoldLut(const EdgeType &edge) const { return hold[edge]; }		
 		

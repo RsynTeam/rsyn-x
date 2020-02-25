@@ -47,14 +47,7 @@ static const bool DebugRendering = false;
 
 // -----------------------------------------------------------------------------
 
-GraphicsView::GraphicsView(QWidget *parent) :
-		QGraphicsView(parent),
-		zoomScaling(1),
-		sceneToViewportScalingFactor(0),
-		rowHeight(0),
-		initialized(false)
-{
-
+GraphicsView::GraphicsView(QWidget *parent) : QGraphicsView(parent) {
     setRenderHint(QPainter::Antialiasing, false);
     setDragMode(QGraphicsView::RubberBandDrag);
     setOptimizationFlags(

@@ -54,17 +54,11 @@ private:
 	}; // end enum
 
 	struct LookUpTableTemplate {
-		LutVariableType var1;
-		LutVariableType var2;
-		
-		int loadIndex;
-		int slewIndex;
-		
-		LookUpTableTemplate() :
-			loadIndex(-1),
-			slewIndex(-1),
-			var1(LUT_VARIABLE_INVALID),
-			var2(LUT_VARIABLE_INVALID){}
+		LutVariableType var1{LUT_VARIABLE_INVALID};
+		LutVariableType var2{LUT_VARIABLE_INVALID};
+
+		int loadIndex{-1};
+		int slewIndex{-1};
 	}; // end struct
 	
 	LutVariableType getLutVariableTypeFromString(const std::string &str) {

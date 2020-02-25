@@ -33,23 +33,23 @@ class LibraryCharacterizer;
 
 class IncrementalTimingDrivenQP : public Rsyn::Process {
 private:
-	Rsyn::Session session;
-	Infrastructure *infra;
-	Rsyn::Design design;
+	Rsyn::Session session{nullptr};
+	Infrastructure *infra{nullptr};
+	Rsyn::Design design{nullptr};
 	Rsyn::Module module;
 	Rsyn::PhysicalDesign phDesign;
-	Rsyn::Timer *timer;
+	Rsyn::Timer *timer{nullptr};
 	Rsyn::RoutingEstimator *routingEstimator;
-	const Rsyn::LibraryCharacterizer *libc;
+	const Rsyn::LibraryCharacterizer *libc{nullptr};
 	
-	bool debugMode;
-	bool enableRC;
+	bool debugMode{false};
+	bool enableRC{false};
 	
-	double minimumResistance;
+	double minimumResistance{0.01};
 	    
 	/* Numberic values for tunning the algorithms */
 protected:
-	Number alpha;
+	Number alpha{0};
 	Number beta;
 public:
 	const Number getAlpha() const { return alpha; }
@@ -58,7 +58,7 @@ public:
 	void setBeta( const Number beta ) { this->beta = beta; }
 
 protected:
-	int maxNumPaths;
+	int maxNumPaths{5000};
 public:
 	const int getMaxNumPaths() const { return maxNumPaths; }
 	void setMaxNumPaths( const int maxNumPaths ) { this->maxNumPaths = maxNumPaths; }
@@ -68,8 +68,8 @@ private:
 	std::set<Rsyn::Cell> movable;
 	std::vector< std::pair< double, Rsyn::Net > > criticalNets;
 	
-	LegalizationMethod legMode;
-	bool roolbackOnMaxDisplacementViolation;
+	LegalizationMethod legMode{LegalizationMethod::LEG_NEAREST_WHITESPACE};
+	bool roolbackOnMaxDisplacementViolation{true};
 
 //	std::map<Rsyn::Cell, int> mapCellToIndex;
 	Rsyn::Attribute<Rsyn::Instance, int> mapCellToIndex;
@@ -145,15 +145,6 @@ private:
 	
 	void doNoHarm();
 public:
-	
-	IncrementalTimingDrivenQP() : session(nullptr), infra(nullptr), design(nullptr),
-			 timer(nullptr), libc(nullptr), debugMode(false),
-			 enableRC( false ), alpha( 0 ),
-			 maxNumPaths( 5000 ),
-             legMode( LegalizationMethod::LEG_NEAREST_WHITESPACE ),
-			 roolbackOnMaxDisplacementViolation(true),
-			 minimumResistance(0.01) {};
-	
 	void initIncrementalTimingDrivenQP();
 	
 	void setSession(Rsyn::Session ptr);

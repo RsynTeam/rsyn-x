@@ -28,19 +28,13 @@ struct SandboxNetData : SandboxObjectData {
 	std::vector<SandboxPin> pins;
 	
 	// Driver. If multiple-drivers, store one of them without any assumptions.
-	SandboxPin driver;
+	SandboxPin driver{nullptr};
 
 	// Cache number of pins per direction.
-	std::array<int, NUM_SIGNAL_DIRECTIONS> numPinsOfType;
+	std::array<int, NUM_SIGNAL_DIRECTIONS> numPinsOfType{0, 0, 0, 0};
 	
 	// Ussed in some netlist traversals.
-	int sign;
-
-	SandboxNetData() :
-		sign(-1),
-		driver(nullptr), 
-		numPinsOfType({0, 0, 0, 0}) {
-	} // end constructor	
+	int sign{-1};
 }; // end struct
 
 } // end namespace

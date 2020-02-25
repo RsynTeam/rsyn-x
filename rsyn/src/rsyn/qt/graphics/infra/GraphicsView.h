@@ -114,11 +114,11 @@ private:
 
 	//! @brief Indicates whether or not this graphics view was already
 	//! initialized.
-	bool initialized = false;
+	bool initialized{false};
 
 	// Current zoom.
-	qreal zoomScaling;
-	qreal initialZoomScaling = 1;
+	qreal zoomScaling{1};
+	qreal initialZoomScaling{1};
 
 	// The bounds of the scene (user space) adjusted to the aspect ratio of the
 	// viewport. When zoom = 1, it means the adjustedSceneRect fits exactly
@@ -126,13 +126,13 @@ private:
 	QRectF adjustedSceneRect;
 
 	// The scaling required to map user coordinates to viewport coordinates.
-	qreal sceneToViewportScalingFactor;
-	qreal rowHeight;
+	qreal sceneToViewportScalingFactor{0};
+	qreal rowHeight{0};
 
 	QTransform invertedTransform;
 
 	Rsyn::PhysicalDesign physicalDesign;
-	Rsyn::Graphics *rsynGraphics = nullptr;
+	Rsyn::Graphics *rsynGraphics{nullptr};
 
 }; // end method
 

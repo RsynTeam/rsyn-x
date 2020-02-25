@@ -78,11 +78,7 @@ static const int MAX_COMMAND_HISTORY_LENGTH = 100;
 
 // -----------------------------------------------------------------------------
 
-MainWindow::MainWindow(QWidget *parent) :
-	QMainWindow(parent),
-		view(nullptr),
-		scene(nullptr)
-{
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	setupUi(this);
 	statusBar()->show();
 
