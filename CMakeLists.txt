@@ -6,7 +6,7 @@
 #########
 
 # Specify the minimum version for CMake
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.5)
 
 # Message
 message(STATUS "Rsyn")
@@ -38,7 +38,8 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/x/cmake)
 
-set(CMAKE_CXX_STANDARD 11)
+set_property(SOURCE file.hh PROPERTY SKIP_AUTOMOC ON)
+set(CMAKE_CXX_STANDARD 14)
 
 set(PATH_RSYN ${CMAKE_CURRENT_SOURCE_DIR}/rsyn)
 set(PATH_X ${CMAKE_CURRENT_SOURCE_DIR}/x)
