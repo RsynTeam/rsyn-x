@@ -175,21 +175,21 @@ std::string getPhysicalSymmetry(const Rsyn::PhysicalSymmetry rowSymmetry) {
 
 bool isPhysicalSymmetryX(const Rsyn::PhysicalSymmetry symmetry) {
 	return symmetry == SYMMETRY_X || symmetry == SYMMETRY_XY || 
-		symmetry == SYMMETRY_XR90 || SYMMETRY_XYR90;
+		symmetry == SYMMETRY_XR90 || symmetry == SYMMETRY_XYR90;
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 bool isPhysicalSymmetryY(const Rsyn::PhysicalSymmetry symmetry) {
 	return symmetry == SYMMETRY_Y || symmetry == SYMMETRY_XY || 
-		symmetry == SYMMETRY_YR90 || SYMMETRY_XYR90;
+		symmetry == SYMMETRY_YR90 || symmetry == SYMMETRY_XYR90;
 } // end method 
 
 // -----------------------------------------------------------------------------
 
 bool isPhysicalSymmetryR90(const Rsyn::PhysicalSymmetry symmetry) {
 	return symmetry == SYMMETRY_R90 || symmetry == SYMMETRY_XR90 || 
-		symmetry == SYMMETRY_YR90 || SYMMETRY_XYR90;
+		symmetry == SYMMETRY_YR90 || symmetry == SYMMETRY_XYR90;
 } // end method 
 
 // -----------------------------------------------------------------------------
